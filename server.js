@@ -5,9 +5,25 @@ const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: '*' } });
+const io = new Server(server, {
+  cors: { origin: "*" },
+  transports: ["websocket", "polling"],
+  allowEIO3: true,
+  pingTimeout: 60000,
+  pingInterval: 25000
+});
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Health check
+app.get('/health', (req, res) => res.json({ status: 'ok', rooms: Object.keys(rooms).length }));
+
+// Debug: confirm a room code exists
+app.get('/room/:code', (req, res) => {
+  const room = rooms[req.params.code.toUpperCase()];
+  if (!room) return res.json({ exists: false });
+  res.json({ exists: true, players: room.players.length, phase: room.state.phase });
+});
 
 const rooms = {};
 const ALPHABET = 'ABCDEFGHIJKLMNOPRSTUWZ'.split('');

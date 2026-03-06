@@ -45,7 +45,14 @@ socket.on('error', ({ msg }) => {
   const box = document.getElementById('home-error');
   box.textContent = msg;
   box.style.display = 'block';
-  setTimeout(() => box.style.display = 'none', 4000);
+  setTimeout(() => box.style.display = 'none', 5000);
+});
+
+// Handle socket reconnection — rejoin room automatically
+socket.on('reconnect', () => {
+  if (roomCode && myName) {
+    socket.emit('rejoin_room', { code: roomCode, name: myName });
+  }
 });
 
 socket.on('room_state', (data) => {
