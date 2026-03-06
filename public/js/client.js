@@ -315,10 +315,21 @@ function renderPlayingScreen(data) {
     setTimeout(() => { const f = document.querySelector('#answer-body input'); if(f) f.focus(); }, 100);
   }
 
-  document.getElementById('stop-btn').style.display = 'inline-flex';
-  document.getElementById('stop-banner').style.display = 'none';
+  // Don't reset stop state if stop has already been called
+  const alreadyStopped = !!state.stopCalledBy;
+  if (alreadyStopped) {
+    const stopper = data.players.find(p => p.id === state.stopCalledBy);
+    const banner = document.getElementById('stop-banner');
+    banner.textContent = L.stopBanner(stopper ? stopper.name : '?');
+    banner.style.display = 'block';
+    document.getElementById('stop-btn').style.display = 'none';
+    stopTimer();
+  } else {
+    document.getElementById('stop-btn').style.display = 'inline-flex';
+    document.getElementById('stop-banner').style.display = 'none';
+    startClientTimer(state.timerStart);
+  }
   updateProgressTracker(data);
-  startClientTimer(state.timerStart);
 }
 
 function updateProgressTracker(data) {
@@ -351,8 +362,11 @@ function focusNextInput(ci) {
 }
 
 function startClientTimer(serverStart) {
-  stopTimer();
   if (!serverStart) return;
+  // Don't restart if already ticking for this same round start time
+  if (timerInterval && window._timerStart === serverStart) return;
+  window._timerStart = serverStart;
+  stopTimer();
   const el = document.getElementById('timer');
   timerInterval = setInterval(() => {
     const elapsed = Math.floor((Date.now() - serverStart) / 1000);
@@ -362,7 +376,7 @@ function startClientTimer(serverStart) {
   }, 500);
 }
 
-function stopTimer() { clearInterval(timerInterval); }
+function stopTimer() { clearInterval(timerInterval); timerInterval = null; window._timerStart = null; }
 
 // ─── STOPPED SCREEN ──────────────────────────────────────────────
 function renderStoppedScreen(data) {
