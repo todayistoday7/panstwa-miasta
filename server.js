@@ -146,8 +146,10 @@ io.on('connection', (socket) => {
 
   // CREATE ROOM
   socket.on('create_room', ({ name, settings }) => {
+    const trimmedName = (name || '').trim();
+    if (!trimmedName) { socket.emit('error', { msg: 'Please enter your name before creating a room.' }); return; }
     const room = makeRoom(socket.id, settings || {});
-    room.players.push({ id: socket.id, name: name || 'Host', connected: true });
+    room.players.push({ id: socket.id, name: trimmedName, connected: true });
     room.state.totalScores[socket.id] = 0;
     socket.join(room.code);
     socket.emit('room_created', { code: room.code });
@@ -160,9 +162,30 @@ io.on('connection', (socket) => {
     if (!room) { socket.emit('error', { msg: 'Room not found.' }); return; }
     if (room.state.phase !== 'lobby') { socket.emit('error', { msg: 'Game already started.' }); return; }
     if (room.players.length >= 12) { socket.emit('error', { msg: 'Room is full (max 12).' }); return; }
+
+    const trimmedName = (name || 'Player').trim();
+
+    // Check for duplicate name — allow if it is the same socket reconnecting
+    const nameTaken = room.players.find(p =>
+      p.name.toLowerCase() === trimmedName.toLowerCase() && p.id !== socket.id
+    );
+    if (nameTaken) {
+      // If that player is disconnected, let this socket reclaim the name (reconnect)
+      if (!nameTaken.connected) {
+        nameTaken.id = socket.id;
+        nameTaken.connected = true;
+        socket.join(room.code);
+        socket.emit('room_joined', { code: room.code, isHost: socket.id === room.hostId });
+        emitRoomState(room);
+        return;
+      }
+      socket.emit('error', { msg: `The name ${trimmedName} is already taken in this room. Please choose a different name.` });
+      return;
+    }
+
     const existing = room.players.find(p => p.id === socket.id);
     if (!existing) {
-      room.players.push({ id: socket.id, name: name || 'Player', connected: true });
+      room.players.push({ id: socket.id, name: trimmedName, connected: true });
       room.state.totalScores[socket.id] = 0;
     }
     socket.join(room.code);

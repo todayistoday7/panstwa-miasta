@@ -42,6 +42,26 @@ socket.on('room_joined', ({ code, isHost: h }) => {
 });
 
 socket.on('error', ({ msg }) => {
+  // Name-taken errors go next to the join name field for clarity
+  const isNameError = msg.toLowerCase().includes('name') || msg.toLowerCase().includes('taken');
+  const onJoinScreen = document.getElementById('join-name') &&
+    document.getElementById('join-name').value.trim();
+
+  if (isNameError && onJoinScreen) {
+    const box = document.getElementById('join-name-error');
+    if (box) {
+      box.textContent = msg;
+      box.style.display = 'block';
+      // Highlight the name input
+      const input = document.getElementById('join-name');
+      if (input) {
+        input.style.borderColor = 'var(--red)';
+        input.focus();
+        input.select();
+      }
+      return;
+    }
+  }
   const box = document.getElementById('home-error');
   box.textContent = msg;
   box.style.display = 'block';
@@ -620,6 +640,16 @@ function showError(msg) {
   const box = document.getElementById('home-error');
   box.textContent = msg; box.style.display = 'block';
   setTimeout(() => box.style.display = 'none', 3500);
+}
+function clearJoinError() {
+  const box = document.getElementById('join-name-error');
+  if (box) box.style.display = 'none';
+  const input = document.getElementById('join-name');
+  if (input) input.style.borderColor = '';
+}
+function clearHomeError() {
+  const box = document.getElementById('home-error');
+  if (box) box.style.display = 'none';
 }
 function showToast(msg) {
   let t = document.getElementById('toast');

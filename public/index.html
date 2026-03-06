@@ -37,7 +37,7 @@
       <div class="card">
         <h3 id="lbl-create-room">Create Room</h3>
         <label class="field-label" id="lbl-your-name">Your name</label>
-        <input type="text" id="host-name" class="field-input" placeholder="Enter your name" maxlength="20"/>
+        <input type="text" id="host-name" class="field-input" placeholder="Enter your name" maxlength="20" oninput="clearHomeError()"/>
         <div class="btn-row" style="margin-top:16px;">
           <button class="btn" onclick="createRoom()" id="lbl-create-btn">🎮 Create Room</button>
         </div>
@@ -45,7 +45,8 @@
       <div class="card">
         <h3 id="lbl-join-room">Join Room</h3>
         <label class="field-label" id="lbl-join-name">Your name</label>
-        <input type="text" id="join-name" class="field-input" placeholder="Enter your name" maxlength="20"/>
+        <input type="text" id="join-name" class="field-input" placeholder="Enter your name" maxlength="20" oninput="clearJoinError()"/>
+        <div id="join-name-error" class="error-box" style="display:none;margin-top:8px;"></div>
         <label class="field-label" style="margin-top:12px;" id="lbl-room-code">Room code</label>
         <input type="text" id="join-code" class="field-input code-input" placeholder="e.g. WOLF4" maxlength="5"
           oninput="this.value=this.value.toUpperCase()"/>
