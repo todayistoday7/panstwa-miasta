@@ -128,11 +128,44 @@ socket.on('vote_updated', ({ rIdx, playerId, catIndex, votes, allVoted, validCou
   if (!challengeOpen) return;
   const word = (roomState.state.answers[playerId] || {})[catIndex] || '';
   updateVoteDisplay(votes, validCount, invalidCount, allVoted, word, playerId);
+  // When everyone has voted, auto-close after showing verdict
+  if (allVoted) {
+    const rejected = invalidCount > validCount;
+    // Hide vote buttons, show only verdict
+    document.getElementById('vote-grid').style.opacity = '0.4';
+    document.getElementById('vote-grid').style.pointerEvents = 'none';
+    document.getElementById('lbl-close-challenge').textContent = rejected
+      ? (L.closingIn || 'Closing in 3s...') : (L.closingIn || 'Closing in 3s...');
+    document.getElementById('lbl-close-challenge').disabled = true;
+    // Count down and close
+    let secs = 3;
+    const countdown = setInterval(() => {
+      secs--;
+      const btn = document.getElementById('lbl-close-challenge');
+      if (btn) btn.textContent = (L.closingIn || 'Closing in') + ' ' + secs + 's...';
+      if (secs <= 0) {
+        clearInterval(countdown);
+        // Server will emit challenge_closed after all votes tallied
+        // But also close locally in case server already sent it
+        const modal = document.getElementById('challenge-modal');
+        if (modal) modal.style.display = 'none';
+        challengeOpen = null;
+      }
+    }, 1000);
+  }
 });
 
 socket.on('challenge_closed', () => {
-  document.getElementById('challenge-modal').style.display = 'none';
-  challengeOpen = null;
+  // Small delay so players can see the final verdict before it disappears
+  setTimeout(() => {
+    document.getElementById('challenge-modal').style.display = 'none';
+    challengeOpen = null;
+    // Re-enable vote grid for next challenge
+    const vg = document.getElementById('vote-grid');
+    if (vg) { vg.style.opacity = ''; vg.style.pointerEvents = ''; }
+    const btn = document.getElementById('lbl-close-challenge');
+    if (btn) { btn.disabled = false; btn.textContent = L.closeChallenge; }
+  }, 500);
 });
 
 // ─── ROOM STATE HANDLER ──────────────────────────────────────────
@@ -586,7 +619,39 @@ function startRound() { socket.emit('start_round', { code: roomCode }); }
 
 function goHome() {
   roomCode=''; roomState=null; isHost=false; localAnswers={};
-  clearSession(); showScreen('screen-home');
+  clearSession();
+  showScreen('screen-home');
+  // Update nav
+  const topNav = document.getElementById('top-nav');
+  if (topNav) topNav.style.display = 'none';
+}
+
+function confirmGoHome() {
+  const phase = roomState && roomState.state ? roomState.state.phase : 'lobby';
+  const inActiveGame = ['drawing','playing','stopped','scoring'].includes(phase);
+  if (inActiveGame) {
+    // Show confirm dialog since a game is in progress
+    const msg = document.getElementById('confirm-msg');
+    if (msg) msg.textContent = L.confirmLeaveMsg || 'A game is in progress. Are you sure you want to leave?';
+    const title = document.getElementById('confirm-title');
+    if (title) title.textContent = L.confirmLeaveTitle || 'Leave Game?';
+    const yes = document.getElementById('confirm-yes');
+    if (yes) yes.textContent = L.confirmYes || 'Yes, leave';
+    const no = document.getElementById('confirm-no');
+    if (no) no.textContent = L.confirmNo || 'Cancel';
+    document.getElementById('confirm-modal').style.display = 'flex';
+  } else {
+    doGoHome();
+  }
+}
+
+function doGoHome() {
+  document.getElementById('confirm-modal').style.display = 'none';
+  goHome();
+}
+
+function closeConfirm() {
+  document.getElementById('confirm-modal').style.display = 'none';
 }
 
 // ─── LANG ────────────────────────────────────────────────────────
@@ -635,6 +700,12 @@ function startsWithLetter(word, letter) {
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  // Show top nav on all screens except home
+  const topNav = document.getElementById('top-nav');
+  if (topNav) topNav.style.display = id === 'screen-home' ? 'none' : 'flex';
+  // Keep room code in nav updated
+  const navCode = document.getElementById('nav-room-code');
+  if (navCode && roomCode) navCode.textContent = roomCode;
 }
 function showError(msg) {
   const box = document.getElementById('home-error');
