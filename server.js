@@ -5,16 +5,11 @@ const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: { origin: '*' }
-});
+const io = new Server(server, { cors: { origin: '*' } });
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ─── ROOM STATE ──────────────────────────────────────────────────
-// rooms[code] = { code, hostId, players, state, settings }
 const rooms = {};
-
 const ALPHABET = 'ABCDEFGHIJKLMNOPRSTUWZ'.split('');
 
 function generateCode() {
@@ -28,26 +23,27 @@ function generateCode() {
 function makeRoom(hostId, settings) {
   const code = generateCode();
   rooms[code] = {
-    code,
-    hostId,
+    code, hostId,
     settings: {
       totalRounds: settings.totalRounds || 5,
       categories: settings.categories || ['Country','City','Animal','Plant','Thing','Name','Color','Job'],
       lang: settings.lang || 'en',
     },
-    players: [],      // { id, name, isHost, connected }
+    players: [],
     state: {
-      phase: 'lobby', // lobby | drawing | playing | stopped | scoring | final
+      phase: 'lobby',
       round: 0,
       letter: '',
       usedLetters: [],
       stopCalledBy: null,
       timerStart: null,
-      answers: {},    // { playerId: { catIndex: string } }
-      scores: [],     // scores[round][playerId][catIndex] = pts
-      totalScores: {},// { playerId: pts }
-      challenged: {}, // { `r_pid_ci`: true }
-      votes: {},      // { `r_pid_ci`: { voterId: bool } }
+      drawingPlayerIndex: 0, // whose turn it is to draw the letter
+      answers: {},
+      scores: [],
+      totalScores: {},
+      challenged: {},
+      votes: {},
+      activeChallenge: null, // { rIdx, playerId, catIndex, challengerId }
     }
   };
   return rooms[code];
@@ -74,6 +70,22 @@ function emitRoomState(room) {
   });
 }
 
+// Promote next connected player to host
+function promoteNewHost(room) {
+  const next = room.players.find(p => p.connected && p.id !== room.hostId);
+  if (next) {
+    room.hostId = next.id;
+    io.to(room.code).emit('new_host', { playerId: next.id, name: next.name });
+  }
+}
+
+function getDrawingPlayer(room) {
+  const connected = room.players.filter(p => p.connected);
+  if (!connected.length) return null;
+  const idx = room.state.drawingPlayerIndex % connected.length;
+  return connected[idx];
+}
+
 function computeRoundScores(room) {
   const { state, settings } = room;
   const rIdx = state.round - 1;
@@ -89,7 +101,7 @@ function computeRoundScores(room) {
     });
     const validAnswers = Object.values(answers).filter(a => a && startsWithLetter(a, state.letter));
     const counts = {};
-    validAnswers.forEach(a => counts[a] = (counts[a] || 0) + 1);
+    validAnswers.forEach(a => counts[a] = (counts[a]||0)+1);
 
     playerIds.forEach(pid => {
       const key = `${rIdx}_${pid}_${ci}`;
@@ -115,7 +127,6 @@ function startsWithLetter(word, letter) {
 
 // ─── SOCKET EVENTS ───────────────────────────────────────────────
 io.on('connection', (socket) => {
-  console.log('connect', socket.id);
 
   // CREATE ROOM
   socket.on('create_room', ({ name, settings }) => {
@@ -133,7 +144,6 @@ io.on('connection', (socket) => {
     if (!room) { socket.emit('error', { msg: 'Room not found.' }); return; }
     if (room.state.phase !== 'lobby') { socket.emit('error', { msg: 'Game already started.' }); return; }
     if (room.players.length >= 12) { socket.emit('error', { msg: 'Room is full (max 12).' }); return; }
-
     const existing = room.players.find(p => p.id === socket.id);
     if (!existing) {
       room.players.push({ id: socket.id, name: name || 'Player', connected: true });
@@ -144,7 +154,7 @@ io.on('connection', (socket) => {
     emitRoomState(room);
   });
 
-  // REJOIN (reconnect)
+  // REJOIN
   socket.on('rejoin_room', ({ code, name }) => {
     const room = getRoom(code);
     if (!room) { socket.emit('error', { msg: 'Room expired.' }); return; }
@@ -152,43 +162,51 @@ io.on('connection', (socket) => {
     if (existing) {
       existing.id = socket.id;
       existing.connected = true;
-      if (room.hostId === existing.id) room.hostId = socket.id;
     } else {
       room.players.push({ id: socket.id, name, connected: true });
       room.state.totalScores[socket.id] = 0;
+    }
+    // If there was no host, promote this player
+    if (!room.players.find(p => p.id === room.hostId && p.connected)) {
+      room.hostId = socket.id;
     }
     socket.join(room.code);
     socket.emit('room_joined', { code: room.code, isHost: socket.id === room.hostId });
     emitRoomState(room);
   });
 
-  // UPDATE SETTINGS (host only)
+  // UPDATE SETTINGS — any connected player in lobby can change settings
   socket.on('update_settings', ({ code, settings }) => {
     const room = getRoom(code);
-    if (!room || socket.id !== room.hostId) return;
+    if (!room || room.state.phase !== 'lobby') return;
     room.settings = { ...room.settings, ...settings };
     emitRoomState(room);
   });
 
-  // START GAME (host only)
+  // START GAME — any player can start (no host restriction)
   socket.on('start_game', ({ code }) => {
     const room = getRoom(code);
-    if (!room || socket.id !== room.hostId) return;
-    if (room.players.length < 2) { socket.emit('error', { msg: 'Need at least 2 players.' }); return; }
+    if (!room) return;
+    if (room.players.filter(p => p.connected).length < 2) {
+      socket.emit('error', { msg: 'Need at least 2 players.' }); return;
+    }
     room.state.phase = 'drawing';
     room.state.round = 0;
     room.state.usedLetters = [];
     room.state.scores = [];
     room.state.challenged = {};
     room.state.votes = {};
+    room.state.drawingPlayerIndex = 0;
     room.players.forEach(p => room.state.totalScores[p.id] = 0);
     startNextRound(room);
   });
 
-  // DRAW LETTER (host only)
+  // DRAW LETTER — only the designated drawing player for this round
   socket.on('draw_letter', ({ code }) => {
     const room = getRoom(code);
-    if (!room || socket.id !== room.hostId || room.state.phase !== 'drawing') return;
+    if (!room || room.state.phase !== 'drawing') return;
+    const drawer = getDrawingPlayer(room);
+    if (!drawer || drawer.id !== socket.id) return; // not your turn
     const available = ALPHABET.filter(l => !room.state.usedLetters.includes(l));
     if (!available.length) { endGame(room); return; }
     const letter = available[Math.floor(Math.random() * available.length)];
@@ -197,10 +215,12 @@ io.on('connection', (socket) => {
     io.to(room.code).emit('letter_drawn', { letter });
   });
 
-  // CONFIRM LETTER & START PLAYING (host only)
+  // CONFIRM LETTER & START — only the drawing player
   socket.on('start_round', ({ code }) => {
     const room = getRoom(code);
-    if (!room || socket.id !== room.hostId) return;
+    if (!room) return;
+    const drawer = getDrawingPlayer(room);
+    if (!drawer || drawer.id !== socket.id) return;
     room.state.phase = 'playing';
     room.state.stopCalledBy = null;
     room.state.answers = {};
@@ -209,17 +229,16 @@ io.on('connection', (socket) => {
     emitRoomState(room);
   });
 
-  // SUBMIT ANSWER (any player, anytime while playing)
+  // SUBMIT ANSWER
   socket.on('submit_answer', ({ code, catIndex, value }) => {
     const room = getRoom(code);
     if (!room || room.state.phase !== 'playing') return;
     if (!room.state.answers[socket.id]) room.state.answers[socket.id] = {};
     room.state.answers[socket.id][catIndex] = value;
-    // Broadcast live to everyone so host can see progress
     io.to(room.code).emit('answer_updated', { playerId: socket.id, catIndex, value });
   });
 
-  // CALL STOP (any player)
+  // CALL STOP
   socket.on('call_stop', ({ code }) => {
     const room = getRoom(code);
     if (!room || room.state.phase !== 'playing') return;
@@ -227,21 +246,20 @@ io.on('connection', (socket) => {
     room.state.stopCalledBy = socket.id;
     const stopper = room.players.find(p => p.id === socket.id);
     io.to(room.code).emit('stop_called', { playerName: stopper ? stopper.name : 'Someone', playerId: socket.id });
-    // Give 10 seconds for others to finish then auto-score
     setTimeout(() => {
       const r = getRoom(code);
       if (r && r.state.phase === 'stopped') moveToScoring(r);
     }, 10000);
   });
 
-  // FORCE SCORING (host only, skips the 10s wait)
+  // FORCE SCORING — any player (host or not)
   socket.on('force_scoring', ({ code }) => {
     const room = getRoom(code);
-    if (!room || socket.id !== room.hostId) return;
+    if (!room) return;
     moveToScoring(room);
   });
 
-  // OVERRIDE SCORE (host only)
+  // OVERRIDE SCORE — host only (trust issue with scoring)
   socket.on('set_score', ({ code, playerId, rIdx, catIndex, pts }) => {
     const room = getRoom(code);
     if (!room || socket.id !== room.hostId) return;
@@ -252,19 +270,26 @@ io.on('connection', (socket) => {
     emitRoomState(room);
   });
 
-  // OPEN CHALLENGE (host only)
+  // OPEN CHALLENGE — ANY player can challenge ANY other player's answer
   socket.on('open_challenge', ({ code, rIdx, playerId, catIndex }) => {
     const room = getRoom(code);
-    if (!room || socket.id !== room.hostId) return;
-    room.state.votes[`${rIdx}_${playerId}_${catIndex}`] = {};
-    io.to(room.code).emit('challenge_opened', { rIdx, playerId, catIndex,
+    if (!room) return;
+    if (socket.id === playerId) return; // can't challenge yourself
+    // Only one challenge at a time
+    if (room.state.activeChallenge) return;
+    const key = `${rIdx}_${playerId}_${catIndex}`;
+    room.state.votes[key] = {};
+    room.state.activeChallenge = { rIdx, playerId, catIndex, challengerId: socket.id };
+    io.to(room.code).emit('challenge_opened', {
+      rIdx, playerId, catIndex,
       word: (room.state.answers[playerId] || {})[catIndex] || '',
       category: room.settings.categories[catIndex],
-      playerName: (room.players.find(p=>p.id===playerId)||{}).name || '?',
+      playerName: (room.players.find(p => p.id === playerId) || {}).name || '?',
+      challengerName: (room.players.find(p => p.id === socket.id) || {}).name || '?',
     });
   });
 
-  // CAST VOTE (any player except the challenged one)
+  // CAST VOTE — any player except the one being challenged
   socket.on('cast_vote', ({ code, rIdx, playerId, catIndex, isValid }) => {
     const room = getRoom(code);
     if (!room || socket.id === playerId) return;
@@ -272,11 +297,11 @@ io.on('connection', (socket) => {
     if (!room.state.votes[key]) room.state.votes[key] = {};
     room.state.votes[key][socket.id] = isValid;
 
-    const voters = room.players.map(p=>p.id).filter(id => id !== playerId);
+    const voters = room.players.map(p => p.id).filter(id => id !== playerId);
     const allVoted = voters.every(vid => room.state.votes[key][vid] !== undefined);
     const votesCast = Object.values(room.state.votes[key]);
-    const validCount = votesCast.filter(v=>v).length;
-    const invalidCount = votesCast.filter(v=>!v).length;
+    const validCount = votesCast.filter(v => v).length;
+    const invalidCount = votesCast.filter(v => !v).length;
 
     io.to(room.code).emit('vote_updated', { rIdx, playerId, catIndex, votes: room.state.votes[key], allVoted, validCount, invalidCount });
 
@@ -288,35 +313,46 @@ io.on('connection', (socket) => {
         delete room.state.challenged[key];
       }
       computeRoundScores(room);
+      room.state.activeChallenge = null;
+      io.to(room.code).emit('challenge_closed', { rIdx, playerId, catIndex });
       emitRoomState(room);
     }
   });
 
-  // CLOSE CHALLENGE (host only)
+  // CLOSE CHALLENGE — challenger or host can close
   socket.on('close_challenge', ({ code, rIdx, playerId, catIndex }) => {
     const room = getRoom(code);
-    if (!room || socket.id !== room.hostId) return;
+    if (!room) return;
+    const ac = room.state.activeChallenge;
+    if (!ac) return;
+    // Only challenger or host can close
+    if (socket.id !== ac.challengerId && socket.id !== room.hostId) return;
+
     const key = `${rIdx}_${playerId}_${catIndex}`;
     const votes = room.state.votes[key] || {};
-    const voters = room.players.map(p=>p.id).filter(id=>id!==playerId);
-    const invalidCount = voters.filter(id=>votes[id]===false).length;
-    const validCount   = voters.filter(id=>votes[id]===true).length;
-    if (invalidCount > validCount) {
-      room.state.challenged[key] = true;
-      room.state.scores[rIdx][playerId][catIndex] = 0;
-    } else {
-      delete room.state.challenged[key];
+    const voters = room.players.map(p => p.id).filter(id => id !== playerId);
+    const invalidCount = voters.filter(id => votes[id] === false).length;
+    const validCount   = voters.filter(id => votes[id] === true).length;
+
+    if (Object.keys(votes).length > 0) {
+      if (invalidCount > validCount) {
+        room.state.challenged[key] = true;
+        room.state.scores[rIdx][playerId][catIndex] = 0;
+      } else {
+        delete room.state.challenged[key];
+      }
+      computeRoundScores(room);
     }
-    computeRoundScores(room);
+
+    room.state.activeChallenge = null;
     io.to(room.code).emit('challenge_closed', { rIdx, playerId, catIndex });
     emitRoomState(room);
   });
 
-  // NEXT ROUND (host only)
+  // NEXT ROUND — host only (prevents double-trigger)
   socket.on('next_round', ({ code }) => {
     const room = getRoom(code);
     if (!room || socket.id !== room.hostId) return;
-    // Bank scores
     const rIdx = room.state.round - 1;
     room.players.forEach(p => {
       const pScores = room.state.scores[rIdx][p.id] || {};
@@ -330,6 +366,12 @@ io.on('connection', (socket) => {
     }
   });
 
+  // KEEP ALIVE ping — client sends this every 20s to prevent browser throttling
+  socket.on('keep_alive', ({ code }) => {
+    // just acknowledge so the connection stays warm
+    socket.emit('keep_alive_ack');
+  });
+
   // DISCONNECT
   socket.on('disconnect', () => {
     for (const code of Object.keys(rooms)) {
@@ -337,9 +379,12 @@ io.on('connection', (socket) => {
       const p = room.players.find(p => p.id === socket.id);
       if (p) {
         p.connected = false;
+        // If host disconnected, promote someone else
+        if (socket.id === room.hostId) {
+          promoteNewHost(room);
+        }
         io.to(room.code).emit('player_disconnected', { playerId: socket.id, name: p.name });
         emitRoomState(room);
-        // Clean up empty rooms after 30 min
         const allGone = room.players.every(p => !p.connected);
         if (allGone) setTimeout(() => { if (rooms[code]) delete rooms[code]; }, 30 * 60 * 1000);
         break;
@@ -353,8 +398,11 @@ function startNextRound(room) {
   room.state.phase = 'drawing';
   room.state.letter = '';
   room.state.stopCalledBy = null;
+  room.state.activeChallenge = null;
   room.state.answers = {};
   room.players.forEach(p => room.state.answers[p.id] = {});
+  // Rotate drawing player each round
+  room.state.drawingPlayerIndex = (room.state.round - 1) % room.players.filter(p => p.connected).length;
   emitRoomState(room);
 }
 
@@ -365,7 +413,6 @@ function moveToScoring(room) {
 }
 
 function endGame(room) {
-  // Bank final round if needed
   const rIdx = room.state.round - 1;
   if (room.state.scores[rIdx]) {
     room.players.forEach(p => {
