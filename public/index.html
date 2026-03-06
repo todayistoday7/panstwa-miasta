@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Państwa-Miasta</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<!-- CHALLENGE MODAL -->
+<div id="challenge-modal" class="modal-overlay" style="display:none;">
+  <div class="modal">
+    <h2 id="modal-title">⚠ Challenge!</h2>
+    <p id="modal-desc"></p>
+    <div id="modal-word-area"></div>
+    <div class="vote-grid" id="vote-grid"></div>
+    <div class="vote-tally" id="vote-tally"></div>
+    <div id="verdict-area"></div>
+    <div class="btn-row" style="margin-top:16px;">
+      <button class="btn red-btn" onclick="closeChallenge()" id="lbl-close-challenge">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="lang-bar" id="lang-bar"></div>
+  <header>
+    <h1 id="game-title">Państwa-Miasta</h1>
+    <p id="game-subtitle">Multiplayer word game</p>
+  </header>
+
+  <!-- ══ SCREEN: HOME ══ -->
+  <div id="screen-home" class="screen active">
+    <div class="home-grid">
+      <div class="card">
+        <h3 id="lbl-create-room">Create Room</h3>
+        <label class="field-label" id="lbl-your-name">Your name</label>
+        <input type="text" id="host-name" class="field-input" placeholder="Enter your name" maxlength="20"/>
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn" onclick="createRoom()" id="lbl-create-btn">🎮 Create Room</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3 id="lbl-join-room">Join Room</h3>
+        <label class="field-label" id="lbl-join-name">Your name</label>
+        <input type="text" id="join-name" class="field-input" placeholder="Enter your name" maxlength="20"/>
+        <label class="field-label" style="margin-top:12px;" id="lbl-room-code">Room code</label>
+        <input type="text" id="join-code" class="field-input code-input" placeholder="e.g. WOLF4" maxlength="5"
+          oninput="this.value=this.value.toUpperCase()"/>
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn green" onclick="joinRoom()" id="lbl-join-btn">🚪 Join Room</button>
+        </div>
+      </div>
+    </div>
+    <div id="home-error" class="error-box" style="display:none;"></div>
+    <div class="rules-box" id="rules-text"></div>
+  </div>
+
+  <!-- ══ SCREEN: LOBBY ══ -->
+  <div id="screen-lobby" class="screen">
+    <div class="lobby-header">
+      <div>
+        <div class="room-code-display" id="room-code-display"></div>
+        <p class="room-code-hint" id="lbl-share-code">Share this code with your friends</p>
+      </div>
+      <div id="lobby-status"></div>
+    </div>
+
+    <div class="lobby-grid">
+      <div class="card">
+        <h3 id="lbl-players-in-room">Players</h3>
+        <div id="lobby-players"></div>
+      </div>
+      <div class="card" id="settings-card">
+        <h3 id="lbl-settings">Settings</h3>
+        <label class="field-label" id="lbl-rounds-title">Rounds</label>
+        <select id="settings-rounds" class="field-select" onchange="updateSettings()">
+          <option value="3">3</option><option value="5" selected>5</option><option value="7">7</option><option value="10">10</option>
+        </select>
+        <label class="field-label" style="margin-top:14px;" id="lbl-categories">Categories</label>
+        <div class="cat-grid" id="lobby-cat-grid"></div>
+        <label class="field-label" style="margin-top:14px;" id="lbl-language">Language</label>
+        <div class="lang-pills" id="lobby-lang-pills"></div>
+      </div>
+    </div>
+
+    <div class="btn-row" id="lobby-btn-row">
+      <button class="btn" onclick="startGame()" id="lbl-start-btn">🎮 Start Game</button>
+    </div>
+    <p class="waiting-msg" id="waiting-msg" style="display:none;"></p>
+  </div>
+
+  <!-- ══ SCREEN: DRAWING ══ -->
+  <div id="screen-drawing" class="screen">
+    <div class="letter-stage">
+      <div id="drawing-round-badge" class="round-badge"></div>
+      <div id="drawing-letter" class="letter-display">?</div>
+      <div class="rounds-indicator" id="drawing-rounds-ind"></div>
+      <div id="drawing-host-controls" style="display:none;">
+        <div class="btn-row" style="margin-top:28px;">
+          <button class="btn" id="draw-btn" onclick="drawLetter()">🎲 <span id="lbl-draw">Draw Letter</span></button>
+          <button class="btn green" id="play-btn" onclick="startRound()" style="display:none;">▶ <span id="lbl-play">Play!</span></button>
+        </div>
+      </div>
+      <p id="drawing-waiting" class="waiting-msg" style="display:none;"></p>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN: PLAYING ══ -->
+  <div id="screen-playing" class="screen">
+    <div class="game-header">
+      <div class="game-letter-badge">
+        <span id="lbl-letter-word">Letter</span>
+        <span id="play-letter" style="font-size:64px;color:var(--accent);font-family:'Bebas Neue',sans-serif;"></span>
+      </div>
+      <div id="timer" class="timer">—</div>
+    </div>
+    <div id="stop-banner" class="stop-banner" style="display:none;"></div>
+    <table class="answer-table">
+      <thead><tr><th id="lbl-category-col">Category</th><th id="lbl-answer-col">Your Answer</th></tr></thead>
+      <tbody id="answer-body"></tbody>
+    </table>
+    <div class="btn-row">
+      <button class="btn green" id="stop-btn" onclick="callStop()">🛑 STOP!</button>
+    </div>
+    <!-- Progress tracker (host sees this) -->
+    <div id="progress-tracker" style="display:none;margin-top:18px;">
+      <p class="section-title" id="lbl-progress">Player Progress</p>
+      <div id="progress-list"></div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN: STOPPED ══ -->
+  <div id="screen-stopped" class="screen">
+    <div style="text-align:center;padding:32px 0;">
+      <div class="stop-banner" id="stopped-banner"></div>
+      <p style="color:var(--muted);margin-top:12px;" id="lbl-stopped-hint"></p>
+    </div>
+    <table class="answer-table">
+      <thead><tr><th id="lbl-sc2">Category</th><th id="lbl-ac2">Your Answer</th></tr></thead>
+      <tbody id="stopped-answer-body"></tbody>
+    </table>
+    <div class="btn-row" id="stopped-host-btns" style="display:none;">
+      <button class="btn" onclick="forceScoring()" id="lbl-force-scoring">✔ Go to Scoring</button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN: SCORING ══ -->
+  <div id="screen-scoring" class="screen">
+    <div style="padding-top:20px;">
+      <div class="round-badge" id="scoring-round-badge"></div>
+      <p id="lbl-scoring-hint" style="color:var(--muted);font-size:14px;margin-top:8px;"></p>
+    </div>
+    <div class="scoring-grid" id="scoring-grid"></div>
+    <p class="section-title" id="lbl-current-ranking"></p>
+    <div id="leaderboard-mini"></div>
+    <div class="btn-row" id="scoring-next-btn" style="display:none;">
+      <button class="btn" onclick="nextRound()" id="lbl-next-round">Next Round →</button>
+    </div>
+    <p class="waiting-msg" id="scoring-waiting" style="display:none;"></p>
+  </div>
+
+  <!-- ══ SCREEN: FINAL ══ -->
+  <div id="screen-final" class="screen">
+    <div style="text-align:center;padding-top:28px;">
+      <div class="winner-crown">🏆</div>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:50px;letter-spacing:2px;color:var(--accent2);" id="lbl-game-over">Game Over!</h2>
+      <p id="lbl-final-sub" style="color:var(--muted);margin-top:4px;"></p>
+    </div>
+    <p class="section-title" id="lbl-final-ranking"></p>
+    <div id="final-leaderboard"></div>
+    <div class="btn-row">
+      <button class="btn" onclick="goHome()" id="lbl-new-game">🔄 New Game</button>
+    </div>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/langs.js"></script>
+<script src="/js/client.js"></script>
+</body>
+</html>
