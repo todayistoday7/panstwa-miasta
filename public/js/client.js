@@ -642,7 +642,7 @@ function nextRound()     { socket.emit('next_round', { code: roomCode }); }
 
 // ── SHARE FUNCTIONS ──────────────────────────────────────────────
 function shareInvite() {
-  const L = LANGS[currentLang] || LANGS['EN'];
+  const L = LANGS[lang] || LANGS['en'];
   const url = 'https://panstwamiastagra.com';
   const text = (L.shareInviteText || 'Join my Państwa-Miasta game! 🎮\nRoom code: {code}\nPlay at: {url}')
     .replace('{code}', roomCode)
@@ -651,7 +651,7 @@ function shareInvite() {
 }
 
 function shareGame() {
-  const L = LANGS[currentLang] || LANGS['EN'];
+  const L = LANGS[lang] || LANGS['en'];
   const url = 'https://panstwamiastagra.com';
   // Build score summary from roomState
   let scoreSummary = '';
@@ -679,7 +679,7 @@ function doShare(title, text, url) {
 }
 
 function fallbackCopy(text) {
-  const L = LANGS[currentLang] || LANGS['EN'];
+  const L = LANGS[lang] || LANGS['en'];
   navigator.clipboard.writeText(text).then(() => {
     showToast(L.copiedToClipboard || '📋 Copied to clipboard!');
   }).catch(() => {
