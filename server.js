@@ -60,6 +60,7 @@ function makeRoom(hostId, settings) {
       challenged: {},
       votes: {},
       activeChallenge: null, // { rIdx, playerId, catIndex, challengerId }
+      readyPlayers: {}, // { playerId: true } — players who marked ready on scoring screen
     }
   };
   return rooms[code];
@@ -403,21 +404,31 @@ io.on('connection', (socket) => {
     emitRoomState(room);
   });
 
+  // MARK READY — any player signals they have reviewed the scores
+  socket.on('mark_ready', ({ code }) => {
+    const room = getRoom(code);
+    if (!room || room.state.phase !== 'scoring') return;
+    room.state.readyPlayers[socket.id] = true;
+    const connectedPlayers = room.players.filter(p => p.connected);
+    const allReady = connectedPlayers.every(p => room.state.readyPlayers[p.id]);
+    emitRoomState(room);
+    // If all players ready and this is the host, auto-advance
+    if (allReady && socket.id === room.hostId) {
+      // Small delay so everyone sees the "all ready" state
+      setTimeout(() => {
+        const r = getRoom(code);
+        if (r && r.state.phase === 'scoring') {
+          advanceFromScoring(r);
+        }
+      }, 1000);
+    }
+  });
+
   // NEXT ROUND — host only (prevents double-trigger)
   socket.on('next_round', ({ code }) => {
     const room = getRoom(code);
     if (!room || socket.id !== room.hostId) return;
-    const rIdx = room.state.round - 1;
-    room.players.forEach(p => {
-      const pScores = room.state.scores[rIdx][p.id] || {};
-      room.state.totalScores[p.id] = (room.state.totalScores[p.id] || 0) +
-        Object.values(pScores).reduce((a,b) => a+b, 0);
-    });
-    if (room.state.round >= room.settings.totalRounds) {
-      endGame(room);
-    } else {
-      startNextRound(room);
-    }
+    advanceFromScoring(room);
   });
 
   // KEEP ALIVE ping — client sends this every 20s to prevent browser throttling
@@ -447,12 +458,27 @@ io.on('connection', (socket) => {
   });
 });
 
+function advanceFromScoring(room) {
+  const rIdx = room.state.round - 1;
+  room.players.forEach(p => {
+    const pScores = room.state.scores[rIdx][p.id] || {};
+    room.state.totalScores[p.id] = (room.state.totalScores[p.id] || 0) +
+      Object.values(pScores).reduce((a,b) => a+b, 0);
+  });
+  if (room.state.round >= room.settings.totalRounds) {
+    endGame(room);
+  } else {
+    startNextRound(room);
+  }
+}
+
 function startNextRound(room) {
   room.state.round++;
   room.state.phase = 'drawing';
   room.state.letter = '';
   room.state.stopCalledBy = null;
   room.state.activeChallenge = null;
+  room.state.readyPlayers = {};
   room.state.answers = {};
   room.players.forEach(p => room.state.answers[p.id] = {});
   // Rotate drawing player each round

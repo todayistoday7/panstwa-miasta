@@ -466,10 +466,54 @@ function renderScoringScreen(data) {
 
   renderLeaderboard('leaderboard-mini', data, rIdx);
 
-  if (isHost) {
+  // Ready system — show ready button for everyone, next round only when all ready
+  const connectedPlayers = players.filter(p => p.connected);
+  const readyPlayers = state.readyPlayers || {};
+  const myReady = !!readyPlayers[myId];
+  const allReady = connectedPlayers.every(p => readyPlayers[p.id]);
+  const readyCount = connectedPlayers.filter(p => readyPlayers[p.id]).length;
+  const totalCount = connectedPlayers.length;
+  const isFinalRound = state.round >= settings.totalRounds;
+
+  // Ready status bar — visible to everyone
+  const readyBar = document.getElementById('ready-bar') || (() => {
+    const d = document.createElement('div');
+    d.id = 'ready-bar';
+    document.getElementById('scoring-next-btn').parentNode.insertBefore(d, document.getElementById('scoring-next-btn'));
+    return d;
+  })();
+
+  // Ready players avatars
+  let readyHtml = `<div class="ready-bar">`;
+  connectedPlayers.forEach((p, i) => {
+    const isReady = !!readyPlayers[p.id];
+    readyHtml += `<div class="ready-player ${isReady?'ready':''}">
+      <div class="avatar av-${i%8}" style="width:30px;height:30px;font-size:12px;">${p.name.charAt(0).toUpperCase()}</div>
+      <span style="font-size:11px;font-weight:800;color:${isReady?'var(--green)':'var(--muted)'}">${isReady?'✓':''}</span>
+    </div>`;
+  });
+  readyHtml += `<span class="ready-count">${readyCount}/${totalCount} ${L.readyLabel||'ready'}</span></div>`;
+  readyBar.innerHTML = readyHtml;
+
+  // Ready button for current player
+  if (!myReady) {
     document.getElementById('scoring-next-btn').style.display = 'flex';
+    document.getElementById('scoring-next-btn').innerHTML =
+      `<button class="btn green" onclick="markReady()">${L.markReady||'✓ I've reviewed the scores'}</button>`;
     document.getElementById('scoring-waiting').style.display = 'none';
-  } else {
+  } else if (allReady && isHost) {
+    // All ready — host sees advance button
+    const btnLabel = isFinalRound ? (L.seeResults||'🏆 See Final Results') : (L.nextRound||'Next Round →');
+    document.getElementById('scoring-next-btn').style.display = 'flex';
+    document.getElementById('scoring-next-btn').innerHTML =
+      `<button class="btn" onclick="nextRound()">${btnLabel}</button>`;
+    document.getElementById('scoring-waiting').style.display = 'none';
+  } else if (myReady && !allReady) {
+    document.getElementById('scoring-next-btn').style.display = 'none';
+    document.getElementById('scoring-waiting').style.display = 'block';
+    document.getElementById('scoring-waiting').textContent =
+      `✓ ${L.waitingOthers||'Waiting for others to review...'} (${readyCount}/${totalCount})`;
+  } else if (allReady && !isHost) {
     document.getElementById('scoring-next-btn').style.display = 'none';
     document.getElementById('scoring-waiting').style.display = 'block';
     document.getElementById('scoring-waiting').textContent = L.waitingScoring;
@@ -595,6 +639,85 @@ function setScore(playerId, rIdx, catIndex, pts) {
 }
 function forceScoring() { socket.emit('force_scoring', { code: roomCode }); }
 function nextRound()     { socket.emit('next_round', { code: roomCode }); }
+
+// ── SHARE FUNCTIONS ──────────────────────────────────────────────
+function shareInvite() {
+  const L = LANGS[currentLang] || LANGS['EN'];
+  const url = 'https://panstwamiastagra.com';
+  const text = (L.shareInviteText || 'Join my Państwa-Miasta game! 🎮\nRoom code: {code}\nPlay at: {url}')
+    .replace('{code}', roomCode)
+    .replace('{url}', url);
+  doShare(L.shareInviteTitle || 'Join my game!', text, url);
+}
+
+function shareGame() {
+  const L = LANGS[currentLang] || LANGS['EN'];
+  const url = 'https://panstwamiastagra.com';
+  // Build score summary from roomState
+  let scoreSummary = '';
+  if (roomState && roomState.state && roomState.state.totalScores) {
+    const sorted = [...(roomState.players||[])].sort((a,b) =>
+      (roomState.state.totalScores[b.id]||0) - (roomState.state.totalScores[a.id]||0));
+    scoreSummary = sorted.map((p,i) =>
+      `${i===0?'🥇':i===1?'🥈':i===2?'🥉':'  '} ${p.name}: ${roomState.state.totalScores[p.id]||0} pts`
+    ).join('\n');
+  }
+  const text = (L.shareResultText || 'We just played Państwa-Miasta! 🎮\n\n{scores}\n\nPlay at: {url}')
+    .replace('{scores}', scoreSummary)
+    .replace('{url}', url);
+  doShare(L.shareResultTitle || 'Game Results', text, url);
+}
+
+function doShare(title, text, url) {
+  if (navigator.share) {
+    // Native share sheet (mobile)
+    navigator.share({ title, text, url }).catch(() => fallbackCopy(text));
+  } else {
+    // Desktop fallback — copy to clipboard
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const L = LANGS[currentLang] || LANGS['EN'];
+  navigator.clipboard.writeText(text).then(() => {
+    showToast(L.copiedToClipboard || '📋 Copied to clipboard!');
+  }).catch(() => {
+    // Last resort — prompt
+    prompt('Copy this and share with friends:', text);
+  });
+}
+function markReady()     { socket.emit('mark_ready', { code: roomCode }); }
+
+// Share room — sends a direct join link with room code
+async function shareRoom() {
+  const url = `${window.location.origin}?join=${roomCode}`;
+  const L = getLang();
+  const text = (L.shareRoomText || 'Join my Państwa-Miasta room! Code: ') + roomCode;
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'Państwa-Miasta', text, url });
+    } catch(e) { /* cancelled */ }
+  } else {
+    await navigator.clipboard.writeText(url);
+    showToast(L.linkCopied || '🔗 Link copied to clipboard!');
+  }
+}
+
+// Share game — shares the main site
+async function shareGame() {
+  const L = getLang();
+  const url = window.location.origin;
+  const text = L.shareGameText || 'Play Państwa-Miasta online — a fun multiplayer word game!';
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'Państwa-Miasta', text, url });
+    } catch(e) { /* cancelled */ }
+  } else {
+    await navigator.clipboard.writeText(url);
+    showToast(L.linkCopied || '🔗 Link copied to clipboard!');
+  }
+}
 function callStop()      { socket.emit('call_stop', { code: roomCode }); document.getElementById('stop-btn').style.display='none'; }
 
 function createRoom() {
@@ -766,3 +889,21 @@ function clearSession() {
 // ─── INIT ────────────────────────────────────────────────────────
 buildLangBar();
 applyTranslations();
+
+// Auto-fill room code from shared link e.g. ?join=WOLF4
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const joinCode = params.get('join');
+  if (joinCode) {
+    const el = document.getElementById('join-code');
+    if (el) {
+      el.value = joinCode.toUpperCase();
+      // Switch to join tab automatically
+      const joinTab = document.querySelector('[onclick*="showJoin"]') || document.querySelector('[onclick*="join"]');
+      if (joinTab) joinTab.click();
+      el.focus();
+    }
+    // Clean URL without reloading
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+})();
