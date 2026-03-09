@@ -711,18 +711,11 @@ function legacyCopy(text) {
 function markReady()     { socket.emit('mark_ready', { code: roomCode }); }
 
 // Share room — sends a direct join link with room code
-async function shareRoom() {
-  const url = `${window.location.origin}?join=${roomCode}`;
-  const L = getLang();
-  const text = (L.shareRoomText || 'Join my Państwa-Miasta room! Code: ') + roomCode;
-  if (navigator.share) {
-    try {
-      await navigator.share({ title: 'Państwa-Miasta', text, url });
-    } catch(e) { /* cancelled */ }
-  } else {
-    await navigator.clipboard.writeText(url);
-    showToast(L.linkCopied || '🔗 Link copied to clipboard!');
-  }
+function shareRoom() {
+  const L = LANGS[lang] || LANGS['en'];
+  const url = 'https://panstwamiastagra.com';
+  const text = 'Join my Państwa-Miasta game! 🎮\nRoom code: ' + roomCode + '\nPlay at: ' + url;
+  doShare('Join my game!', text, url);
 }
 
 
