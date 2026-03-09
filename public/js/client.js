@@ -704,20 +704,7 @@ async function shareRoom() {
   }
 }
 
-// Share game — shares the main site
-async function shareGame() {
-  const L = getLang();
-  const url = window.location.origin;
-  const text = L.shareGameText || 'Play Państwa-Miasta online — a fun multiplayer word game!';
-  if (navigator.share) {
-    try {
-      await navigator.share({ title: 'Państwa-Miasta', text, url });
-    } catch(e) { /* cancelled */ }
-  } else {
-    await navigator.clipboard.writeText(url);
-    showToast(L.linkCopied || '🔗 Link copied to clipboard!');
-  }
-}
+
 function callStop()      { socket.emit('call_stop', { code: roomCode }); document.getElementById('stop-btn').style.display='none'; }
 
 function createRoom() {
@@ -850,6 +837,9 @@ function showScreen(id) {
   // Keep room code in nav updated
   const navCode = document.getElementById('nav-room-code');
   if (navCode && roomCode) navCode.textContent = roomCode;
+  // Show share/invite button whenever we have a room code
+  const navShare = document.getElementById('nav-share-btn');
+  if (navShare) navShare.style.display = (roomCode && id !== 'screen-home') ? 'flex' : 'none';
 }
 function showError(msg) {
   const box = document.getElementById('home-error');
