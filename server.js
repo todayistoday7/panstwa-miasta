@@ -115,22 +115,36 @@ function computeRoundScores(room) {
     playerIds.forEach(pid => {
       answers[pid] = ((state.answers[pid] || {})[ci] || '').trim().toLowerCase();
     });
+
+    // All valid answers submitted by any player in this category
     const validAnswers = Object.values(answers).filter(a => a && startsWithLetter(a, state.letter));
+
+    // How many times each answer appears
     const counts = {};
     validAnswers.forEach(a => counts[a] = (counts[a]||0)+1);
+
+    // How many players submitted ANY valid answer in this category
+    const totalValidPlayers = validAnswers.length;
 
     playerIds.forEach(pid => {
       const key = `${rIdx}_${pid}_${ci}`;
       if (state.challenged[key]) {
+        // Voted out by challenge
         state.scores[rIdx][pid][ci] = 0;
       } else {
         const ans = answers[pid];
         if (!ans || !startsWithLetter(ans, state.letter)) {
+          // Blank or wrong letter
           state.scores[rIdx][pid][ci] = 0;
-        } else if (counts[ans] === 1) {
-          state.scores[rIdx][pid][ci] = pid === state.stopCalledBy ? 15 : 10;
-        } else {
+        } else if (counts[ans] > 1) {
+          // Duplicate — same word as at least one other player
           state.scores[rIdx][pid][ci] = 5;
+        } else if (totalValidPlayers === 1) {
+          // Unique AND everyone else left this category blank → 15pts
+          state.scores[rIdx][pid][ci] = 15;
+        } else {
+          // Unique BUT at least one other player also filled in something → 10pts
+          state.scores[rIdx][pid][ci] = 10;
         }
       }
     });
@@ -331,12 +345,13 @@ io.on('connection', (socket) => {
   // CAST VOTE — any player except the one being challenged
   socket.on('cast_vote', ({ code, rIdx, playerId, catIndex, isValid }) => {
     const room = getRoom(code);
-    if (!room || socket.id === playerId) return;
+    if (!room) return;
     const key = `${rIdx}_${playerId}_${catIndex}`;
     if (!room.state.votes[key]) room.state.votes[key] = {};
     room.state.votes[key][socket.id] = isValid;
 
-    const voters = room.players.map(p => p.id).filter(id => id !== playerId);
+    // ALL players vote including the challenged player (who defends with "valid")
+    const voters = room.players.map(p => p.id);
     const allVoted = voters.every(vid => room.state.votes[key][vid] !== undefined);
     const votesCast = Object.values(room.state.votes[key]);
     const validCount = votesCast.filter(v => v).length;
@@ -446,9 +461,14 @@ function startNextRound(room) {
 }
 
 function moveToScoring(room) {
-  room.state.phase = 'scoring';
-  computeRoundScores(room);
+  // Show calculating screen first, then scoring after short delay
+  room.state.phase = 'calculating';
   emitRoomState(room);
+  setTimeout(() => {
+    room.state.phase = 'scoring';
+    computeRoundScores(room);
+    emitRoomState(room);
+  }, 2000);
 }
 
 function endGame(room) {

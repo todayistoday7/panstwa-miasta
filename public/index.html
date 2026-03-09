@@ -3,9 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Państwa-Miasta</title>
+<title>Państwa-Miasta — Multiplayer Word Game</title>
+<meta name="description" content="Play Państwa-Miasta online with friends! A real-time multiplayer word game in Polish, English, German, French and Spanish. Create a room, share the code, and play from any device.">
+<meta name="keywords" content="państwa miasta, word game, multiplayer, online game, gra słowna, countries cities animals">
+<meta name="author" content="panstwamiastagra.com">
+<meta property="og:title" content="Państwa-Miasta — Play Online">
+<meta property="og:description" content="Real-time multiplayer word game. Play with friends from any device!">
+<meta property="og:url" content="https://panstwamiastagra.com">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://panstwamiastagra.com/">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BJ79ZM6WPQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-BJ79ZM6WPQ');
+</script>
 </head>
 <body>
 
@@ -165,6 +181,15 @@
     </table>
     <div class="btn-row" id="stopped-host-btns" style="display:none;">
       <button class="btn" onclick="forceScoring()" id="lbl-force-scoring">✔ Go to Scoring</button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN: CALCULATING ══ -->
+  <div id="screen-calculating" class="screen">
+    <div class="calculating-stage">
+      <div class="calc-spinner"></div>
+      <h2 id="lbl-calculating">Calculating scores...</h2>
+      <p id="lbl-calculating-sub">Comparing all answers, please wait!</p>
     </div>
   </div>
 

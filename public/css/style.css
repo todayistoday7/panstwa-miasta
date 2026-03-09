@@ -247,3 +247,37 @@ header p { color:var(--muted); font-size:14px; margin-top:4px; font-weight:600; 
   text-align: center;
   margin-top: 12px;
 }
+
+/* CALCULATING SCREEN */
+.calculating-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+}
+.calculating-stage h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 42px;
+  letter-spacing: 2px;
+  color: var(--accent2);
+  margin: 24px 0 8px;
+}
+.calculating-stage p {
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 600;
+}
+.calc-spinner {
+  width: 72px;
+  height: 72px;
+  border: 6px solid var(--border);
+  border-top-color: var(--accent);
+  border-right-color: var(--accent2);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

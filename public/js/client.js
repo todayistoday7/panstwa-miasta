@@ -174,12 +174,13 @@ function applyRoomState(data) {
   if (me) isHost = me.isHost;
 
   switch (data.state.phase) {
-    case 'lobby':    showScreen('screen-lobby');   renderLobby(data);    break;
-    case 'drawing':  showScreen('screen-drawing'); renderDrawingScreen(data); break;
-    case 'playing':  showScreen('screen-playing'); renderPlayingScreen(data); break;
-    case 'stopped':  showScreen('screen-stopped'); renderStoppedScreen(data); break;
-    case 'scoring':  showScreen('screen-scoring'); renderScoringScreen(data); break;
-    case 'final':    showScreen('screen-final');   renderFinalScreen(data);   break;
+    case 'lobby':       showScreen('screen-lobby');       renderLobby(data);       break;
+    case 'drawing':     showScreen('screen-drawing');     renderDrawingScreen(data); break;
+    case 'playing':     showScreen('screen-playing');     renderPlayingScreen(data); break;
+    case 'stopped':     showScreen('screen-stopped');     renderStoppedScreen(data); break;
+    case 'calculating': showScreen('screen-calculating'); break;
+    case 'scoring':     showScreen('screen-scoring');     renderScoringScreen(data); break;
+    case 'final':       showScreen('screen-final');       renderFinalScreen(data);   break;
   }
 }
 
@@ -418,7 +419,7 @@ function renderScoringScreen(data) {
   const grid = document.getElementById('scoring-grid');
   let html = `<table class="scoring-table"><thead><tr>
     <th>${L.categoryCol}</th>
-    ${players.map(p => `<th style="text-align:center"><div style="font-weight:800">${p.name}${p.id===state.stopCalledBy?' 🛑':''}</div></th>`).join('')}
+    ${players.map(p => `<th style="text-align:center"><div style="font-weight:800">${p.name}</div></th>`).join('')}
   </tr></thead><tbody>`;
 
   settings.categories.forEach((cat, ci) => {
@@ -438,7 +439,8 @@ function renderScoringScreen(data) {
         <span class="answer-word ${wCl}">${ans||'—'}</span>
         <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;">
           ${isHost ? `<div class="pts-toggle">
-            <button class="pts-btn${pts>=10&&!isCh?' selected':''}" onclick="setScore('${p.id}',${rIdx},${ci},${p.id===state.stopCalledBy?15:10})">${p.id===state.stopCalledBy?'15':'10'}p</button>
+            <button class="pts-btn${pts===15&&!isCh?' selected':''}" onclick="setScore('${p.id}',${rIdx},${ci},15)">15p</button>
+            <button class="pts-btn${pts===10&&!isCh?' selected':''}" onclick="setScore('${p.id}',${rIdx},${ci},10)">10p</button>
             <button class="pts-btn dup${pts===5&&!isCh?' selected':''}" onclick="setScore('${p.id}',${rIdx},${ci},5)">5p</button>
             <button class="pts-btn none${(isCh||pts===0)?' selected':''}" onclick="setScore('${p.id}',${rIdx},${ci},0)">0</button>
           </div>` : `<span style="font-size:13px;font-weight:800;color:var(--accent)">${pts>0?'+'+pts:'0'}</span>`}
@@ -525,7 +527,7 @@ function showChallengeModal(rIdx, playerId, catIndex, word, category, playerName
     `<strong>${challengerName}</strong> ${L.challengedText} <strong>${playerName}</strong>:<br>${L.challengeDesc('', word, category)}`;
   document.getElementById('modal-word-area').innerHTML = `<div class="word-highlight">${word}</div>`;
 
-  const voters = roomState.players.filter(p => p.id !== playerId);
+  const voters = roomState.players; // everyone votes including challenged player
   const vg = document.getElementById('vote-grid'); vg.innerHTML = '';
 
   voters.forEach(p => {
@@ -536,11 +538,11 @@ function showChallengeModal(rIdx, playerId, catIndex, word, category, playerName
       <div class="player-name">${p.name}${isMe?' (you)':''}</div>
       <div class="vote-btns">
         <button class="vote-btn valid${myVote===true?' selected':''}"
-          onclick="castVote('${playerId}',${rIdx},${catIndex},true)"
-          ${isChallenged?'disabled':''}>${L.voteValid}</button>
+          onclick="castVote('${playerId}',${rIdx},${catIndex},true)">
+          ${isChallenged ? (L.voteDefend||'✓ My word is correct') : L.voteValid}</button>
         <button class="vote-btn invalid${myVote===false?' selected':''}"
-          onclick="castVote('${playerId}',${rIdx},${catIndex},false)"
-          ${isChallenged?'disabled':''}>${L.voteInvalid}</button>
+          onclick="castVote('${playerId}',${rIdx},${catIndex},false)">
+          ${isChallenged ? (L.voteAccept||'✗ They are right, remove it') : L.voteInvalid}</button>
       </div>
     </div>`;
   });
@@ -703,6 +705,11 @@ function applyTranslations() {
     const el = document.getElementById(id);
     if (el && L[key]) el.textContent = L[key];
   }
+  // Calculating screen
+  const calcEl = document.getElementById('lbl-calculating');
+  if (calcEl && L.calculating) calcEl.textContent = L.calculating;
+  const calcSub = document.getElementById('lbl-calculating-sub');
+  if (calcSub && L.calculatingSub) calcSub.textContent = L.calculatingSub;
   const rules = document.getElementById('rules-text');
   if (rules) rules.innerHTML = L.rules;
 }
