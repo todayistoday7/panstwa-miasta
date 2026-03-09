@@ -499,7 +499,7 @@ function renderScoringScreen(data) {
   if (!myReady) {
     document.getElementById('scoring-next-btn').style.display = 'flex';
     document.getElementById('scoring-next-btn').innerHTML =
-      `<button class="btn green" onclick="markReady()">${L.markReady||'✓ I've reviewed the scores'}</button>`;
+      `<button class="btn green" onclick="markReady()">${L.markReady||'✓ Done reviewing'}</button>`;
     document.getElementById('scoring-waiting').style.display = 'none';
   } else if (allReady && isHost) {
     // All ready — host sees advance button
