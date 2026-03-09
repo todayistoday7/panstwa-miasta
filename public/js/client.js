@@ -644,48 +644,69 @@ function nextRound()     { socket.emit('next_round', { code: roomCode }); }
 function shareInvite() {
   const L = LANGS[lang] || LANGS['en'];
   const url = 'https://panstwamiastagra.com';
-  const text = (L.shareInviteText || 'Join my Państwa-Miasta game! 🎮\nRoom code: {code}\nPlay at: {url}')
-    .replace('{code}', roomCode)
-    .replace('{url}', url);
-  doShare(L.shareInviteTitle || 'Join my game!', text, url);
+  const text = 'Join my Państwa-Miasta game! 🎮\nRoom code: ' + roomCode + '\nPlay at: ' + url;
+  doShare('Join my game!', text, url);
 }
 
 function shareGame() {
   const L = LANGS[lang] || LANGS['en'];
   const url = 'https://panstwamiastagra.com';
-  // Build score summary from roomState
   let scoreSummary = '';
   if (roomState && roomState.state && roomState.state.totalScores) {
     const sorted = [...(roomState.players||[])].sort((a,b) =>
       (roomState.state.totalScores[b.id]||0) - (roomState.state.totalScores[a.id]||0));
     scoreSummary = sorted.map((p,i) =>
-      `${i===0?'🥇':i===1?'🥈':i===2?'🥉':'  '} ${p.name}: ${roomState.state.totalScores[p.id]||0} pts`
+      (i===0?'🥇':i===1?'🥈':i===2?'🥉':'  ') + ' ' + p.name + ': ' + (roomState.state.totalScores[p.id]||0) + ' pts'
     ).join('\n');
   }
-  const text = (L.shareResultText || 'We just played Państwa-Miasta! 🎮\n\n{scores}\n\nPlay at: {url}')
-    .replace('{scores}', scoreSummary)
-    .replace('{url}', url);
-  doShare(L.shareResultTitle || 'Game Results', text, url);
+  const text = 'We just played Państwa-Miasta! 🎮\n\n' + scoreSummary + '\n\nPlay at: ' + url;
+  doShare('Game Results', text, url);
 }
 
 function doShare(title, text, url) {
+  // Try native share (works on mobile)
   if (navigator.share) {
-    // Native share sheet (mobile)
-    navigator.share({ title, text, url }).catch(() => fallbackCopy(text));
-  } else {
-    // Desktop fallback — copy to clipboard
-    fallbackCopy(text);
+    navigator.share({ title: title, text: text, url: url }).catch(function() {
+      copyToClipboard(text);
+    });
+    return;
   }
+  // Desktop fallback — copy to clipboard
+  copyToClipboard(text);
 }
 
-function fallbackCopy(text) {
-  const L = LANGS[lang] || LANGS['en'];
-  navigator.clipboard.writeText(text).then(() => {
-    showToast(L.copiedToClipboard || '📋 Copied to clipboard!');
-  }).catch(() => {
-    // Last resort — prompt
-    prompt('Copy this and share with friends:', text);
-  });
+function copyToClipboard(text) {
+  // Method 1: modern clipboard API
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      showToast('📋 Copied to clipboard!');
+    }).catch(function() {
+      legacyCopy(text);
+    });
+    return;
+  }
+  // Method 2: legacy execCommand
+  legacyCopy(text);
+}
+
+function legacyCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.top = '0';
+  ta.style.left = '0';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showToast('📋 Copied to clipboard!');
+  } catch(e) {
+    // Absolute last resort
+    prompt('Copy this link to share:', text);
+  }
+  document.body.removeChild(ta);
 }
 function markReady()     { socket.emit('mark_ready', { code: roomCode }); }
 
@@ -810,6 +831,7 @@ function applyTranslations() {
     'lbl-final-sub':'finalSub','lbl-final-ranking':'finalRanking',
     'lbl-new-game':'newGame','lbl-force-scoring':'forceScoring',
     'lbl-progress':'progress',
+    'lbl-share-btn':'shareBtn','lbl-share-game':'shareGame','nav-share-btn':'shareInviteBtn',
   };
   for (const [id, key] of Object.entries(map)) {
     const el = document.getElementById(id);
