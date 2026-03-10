@@ -59,7 +59,7 @@
   <div id="top-nav" style="display:none;">
     <button class="nav-home-btn" onclick="confirmGoHome()" id="lbl-nav-home">🏠 Home</button>
     <div class="nav-room-code" id="nav-room-code"></div>
-    <button class="nav-share-btn" id="nav-share-btn" onclick="shareInvite()" style="display:none;">📤 Invite</button>
+    <button class="nav-share-btn" id="nav-share-btn" onclick="copyRoomCode()" style="display:none;">📋 Copy Code</button>
   </div>
 
   <header>
@@ -101,7 +101,7 @@
       <div>
         <div class="room-code-display" id="room-code-display"></div>
         <p class="room-code-hint" id="lbl-share-code">Share this code with your friends</p>
-        <button class="btn share-btn" onclick="shareRoom()" id="lbl-share-btn">📤 Share Room Link</button>
+        <button class="btn share-btn" onclick="copyRoomCode()" id="lbl-share-btn">📋 Copy Code</button>
       </div>
       <div id="lobby-status"></div>
     </div>

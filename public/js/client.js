@@ -640,83 +640,31 @@ function setScore(playerId, rIdx, catIndex, pts) {
 function forceScoring() { socket.emit('force_scoring', { code: roomCode }); }
 function nextRound()     { socket.emit('next_round', { code: roomCode }); }
 
-// ── SHARE FUNCTIONS ──────────────────────────────────────────────
-function shareInvite() {
-  const L = LANGS[lang] || LANGS['en'];
-  const url = 'https://panstwamiastagra.com';
-  const text = 'Join my Państwa-Miasta game! 🎮\nRoom code: ' + roomCode + '\nPlay at: ' + url;
-  doShare('Join my game!', text, url);
-}
-
-function shareGame() {
-  const L = LANGS[lang] || LANGS['en'];
-  const url = 'https://panstwamiastagra.com';
-  let scoreSummary = '';
-  if (roomState && roomState.state && roomState.state.totalScores) {
-    const sorted = [...(roomState.players||[])].sort((a,b) =>
-      (roomState.state.totalScores[b.id]||0) - (roomState.state.totalScores[a.id]||0));
-    scoreSummary = sorted.map((p,i) =>
-      (i===0?'🥇':i===1?'🥈':i===2?'🥉':'  ') + ' ' + p.name + ': ' + (roomState.state.totalScores[p.id]||0) + ' pts'
-    ).join('\n');
-  }
-  const text = 'We just played Państwa-Miasta! 🎮\n\n' + scoreSummary + '\n\nPlay at: ' + url;
-  doShare('Game Results', text, url);
-}
-
-function doShare(title, text, url) {
-  // Try native share (works on mobile)
-  if (navigator.share) {
-    navigator.share({ title: title, text: text, url: url }).catch(function() {
-      copyToClipboard(text);
-    });
-    return;
-  }
-  // Desktop fallback — copy to clipboard
-  copyToClipboard(text);
-}
-
-function copyToClipboard(text) {
-  // Method 1: modern clipboard API
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(function() {
-      showToast('📋 Copied to clipboard!');
-    }).catch(function() {
-      legacyCopy(text);
-    });
-    return;
-  }
-  // Method 2: legacy execCommand
-  legacyCopy(text);
-}
-
-function legacyCopy(text) {
+// ── SHARE / COPY FUNCTIONS ───────────────────────────────────────
+function copyRoomCode() {
   var ta = document.createElement('textarea');
-  ta.value = text;
+  ta.value = roomCode;
   ta.style.position = 'fixed';
-  ta.style.top = '0';
-  ta.style.left = '0';
   ta.style.opacity = '0';
   document.body.appendChild(ta);
   ta.focus();
   ta.select();
   try {
     document.execCommand('copy');
-    showToast('📋 Copied to clipboard!');
+    showToast('📋 Code copied: ' + roomCode);
   } catch(e) {
-    // Absolute last resort
-    prompt('Copy this link to share:', text);
+    prompt('Room code:', roomCode);
   }
   document.body.removeChild(ta);
+}
+
+function shareGame() {
+  copyRoomCode();
 }
 function markReady()     { socket.emit('mark_ready', { code: roomCode }); }
 
 // Share room — sends a direct join link with room code
-function shareRoom() {
-  const L = LANGS[lang] || LANGS['en'];
-  const url = 'https://panstwamiastagra.com';
-  const text = 'Join my Państwa-Miasta game! 🎮\nRoom code: ' + roomCode + '\nPlay at: ' + url;
-  doShare('Join my game!', text, url);
-}
+function shareRoom() { copyRoomCode(); }
 
 
 function callStop()      { socket.emit('call_stop', { code: roomCode }); document.getElementById('stop-btn').style.display='none'; }
