@@ -577,25 +577,8 @@ function shareRoom() { copyRoomCode(); }
 function shareGame() {
   var url = 'https://panstwamiastagra.com';
   var L2 = LANGS[lang] || LANGS['pl'];
-  var text = 'Zagralismy w Panstwa-Miasta! ' + url + '\n\n';
-  if (roomState && roomState.players && roomState.state) {
-    var scores = roomState.state.totalScores || {};
-    var sorted = roomState.players.slice().sort(function(a, b) {
-      return (scores[b.id] || 0) - (scores[a.id] || 0);
-    });
-    sorted.forEach(function(p, i) {
-      var medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1) + '.';
-      text += medal + ' ' + p.name + ': ' + (scores[p.id] || 0) + ' pkt\n';
-    });
-    text += '\n' + url;
-  }
-  if (navigator.share) {
-    navigator.share({ title: 'Panstwa-Miasta', text: text, url: url }).catch(function() {
-      copyTextFallback(text);
-    });
-  } else {
-    copyTextFallback(text);
-  }
+  var text = (L2.inviteText || 'Come play Panstwa-Miasta with me! Free multiplayer word game.') + ' ' + url;
+  copyTextFallback(text);
 }
 
 function copyTextFallback(text) {
