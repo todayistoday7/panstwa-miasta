@@ -576,19 +576,21 @@ function shareRoom() { copyRoomCode(); }
 
 function shareGame() {
   var url = 'https://panstwamiastagra.com';
-  var text = 'We just played Panstwa-Miasta!\n\n';
-  if (roomState && roomState.state && roomState.state.totalScores) {
+  var L2 = LANGS[lang] || LANGS['pl'];
+  var text = 'Zagralismy w Panstwa-Miasta! ' + url + '\n\n';
+  if (roomState && roomState.players && roomState.state) {
+    var scores = roomState.state.totalScores || {};
     var sorted = roomState.players.slice().sort(function(a, b) {
-      return (roomState.state.totalScores[b.id] || 0) - (roomState.state.totalScores[a.id] || 0);
+      return (scores[b.id] || 0) - (scores[a.id] || 0);
     });
     sorted.forEach(function(p, i) {
-      var medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '   ';
-      text += medal + ' ' + p.name + ': ' + (roomState.state.totalScores[p.id] || 0) + ' pts\n';
+      var medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1) + '.';
+      text += medal + ' ' + p.name + ': ' + (scores[p.id] || 0) + ' pkt\n';
     });
+    text += '\n' + url;
   }
-  text += '\nPlay at: ' + url;
   if (navigator.share) {
-    navigator.share({ title: 'Panstwa-Miasta Results', text: text, url: url }).catch(function() {
+    navigator.share({ title: 'Panstwa-Miasta', text: text, url: url }).catch(function() {
       copyTextFallback(text);
     });
   } else {
@@ -718,7 +720,7 @@ function applyTranslations() {
     'lbl-final-sub':'finalSub','lbl-final-ranking':'finalRanking',
     'lbl-new-game':'newGame','lbl-force-scoring':'forceScoring',
     'lbl-progress':'progress',
-    'lbl-share-btn':'shareBtn','lbl-share-game':'shareGame','nav-share-btn':'shareInviteBtn',
+    'lbl-share-btn':'shareBtn','lbl-share-game':'shareGameBtn','nav-share-btn':'shareInviteBtn',
     'lbl-nav-home':'navHome','lbl-leave-room':'leaveRoom',
   };
   for (const [id, key] of Object.entries(map)) {
