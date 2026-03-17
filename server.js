@@ -487,14 +487,14 @@ function startNextRound(room) {
 }
 
 function moveToScoring(room) {
-  // Show calculating screen first, then scoring after short delay
+  // Compute scores immediately, then show calculating briefly before scoring
+  computeRoundScores(room);
   room.state.phase = 'calculating';
   emitRoomState(room);
   setTimeout(() => {
     room.state.phase = 'scoring';
-    computeRoundScores(room);
     emitRoomState(room);
-  }, 2000);
+  }, 800);
 }
 
 function endGame(room) {

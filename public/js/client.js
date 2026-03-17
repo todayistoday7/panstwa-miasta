@@ -123,7 +123,7 @@ function applyRoomState(data) {
     case 'drawing':     showScreen('screen-drawing');     renderDrawingScreen(data); break;
     case 'playing':     showScreen('screen-playing');     renderPlayingScreen(data); break;
     case 'stopped':     showScreen('screen-stopped');     renderStoppedScreen(data); break;
-    case 'calculating': showScreen('screen-calculating'); break;
+    case 'calculating': showScreen('screen-calculating'); window.scrollTo(0,0); break;
     case 'scoring':     showScreen('screen-scoring');     renderScoringScreen(data); break;
     case 'final':       showScreen('screen-final');       renderFinalScreen(data);   break;
   }
@@ -602,7 +602,7 @@ function copyTextFallback(text) {
 function setScore(playerId, rIdx, catIndex, pts) {
   socket.emit('set_score', { code: roomCode, playerId, rIdx, catIndex, pts });
 }
-function forceScoring() { socket.emit('force_scoring', { code: roomCode }); }
+function forceScoring() { showScreen('screen-calculating'); socket.emit('force_scoring', { code: roomCode }); }
 function nextRound()     { socket.emit('next_round', { code: roomCode }); }
 function markReady()     { socket.emit('mark_ready', { code: roomCode }); }
 function callStop()      { socket.emit('call_stop', { code: roomCode }); document.getElementById('stop-btn').style.display='none'; }
@@ -716,6 +716,19 @@ function applyTranslations() {
   if (calcSub && L.calculatingSub) calcSub.textContent = L.calculatingSub;
   const rules = document.getElementById('rules-text');
   if (rules) rules.innerHTML = L.rules;
+  // About + rules section translations
+  const aboutMap = {
+    'lbl-about-title':'aboutTitle', 'lbl-about-desc':'aboutDesc',
+    'lbl-about-players':'aboutPlayers', 'lbl-about-players-desc':'aboutPlayersDesc',
+    'lbl-about-free':'aboutFree', 'lbl-about-free-desc':'aboutFreeDesc',
+    'lbl-rules-title':'rulesTitle',
+    'lbl-rule-1':'rule1', 'lbl-rule-2':'rule2', 'lbl-rule-3':'rule3',
+    'lbl-rule-4':'rule4', 'lbl-rule-5':'rule5',
+  };
+  for (const [id, key] of Object.entries(aboutMap)) {
+    const el = document.getElementById(id);
+    if (el && L[key]) el.textContent = L[key];
+  }
 }
 
 // ─── UTILS ───────────────────────────────────────────────
