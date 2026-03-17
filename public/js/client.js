@@ -18,7 +18,6 @@ let keepAliveInterval = null;
 // ─── SOCKET EVENTS ───────────────────────────────────────────────
 socket.on('connect', () => {
   myId = socket.id;
-  // Start keep-alive ping every 20 seconds to prevent browser throttling
   clearInterval(keepAliveInterval);
   keepAliveInterval = setInterval(() => {
     if (roomCode) socket.emit('keep_alive', { code: roomCode });
@@ -42,36 +41,16 @@ socket.on('room_joined', ({ code, isHost: h }) => {
 });
 
 socket.on('error', ({ msg }) => {
-  // Name-taken errors go next to the join name field for clarity
   const isNameError = msg.toLowerCase().includes('name') || msg.toLowerCase().includes('taken');
   const onJoinScreen = document.getElementById('join-name') &&
     document.getElementById('join-name').value.trim();
-
   if (isNameError && onJoinScreen) {
     const box = document.getElementById('join-name-error');
-    if (box) {
-      box.textContent = msg;
-      box.style.display = 'block';
-      // Highlight the name input
-      const input = document.getElementById('join-name');
-      if (input) {
-        input.style.borderColor = 'var(--red)';
-        input.focus();
-        input.select();
-      }
-      return;
-    }
-  }
-  const box = document.getElementById('home-error');
-  box.textContent = msg;
-  box.style.display = 'block';
-  setTimeout(() => box.style.display = 'none', 5000);
-});
-
-// Handle socket reconnection — rejoin room automatically
-socket.on('reconnect', () => {
-  if (roomCode && myName) {
-    socket.emit('rejoin_room', { code: roomCode, name: myName });
+    const input = document.getElementById('join-name');
+    if (box) { box.textContent = msg; box.style.display = 'block'; }
+    if (input) input.style.borderColor = 'var(--red)';
+  } else {
+    showError(msg);
   }
 });
 
@@ -85,9 +64,9 @@ socket.on('room_state', (data) => {
 socket.on('new_host', ({ playerId, name }) => {
   if (playerId === myId) {
     isHost = true;
-    showToast(`👑 You are now the host!`);
+    showToast('👑 You are now the host!');
   } else {
-    showToast(`👑 ${name} is now the host`);
+    showToast('👑 ' + name + ' is now the host');
   }
 });
 
@@ -96,7 +75,6 @@ socket.on('letter_drawn', ({ letter }) => {
   const el = document.getElementById('drawing-letter');
   el.classList.remove('rolling');
   el.textContent = letter;
-  // Show Play button only to the drawing player
   if (roomState && isMyDrawTurn()) {
     document.getElementById('draw-btn').style.display = 'none';
     document.getElementById('play-btn').style.display = 'inline-flex';
@@ -116,59 +94,26 @@ socket.on('stop_called', ({ playerName }) => {
 });
 
 socket.on('player_disconnected', ({ name }) => {
-  showToast(`⚠ ${name} disconnected`);
+  showToast('⚠ ' + name + ' disconnected');
 });
 
 socket.on('challenge_opened', ({ rIdx, playerId, catIndex, word, category, playerName, challengerName }) => {
   challengeOpen = { rIdx, playerId, catIndex };
-  showChallengeModal(rIdx, playerId, catIndex, word, category, playerName, challengerName, {});
+  showChallengeModal(rIdx, playerId, catIndex, word, category, playerName, challengerName || '', {});
 });
 
 socket.on('vote_updated', ({ rIdx, playerId, catIndex, votes, allVoted, validCount, invalidCount }) => {
   if (!challengeOpen) return;
   const word = (roomState.state.answers[playerId] || {})[catIndex] || '';
   updateVoteDisplay(votes, validCount, invalidCount, allVoted, word, playerId);
-  // When everyone has voted, auto-close after showing verdict
-  if (allVoted) {
-    const rejected = invalidCount > validCount;
-    // Hide vote buttons, show only verdict
-    document.getElementById('vote-grid').style.opacity = '0.4';
-    document.getElementById('vote-grid').style.pointerEvents = 'none';
-    document.getElementById('lbl-close-challenge').textContent = rejected
-      ? (L.closingIn || 'Closing in 3s...') : (L.closingIn || 'Closing in 3s...');
-    document.getElementById('lbl-close-challenge').disabled = true;
-    // Count down and close
-    let secs = 3;
-    const countdown = setInterval(() => {
-      secs--;
-      const btn = document.getElementById('lbl-close-challenge');
-      if (btn) btn.textContent = (L.closingIn || 'Closing in') + ' ' + secs + 's...';
-      if (secs <= 0) {
-        clearInterval(countdown);
-        // Server will emit challenge_closed after all votes tallied
-        // But also close locally in case server already sent it
-        const modal = document.getElementById('challenge-modal');
-        if (modal) modal.style.display = 'none';
-        challengeOpen = null;
-      }
-    }, 1000);
-  }
 });
 
 socket.on('challenge_closed', () => {
-  // Small delay so players can see the final verdict before it disappears
-  setTimeout(() => {
-    document.getElementById('challenge-modal').style.display = 'none';
-    challengeOpen = null;
-    // Re-enable vote grid for next challenge
-    const vg = document.getElementById('vote-grid');
-    if (vg) { vg.style.opacity = ''; vg.style.pointerEvents = ''; }
-    const btn = document.getElementById('lbl-close-challenge');
-    if (btn) { btn.disabled = false; btn.textContent = L.closeChallenge; }
-  }, 500);
+  document.getElementById('challenge-modal').style.display = 'none';
+  challengeOpen = null;
 });
 
-// ─── ROOM STATE HANDLER ──────────────────────────────────────────
+// ─── ROOM STATE HANDLER ───────────────────────────────────────────────
 function applyRoomState(data) {
   const me = data.players.find(p => p.id === myId);
   if (me) isHost = me.isHost;
@@ -184,21 +129,20 @@ function applyRoomState(data) {
   }
 }
 
-// ─── LOBBY ───────────────────────────────────────────────────────
+// ─── LOBBY ───────────────────────────────────────────────
 function renderLobby(data) {
   const { players, settings } = data;
   const el = document.getElementById('lobby-players');
   el.innerHTML = '';
   players.forEach((p, i) => {
-    el.innerHTML += `<div class="lobby-player${p.isHost?' host':''}">
-      <div class="avatar av-${i%8}">${p.name.charAt(0).toUpperCase()}</div>
-      <span class="pname">${p.name}${p.id===myId?' (you)':''}</span>
-      ${p.isHost?`<span class="host-badge">${L.hostBadge}</span>`:''}
-      ${!p.connected?`<span class="offline-badge">${L.offlineBadge}</span>`:''}
-    </div>`;
+    el.innerHTML += '<div class="lobby-player' + (p.isHost?' host':'') + '">' +
+      '<div class="avatar av-' + (i%8) + '">' + p.name.charAt(0).toUpperCase() + '</div>' +
+      '<span class="pname">' + p.name + (p.id===myId?' (you)':'') + '</span>' +
+      (p.isHost ? '<span class="host-badge">' + L.hostBadge + '</span>' : '') +
+      (!p.connected ? '<span class="offline-badge">' + L.offlineBadge + '</span>' : '') +
+      '</div>';
   });
 
-  // ALL players can edit settings and start in lobby
   document.getElementById('settings-card').style.opacity = '1';
   document.getElementById('settings-rounds').value = settings.totalRounds;
   renderCatGrid(settings.categories, true);
@@ -212,9 +156,9 @@ function renderCatGrid(activeCats, editable) {
   el.innerHTML = '';
   L.cats.forEach(cat => {
     const active = activeCats.includes(cat);
-    el.innerHTML += `<div class="cat-tag${active?' active':''}${editable?'':' readonly'}"
-      ${editable?`onclick="toggleCat('${cat.replace(/'/g,"\\'")}',this)"`:''}>
-      ${cat}</div>`;
+    el.innerHTML += '<div class="cat-tag' + (active?' active':'') + (editable?'':' readonly') + '"' +
+      (editable ? ' onclick="toggleCat(\'' + cat.replace(/'/g,"\\'") + '\',this)"' : '') +
+      '>' + cat + '</div>';
   });
 }
 
@@ -222,8 +166,9 @@ function renderLangPills(activeLang, editable) {
   const el = document.getElementById('lobby-lang-pills');
   el.innerHTML = '';
   Object.keys(LANGS).forEach(code => {
-    el.innerHTML += `<div class="lang-pill${code===activeLang?' active':''}"
-      ${editable?`onclick="setGameLang('${code}')"`:''}>${LANGS[code].name}</div>`;
+    el.innerHTML += '<div class="lang-pill' + (code===activeLang?' active':'') + '"' +
+      (editable ? ' onclick="setGameLang(\'' + code + '\')"' : '') +
+      '>' + LANGS[code].name + '</div>';
   });
 }
 
@@ -246,7 +191,7 @@ function updateSettings() {
   socket.emit('update_settings', { code: roomCode, settings: { totalRounds: rounds } });
 }
 
-// ─── DRAWING SCREEN ──────────────────────────────────────────────
+// ─── DRAWING SCREEN ───────────────────────────────────────────────
 function isMyDrawTurn() {
   if (!roomState) return false;
   const connected = roomState.players.filter(p => p.connected);
@@ -264,17 +209,13 @@ function getDrawerName() {
 function renderDrawingScreen(data) {
   const { state, settings } = data;
   document.getElementById('drawing-round-badge').textContent = L.roundLabel(state.round, settings.totalRounds);
-
   const ind = document.getElementById('drawing-rounds-ind'); ind.innerHTML = '';
   for (let i = 1; i <= settings.totalRounds; i++) {
-    ind.innerHTML += `<div class="round-dot ${i<state.round?'done':i===state.round?'current':''}"></div>`;
+    ind.innerHTML += '<div class="round-dot ' + (i<state.round?'done':i===state.round?'current':'') + '"></div>';
   }
-
   document.getElementById('drawing-letter').textContent = state.letter || '?';
-
   const myTurn = isMyDrawTurn();
   const drawerName = getDrawerName();
-
   if (myTurn) {
     document.getElementById('drawing-host-controls').style.display = 'block';
     document.getElementById('drawing-waiting').style.display = 'none';
@@ -295,40 +236,36 @@ function renderDrawingScreen(data) {
   }
 }
 
-// ─── PLAYING SCREEN ──────────────────────────────────────────────
+// ─── PLAYING SCREEN ───────────────────────────────────────────────
 function renderPlayingScreen(data) {
   const { state, settings } = data;
   document.getElementById('play-letter').textContent = state.letter;
-
   const body = document.getElementById('answer-body');
   if (!body.dataset.letter || body.dataset.letter !== state.letter) {
     body.dataset.letter = state.letter;
     localAnswers = {};
     body.innerHTML = '';
     settings.categories.forEach((cat, ci) => {
-      body.innerHTML += `<tr>
-        <td class="cat-label">${cat}</td>
-        <td><input type="text" id="ans-${ci}" placeholder="${state.letter}..." autocomplete="off"
-          oninput="submitAnswer(${ci}, this.value)"
-          onkeydown="if(event.key==='Enter')focusNextInput(${ci})"/></td>
-      </tr>`;
+      body.innerHTML += '<tr><td class="cat-label">' + cat + '</td>' +
+        '<td><input type="text" id="ans-' + ci + '" placeholder="' + state.letter + '..." autocomplete="off"' +
+        ' oninput="submitAnswer(' + ci + ', this.value)"' +
+        ' onkeydown="if(event.key===\'Enter\')focusNextInput(' + ci + ')"/></td></tr>';
     });
     setTimeout(() => { const f = document.querySelector('#answer-body input'); if(f) f.focus(); }, 100);
   }
-
-  // Don't reset stop state if stop has already been called
-  const alreadyStopped = !!state.stopCalledBy;
-  if (alreadyStopped) {
-    const stopper = data.players.find(p => p.id === state.stopCalledBy);
-    const banner = document.getElementById('stop-banner');
-    banner.textContent = L.stopBanner(stopper ? stopper.name : '?');
-    banner.style.display = 'block';
+  if (state.stopCalledBy) {
     document.getElementById('stop-btn').style.display = 'none';
+    const banner = document.getElementById('stop-banner');
+    const stopper = data.players.find(p => p.id === state.stopCalledBy);
+    if (stopper) { banner.textContent = L.stopBanner(stopper.name); banner.style.display = 'block'; }
     stopTimer();
   } else {
     document.getElementById('stop-btn').style.display = 'inline-flex';
     document.getElementById('stop-banner').style.display = 'none';
-    startClientTimer(state.timerStart);
+    if (!window._timerStart || window._timerStart !== state.timerStart) {
+      window._timerStart = state.timerStart;
+      startClientTimer(state.timerStart);
+    }
   }
   updateProgressTracker(data);
 }
@@ -344,11 +281,10 @@ function updateProgressTracker(data) {
     const filled = Object.values(ans).filter(v => v && v.trim()).length;
     const total = settings.categories.length;
     const pct = Math.round((filled/total)*100);
-    list.innerHTML += `<div class="progress-row">
-      <span class="progress-name">${p.name}${p.id===state.stopCalledBy?' 🛑':''}</span>
-      <div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%"></div></div>
-      <span class="progress-count">${filled}/${total}</span>
-    </div>`;
+    list.innerHTML += '<div class="progress-row">' +
+      '<span class="progress-name">' + p.name + (p.id===state.stopCalledBy?' 🛑':'') + '</span>' +
+      '<div class="progress-bar-wrap"><div class="progress-bar" style="width:' + pct + '%"></div></div>' +
+      '<span class="progress-count">' + filled + '/' + total + '</span></div>';
   });
 }
 
@@ -358,115 +294,113 @@ function submitAnswer(ci, value) {
 }
 
 function focusNextInput(ci) {
-  const next = document.getElementById(`ans-${ci+1}`);
+  const next = document.getElementById('ans-' + (ci+1));
   if (next) next.focus();
 }
 
 function startClientTimer(serverStart) {
-  if (!serverStart) return;
-  // Don't restart if already ticking for this same round start time
-  if (timerInterval && window._timerStart === serverStart) return;
-  window._timerStart = serverStart;
   stopTimer();
+  if (!serverStart) return;
   const el = document.getElementById('timer');
   timerInterval = setInterval(() => {
     const elapsed = Math.floor((Date.now() - serverStart) / 1000);
     const m = Math.floor(elapsed/60).toString().padStart(2,'0');
     const s = (elapsed%60).toString().padStart(2,'0');
-    el.textContent = `${m}:${s}`;
+    el.textContent = m + ':' + s;
   }, 500);
 }
 
-function stopTimer() { clearInterval(timerInterval); timerInterval = null; window._timerStart = null; }
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  window._timerStart = null;
+}
 
-// ─── STOPPED SCREEN ──────────────────────────────────────────────
+// ─── STOPPED SCREEN ───────────────────────────────────────────────
 function renderStoppedScreen(data) {
   const { state, settings } = data;
   stopTimer();
   const stopper = data.players.find(p => p.id === state.stopCalledBy);
   document.getElementById('stopped-banner').textContent = L.stopBanner(stopper ? stopper.name : '?');
   document.getElementById('lbl-stopped-hint').textContent = L.stoppedHint;
-
   const body = document.getElementById('stopped-answer-body');
   body.innerHTML = '';
   settings.categories.forEach((cat, ci) => {
     const myAns = localAnswers[ci] || (state.answers[myId] || {})[ci] || '';
     const isStopper = myId === state.stopCalledBy;
-    body.innerHTML += `<tr>
-      <td class="cat-label">${cat}</td>
-      <td><input type="text" id="st-ans-${ci}" value="${myAns.replace(/"/g,'&quot;')}"
-        placeholder="${state.letter}..." ${isStopper ? 'disabled' : ''}
-        oninput="submitAnswer(${ci}, this.value)"
-        onkeydown="if(event.key==='Enter')focusStoppedNext(${ci})"/></td>
-    </tr>`;
+    body.innerHTML += '<tr><td class="cat-label">' + cat + '</td>' +
+      '<td><input type="text" id="st-ans-' + ci + '" value="' + myAns.replace(/"/g,'&quot;') + '"' +
+      ' placeholder="' + state.letter + '..." ' + (isStopper ? 'disabled' : '') +
+      ' oninput="submitAnswer(' + ci + ', this.value)"' +
+      ' onkeydown="if(event.key===\'Enter\')focusStoppedNext(' + ci + ')"/></td></tr>';
   });
-
-  // Any player can force scoring, not just host
   document.getElementById('stopped-host-btns').style.display = 'flex';
 }
 
 function focusStoppedNext(ci) {
-  const next = document.getElementById(`st-ans-${ci+1}`);
+  const next = document.getElementById('st-ans-' + (ci+1));
   if (next && !next.disabled) next.focus();
 }
 
-// ─── SCORING SCREEN ──────────────────────────────────────────────
+// ─── SCORING SCREEN ───────────────────────────────────────────────
 function renderScoringScreen(data) {
   const { state, settings, players } = data;
   const rIdx = state.round - 1;
   document.getElementById('scoring-round-badge').textContent = L.scoringLabel(state.round);
 
   const grid = document.getElementById('scoring-grid');
-  let html = `<table class="scoring-table"><thead><tr>
-    <th>${L.categoryCol}</th>
-    ${players.map(p => `<th style="text-align:center"><div style="font-weight:800">${p.name}</div></th>`).join('')}
-  </tr></thead><tbody>`;
+  let html = '<table class="scoring-table"><thead><tr><th>' + L.categoryCol + '</th>';
+  players.forEach(p => {
+    html += '<th style="text-align:center"><div style="font-weight:800">' + p.name + '</div></th>';
+  });
+  html += '</tr></thead><tbody>';
 
   settings.categories.forEach((cat, ci) => {
-    html += `<tr><td><strong>${cat}</strong></td>`;
+    html += '<tr><td><strong>' + cat + '</strong></td>';
     players.forEach(p => {
       const ans = ((state.answers[p.id] || {})[ci] || '').trim();
       const pts = (state.scores[rIdx] && state.scores[rIdx][p.id] && state.scores[rIdx][p.id][ci] !== undefined)
         ? state.scores[rIdx][p.id][ci] : 0;
-      const key = `${rIdx}_${p.id}_${ci}`;
+      const key = rIdx + '_' + p.id + '_' + ci;
       const isCh = !!state.challenged[key];
       const valid = ans && startsWithLetter(ans, state.letter);
       const wCl = isCh ? 'challenged' : (!ans||!valid ? 'missing' : pts===5 ? 'duplicate' : '');
-      // Anyone can challenge anyone else (not yourself)
       const showCh = ans && valid && !isCh && p.id !== myId && !state.activeChallenge;
 
-      html += `<td><div class="answer-cell">
-        <span class="answer-word ${wCl}">${ans||'—'}</span>
-        <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;">
-          ${isHost ? `<div class="pts-toggle">
-            <button class="pts-btn${pts===15&&!isCh?' selected':''}" onclick="setScore('${p.id}',${rIdx},${ci},15)">15p</button>
-            <button class="pts-btn${pts===10&&!isCh?' selected':''}" onclick="setScore('${p.id}',${rIdx},${ci},10)">10p</button>
-            <button class="pts-btn dup${pts===5&&!isCh?' selected':''}" onclick="setScore('${p.id}',${rIdx},${ci},5)">5p</button>
-            <button class="pts-btn none${(isCh||pts===0)?' selected':''}" onclick="setScore('${p.id}',${rIdx},${ci},0)">0</button>
-          </div>` : `<span style="font-size:13px;font-weight:800;color:var(--accent)">${pts>0?'+'+pts:'0'}</span>`}
-          ${showCh ? `<button class="challenge-btn" onclick="openChallenge('${p.id}',${rIdx},${ci})">${L.challengeBtn}</button>` : ''}
-          ${isCh ? `<span class="voted-out-tag">VOTED OUT</span>` : ''}
-          ${state.activeChallenge && state.activeChallenge.playerId===p.id && state.activeChallenge.catIndex===ci
-            ? `<span style="font-size:11px;color:var(--accent2);font-weight:800;">⚖ VOTING...</span>` : ''}
-        </div>
-      </div></td>`;
+      html += '<td><div class="answer-cell">' +
+        '<span class="answer-word ' + wCl + '">' + (ans||'—') + '</span>' +
+        '<div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;">';
+
+      if (isHost) {
+        html += '<div class="pts-toggle">' +
+          '<button class="pts-btn' + (pts===15&&!isCh?' selected':'') + '" onclick="setScore(\'' + p.id + '\',' + rIdx + ',' + ci + ',15)">15p</button>' +
+          '<button class="pts-btn' + (pts===10&&!isCh?' selected':'') + '" onclick="setScore(\'' + p.id + '\',' + rIdx + ',' + ci + ',10)">10p</button>' +
+          '<button class="pts-btn dup' + (pts===5&&!isCh?' selected':'') + '" onclick="setScore(\'' + p.id + '\',' + rIdx + ',' + ci + ',5)">5p</button>' +
+          '<button class="pts-btn none' + ((isCh||pts===0)?' selected':'') + '" onclick="setScore(\'' + p.id + '\',' + rIdx + ',' + ci + ',0)">0</button>' +
+          '</div>';
+      } else {
+        html += '<span class="pts-badge">' + (pts > 0 ? '+'+pts : '0') + '</span>';
+      }
+
+      if (showCh) html += '<button class="challenge-btn" onclick="openChallenge(\'' + p.id + '\',' + rIdx + ',' + ci + ')">' + (L.challengeBtn||'⚠') + '</button>';
+      if (isCh) html += '<span class="voted-out-tag">VOTED OUT</span>';
+      html += '</div></div></td>';
     });
-    html += `</tr>`;
+    html += '</tr>';
   });
 
-  html += `<tr style="background:var(--surface);">
-    <td><strong>${L.totalLabel}</strong></td>
-    ${players.map(p => {
-      const rScores = (state.scores[rIdx] && state.scores[rIdx][p.id]) || {};
-      const sum = Object.values(rScores).reduce((a,b) => a+b, 0);
-      return `<td style="text-align:center"><strong style="color:var(--accent);font-size:17px;">${sum}</strong></td>`;
-    }).join('')}
-  </tr></tbody></table>`;
+  html += '<tr style="background:var(--surface);"><td><strong>' + L.totalLabel + '</strong></td>';
+  players.forEach(p => {
+    const rScores = (state.scores[rIdx] && state.scores[rIdx][p.id]) || {};
+    const sum = Object.values(rScores).reduce((a,b) => a+b, 0);
+    html += '<td style="text-align:center"><strong style="color:var(--accent);font-size:17px;">' + sum + '</strong></td>';
+  });
+  html += '</tr></tbody></table>';
   grid.innerHTML = html;
 
   renderLeaderboard('leaderboard-mini', data, rIdx);
 
-  // Ready system — show ready button for everyone, next round only when all ready
+  // Ready system
   const connectedPlayers = players.filter(p => p.connected);
   const readyPlayers = state.readyPlayers || {};
   const myReady = !!readyPlayers[myId];
@@ -475,45 +409,41 @@ function renderScoringScreen(data) {
   const totalCount = connectedPlayers.length;
   const isFinalRound = state.round >= settings.totalRounds;
 
-  // Ready status bar — visible to everyone
-  const readyBar = document.getElementById('ready-bar') || (() => {
-    const d = document.createElement('div');
-    d.id = 'ready-bar';
-    document.getElementById('scoring-next-btn').parentNode.insertBefore(d, document.getElementById('scoring-next-btn'));
-    return d;
-  })();
+  var readyBar = document.getElementById('ready-bar');
+  if (!readyBar) {
+    readyBar = document.createElement('div');
+    readyBar.id = 'ready-bar';
+    document.getElementById('scoring-next-btn').parentNode.insertBefore(readyBar, document.getElementById('scoring-next-btn'));
+  }
 
-  // Ready players avatars
-  let readyHtml = `<div class="ready-bar">`;
-  connectedPlayers.forEach((p, i) => {
-    const isReady = !!readyPlayers[p.id];
-    readyHtml += `<div class="ready-player ${isReady?'ready':''}">
-      <div class="avatar av-${i%8}" style="width:30px;height:30px;font-size:12px;">${p.name.charAt(0).toUpperCase()}</div>
-      <span style="font-size:11px;font-weight:800;color:${isReady?'var(--green)':'var(--muted)'}">${isReady?'✓':''}</span>
-    </div>`;
+  var readyHtml = '<div class="ready-bar">';
+  connectedPlayers.forEach(function(p, i) {
+    var isReady = !!readyPlayers[p.id];
+    readyHtml += '<div class="ready-player ' + (isReady?'ready':'') + '">' +
+      '<div class="avatar av-' + (i%8) + '" style="width:30px;height:30px;font-size:12px;">' + p.name.charAt(0).toUpperCase() + '</div>' +
+      '<span style="font-size:11px;font-weight:800;color:' + (isReady?'var(--green)':'var(--muted)') + '">' + (isReady?'✓':'') + '</span>' +
+      '</div>';
   });
-  readyHtml += `<span class="ready-count">${readyCount}/${totalCount} ${L.readyLabel||'ready'}</span></div>`;
+  readyHtml += '<span class="ready-count">' + readyCount + '/' + totalCount + ' ' + (L.readyLabel||'ready') + '</span></div>';
   readyBar.innerHTML = readyHtml;
 
-  // Ready button for current player
   if (!myReady) {
     document.getElementById('scoring-next-btn').style.display = 'flex';
     document.getElementById('scoring-next-btn').innerHTML =
-      `<button class="btn green" onclick="markReady()">${L.markReady||'✓ Done reviewing'}</button>`;
+      '<button class="btn green" onclick="markReady()">' + (L.markReady||'✓ Done reviewing') + '</button>';
     document.getElementById('scoring-waiting').style.display = 'none';
   } else if (allReady && isHost) {
-    // All ready — host sees advance button
-    const btnLabel = isFinalRound ? (L.seeResults||'🏆 See Final Results') : (L.nextRound||'Next Round →');
+    var btnLabel = isFinalRound ? (L.seeResults||'🏆 See Final Results') : (L.nextRound||'Next Round →');
     document.getElementById('scoring-next-btn').style.display = 'flex';
     document.getElementById('scoring-next-btn').innerHTML =
-      `<button class="btn" onclick="nextRound()">${btnLabel}</button>`;
+      '<button class="btn" onclick="nextRound()">' + btnLabel + '</button>';
     document.getElementById('scoring-waiting').style.display = 'none';
   } else if (myReady && !allReady) {
     document.getElementById('scoring-next-btn').style.display = 'none';
     document.getElementById('scoring-waiting').style.display = 'block';
     document.getElementById('scoring-waiting').textContent =
-      `✓ ${L.waitingOthers||'Waiting for others to review...'} (${readyCount}/${totalCount})`;
-  } else if (allReady && !isHost) {
+      '✓ ' + (L.waitingOthers||'Waiting for others...') + ' (' + readyCount + '/' + totalCount + ')';
+  } else {
     document.getElementById('scoring-next-btn').style.display = 'none';
     document.getElementById('scoring-waiting').style.display = 'block';
     document.getElementById('scoring-waiting').textContent = L.waitingScoring;
@@ -530,20 +460,19 @@ function renderLeaderboard(elId, data, rIdx) {
       t += Object.values(state.scores[rIdx][p.id]).reduce((a,b) => a+b, 0);
     return { name: p.name, id: p.id, total: t };
   }).sort((a,b) => b.total - a.total);
-
   el.innerHTML = '';
   totals.forEach((p, rank) => {
     const rp = (state.scores[rIdx] && state.scores[rIdx][p.id])
       ? Object.values(state.scores[rIdx][p.id]).reduce((a,b)=>a+b,0) : 0;
-    el.innerHTML += `<div class="lb-row${rank===0?' first':''}">
-      <div class="lb-rank${rank===0?' gold':''}">${rank+1}</div>
-      <div class="lb-name">${p.name}${p.id===myId?' (you)':''}</div>
-      <div><div class="lb-pts">${p.total}</div><div class="lb-round-pts">+${rp}</div></div>
-    </div>`;
+    el.innerHTML += '<div class="lb-row' + (rank===0?' first':'') + '">' +
+      '<div class="lb-rank' + (rank===0?' gold':'') + '">' + (rank+1) + '</div>' +
+      '<div class="lb-name">' + p.name + (p.id===myId?' (you)':'') + '</div>' +
+      '<div><div class="lb-pts">' + p.total + '</div><div class="lb-round-pts">+' + rp + '</div></div>' +
+      '</div>';
   });
 }
 
-// ─── FINAL SCREEN ────────────────────────────────────────────────
+// ─── FINAL SCREEN ───────────────────────────────────────────────
 function renderFinalScreen(data) {
   const { state, players } = data;
   const el = document.getElementById('final-leaderboard');
@@ -552,45 +481,36 @@ function renderFinalScreen(data) {
     .sort((a,b) => b.total-a.total)
     .forEach((p, rank) => {
       const medal = rank===0?'🥇':rank===1?'🥈':rank===2?'🥉':'';
-      el.innerHTML += `<div class="lb-row${rank===0?' first':''}">
-        <div class="lb-rank${rank===0?' gold':''}">${medal||rank+1}</div>
-        <div class="lb-name">${p.name}${p.id===myId?' (you)':''}</div>
-        <div class="lb-pts">${p.total}</div>
-      </div>`;
+      el.innerHTML += '<div class="lb-row' + (rank===0?' first':'') + '">' +
+        '<div class="lb-rank' + (rank===0?' gold':'') + '">' + (medal||rank+1) + '</div>' +
+        '<div class="lb-name">' + p.name + (p.id===myId?' (you)':'') + '</div>' +
+        '<div class="lb-pts">' + p.total + '</div></div>';
     });
 }
 
-// ─── CHALLENGE / VOTING ──────────────────────────────────────────
+// ─── CHALLENGE / VOTING ───────────────────────────────────────────────
 function openChallenge(playerId, rIdx, catIndex) {
   socket.emit('open_challenge', { code: roomCode, rIdx, playerId, catIndex });
 }
 
 function showChallengeModal(rIdx, playerId, catIndex, word, category, playerName, challengerName, votes) {
   document.getElementById('modal-title').textContent = L.challengeTitle;
-  document.getElementById('modal-desc').innerHTML =
-    `<strong>${challengerName}</strong> ${L.challengedText} <strong>${playerName}</strong>:<br>${L.challengeDesc('', word, category)}`;
-  document.getElementById('modal-word-area').innerHTML = `<div class="word-highlight">${word}</div>`;
-
-  const voters = roomState.players; // everyone votes including challenged player
+  document.getElementById('modal-desc').innerHTML = L.challengeDesc(playerName, word, category);
+  document.getElementById('modal-word-area').innerHTML = '<div class="word-highlight">' + word + '</div>';
+  const voters = roomState.players;
   const vg = document.getElementById('vote-grid'); vg.innerHTML = '';
-
   voters.forEach(p => {
     const myVote = votes[p.id];
-    const isMe = p.id === myId;
     const isChallenged = p.id === playerId;
-    vg.innerHTML += `<div class="vote-row" id="vrow-${p.id}">
-      <div class="player-name">${p.name}${isMe?' (you)':''}</div>
-      <div class="vote-btns">
-        <button class="vote-btn valid${myVote===true?' selected':''}"
-          onclick="castVote('${playerId}',${rIdx},${catIndex},true)">
-          ${isChallenged ? (L.voteDefend||'✓ My word is correct') : L.voteValid}</button>
-        <button class="vote-btn invalid${myVote===false?' selected':''}"
-          onclick="castVote('${playerId}',${rIdx},${catIndex},false)">
-          ${isChallenged ? (L.voteAccept||'✗ They are right, remove it') : L.voteInvalid}</button>
-      </div>
-    </div>`;
+    vg.innerHTML += '<div class="vote-row" id="vrow-' + p.id + '">' +
+      '<div class="player-name">' + p.name + (p.id===myId?' (you)':'') + '</div>' +
+      '<div class="vote-btns">' +
+      '<button class="vote-btn valid' + (myVote===true?' selected':'') + '" onclick="castVote(\'' + playerId + '\',' + rIdx + ',' + catIndex + ',true)">' +
+      (isChallenged ? (L.voteDefend||'✓ My word is correct') : L.voteValid) + '</button>' +
+      '<button class="vote-btn invalid' + (myVote===false?' selected':'') + '" onclick="castVote(\'' + playerId + '\',' + rIdx + ',' + catIndex + ',false)">' +
+      (isChallenged ? (L.voteAccept||'✗ Remove it') : L.voteInvalid) + '</button>' +
+      '</div></div>';
   });
-
   document.getElementById('vote-tally').innerHTML = '';
   document.getElementById('verdict-area').innerHTML = '';
   document.getElementById('lbl-close-challenge').textContent = L.closeChallenge;
@@ -599,7 +519,7 @@ function showChallengeModal(rIdx, playerId, catIndex, word, category, playerName
 
 function castVote(playerId, rIdx, catIndex, isValid) {
   socket.emit('cast_vote', { code: roomCode, rIdx, playerId, catIndex, isValid });
-  const row = document.getElementById(`vrow-${myId}`);
+  const row = document.getElementById('vrow-' + myId);
   if (row) {
     row.querySelectorAll('.vote-btn').forEach(b => b.classList.remove('selected'));
     row.querySelector(isValid?'.valid':'.invalid').classList.add('selected');
@@ -610,7 +530,7 @@ function updateVoteDisplay(votes, validCount, invalidCount, allVoted, word, play
   document.getElementById('vote-tally').innerHTML = L.voteTally(validCount, invalidCount);
   if (roomState) {
     roomState.players.forEach(p => {
-      const row = document.getElementById(`vrow-${p.id}`);
+      const row = document.getElementById('vrow-' + p.id);
       if (!row) return;
       const v = votes[p.id];
       row.querySelectorAll('.vote-btn').forEach(b => b.classList.remove('selected'));
@@ -621,7 +541,8 @@ function updateVoteDisplay(votes, validCount, invalidCount, allVoted, word, play
   if (allVoted) {
     const rejected = invalidCount > validCount;
     document.getElementById('verdict-area').innerHTML =
-      `<div class="verdict-banner ${rejected?'invalid':'valid'}">${rejected?L.verdictInvalid(word):L.verdictValid(word)}</div>`;
+      '<div class="verdict-banner ' + (rejected?'invalid':'valid') + '">' +
+      (rejected ? L.verdictInvalid(word) : L.verdictValid(word)) + '</div>';
   }
 }
 
@@ -633,14 +554,7 @@ function closeChallenge() {
   }
 }
 
-// ─── ACTIONS ─────────────────────────────────────────────────────
-function setScore(playerId, rIdx, catIndex, pts) {
-  socket.emit('set_score', { code: roomCode, playerId, rIdx, catIndex, pts });
-}
-function forceScoring() { socket.emit('force_scoring', { code: roomCode }); }
-function nextRound()     { socket.emit('next_round', { code: roomCode }); }
-
-// ── SHARE / COPY FUNCTIONS ───────────────────────────────────────
+// ─── SHARE / COPY FUNCTIONS ───────────────────────────────────────
 function copyRoomCode() {
   var ta = document.createElement('textarea');
   ta.value = roomCode;
@@ -658,15 +572,54 @@ function copyRoomCode() {
   document.body.removeChild(ta);
 }
 
-function shareGame() {
-  copyRoomCode();
-}
-function markReady()     { socket.emit('mark_ready', { code: roomCode }); }
-
-// Share room — sends a direct join link with room code
 function shareRoom() { copyRoomCode(); }
 
+function shareGame() {
+  var url = 'https://panstwamiastagra.com';
+  var text = 'We just played Panstwa-Miasta!\n\n';
+  if (roomState && roomState.state && roomState.state.totalScores) {
+    var sorted = roomState.players.slice().sort(function(a, b) {
+      return (roomState.state.totalScores[b.id] || 0) - (roomState.state.totalScores[a.id] || 0);
+    });
+    sorted.forEach(function(p, i) {
+      var medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '   ';
+      text += medal + ' ' + p.name + ': ' + (roomState.state.totalScores[p.id] || 0) + ' pts\n';
+    });
+  }
+  text += '\nPlay at: ' + url;
+  if (navigator.share) {
+    navigator.share({ title: 'Panstwa-Miasta Results', text: text, url: url }).catch(function() {
+      copyTextFallback(text);
+    });
+  } else {
+    copyTextFallback(text);
+  }
+}
 
+function copyTextFallback(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showToast('📋 Results copied to clipboard!');
+  } catch(e) {
+    prompt('Copy and share these results:', text);
+  }
+  document.body.removeChild(ta);
+}
+
+// ─── ACTIONS ───────────────────────────────────────────────
+function setScore(playerId, rIdx, catIndex, pts) {
+  socket.emit('set_score', { code: roomCode, playerId, rIdx, catIndex, pts });
+}
+function forceScoring() { socket.emit('force_scoring', { code: roomCode }); }
+function nextRound()     { socket.emit('next_round', { code: roomCode }); }
+function markReady()     { socket.emit('mark_ready', { code: roomCode }); }
 function callStop()      { socket.emit('call_stop', { code: roomCode }); document.getElementById('stop-btn').style.display='none'; }
 
 function createRoom() {
@@ -705,44 +658,36 @@ function drawLetter() {
 
 function startRound() { socket.emit('start_round', { code: roomCode }); }
 
-function goHome() {
-  roomCode=''; roomState=null; isHost=false; localAnswers={};
-  clearSession();
-  showScreen('screen-home');
-  // Update nav
-  const topNav = document.getElementById('top-nav');
-  if (topNav) topNav.style.display = 'none';
-}
-
 function confirmGoHome() {
-  const phase = roomState && roomState.state ? roomState.state.phase : 'lobby';
-  const inActiveGame = ['drawing','playing','stopped','scoring'].includes(phase);
-  if (inActiveGame) {
-    // Show confirm dialog since a game is in progress
-    const msg = document.getElementById('confirm-msg');
-    if (msg) msg.textContent = L.confirmLeaveMsg || 'A game is in progress. Are you sure you want to leave?';
-    const title = document.getElementById('confirm-title');
-    if (title) title.textContent = L.confirmLeaveTitle || 'Leave Game?';
-    const yes = document.getElementById('confirm-yes');
-    if (yes) yes.textContent = L.confirmYes || 'Yes, leave';
-    const no = document.getElementById('confirm-no');
-    if (no) no.textContent = L.confirmNo || 'Cancel';
+  if (roomState && roomState.state && roomState.state.phase !== 'lobby' && roomState.state.phase !== 'final') {
+    const L2 = LANGS[lang] || LANGS['pl'];
+    document.getElementById('confirm-title').textContent = L2.confirmLeaveTitle || 'Leave Game?';
+    document.getElementById('confirm-msg').textContent = L2.confirmLeaveMsg || 'A game is in progress. Are you sure?';
+    document.getElementById('confirm-yes').textContent = L2.confirmYes || 'Yes, leave';
+    document.getElementById('confirm-no').textContent = L2.confirmNo || 'Cancel';
     document.getElementById('confirm-modal').style.display = 'flex';
   } else {
     doGoHome();
   }
 }
 
-function doGoHome() {
-  document.getElementById('confirm-modal').style.display = 'none';
-  goHome();
-}
-
 function closeConfirm() {
   document.getElementById('confirm-modal').style.display = 'none';
 }
 
-// ─── LANG ────────────────────────────────────────────────────────
+function doGoHome() {
+  closeConfirm();
+  goHome();
+}
+
+function goHome() {
+  roomCode=''; roomState=null; isHost=false; localAnswers={};
+  window._timerStart = null;
+  clearSession();
+  showScreen('screen-home');
+}
+
+// ─── LANG ───────────────────────────────────────────────
 function setLang(code) {
   lang = code; L = LANGS[code];
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang===code));
@@ -752,11 +697,12 @@ function setLang(code) {
 function buildLangBar() {
   const bar = document.getElementById('lang-bar');
   bar.innerHTML = Object.keys(LANGS).map(code =>
-    `<button class="lang-btn${code===lang?' active':''}" data-lang="${code}" onclick="setLang('${code}')">${LANGS[code].name}</button>`
+    '<button class="lang-btn' + (code===lang?' active':'') + '" data-lang="' + code + '" onclick="setLang(\'' + code + '\')">' + LANGS[code].name + '</button>'
   ).join('');
 }
 
 function applyTranslations() {
+  L = LANGS[lang] || LANGS['pl'];
   const map = {
     'game-title':'gameTitle','game-subtitle':'gameSubtitle',
     'lbl-create-room':'createRoom','lbl-join-room':'joinRoom',
@@ -773,12 +719,12 @@ function applyTranslations() {
     'lbl-new-game':'newGame','lbl-force-scoring':'forceScoring',
     'lbl-progress':'progress',
     'lbl-share-btn':'shareBtn','lbl-share-game':'shareGame','nav-share-btn':'shareInviteBtn',
+    'lbl-nav-home':'navHome','lbl-leave-room':'leaveRoom',
   };
   for (const [id, key] of Object.entries(map)) {
     const el = document.getElementById(id);
     if (el && L[key]) el.textContent = L[key];
   }
-  // Calculating screen
   const calcEl = document.getElementById('lbl-calculating');
   if (calcEl && L.calculating) calcEl.textContent = L.calculating;
   const calcSub = document.getElementById('lbl-calculating-sub');
@@ -787,44 +733,46 @@ function applyTranslations() {
   if (rules) rules.innerHTML = L.rules;
 }
 
-// ─── UTILS ───────────────────────────────────────────────────────
+// ─── UTILS ───────────────────────────────────────────────
 function startsWithLetter(word, letter) {
   return word.charAt(0).toUpperCase() === letter.toUpperCase();
 }
+
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  // Show top nav on all screens except home
   const topNav = document.getElementById('top-nav');
   if (topNav) topNav.style.display = id === 'screen-home' ? 'none' : 'flex';
-  // Keep room code in nav updated
   const navCode = document.getElementById('nav-room-code');
   if (navCode && roomCode) navCode.textContent = roomCode;
-  // Show share/invite button whenever we have a room code
   const navShare = document.getElementById('nav-share-btn');
   if (navShare) navShare.style.display = (roomCode && id !== 'screen-home') ? 'flex' : 'none';
 }
+
 function showError(msg) {
   const box = document.getElementById('home-error');
   box.textContent = msg; box.style.display = 'block';
   setTimeout(() => box.style.display = 'none', 3500);
 }
+
 function clearJoinError() {
   const box = document.getElementById('join-name-error');
   if (box) box.style.display = 'none';
   const input = document.getElementById('join-name');
   if (input) input.style.borderColor = '';
 }
+
 function clearHomeError() {
   const box = document.getElementById('home-error');
   if (box) box.style.display = 'none';
 }
+
 function showToast(msg) {
   let t = document.getElementById('toast');
   if (!t) {
     t = document.createElement('div');
     t.id = 'toast';
-    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:10px;font-weight:700;font-size:14px;z-index:999;animation:fadeIn 0.3s ease;';
+    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:10px;font-weight:700;font-size:14px;z-index:999;';
     document.body.appendChild(t);
   }
   t.textContent = msg;
@@ -832,6 +780,7 @@ function showToast(msg) {
   clearTimeout(t._timeout);
   t._timeout = setTimeout(() => t.style.display = 'none', 3000);
 }
+
 function saveSession() {
   try { localStorage.setItem('pm_session', JSON.stringify({ roomCode, myName })); } catch(e) {}
 }
@@ -839,24 +788,6 @@ function clearSession() {
   try { localStorage.removeItem('pm_session'); } catch(e) {}
 }
 
-// ─── INIT ────────────────────────────────────────────────────────
+// ─── INIT ───────────────────────────────────────────────
 buildLangBar();
 applyTranslations();
-
-// Auto-fill room code from shared link e.g. ?join=WOLF4
-(function() {
-  const params = new URLSearchParams(window.location.search);
-  const joinCode = params.get('join');
-  if (joinCode) {
-    const el = document.getElementById('join-code');
-    if (el) {
-      el.value = joinCode.toUpperCase();
-      // Switch to join tab automatically
-      const joinTab = document.querySelector('[onclick*="showJoin"]') || document.querySelector('[onclick*="join"]');
-      if (joinTab) joinTab.click();
-      el.focus();
-    }
-    // Clean URL without reloading
-    window.history.replaceState({}, '', window.location.pathname);
-  }
-})();
