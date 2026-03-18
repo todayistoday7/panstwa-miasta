@@ -1,7 +1,7 @@
 {
   "name": "panstwa-miasta",
   "version": "2.0.0",
-  "description": "Państwa-Miasta — real-time multiplayer word game",
+  "description": "Pa\u0144stwa-Miasta \u2014 real-time multiplayer word game",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "express": "^4.18.2",
-    "socket.io": "^4.7.2"
+    "socket.io": "^4.7.2",
+    "compression": "^1.7.4"
   },
   "engines": {
     "node": ">=16.0.0"
