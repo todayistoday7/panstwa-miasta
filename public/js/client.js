@@ -730,11 +730,15 @@ function applyTranslations() {
     'lbl-new-game':'newGame','lbl-force-scoring':'forceScoring',
     'lbl-share-btn':'shareBtn','lbl-share-game':'shareGameBtn','nav-share-btn':'shareInviteBtn',
     'lbl-nav-home':'navHome','lbl-leave-room':'leaveRoom',
+    'lbl-other-games':'otherGames',
   };
   for (const [id, key] of Object.entries(map)) {
     const el = document.getElementById(id);
     if (el && L[key]) el.textContent = L[key];
   }
+  // Keep the hub link in sync with the current language
+  const hubLink = document.getElementById('lbl-other-games');
+  if (hubLink) hubLink.href = '/games?lang=' + lang;
   const calcEl = document.getElementById('lbl-calculating');
   if (calcEl && L.calculating) calcEl.textContent = L.calculating;
   const calcSub = document.getElementById('lbl-calculating-sub');

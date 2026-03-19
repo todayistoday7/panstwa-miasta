@@ -62,11 +62,11 @@
     </div>
   </header>
 
-  <a href="/" class="back-link">← Back to home</a>
+  <a id="hub-back-link" href="/" class="back-link">← Back to home</a>
 
   <div class="hub-hero">
-    <h1>Darmowe Gry Online</h1>
-    <p>Free multiplayer games for friends, family & teams · Za darmo · Dla wszystkich</p>
+    <h1 id="hub-title">Darmowe Gry Online</h1>
+    <p id="hub-subtitle">Free multiplayer games for friends, family & teams · Za darmo · Dla wszystkich</p>
   </div>
 
   <div class="games-grid">
@@ -119,5 +119,59 @@
 
   </div>
 </div>
+
+<script>
+(function() {
+  var T = {
+    pl: { title: 'Darmowe Gry Online', subtitle: 'Gry multiplayer dla znajomych, rodziny i zespołów · Za darmo · Dla wszystkich', back: '← Wróć do strony głównej' },
+    en: { title: 'Free Games Online',  subtitle: 'Free multiplayer games for friends, family & teams · No registration · For everyone', back: '← Back to home' },
+    de: { title: 'Kostenlose Spiele',  subtitle: 'Multiplayer-Spiele für Freunde, Familie & Teams · Kostenlos · Für alle', back: '← Zurück zur Startseite' },
+    fr: { title: 'Jeux Gratuits',      subtitle: 'Jeux multijoueur pour amis, famille & équipes · Gratuit · Pour tous', back: '← Retour à l\'accueil' },
+    es: { title: 'Juegos Gratis',      subtitle: 'Juegos multijugador para amigos, familia y equipos · Gratis · Para todos', back: '← Volver al inicio' },
+  };
+  var LANGS = [
+    { code: 'pl', label: '🇵🇱 PL' },
+    { code: 'en', label: '🇬🇧 EN' },
+    { code: 'de', label: '🇩🇪 DE' },
+    { code: 'fr', label: '🇫🇷 FR' },
+    { code: 'es', label: '🇪🇸 ES' },
+  ];
+
+  var params = new URLSearchParams(window.location.search);
+  var lang = params.get('lang') || 'pl';
+  if (!T[lang]) lang = 'pl';
+
+  function applyLang(l) {
+    lang = l;
+    var t = T[l] || T['pl'];
+    document.getElementById('hub-title').textContent = t.title;
+    document.getElementById('hub-subtitle').textContent = t.subtitle;
+    var backLink = document.getElementById('hub-back-link');
+    backLink.textContent = t.back;
+    backLink.href = '/?lang=' + l;
+    // Update pill highlight
+    document.querySelectorAll('.hub-lang-btn').forEach(function(btn) {
+      btn.classList.toggle('active', btn.dataset.lang === l);
+    });
+    // Update URL without reload
+    history.replaceState(null, '', '/games?lang=' + l);
+  }
+
+  // Build lang bar
+  var bar = document.createElement('div');
+  bar.style.cssText = 'display:flex;gap:8px;justify-content:flex-end;margin-bottom:8px;';
+  LANGS.forEach(function(lng) {
+    var btn = document.createElement('button');
+    btn.className = 'hub-lang-btn nav-home-btn';
+    btn.dataset.lang = lng.code;
+    btn.textContent = lng.label;
+    btn.onclick = function() { applyLang(lng.code); };
+    bar.appendChild(btn);
+  });
+  document.querySelector('.container').insertBefore(bar, document.querySelector('.container').firstChild);
+
+  applyLang(lang);
+})();
+</script>
 </body>
 </html>
