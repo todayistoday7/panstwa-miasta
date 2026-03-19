@@ -127,6 +127,11 @@
     </div>
     <div id="home-error" class="error-box" style="display:none;"></div>
     <div class="rules-box" id="rules-text"></div>
+    <div style="text-align:center;margin-top:20px;">
+      <a href="/games" class="btn secondary" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;">
+        🎮 Other Fun Games
+      </a>
+    </div>
 
     <!-- VISIBLE ABOUT + RULES SECTION -->
     <div class="about-section" id="about-section">
@@ -198,6 +203,14 @@
         <select id="settings-rounds" class="field-select" onchange="updateSettings()">
           <option value="3">3</option><option value="5" selected>5</option><option value="7">7</option><option value="10">10</option>
         </select>
+        <label class="field-label" style="margin-top:14px;" id="lbl-grace-title">Time after STOP</label>
+        <select id="settings-grace" class="field-select" onchange="updateSettings()">
+          <option value="10">10 seconds</option>
+          <option value="20" selected>20 seconds</option>
+          <option value="30">30 seconds</option>
+          <option value="45">45 seconds</option>
+          <option value="60">60 seconds</option>
+        </select>
         <label class="field-label" style="margin-top:14px;" id="lbl-categories">Categories</label>
         <div class="cat-grid" id="lobby-cat-grid"></div>
         <label class="field-label" style="margin-top:14px;" id="lbl-language">Language</label>
@@ -245,11 +258,7 @@
     <div class="btn-row">
       <button class="btn green" id="stop-btn" onclick="callStop()">🛑 STOP!</button>
     </div>
-    <!-- Progress tracker (host sees this) -->
-    <div id="progress-tracker" style="display:none;margin-top:18px;">
-      <p class="section-title" id="lbl-progress">Player Progress</p>
-      <div id="progress-list"></div>
-    </div>
+
   </div>
 
   <!-- ══ SCREEN: STOPPED ══ -->

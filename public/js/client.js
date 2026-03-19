@@ -82,15 +82,27 @@ socket.on('letter_drawn', ({ letter }) => {
 });
 
 socket.on('answer_updated', ({ playerId, catIndex, value }) => {
-  if (roomState) updateProgressTracker(roomState);
+  // answers tracked server-side
 });
 
-socket.on('stop_called', ({ playerName }) => {
+socket.on('stop_called', ({ playerName, gracePeriod }) => {
   const banner = document.getElementById('stop-banner');
   banner.textContent = L.stopBanner(playerName);
   banner.style.display = 'block';
   document.getElementById('stop-btn').style.display = 'none';
   stopTimer();
+  // Show grace period countdown
+  const secs = gracePeriod || 20;
+  window._graceEnd = Date.now() + secs * 1000;
+  window._graceInterval = setInterval(() => {
+    const remaining = Math.ceil((window._graceEnd - Date.now()) / 1000);
+    if (remaining <= 0) {
+      clearInterval(window._graceInterval);
+      banner.textContent = L.stopBanner(playerName);
+    } else {
+      banner.textContent = L.stopBanner(playerName) + ' — ' + remaining + 's';
+    }
+  }, 500);
 });
 
 socket.on('player_disconnected', ({ name }) => {
@@ -145,6 +157,8 @@ function renderLobby(data) {
 
   document.getElementById('settings-card').style.opacity = '1';
   document.getElementById('settings-rounds').value = settings.totalRounds;
+  const graceEl = document.getElementById('settings-grace');
+  if (graceEl) graceEl.value = settings.gracePeriod || 20;
   renderCatGrid(settings.categories, true);
   renderLangPills(settings.lang, true);
   document.getElementById('lobby-btn-row').style.display = 'flex';
@@ -188,7 +202,9 @@ function setGameLang(code) {
 
 function updateSettings() {
   const rounds = parseInt(document.getElementById('settings-rounds').value);
-  socket.emit('update_settings', { code: roomCode, settings: { totalRounds: rounds } });
+  const graceEl = document.getElementById('settings-grace');
+  const grace = graceEl ? parseInt(graceEl.value) : 20;
+  socket.emit('update_settings', { code: roomCode, settings: { totalRounds: rounds, gracePeriod: grace } });
 }
 
 // ─── DRAWING SCREEN ───────────────────────────────────────────────
@@ -259,34 +275,20 @@ function renderPlayingScreen(data) {
     const stopper = data.players.find(p => p.id === state.stopCalledBy);
     if (stopper) { banner.textContent = L.stopBanner(stopper.name); banner.style.display = 'block'; }
     stopTimer();
+    clearInterval(window._stopCountdown);
   } else {
     document.getElementById('stop-btn').style.display = 'inline-flex';
     document.getElementById('stop-banner').style.display = 'none';
     if (!window._timerStart || window._timerStart !== state.timerStart) {
       window._timerStart = state.timerStart;
       startClientTimer(state.timerStart);
+      startStopCountdown(state.timerStart);
     }
   }
   updateProgressTracker(data);
 }
 
-function updateProgressTracker(data) {
-  const { state, settings, players } = data;
-  const list = document.getElementById('progress-list');
-  if (!list) return;
-  document.getElementById('progress-tracker').style.display = 'block';
-  list.innerHTML = '';
-  players.forEach(p => {
-    const ans = state.answers[p.id] || {};
-    const filled = Object.values(ans).filter(v => v && v.trim()).length;
-    const total = settings.categories.length;
-    const pct = Math.round((filled/total)*100);
-    list.innerHTML += '<div class="progress-row">' +
-      '<span class="progress-name">' + p.name + (p.id===state.stopCalledBy?' 🛑':'') + '</span>' +
-      '<div class="progress-bar-wrap"><div class="progress-bar" style="width:' + pct + '%"></div></div>' +
-      '<span class="progress-count">' + filled + '/' + total + '</span></div>';
-  });
-}
+
 
 function submitAnswer(ci, value) {
   localAnswers[ci] = value;
@@ -314,6 +316,30 @@ function stopTimer() {
   clearInterval(timerInterval);
   timerInterval = null;
   window._timerStart = null;
+}
+
+function startStopCountdown(serverStart) {
+  clearInterval(window._stopCountdown);
+  const btn = document.getElementById('stop-btn');
+  const LOCK_MS = 30000;
+
+  function update() {
+    const elapsed = Date.now() - serverStart;
+    const remaining = Math.ceil((LOCK_MS - elapsed) / 1000);
+    if (remaining > 0) {
+      btn.disabled = true;
+      btn.textContent = '🛑 STOP (' + remaining + 's)';
+      btn.style.opacity = '0.5';
+    } else {
+      btn.disabled = false;
+      btn.textContent = '🛑 STOP!';
+      btn.style.opacity = '1';
+      clearInterval(window._stopCountdown);
+    }
+  }
+
+  update();
+  window._stopCountdown = setInterval(update, 500);
 }
 
 // ─── STOPPED SCREEN ───────────────────────────────────────────────
@@ -694,7 +720,7 @@ function applyTranslations() {
     'lbl-your-name':'yourName','lbl-join-name':'joinName','lbl-room-code':'roomCode',
     'lbl-create-btn':'createBtn','lbl-join-btn':'joinBtn',
     'lbl-players-in-room':'playersInRoom','lbl-settings':'settings',
-    'lbl-rounds-title':'roundsTitle','lbl-language':'language',
+    'lbl-rounds-title':'roundsTitle','lbl-grace-title':'graceTitle','lbl-language':'language',
     'lbl-start-btn':'startBtn','lbl-share-code':'shareCode',
     'lbl-draw':'draw','lbl-play':'play','lbl-letter-word':'letterWord',
     'lbl-category-col':'categoryCol','lbl-answer-col':'answerCol',
@@ -702,7 +728,6 @@ function applyTranslations() {
     'lbl-next-round':'nextRound','lbl-game-over':'gameOver',
     'lbl-final-sub':'finalSub','lbl-final-ranking':'finalRanking',
     'lbl-new-game':'newGame','lbl-force-scoring':'forceScoring',
-    'lbl-progress':'progress',
     'lbl-share-btn':'shareBtn','lbl-share-game':'shareGameBtn','nav-share-btn':'shareInviteBtn',
     'lbl-nav-home':'navHome','lbl-leave-room':'leaveRoom',
   };

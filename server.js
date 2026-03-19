@@ -6,6 +6,10 @@ const compression = require('compression');
 
 const app = express();
 app.use(compression()); // gzip all responses
+
+// Game routes
+app.get('/taboo', (req, res) => res.sendFile(path.join(__dirname, 'public/taboo.html')));
+app.get('/games', (req, res) => res.sendFile(path.join(__dirname, 'public/games.html')));
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: { origin: "*" },
@@ -44,6 +48,7 @@ function makeRoom(hostId, settings) {
     code, hostId,
     settings: {
       totalRounds: settings.totalRounds || 5,
+      gracePeriod: settings.gracePeriod || 20,
       categories: settings.categories || ['Country','City','Animal','Plant','Thing','Name','Color','Job'],
       lang: settings.lang || 'en',
     },
@@ -301,11 +306,12 @@ io.on('connection', (socket) => {
     room.state.phase = 'stopped';
     room.state.stopCalledBy = socket.id;
     const stopper = room.players.find(p => p.id === socket.id);
-    io.to(room.code).emit('stop_called', { playerName: stopper ? stopper.name : 'Someone', playerId: socket.id });
+    const gracePeriod = (room.settings.gracePeriod || 20) * 1000;
+    io.to(room.code).emit('stop_called', { playerName: stopper ? stopper.name : 'Someone', playerId: socket.id, gracePeriod: room.settings.gracePeriod || 20 });
     setTimeout(() => {
       const r = getRoom(code);
       if (r && r.state.phase === 'stopped') moveToScoring(r);
-    }, 10000);
+    }, gracePeriod);
   });
 
   // FORCE SCORING — any player (host or not)
@@ -514,3 +520,222 @@ function endGame(room) {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log(`🎮 Państwa-Miasta running on http://localhost:${PORT}`));
+
+// ════════════════════════════════════════════════════════
+// TABOO GAME SERVER
+// ════════════════════════════════════════════════════════
+const tabooRooms = {};
+
+function generateTabooCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code;
+  do { code = 'T' + Array.from({length:4}, () => chars[Math.floor(Math.random()*chars.length)]).join(''); }
+  while (tabooRooms[code]);
+  return code;
+}
+
+function makeTabooRoom(hostId, settings) {
+  const code = generateTabooCode();
+  tabooRooms[code] = {
+    code, hostId,
+    settings: {
+      rounds: settings.rounds || 5,
+      turnTime: settings.turnTime || 60,
+      lang: settings.lang || 'en',
+    },
+    players: [],
+    state: {
+      phase: 'lobby',
+      round: 0,
+      describerIndex: 0,
+      refereeIndex: 1,
+      currentWord: null,
+      scores: [],
+      totalScores: {},
+      usedWords: [],
+      turnTimer: null,
+    }
+  };
+  return tabooRooms[code];
+}
+
+function getTabooRoom(code) { return tabooRooms[code]; }
+
+function emitTabooState(room) {
+  const state = {
+    phase: room.state.phase,
+    round: room.state.round,
+    totalRounds: room.settings.rounds,
+    hostId: room.hostId,
+    players: room.players.map(p => ({ id: p.id, name: p.name, connected: p.connected })),
+    settings: room.settings,
+    describerIndex: room.state.describerIndex,
+    refereeIndex: room.state.refereeIndex,
+    currentWord: room.state.currentWord,
+    scores: room.state.scores,
+    totalScores: room.state.totalScores,
+  };
+  io.to(room.code).emit('taboo_state', state);
+}
+
+function getNextTabooWord(room) {
+  const lang = room.settings.lang || 'en';
+  // Server doesn't have TABOO_WORDS — words are picked client-side
+  // Server just tracks state and scoring
+  return null;
+}
+
+function startTabooTurn(room) {
+  const code = room.code;
+  room.state.phase = 'playing';
+  room.state.currentWord = null; // client will request a word
+  emitTabooState(room);
+
+  // Start countdown timer on server
+  let remaining = room.settings.turnTime || 60;
+  if (room.state.turnTimer) clearInterval(room.state.turnTimer);
+  room.state.turnTimer = setInterval(() => {
+    remaining--;
+    io.to(code).emit('taboo_timer_tick', { remaining });
+    if (remaining <= 0) {
+      clearInterval(room.state.turnTimer);
+      endTabooTurn(room);
+    }
+  }, 1000);
+}
+
+function endTabooTurn(room) {
+  if (room.state.turnTimer) { clearInterval(room.state.turnTimer); room.state.turnTimer = null; }
+  room.state.phase = 'roundend';
+  room.state.round++;
+
+  // Rotate describer and referee for next round
+  const playerCount = room.players.filter(p => p.connected !== false).length;
+  room.state.describerIndex = (room.state.describerIndex + 2) % Math.max(playerCount, 1);
+  room.state.refereeIndex = (room.state.describerIndex + 1) % Math.max(playerCount, 1);
+
+  emitTabooState(room);
+}
+
+// Taboo socket events
+io.on('connection', (socket) => {
+  socket.on('taboo_create', ({ name, settings }) => {
+    const room = makeTabooRoom(socket.id, settings || {});
+    room.players.push({ id: socket.id, name: name || 'Host', connected: true });
+    room.state.totalScores[socket.id] = 0;
+    socket.join(room.code);
+    socket.emit('taboo_room_created', { code: room.code });
+    emitTabooState(room);
+  });
+
+  socket.on('taboo_join', ({ code, name }) => {
+    const room = getTabooRoom(code.toUpperCase().trim());
+    if (!room) { socket.emit('taboo_error', { msg: 'Room not found.' }); return; }
+    if (room.state.phase !== 'lobby') { socket.emit('taboo_error', { msg: 'Game already started.' }); return; }
+    if (room.players.length >= 12) { socket.emit('taboo_error', { msg: 'Room is full.' }); return; }
+    const existing = room.players.find(p => p.name.toLowerCase() === name.toLowerCase() && !p.connected);
+    if (existing) {
+      existing.id = socket.id; existing.connected = true;
+    } else {
+      if (room.players.find(p => p.name.toLowerCase() === name.toLowerCase() && p.connected)) {
+        socket.emit('taboo_error', { msg: 'Name already taken.' }); return;
+      }
+      room.players.push({ id: socket.id, name: name || 'Player', connected: true });
+      room.state.totalScores[socket.id] = 0;
+    }
+    socket.join(room.code);
+    socket.emit('taboo_room_joined', { code: room.code });
+    emitTabooState(room);
+  });
+
+  socket.on('taboo_update_settings', ({ code, settings }) => {
+    const room = getTabooRoom(code);
+    if (!room || socket.id !== room.hostId) return;
+    room.settings = { ...room.settings, ...settings };
+    emitTabooState(room);
+  });
+
+  socket.on('taboo_start', ({ code }) => {
+    const room = getTabooRoom(code);
+    if (!room || socket.id !== room.hostId) return;
+    if (room.players.length < 2) { socket.emit('taboo_error', { msg: 'Need at least 2 players.' }); return; }
+    room.state.round = 0;
+    room.state.scores = [];
+    room.state.usedWords = [];
+    room.players.forEach(p => room.state.totalScores[p.id] = 0);
+    room.state.describerIndex = 0;
+    room.state.refereeIndex = 1;
+    startTabooTurn(room);
+  });
+
+  socket.on('taboo_word_request', ({ code, word, forbidden }) => {
+    // Describer requests the current word to be set (word chosen client-side)
+    const room = getTabooRoom(code);
+    if (!room || room.state.phase !== 'playing') return;
+    const connected = room.players.filter(p => p.connected !== false);
+    const describer = connected[room.state.describerIndex % connected.length];
+    if (!describer || socket.id !== describer.id) return;
+    room.state.currentWord = { word, forbidden };
+    if (!room.state.scores[room.state.round]) room.state.scores[room.state.round] = {};
+    emitTabooState(room);
+  });
+
+  socket.on('taboo_got_it', ({ code }) => {
+    const room = getTabooRoom(code);
+    if (!room || room.state.phase !== 'playing') return;
+    const connected = room.players.filter(p => p.connected !== false);
+    const describer = connected[room.state.describerIndex % connected.length];
+    if (!describer || socket.id !== describer.id) return;
+    // Award point to describer's team (simplified: award to describer)
+    const rIdx = room.state.round;
+    if (!room.state.scores[rIdx]) room.state.scores[rIdx] = {};
+    room.state.scores[rIdx][socket.id] = (room.state.scores[rIdx][socket.id] || 0) + 1;
+    room.state.totalScores[socket.id] = (room.state.totalScores[socket.id] || 0) + 1;
+    const word = room.state.currentWord ? room.state.currentWord.word : '';
+    io.to(room.code).emit('taboo_score_event', { type: 'correct', word });
+    room.state.currentWord = null; // Trigger new word request
+    emitTabooState(room);
+  });
+
+  socket.on('taboo_skip', ({ code }) => {
+    const room = getTabooRoom(code);
+    if (!room || room.state.phase !== 'playing') return;
+    const word = room.state.currentWord ? room.state.currentWord.word : '';
+    io.to(room.code).emit('taboo_score_event', { type: 'skip', word });
+    room.state.currentWord = null;
+    emitTabooState(room);
+  });
+
+  socket.on('taboo_penalty', ({ code }) => {
+    const room = getTabooRoom(code);
+    if (!room || room.state.phase !== 'playing') return;
+    const connected = room.players.filter(p => p.connected !== false);
+    const describer = connected[room.state.describerIndex % connected.length];
+    if (describer) {
+      const rIdx = room.state.round;
+      if (!room.state.scores[rIdx]) room.state.scores[rIdx] = {};
+      room.state.scores[rIdx][describer.id] = Math.max(0, (room.state.scores[rIdx][describer.id] || 0) - 1);
+      room.state.totalScores[describer.id] = Math.max(0, (room.state.totalScores[describer.id] || 0) - 1);
+    }
+    io.to(room.code).emit('taboo_score_event', { type: 'penalty', word: '' });
+    room.state.currentWord = null;
+    emitTabooState(room);
+  });
+
+  socket.on('taboo_next_round', ({ code }) => {
+    const room = getTabooRoom(code);
+    if (!room || socket.id !== room.hostId) return;
+    if (room.state.round >= room.settings.rounds) {
+      if (room.state.turnTimer) clearInterval(room.state.turnTimer);
+      room.state.phase = 'final';
+      emitTabooState(room);
+    } else {
+      startTabooTurn(room);
+    }
+  });
+
+  socket.on('taboo_keep_alive', ({ code }) => {
+    const room = getTabooRoom(code);
+    if (room) { /* keep alive */ }
+  });
+});

@@ -1,0 +1,175 @@
+/* ══ TABOO SPECIFIC STYLES ══ */
+
+.taboo-role-banner {
+  text-align: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 3px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.taboo-card {
+  background: var(--card);
+  border: 2px solid var(--accent);
+  border-radius: 20px;
+  padding: 28px 24px;
+  text-align: center;
+  margin-bottom: 16px;
+  box-shadow: 0 0 30px rgba(255,107,53,0.15);
+}
+
+.referee-card {
+  border-color: var(--accent2);
+  box-shadow: 0 0 30px rgba(6,214,160,0.15);
+}
+
+.taboo-target {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 64px;
+  letter-spacing: 4px;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.referee-target {
+  font-size: 48px;
+  color: var(--accent2);
+}
+
+.taboo-divider {
+  height: 2px;
+  background: var(--border);
+  margin: 16px 0;
+}
+
+.taboo-forbidden-label {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+#forbidden-words, #referee-forbidden-words {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.forbidden-word {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.forbidden-word::before {
+  content: '✗';
+  color: var(--red, #ef4444);
+  font-size: 16px;
+}
+
+.taboo-timer {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 80px;
+  letter-spacing: 4px;
+  text-align: center;
+  color: var(--accent);
+  line-height: 1;
+  transition: color 0.3s;
+}
+
+.taboo-timer.urgent {
+  color: #ef4444;
+  animation: pulse 0.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.taboo-big-btn {
+  font-size: 18px !important;
+  padding: 14px 28px !important;
+  flex: 1;
+}
+
+.guesser-waiting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.guesser-timer {
+  font-size: 100px;
+  margin: 16px 0;
+}
+
+.score-ticker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.score-event {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.score-event.correct { border-color: var(--green); color: var(--green); }
+.score-event.penalty { border-color: #ef4444; color: #ef4444; }
+.score-event.skip { border-color: var(--muted); color: var(--muted); }
+
+.referee-label {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--accent2);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.taboo-score-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--surface);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border);
+}
+
+.taboo-score-name { font-weight: 800; font-size: 15px; }
+.taboo-score-pts { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--accent); letter-spacing: 2px; }
+.taboo-score-round { font-size: 12px; color: var(--muted); font-weight: 700; }
