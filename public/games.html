@@ -73,48 +73,48 @@
 
     <a href="/" class="game-card">
       <div class="game-card-icon">🌍</div>
-      <div class="game-card-title">Państwa-Miasta</div>
-      <div class="game-card-desc">Klasyczna polska gra słowna online. Wpisuj państwa, miasta, zwierzęta i inne słowa na wylosowaną literę!</div>
+      <div class="game-card-title" id="gc-pm-title">Państwa-Miasta</div>
+      <div class="game-card-desc" id="gc-pm-desc">Klasyczna polska gra słowna online. Wpisuj państwa, miasta, zwierzęta i inne słowa na wylosowaną literę!</div>
       <div class="game-card-tags">
-        <span class="game-tag">2-12 graczy</span>
-        <span class="game-tag">Wiedza</span>
+        <span class="game-tag" id="gc-pm-players">2-12 graczy</span>
+        <span class="game-tag" id="gc-pm-type">Wiedza</span>
         <span class="game-tag">PL/EN/DE/FR/ES</span>
       </div>
-      <span class="game-card-btn">🎮 Zagraj teraz</span>
+      <span class="game-card-btn" id="gc-play-1">🎮 Zagraj teraz</span>
     </a>
 
     <a href="/taboo" class="game-card">
       <div class="game-card-icon">🎭</div>
-      <div class="game-card-title">Tabu</div>
-      <div class="game-card-desc">Opisuj słowa bez używania zakazanych słów! Drużyna zgaduje, sędzia pilnuje. Klasyczna gra imprezowa online!</div>
+      <div class="game-card-title" id="gc-taboo-title">Tabu</div>
+      <div class="game-card-desc" id="gc-taboo-desc">Opisuj słowa bez używania zakazanych słów! Min. 4 graczy w 2 drużynach. Klasyczna gra imprezowa online!</div>
       <div class="game-card-tags">
-        <span class="game-tag">3-12 graczy</span>
-        <span class="game-tag">Imprezowa</span>
+        <span class="game-tag" id="gc-taboo-players">4-12 graczy</span>
+        <span class="game-tag" id="gc-taboo-type">Imprezowa</span>
         <span class="game-tag">PL/EN</span>
       </div>
-      <span class="game-card-btn">🎮 Zagraj teraz</span>
+      <span class="game-card-btn" id="gc-play-2">🎮 Zagraj teraz</span>
     </a>
 
     <div class="game-card coming-soon">
       <div class="game-card-icon">🌊</div>
-      <div class="game-card-title">Wavelength</div>
-      <div class="game-card-desc">Zgadnij gdzie na skali między dwoma przeciwieństwami pasuje wskazówka. Gra na emocje i debaty!</div>
+      <div class="game-card-title" id="gc-wl-title">Wavelength</div>
+      <div class="game-card-desc" id="gc-wl-desc">Zgadnij gdzie na skali między dwoma przeciwieństwami pasuje wskazówka. Gra na emocje i debaty!</div>
       <div class="game-card-tags">
-        <span class="game-tag">3-12 graczy</span>
-        <span class="game-tag">Towarzyska</span>
+        <span class="game-tag" id="gc-wl-players">3-12 graczy</span>
+        <span class="game-tag" id="gc-wl-type">Towarzyska</span>
       </div>
-      <span class="coming-badge">COMING SOON</span>
+      <span class="coming-badge" id="gc-coming-1">COMING SOON</span>
     </div>
 
     <div class="game-card coming-soon">
       <div class="game-card-icon">🤥</div>
-      <div class="game-card-title">Dwie Prawdy, Jedno Kłamstwo</div>
-      <div class="game-card-desc">Powiedz dwie prawdy i jedno kłamstwo o sobie. Wszyscy głosują które to kłamstwo!</div>
+      <div class="game-card-title" id="gc-tttl-title">Dwie Prawdy, Jedno Kłamstwo</div>
+      <div class="game-card-desc" id="gc-tttl-desc">Powiedz dwie prawdy i jedno kłamstwo o sobie. Wszyscy głosują które to kłamstwo!</div>
       <div class="game-card-tags">
-        <span class="game-tag">3-20 graczy</span>
-        <span class="game-tag">Integracja</span>
+        <span class="game-tag" id="gc-tttl-players">3-20 graczy</span>
+        <span class="game-tag" id="gc-tttl-type">Integracja</span>
       </div>
-      <span class="coming-badge">COMING SOON</span>
+      <span class="coming-badge" id="gc-coming-2">COMING SOON</span>
     </div>
 
   </div>
@@ -122,11 +122,44 @@
 
 <script>
 (function() {
+  var GAMES = {
+    pl: {
+      pm:        { desc: 'Klasyczna polska gra słowna online. Wpisuj państwa, miasta, zwierzęta i inne słowa na wylosowaną literę — szybciej niż inni!', players: '2-12 graczy', tag1: 'Wiedza', play: '🎮 Zagraj teraz', coming: 'WKRÓTCE' },
+      taboo:     { desc: 'Gra drużynowa! Opisuj słowa bez zakazanych — Twoja drużyna zgaduje, sędzia przeciwników pilnuje. Min. 4 graczy.', players: '4-12 graczy', tag1: 'Drużynowa', play: '🎮 Zagraj teraz', coming: 'WKRÓTCE' },
+      wave:      { desc: 'Zgadnij gdzie na skali między dwoma przeciwieństwami pasuje wskazówka. Gra na emocje i debaty!', players: '3-12 graczy', tag1: 'Towarzyska', coming: 'WKRÓTCE' },
+      twotruth:  { desc: 'Powiedz dwie prawdy i jedno kłamstwo o sobie. Wszyscy głosują, które to kłamstwo!', players: '3-20 graczy', tag1: 'Integracja', coming: 'WKRÓTCE' },
+    },
+    en: {
+      pm:        { desc: 'Classic word game online. Fill in countries, cities, animals and more starting with a random letter — faster than everyone else!', players: '2-12 players', tag1: 'Knowledge', play: '🎮 Play now', coming: 'COMING SOON' },
+      taboo:     { desc: 'Team game! Describe words without the forbidden ones — your team guesses, opposing referee watches. Min. 4 players.', players: '4-12 players', tag1: 'Teams', play: '🎮 Play now', coming: 'COMING SOON' },
+      wave:      { desc: 'Guess where on a scale between two opposites a clue fits. A game of emotions and debate!', players: '3-12 players', tag1: 'Social', coming: 'COMING SOON' },
+      twotruth:  { desc: 'Say two truths and one lie about yourself. Everyone votes which one is the lie!', players: '3-20 players', tag1: 'Icebreaker', coming: 'COMING SOON' },
+    },
+    de: {
+      pm:        { desc: 'Klassisches Wortspiel online. Trage Länder, Städte, Tiere und mehr mit einem zufälligen Buchstaben ein — schneller als die anderen!', players: '2-12 Spieler', tag1: 'Wissen', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
+      taboo:     { desc: 'Teamspiel! Beschreibe Wörter ohne verbotene — dein Team rät, der gegnerische Schiedsrichter passt auf. Min. 4 Spieler.', players: '4-12 Spieler', tag1: 'Teams', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
+      wave:      { desc: 'Rate wo auf einer Skala zwischen zwei Gegensätzen ein Hinweis passt. Ein Spiel der Emotionen!', players: '3-12 Spieler', tag1: 'Gesellschaft', coming: 'DEMNÄCHST' },
+      twotruth:  { desc: 'Sage zwei Wahrheiten und eine Lüge über dich. Alle stimmen ab, welche die Lüge ist!', players: '3-20 Spieler', tag1: 'Kennenlernen', coming: 'DEMNÄCHST' },
+    },
+    fr: {
+      pm:        { desc: 'Jeu de mots classique en ligne. Remplissez pays, villes, animaux et plus avec une lettre aléatoire — plus vite que les autres!', players: '2-12 joueurs', tag1: 'Culture', play: '🎮 Jouer maintenant', coming: 'BIENTÔT' },
+      taboo:     { desc: 'Jeu en équipes! Décrivez des mots sans les interdits — votre équipe devine, l'arbitre adverse surveille. Min. 4 joueurs.', players: '4-12 joueurs', tag1: 'Équipes', play: '🎮 Jouer maintenant', coming: 'BIENTÔT' },
+      wave:      { desc: 'Devinez où sur une échelle entre deux opposés se place un indice. Un jeu d'émotions et de débats!', players: '3-12 joueurs', tag1: 'Convivial', coming: 'BIENTÔT' },
+      twotruth:  { desc: 'Dites deux vérités et un mensonge sur vous. Tout le monde vote lequel est le mensonge!', players: '3-20 joueurs', tag1: 'Brise-glace', coming: 'BIENTÔT' },
+    },
+    es: {
+      pm:        { desc: 'Juego de palabras clásico online. Rellena países, ciudades, animales y más con una letra aleatoria — ¡más rápido que los demás!', players: '2-12 jugadores', tag1: 'Conocimiento', play: '🎮 Jugar ahora', coming: 'PRÓXIMAMENTE' },
+      taboo:     { desc: '¡Juego en equipos! Describe palabras sin las prohibidas — tu equipo adivina, el árbitro contrario vigila. Mín. 4 jugadores.', players: '4-12 jugadores', tag1: 'Equipos', play: '🎮 Jugar ahora', coming: 'PRÓXIMAMENTE' },
+      wave:      { desc: '¡Adivina dónde en una escala entre dos opuestos encaja una pista. Un juego de emociones y debates!', players: '3-12 jugadores', tag1: 'Social', coming: 'PRÓXIMAMENTE' },
+      twotruth:  { desc: 'Di dos verdades y una mentira sobre ti. ¡Todos votan cuál es la mentira!', players: '3-20 jugadores', tag1: 'Integración', coming: 'PRÓXIMAMENTE' },
+    },
+  };
+
   var T = {
     pl: { title: 'Darmowe Gry Online', subtitle: 'Gry multiplayer dla znajomych, rodziny i zespołów · Za darmo · Dla wszystkich', back: '← Wróć do strony głównej' },
     en: { title: 'Free Games Online',  subtitle: 'Free multiplayer games for friends, family & teams · No registration · For everyone', back: '← Back to home' },
     de: { title: 'Kostenlose Spiele',  subtitle: 'Multiplayer-Spiele für Freunde, Familie & Teams · Kostenlos · Für alle', back: '← Zurück zur Startseite' },
-    fr: { title: 'Jeux Gratuits',      subtitle: 'Jeux multijoueur pour amis, famille & équipes · Gratuit · Pour tous', back: '← Retour à l\'accueil' },
+    fr: { title: 'Jeux Gratuits',      subtitle: 'Jeux multijoueur pour amis, famille & équipes · Gratuit · Pour tous', back: "← Retour à l'accueil" },
     es: { title: 'Juegos Gratis',      subtitle: 'Juegos multijugador para amigos, familia y equipos · Gratis · Para todos', back: '← Volver al inicio' },
   };
   var LANGS = [
@@ -141,6 +174,31 @@
   var lang = params.get('lang') || 'pl';
   if (!T[lang]) lang = 'pl';
 
+  function renderCards(l) {
+    var g = GAMES[l] || GAMES['pl'];
+    document.getElementById('games-grid').innerHTML =
+      card('/', '🌍', 'Państwa-Miasta', g.pm.desc,   g.pm.players,   'PL/EN/DE/FR/ES', g.pm.tag1,   false, g.pm.play,   l) +
+      card('/taboo', '🎭', 'Tabu',       g.taboo.desc, g.taboo.players,'PL/EN',          g.taboo.tag1,false, g.taboo.play,l) +
+      card('', '🌊', 'Wavelength',       g.wave.desc,  g.wave.players, '',               g.wave.tag1, true,  g.wave.coming, l) +
+      card('', '🤥', 'Two Truths',       g.twotruth.desc, g.twotruth.players, '',        g.twotruth.tag1, true, g.twotruth.coming, l);
+  }
+
+  function card(href, icon, title, desc, players, lang_tag, tag1, comingSoon, btnLabel, l) {
+    var wrap_open  = comingSoon ? '<div class="game-card coming-soon">' : '<a href="' + href + '?lang=' + l + '" class="game-card">';
+    var wrap_close = comingSoon ? '</div>' : '</a>';
+    var tags = '<span class="game-tag">' + players + '</span><span class="game-tag">' + tag1 + '</span>' + (lang_tag ? '<span class="game-tag">' + lang_tag + '</span>' : '');
+    var btn = comingSoon
+      ? '<span class="coming-badge">' + btnLabel + '</span>'
+      : '<span class="game-card-btn">' + btnLabel + '</span>';
+    return wrap_open +
+      '<div class="game-card-icon">' + icon + '</div>' +
+      '<div class="game-card-title">' + title + '</div>' +
+      '<div class="game-card-desc">' + desc + '</div>' +
+      '<div class="game-card-tags">' + tags + '</div>' +
+      btn +
+      wrap_close;
+  }
+
   function applyLang(l) {
     lang = l;
     var t = T[l] || T['pl'];
@@ -149,11 +207,10 @@
     var backLink = document.getElementById('hub-back-link');
     backLink.textContent = t.back;
     backLink.href = '/?lang=' + l;
-    // Update pill highlight
     document.querySelectorAll('.hub-lang-btn').forEach(function(btn) {
       btn.classList.toggle('active', btn.dataset.lang === l);
     });
-    // Update URL without reload
+    renderCards(l);
     history.replaceState(null, '', '/games?lang=' + l);
   }
 

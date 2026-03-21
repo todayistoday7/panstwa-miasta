@@ -100,12 +100,12 @@
     <div class="rules-section" style="margin-top:24px;">
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--accent2);text-align:center;margin-bottom:16px;" id="lbl-how-to-play">How to play</h2>
       <div class="rules-steps">
-        <div class="rule-step"><div class="step-num">1</div><p id="lbl-rule-1">Create a room and share the code with friends</p></div>
-        <div class="rule-step"><div class="step-num">2</div><p id="lbl-rule-2">One player is the Describer, one is the Referee</p></div>
-        <div class="rule-step"><div class="step-num">3</div><p id="lbl-rule-3">Describer speaks — team guesses the secret word</p></div>
+        <div class="rule-step"><div class="step-num">1</div><p id="lbl-rule-1">Min. 4 players — randomly split into 2 teams</p></div>
+        <div class="rule-step"><div class="step-num">2</div><p id="lbl-rule-2">Describer from one team describes a word to their teammates</p></div>
+        <div class="rule-step"><div class="step-num">3</div><p id="lbl-rule-3">Referee from the opposing team watches for forbidden words</p></div>
         <div class="rule-step"><div class="step-num">4</div><p id="lbl-rule-4">Never say the 5 forbidden words or the word itself!</p></div>
-        <div class="rule-step"><div class="step-num">5</div><p id="lbl-rule-5">Referee taps SKIP if a forbidden word is said</p></div>
-        <div class="rule-step"><div class="step-num">6</div><p id="lbl-rule-6">Guess as many words as possible in 60 seconds!</p></div>
+        <div class="rule-step"><div class="step-num">5</div><p id="lbl-rule-5">Referee hits PENALTY if a forbidden word is said — point for their team!</p></div>
+        <div class="rule-step"><div class="step-num">6</div><p id="lbl-rule-6">The team with the most points wins!</p></div>
       </div>
     </div>
   </div>
@@ -119,11 +119,12 @@
         <button class="btn share-btn" onclick="copyRoomCode()">📋 <span id="lbl-copy-code">Copy Code</span></button>
       </div>
     </div>
+    <div id="player-warning" class="error-box" style="display:none;margin-bottom:12px;"></div>
+    <div class="card" style="margin-bottom:16px;">
+      <h3 id="lbl-teams-title">Teams</h3>
+      <div id="lobby-teams" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px;"></div>
+    </div>
     <div class="lobby-grid">
-      <div class="card">
-        <h3 id="lbl-players-in-room">Players</h3>
-        <div id="lobby-players"></div>
-      </div>
       <div class="card">
         <h3 id="lbl-settings">Settings</h3>
         <label class="field-label" id="lbl-rounds-title">Rounds</label>
@@ -143,6 +144,7 @@
     </div>
     <div class="btn-row" id="lobby-btn-row">
       <button class="btn" onclick="startGame()" id="lbl-start-btn">🎮 Start Game</button>
+      <button class="btn secondary" onclick="reshuffleTeams()" id="lbl-reshuffle">🔀 Reshuffle Teams</button>
       <button class="btn secondary" onclick="confirmGoHome()" id="lbl-leave-room">🚪 Leave Room</button>
     </div>
     <p class="waiting-msg" id="waiting-msg" style="display:none;"></p>
@@ -150,7 +152,9 @@
 
   <!-- ══ SCREEN: PLAYING ══ -->
   <div id="screen-playing" class="screen">
+    <div id="live-scores" style="text-align:center;padding:6px 0;font-size:14px;font-weight:800;margin-bottom:4px;"></div>
     <div id="role-banner" class="taboo-role-banner"></div>
+    <div id="playing-scores" class="playing-scores-bar"></div>
 
     <!-- DESCRIBER VIEW -->
     <div id="describer-view" style="display:none;">

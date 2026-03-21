@@ -522,7 +522,7 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log(`🎮 Państwa-Miasta running on http://localhost:${PORT}`));
 
 // ════════════════════════════════════════════════════════
-// TABOO GAME SERVER
+// TABOO GAME SERVER — Team Mode
 // ════════════════════════════════════════════════════════
 const tabooRooms = {};
 
@@ -547,11 +547,15 @@ function makeTabooRoom(hostId, settings) {
     state: {
       phase: 'lobby',
       round: 0,
-      describerIndex: 0,
-      refereeIndex: 1,
+      teams: { red: [], blue: [] },
+      describerTeam: 'red',
+      turnDescriber: null,
+      turnReferee: null,
+      redDescriberIndex: 0,
+      blueDescriberIndex: 0,
       currentWord: null,
       scores: [],
-      totalScores: {},
+      teamTotals: { red: 0, blue: 0 },
       usedWords: [],
       turnTimer: null,
     }
@@ -561,6 +565,39 @@ function makeTabooRoom(hostId, settings) {
 
 function getTabooRoom(code) { return tabooRooms[code]; }
 
+function assignTeams(room) {
+  const players = room.players.filter(p => p.connected !== false).map(p => p.id);
+  for (let i = players.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [players[i], players[j]] = [players[j], players[i]];
+  }
+  const mid = Math.ceil(players.length / 2);
+  room.state.teams.red  = players.slice(0, mid);
+  room.state.teams.blue = players.slice(mid);
+}
+
+function opposingTeam(team) { return team === 'red' ? 'blue' : 'red'; }
+
+function nextDescriber(room, team) {
+  const members = room.state.teams[team].filter(id => {
+    const p = room.players.find(pl => pl.id === id);
+    return p && p.connected !== false;
+  });
+  if (!members.length) return null;
+  const key = team === 'red' ? 'redDescriberIndex' : 'blueDescriberIndex';
+  const idx = room.state[key] % members.length;
+  room.state[key]++;
+  return members[idx];
+}
+
+function pickReferee(room, teamName) {
+  const members = room.state.teams[teamName].filter(id => {
+    const p = room.players.find(pl => pl.id === id);
+    return p && p.connected !== false;
+  });
+  return members.length ? members[0] : null;
+}
+
 function emitTabooState(room) {
   const state = {
     phase: room.state.phase,
@@ -569,29 +606,27 @@ function emitTabooState(room) {
     hostId: room.hostId,
     players: room.players.map(p => ({ id: p.id, name: p.name, connected: p.connected })),
     settings: room.settings,
-    describerIndex: room.state.describerIndex,
-    refereeIndex: room.state.refereeIndex,
+    teams: room.state.teams,
+    describerTeam: room.state.describerTeam,
+    turnDescriber: room.state.turnDescriber,
+    turnReferee: room.state.turnReferee,
     currentWord: room.state.currentWord,
     scores: room.state.scores,
-    totalScores: room.state.totalScores,
+    teamTotals: room.state.teamTotals,
   };
   io.to(room.code).emit('taboo_state', state);
 }
 
-function getNextTabooWord(room) {
-  const lang = room.settings.lang || 'en';
-  // Server doesn't have TABOO_WORDS — words are picked client-side
-  // Server just tracks state and scoring
-  return null;
-}
-
 function startTabooTurn(room) {
   const code = room.code;
+  const describingTeam = room.state.describerTeam;
+  const opponentTeam   = opposingTeam(describingTeam);
+  room.state.turnDescriber = nextDescriber(room, describingTeam);
+  room.state.turnReferee   = pickReferee(room, opponentTeam);
   room.state.phase = 'playing';
-  room.state.currentWord = null; // client will request a word
+  room.state.currentWord = null;
   emitTabooState(room);
 
-  // Start countdown timer on server
   let remaining = room.settings.turnTime || 60;
   if (room.state.turnTimer) clearInterval(room.state.turnTimer);
   room.state.turnTimer = setInterval(() => {
@@ -608,12 +643,7 @@ function endTabooTurn(room) {
   if (room.state.turnTimer) { clearInterval(room.state.turnTimer); room.state.turnTimer = null; }
   room.state.phase = 'roundend';
   room.state.round++;
-
-  // Rotate describer and referee for next round
-  const playerCount = room.players.filter(p => p.connected !== false).length;
-  room.state.describerIndex = (room.state.describerIndex + 2) % Math.max(playerCount, 1);
-  room.state.refereeIndex = (room.state.describerIndex + 1) % Math.max(playerCount, 1);
-
+  room.state.describerTeam = opposingTeam(room.state.describerTeam);
   emitTabooState(room);
 }
 
@@ -622,9 +652,9 @@ io.on('connection', (socket) => {
   socket.on('taboo_create', ({ name, settings }) => {
     const room = makeTabooRoom(socket.id, settings || {});
     room.players.push({ id: socket.id, name: name || 'Host', connected: true });
-    room.state.totalScores[socket.id] = 0;
     socket.join(room.code);
     socket.emit('taboo_room_created', { code: room.code });
+    assignTeams(room);
     emitTabooState(room);
   });
 
@@ -641,10 +671,10 @@ io.on('connection', (socket) => {
         socket.emit('taboo_error', { msg: 'Name already taken.' }); return;
       }
       room.players.push({ id: socket.id, name: name || 'Player', connected: true });
-      room.state.totalScores[socket.id] = 0;
     }
     socket.join(room.code);
     socket.emit('taboo_room_joined', { code: room.code });
+    assignTeams(room);
     emitTabooState(room);
   });
 
@@ -655,51 +685,58 @@ io.on('connection', (socket) => {
     emitTabooState(room);
   });
 
+  socket.on('taboo_reshuffle', ({ code }) => {
+    const room = getTabooRoom(code);
+    if (!room || socket.id !== room.hostId || room.state.phase !== 'lobby') return;
+    assignTeams(room);
+    emitTabooState(room);
+  });
+
   socket.on('taboo_start', ({ code }) => {
     const room = getTabooRoom(code);
     if (!room || socket.id !== room.hostId) return;
-    if (room.players.length < 2) { socket.emit('taboo_error', { msg: 'Need at least 2 players.' }); return; }
+    if (room.players.filter(p => p.connected).length < 4) {
+      socket.emit('taboo_error', { msg: 'Need at least 4 players (2 per team).' }); return;
+    }
     room.state.round = 0;
     room.state.scores = [];
     room.state.usedWords = [];
-    room.players.forEach(p => room.state.totalScores[p.id] = 0);
-    room.state.describerIndex = 0;
-    room.state.refereeIndex = 1;
+    room.state.teamTotals = { red: 0, blue: 0 };
+    room.state.redDescriberIndex = 0;
+    room.state.blueDescriberIndex = 0;
+    room.state.describerTeam = 'red';
+    assignTeams(room);
     startTabooTurn(room);
   });
 
   socket.on('taboo_word_request', ({ code, word, forbidden }) => {
-    // Describer requests the current word to be set (word chosen client-side)
     const room = getTabooRoom(code);
     if (!room || room.state.phase !== 'playing') return;
-    const connected = room.players.filter(p => p.connected !== false);
-    const describer = connected[room.state.describerIndex % connected.length];
-    if (!describer || socket.id !== describer.id) return;
+    if (socket.id !== room.state.turnDescriber) return;
     room.state.currentWord = { word, forbidden };
-    if (!room.state.scores[room.state.round]) room.state.scores[room.state.round] = {};
+    if (!room.state.scores[room.state.round]) room.state.scores[room.state.round] = { red: 0, blue: 0 };
     emitTabooState(room);
   });
 
   socket.on('taboo_got_it', ({ code }) => {
     const room = getTabooRoom(code);
     if (!room || room.state.phase !== 'playing') return;
-    const connected = room.players.filter(p => p.connected !== false);
-    const describer = connected[room.state.describerIndex % connected.length];
-    if (!describer || socket.id !== describer.id) return;
-    // Award point to describer's team (simplified: award to describer)
+    if (socket.id !== room.state.turnDescriber) return;
+    const team = room.state.describerTeam;
     const rIdx = room.state.round;
-    if (!room.state.scores[rIdx]) room.state.scores[rIdx] = {};
-    room.state.scores[rIdx][socket.id] = (room.state.scores[rIdx][socket.id] || 0) + 1;
-    room.state.totalScores[socket.id] = (room.state.totalScores[socket.id] || 0) + 1;
+    if (!room.state.scores[rIdx]) room.state.scores[rIdx] = { red: 0, blue: 0 };
+    room.state.scores[rIdx][team]++;
+    room.state.teamTotals[team]++;
     const word = room.state.currentWord ? room.state.currentWord.word : '';
-    io.to(room.code).emit('taboo_score_event', { type: 'correct', word });
-    room.state.currentWord = null; // Trigger new word request
+    io.to(room.code).emit('taboo_score_event', { type: 'correct', word, team });
+    room.state.currentWord = null;
     emitTabooState(room);
   });
 
   socket.on('taboo_skip', ({ code }) => {
     const room = getTabooRoom(code);
     if (!room || room.state.phase !== 'playing') return;
+    if (socket.id !== room.state.turnDescriber) return;
     const word = room.state.currentWord ? room.state.currentWord.word : '';
     io.to(room.code).emit('taboo_score_event', { type: 'skip', word });
     room.state.currentWord = null;
@@ -709,15 +746,13 @@ io.on('connection', (socket) => {
   socket.on('taboo_penalty', ({ code }) => {
     const room = getTabooRoom(code);
     if (!room || room.state.phase !== 'playing') return;
-    const connected = room.players.filter(p => p.connected !== false);
-    const describer = connected[room.state.describerIndex % connected.length];
-    if (describer) {
-      const rIdx = room.state.round;
-      if (!room.state.scores[rIdx]) room.state.scores[rIdx] = {};
-      room.state.scores[rIdx][describer.id] = Math.max(0, (room.state.scores[rIdx][describer.id] || 0) - 1);
-      room.state.totalScores[describer.id] = Math.max(0, (room.state.totalScores[describer.id] || 0) - 1);
-    }
-    io.to(room.code).emit('taboo_score_event', { type: 'penalty', word: '' });
+    if (socket.id !== room.state.turnReferee) return;
+    const penaltyTeam = opposingTeam(room.state.describerTeam);
+    const rIdx = room.state.round;
+    if (!room.state.scores[rIdx]) room.state.scores[rIdx] = { red: 0, blue: 0 };
+    room.state.scores[rIdx][penaltyTeam]++;
+    room.state.teamTotals[penaltyTeam]++;
+    io.to(room.code).emit('taboo_score_event', { type: 'penalty', word: '', team: penaltyTeam });
     room.state.currentWord = null;
     emitTabooState(room);
   });

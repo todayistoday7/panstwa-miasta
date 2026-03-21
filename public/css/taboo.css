@@ -173,3 +173,195 @@
 .taboo-score-name { font-weight: 800; font-size: 15px; }
 .taboo-score-pts { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--accent); letter-spacing: 2px; }
 .taboo-score-round { font-size: 12px; color: var(--muted); font-weight: 700; }
+
+/* ══ TEAM MODE STYLES ══ */
+
+.teams-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.team-column {
+  border-radius: 12px;
+  padding: 12px;
+  border: 2px solid var(--border);
+}
+
+.team-column.team-red  { border-color: rgba(239,68,68,0.4);  background: rgba(239,68,68,0.05); }
+.team-column.team-blue { border-color: rgba(59,130,246,0.4); background: rgba(59,130,246,0.05); }
+
+.team-col-header {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.team-red  .team-col-header { color: #ef4444; }
+.team-blue .team-col-header { color: #3b82f6; }
+
+/* Role banner colours */
+.taboo-role-banner.role-red      { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.08); }
+.taboo-role-banner.role-blue     { border-color: #3b82f6; color: #3b82f6; background: rgba(59,130,246,0.08); }
+.taboo-role-banner.role-referee  { border-color: var(--accent2); color: var(--accent2); }
+.taboo-role-banner.role-guesser  { border-color: var(--border); color: var(--muted); }
+
+/* Live score bar during play */
+.playing-scores-bar {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.playing-score {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  letter-spacing: 3px;
+  padding: 4px 20px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+}
+
+.team-red-score  { color: #ef4444; border-color: rgba(239,68,68,0.4) !important; }
+.team-blue-score { color: #3b82f6; border-color: rgba(59,130,246,0.4) !important; }
+
+/* Team totals on round-end / final */
+.team-total-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.team-total-card {
+  border-radius: 16px;
+  padding: 20px 16px;
+  text-align: center;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  transition: transform 0.2s;
+}
+
+.team-total-card.team-red-card  { border-color: rgba(239,68,68,0.5); }
+.team-total-card.team-blue-card { border-color: rgba(59,130,246,0.5); }
+.team-total-card.winner-card    { transform: scale(1.03); }
+
+.team-total-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.team-total-pts {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 64px;
+  line-height: 1;
+  letter-spacing: 2px;
+}
+
+.team-red-card  .team-total-pts { color: #ef4444; }
+.team-blue-card .team-total-pts { color: #3b82f6; }
+
+.round-team-score {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 2px;
+  margin: 0 8px;
+}
+
+.winner-team {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  letter-spacing: 2px;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.team-members {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.team-member {
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 8px;
+  color: var(--muted);
+}
+
+/* ══ TEAM LOBBY ══ */
+.team-header {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.team-player {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+.team-player.me {
+  background: var(--surface);
+}
+.team-empty {
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+  padding: 8px 0;
+}
+
+/* ══ TEAM SCORE BLOCKS (round end + final) ══ */
+.team-scores-display {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 16px 0;
+}
+.team-score-block {
+  border-radius: 16px;
+  padding: 20px 16px;
+  text-align: center;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.team-score-block.winner {
+  transform: scale(1.04);
+  box-shadow: 0 0 20px rgba(255,255,255,0.08);
+}
+.team-score-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 17px;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.team-score-big {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 72px;
+  line-height: 1;
+  letter-spacing: 2px;
+}
+.team-score-round {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+  margin-top: 4px;
+}
