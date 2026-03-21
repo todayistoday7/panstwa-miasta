@@ -547,6 +547,7 @@ function makeTabooRoom(hostId, settings) {
     state: {
       phase: 'lobby',
       round: 0,
+      roundJustPlayed: -1,        // index of the round whose scores to show on roundend screen
       teams: { red: [], blue: [] },
       describerTeam: 'red',
       turnDescriber: null,
@@ -558,6 +559,7 @@ function makeTabooRoom(hostId, settings) {
       teamTotals: { red: 0, blue: 0 },
       usedWords: [],
       turnTimer: null,
+      turnTimeRemaining: 0,       // for reconnecting players mid-turn
     }
   };
   return tabooRooms[code];
@@ -602,6 +604,7 @@ function emitTabooState(room) {
   const state = {
     phase: room.state.phase,
     round: room.state.round,
+    roundJustPlayed: room.state.roundJustPlayed,
     totalRounds: room.settings.rounds,
     hostId: room.hostId,
     players: room.players.map(p => ({ id: p.id, name: p.name, connected: p.connected })),
@@ -613,6 +616,7 @@ function emitTabooState(room) {
     currentWord: room.state.currentWord,
     scores: room.state.scores,
     teamTotals: room.state.teamTotals,
+    turnTimeRemaining: room.state.turnTimeRemaining,
   };
   io.to(room.code).emit('taboo_state', state);
 }
@@ -628,9 +632,11 @@ function startTabooTurn(room) {
   emitTabooState(room);
 
   let remaining = room.settings.turnTime || 60;
+  room.state.turnTimeRemaining = remaining;
   if (room.state.turnTimer) clearInterval(room.state.turnTimer);
   room.state.turnTimer = setInterval(() => {
     remaining--;
+    room.state.turnTimeRemaining = remaining;
     io.to(code).emit('taboo_timer_tick', { remaining });
     if (remaining <= 0) {
       clearInterval(room.state.turnTimer);
@@ -641,6 +647,7 @@ function startTabooTurn(room) {
 
 function endTabooTurn(room) {
   if (room.state.turnTimer) { clearInterval(room.state.turnTimer); room.state.turnTimer = null; }
+  room.state.roundJustPlayed = room.state.round; // capture before incrementing
   room.state.phase = 'roundend';
   room.state.round++;
   room.state.describerTeam = opposingTeam(room.state.describerTeam);
@@ -699,6 +706,7 @@ io.on('connection', (socket) => {
       socket.emit('taboo_error', { msg: 'Need at least 4 players (2 per team).' }); return;
     }
     room.state.round = 0;
+    room.state.roundJustPlayed = -1;
     room.state.scores = [];
     room.state.usedWords = [];
     room.state.teamTotals = { red: 0, blue: 0 };
@@ -772,5 +780,37 @@ io.on('connection', (socket) => {
   socket.on('taboo_keep_alive', ({ code }) => {
     const room = getTabooRoom(code);
     if (room) { /* keep alive */ }
+  });
+
+  // REJOIN — called when mobile browser wakes up with a new socket id
+  socket.on('taboo_rejoin', ({ code, name }) => {
+    const room = getTabooRoom(code);
+    if (!room) { socket.emit('taboo_error', { msg: 'Room expired.' }); return; }
+    const existing = room.players.find(p => p.name === name);
+    if (existing) {
+      const oldId = existing.id;
+      // Remap team arrays BEFORE overwriting id
+      ['red','blue'].forEach(team => {
+        room.state.teams[team] = room.state.teams[team].map(id => id === oldId ? socket.id : id);
+      });
+      // Update describer/referee if they were this player
+      if (room.state.turnDescriber === oldId) room.state.turnDescriber = socket.id;
+      if (room.state.turnReferee   === oldId) room.state.turnReferee   = socket.id;
+      if (room.hostId              === oldId) room.hostId              = socket.id;
+      existing.id = socket.id;
+      existing.connected = true;
+    } else {
+      // Player not found — only allow rejoin in lobby
+      if (room.state.phase !== 'lobby') { socket.emit('taboo_error', { msg: 'Room already started — player not found.' }); return; }
+      room.players.push({ id: socket.id, name, connected: true });
+      assignTeams(room);
+    }
+    socket.join(room.code);
+    socket.emit('taboo_room_joined', { code: room.code });
+    // Send current timer position if mid-turn
+    if (room.state.phase === 'playing') {
+      socket.emit('taboo_timer_tick', { remaining: room.state.turnTimeRemaining });
+    }
+    emitTabooState(room);
   });
 });
