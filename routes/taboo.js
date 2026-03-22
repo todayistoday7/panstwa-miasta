@@ -291,6 +291,33 @@ function register(io, socket) {
     }
     emitTabooState(io, room);
   });
+
+  // Disconnect: mark player offline, promote new host if needed, clean up empty rooms
+  socket.on('disconnect', () => {
+    for (const code of Object.keys(tabooRooms)) {
+      const room = tabooRooms[code];
+      const p    = room.players.find(p => p.id === socket.id);
+      if (!p) continue;
+      p.connected = false;
+
+      // Promote next connected player to host (covers lobby + in-game)
+      if (socket.id === room.hostId) {
+        const next = room.players.find(pl => pl.connected && pl.id !== socket.id);
+        if (next) room.hostId = next.id;
+      }
+
+      emitTabooState(io, room);
+
+      // Clean up room if everyone left
+      const allGone = room.players.every(pl => !pl.connected);
+      if (allGone) {
+        if (room.state.turnTimer) clearInterval(room.state.turnTimer);
+        setTimeout(() => { if (tabooRooms[code]) delete tabooRooms[code]; }, 30 * 60 * 1000);
+      }
+      break;
+    }
+  });
 }
 
 module.exports = { register, getTabooRoomCount };
+// Note: disconnect handler appended below register()

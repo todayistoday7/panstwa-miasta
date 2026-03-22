@@ -143,8 +143,8 @@
     },
     fr: {
       pm:        { desc: 'Jeu de mots classique en ligne. Remplissez pays, villes, animaux et plus avec une lettre aléatoire — plus vite que les autres!', players: '2-12 joueurs', tag1: 'Culture', play: '🎮 Jouer maintenant', coming: 'BIENTÔT' },
-      taboo:     { desc: 'Jeu en équipes! Décrivez des mots sans les interdits — votre équipe devine, l'arbitre adverse surveille. Min. 4 joueurs.', players: '4-12 joueurs', tag1: 'Équipes', play: '🎮 Jouer maintenant', coming: 'BIENTÔT' },
-      wave:      { desc: 'Devinez où sur une échelle entre deux opposés se place un indice. Un jeu d'émotions et de débats!', players: '3-12 joueurs', tag1: 'Convivial', coming: 'BIENTÔT' },
+      taboo:     { desc: 'Jeu en équipes! Décrivez des mots sans les interdits — votre équipe devine, l\'arbitre adverse surveille. Min. 4 joueurs.', players: '4-12 joueurs', tag1: 'Équipes', play: '🎮 Jouer maintenant', coming: 'BIENTÔT' },
+      wave:      { desc: 'Devinez où sur une échelle entre deux opposés se place un indice. Un jeu d\'émotions et de débats!', players: '3-12 joueurs', tag1: 'Convivial', coming: 'BIENTÔT' },
       twotruth:  { desc: 'Dites deux vérités et un mensonge sur vous. Tout le monde vote lequel est le mensonge!', players: '3-20 joueurs', tag1: 'Brise-glace', coming: 'BIENTÔT' },
     },
     es: {
@@ -171,7 +171,13 @@
   ];
 
   var params = new URLSearchParams(window.location.search);
-  var lang = params.get('lang') || 'pl';
+  var lang = params.get('lang');
+  if (!lang) {
+    // Fall back to browser language if no param (e.g. direct navigation)
+    var browserLang = (navigator.language || '').toLowerCase().slice(0, 2);
+    var supported = ['pl', 'en', 'de', 'fr', 'es'];
+    lang = supported.indexOf(browserLang) >= 0 ? browserLang : 'pl';
+  }
   if (!T[lang]) lang = 'pl';
 
   function renderCards(l) {

@@ -36,7 +36,7 @@ const LANGS_TABOO = {
     rule6: 'Wygrywa drużyna z największą liczbą punktów!',
     teamRed: '🔴 Drużyna Czerwona', teamBlue: '🔵 Drużyna Niebieska',
     yourTeam: 'Twoja drużyna',
-    teammates: 'Twoi drużynowicy',
+    teammates: 'Twoja drużyna:',
     reshuffle: '🔀 Przetasuj drużyny',
     yourRole: 'Twoja rola:',
     describer: '🎤 OPISUJĄCY', referee: '👁 SĘDZIA', guesser: '🤔 ZGADUJĄCY',
@@ -124,18 +124,20 @@ socket.on('connect', () => {
 });
 
 socket.on('taboo_room_created', ({ code }) => {
-  roomCode = code;
+  roomCode = code; roomState = null;
   sessionStorage.setItem('taboo_code', code);
   sessionStorage.setItem('taboo_name', myName);
   document.getElementById('room-code-display').textContent = code;
+  clearScoreTicker();
   showScreen('screen-lobby');
 });
 
 socket.on('taboo_room_joined', ({ code }) => {
-  roomCode = code;
+  roomCode = code; roomState = null;
   sessionStorage.setItem('taboo_code', code);
   sessionStorage.setItem('taboo_name', myName);
   document.getElementById('room-code-display').textContent = code;
+  clearScoreTicker();
   showScreen('screen-lobby');
 });
 
@@ -332,6 +334,11 @@ function renderPlaying(data) {
   }
 }
 
+function clearScoreTicker() {
+  const ticker = document.getElementById('score-ticker');
+  if (ticker) ticker.innerHTML = '';
+}
+
 function addScoreTicker(type, word, team) {
   const ticker = document.getElementById('score-ticker');
   if (!ticker) return;
@@ -508,12 +515,16 @@ function goHome() {
   roomCode = ''; roomState = null; myName = '';
   sessionStorage.removeItem('taboo_code');
   sessionStorage.removeItem('taboo_name');
+  clearScoreTicker();
   showScreen('screen-home');
 }
 function confirmGoHome() {
-  if (roomState && roomState.phase !== 'lobby' && roomState.phase !== 'final') {
-    document.getElementById('confirm-msg').textContent = lang === 'pl'
-      ? 'Gra jest w toku. Na pewno chcesz wyjść?' : 'A game is in progress. Are you sure?';
+  if (roomCode) {
+    // Warn whenever in a room — lobby or in-game
+    const inGame = roomState && roomState.phase !== 'lobby' && roomState.phase !== 'final';
+    document.getElementById('confirm-msg').textContent = inGame
+      ? (lang === 'pl' ? 'Gra jest w toku. Na pewno chcesz wyjść?' : 'A game is in progress. Are you sure you want to leave?')
+      : (lang === 'pl' ? 'Na pewno chcesz opuścić pokój?' : 'Are you sure you want to leave the room?');
     document.getElementById('confirm-modal').style.display = 'flex';
   } else { doGoHome(); }
 }
