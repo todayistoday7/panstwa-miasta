@@ -1,0 +1,158 @@
+/* ══ DOTS AND BOXES STYLES ══ */
+
+/* ─── GRID CANVAS ─────────────────────────────────────── */
+.dots-game-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0;
+}
+
+.dots-grid-wrap {
+  position: relative;
+  touch-action: none;
+  user-select: none;
+}
+
+/* SVG canvas fills the wrap */
+.dots-svg {
+  display: block;
+  overflow: visible;
+}
+
+/* ─── TURN INDICATOR ──────────────────────────────────── */
+.dots-turn-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  min-width: 240px;
+  text-align: center;
+}
+
+.dots-turn-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ─── SCOREBOARD ──────────────────────────────────────── */
+.dots-scoreboard {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.dots-score-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 8px 16px;
+  transition: border-color 0.2s, transform 0.2s;
+  min-width: 100px;
+}
+
+.dots-score-card.active {
+  transform: translateY(-2px);
+}
+
+.dots-score-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.dots-score-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  flex: 1;
+}
+
+.dots-score-pts {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+/* ─── LOBBY PLAYER LIST WITH COLOUR SWATCHES ──────────── */
+.dots-lobby-player {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--surface);
+  border-radius: 10px;
+  margin-bottom: 7px;
+  border: 1px solid var(--border);
+}
+
+.dots-color-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+/* ─── FINAL SCREEN ────────────────────────────────────── */
+.dots-final-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: var(--surface);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  border: 2px solid var(--border);
+  transition: border-color 0.2s;
+}
+
+.dots-final-row.winner {
+  background: rgba(255,107,53,0.07);
+}
+
+.dots-final-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.dots-final-pts {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  letter-spacing: 2px;
+}
+
+/* ─── GRID INTERACTION FEEDBACK ───────────────────────── */
+.dots-line-hover {
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+/* ─── MOBILE ADJUSTMENTS ──────────────────────────────── */
+@media (max-width: 500px) {
+  .dots-score-card { min-width: 80px; padding: 6px 10px; }
+  .dots-score-pts  { font-size: 22px; }
+  .dots-turn-bar   { font-size: 13px; min-width: 180px; }
+}
