@@ -1,7 +1,7 @@
 const LANGS = {
   pl: {
     name:'🇵🇱 PL', gameTitle:'Państwa-Miasta', gameSubtitle:'Gra wieloosobowa',
-    createRoom:'Stwórz pokój', joinRoom:'Dołącz do pokoju',
+    createRoom:'Stwórz pokój', createDisclaimer:'Stwórz pokój otwarty lub prywatny. Zaproś znajomych — otrzymasz kod pokoju, który przekażesz innym graczom.', joinRoom:'Dołącz do pokoju',
     yourName:'Twoje imię', joinName:'Twoje imię', roomCode:'Kod pokoju',
     createBtn:'🎮 Stwórz pokój', joinBtn:'🚪 Dołącz',
     playersInRoom:'Gracze w pokoju', settings:'Ustawienia',
@@ -39,7 +39,7 @@ const LANGS = {
   },
   en: {
     name:'🇬🇧 EN', gameTitle:'Countries & Cities', gameSubtitle:'Real-time multiplayer',
-    createRoom:'Create Room', joinRoom:'Join Room',
+    createRoom:'Create Room', createDisclaimer:'Create a public or private room. Invite friends — you\'ll get a room code to share with other players.', joinRoom:'Join Room',
     yourName:'Your name', joinName:'Your name', roomCode:'Room code',
     createBtn:'🎮 Create Room', joinBtn:'🚪 Join Room',
     playersInRoom:'Players in room', settings:'Settings',
@@ -77,7 +77,7 @@ const LANGS = {
   },
   de: {
     name:'🇩🇪 DE', gameTitle:'Länder & Städte', gameSubtitle:'Echtzeit-Multiplayer',
-    createRoom:'Raum erstellen', joinRoom:'Raum beitreten',
+    createRoom:'Raum erstellen', createDisclaimer:'Erstelle einen öffentlichen oder privaten Raum. Lade Freunde ein — du bekommst einen Code zum Teilen.', joinRoom:'Raum beitreten',
     yourName:'Dein Name', joinName:'Dein Name', roomCode:'Raumcode',
     createBtn:'🎮 Raum erstellen', joinBtn:'🚪 Beitreten',
     playersInRoom:'Spieler im Raum', settings:'Einstellungen',
@@ -115,7 +115,7 @@ const LANGS = {
   },
   fr: {
     name:'🇫🇷 FR', gameTitle:'Pays & Villes', gameSubtitle:'Multijoueur en temps réel',
-    createRoom:'Créer une salle', joinRoom:'Rejoindre',
+    createRoom:'Créer une salle', createDisclaimer:'Crée une salle publique ou privée. Invite tes amis — tu recevras un code à partager.', joinRoom:'Rejoindre',
     yourName:'Votre nom', joinName:'Votre nom', roomCode:'Code de salle',
     createBtn:'🎮 Créer une salle', joinBtn:'🚪 Rejoindre',
     playersInRoom:'Joueurs dans la salle', settings:'Paramètres',
@@ -153,7 +153,7 @@ const LANGS = {
   },
   es: {
     name:'🇪🇸 ES', gameTitle:'Países y Ciudades', gameSubtitle:'Multijugador en tiempo real',
-    createRoom:'Crear sala', joinRoom:'Unirse',
+    createRoom:'Crear sala', createDisclaimer:'Crea una sala pública o privada. Invita a tus amigos — recibirás un código para compartir.', joinRoom:'Unirse',
     yourName:'Tu nombre', joinName:'Tu nombre', roomCode:'Código de sala',
     createBtn:'🎮 Crear sala', joinBtn:'🚪 Unirse',
     playersInRoom:'Jugadores en la sala', settings:'Ajustes',

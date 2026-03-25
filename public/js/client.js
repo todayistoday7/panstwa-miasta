@@ -723,7 +723,7 @@ function applyTranslations() {
   L = LANGS[lang] || LANGS['pl'];
   const map = {
     'game-title':'gameTitle','game-subtitle':'gameSubtitle',
-    'lbl-create-room':'createRoom','lbl-join-room':'joinRoom',
+    'lbl-create-room':'createRoom','lbl-create-disclaimer':'createDisclaimer','lbl-join-room':'joinRoom',
     'lbl-your-name':'yourName','lbl-join-name':'joinName','lbl-room-code':'roomCode',
     'lbl-create-btn':'createBtn','lbl-join-btn':'joinBtn',
     'lbl-players-in-room':'playersInRoom','lbl-settings':'settings',

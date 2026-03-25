@@ -2,7 +2,8 @@
 // TABOO CLIENT — Team Mode v2 (bug fixes)
 // ═══════════════════════════════════════════════════════
 const socket = io();
-let lang = 'en';
+const _urlLang = new URLSearchParams(window.location.search).get('lang');
+let lang = (['pl','en'].includes(_urlLang) ? _urlLang : 'en');
 let myId = null;
 let myName = '';
 let roomCode = '';
@@ -24,6 +25,8 @@ const LANGS_TABOO = {
     settings: 'Ustawienia', roundsTitle: 'Rundy', timerTitle: 'Czas na turę', langTitle: 'Język',
     startBtn: '🎮 Rozpocznij grę', leaveRoom: '🚪 Wyjdź',
     shareCode: 'Udostępnij ten kod znajomym', copyCode: 'Skopiuj kod',
+    createDisclaimer: 'Stwórz pokój otwarty lub prywatny. Zaproś znajomych — otrzymasz kod pokoju, który przekażesz innym graczom.',
+    createDisclaimer: 'Stwórz pokój otwarty lub prywatny. Zaproś znajomych — otrzymasz kod pokoju, który przekażesz innym graczom.',
     waitingForHost: 'Czekam na hosta...',
     howToPlay: 'Zasady gry',
     minPlayers: '⚠️ Potrzebujesz minimum 4 graczy (2 na drużynę)',
@@ -67,6 +70,8 @@ const LANGS_TABOO = {
     settings: 'Settings', roundsTitle: 'Rounds', timerTitle: 'Time per turn', langTitle: 'Language',
     startBtn: '🎮 Start Game', leaveRoom: '🚪 Leave Room',
     shareCode: 'Share this code with your friends', copyCode: 'Copy Code',
+    createDisclaimer: 'Create a public or private room. Invite friends — you\'ll get a room code to share with other players.',
+    createDisclaimer: 'Create a public or private room. Invite friends — you\'ll get a room code to share with other players.',
     waitingForHost: 'Waiting for host...',
     howToPlay: 'How to play',
     minPlayers: '⚠️ You need at least 4 players (2 per team)',
@@ -548,12 +553,15 @@ function setUiLang(code) {
   document.querySelectorAll('.lang-btn').forEach(b =>
     b.classList.toggle('active', b.textContent === LANGS_TABOO[code].name));
   applyTranslations();
+  // Also update game lang setting if in a room
+  if (roomCode) socket.emit('taboo_update_settings', { code: roomCode, settings: { lang: code, isPublic: getIsPublic() } });
+  if (roomState) applyState(roomState);
 }
 
 function applyTranslations() {
   const map = {
     'game-subtitle':'subtitle',
-    'lbl-create-room':'createRoom','lbl-join-room':'joinRoom',
+    'lbl-create-room':'createRoom','lbl-create-disclaimer':'createDisclaimer','lbl-join-room':'joinRoom',
     'lbl-your-name':'yourName','lbl-join-name':'joinName','lbl-room-code':'roomCode',
     'lbl-create-btn':'createBtn','lbl-join-btn':'joinBtn',
     'lbl-settings':'settings','lbl-rounds-title':'roundsTitle',

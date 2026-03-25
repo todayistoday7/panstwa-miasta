@@ -4,7 +4,8 @@
 'use strict';
 
 const socket = io();
-let lang     = 'en';
+const _urlLang = new URLSearchParams(window.location.search).get('lang');
+let lang     = (['pl','en'].includes(_urlLang) ? _urlLang : 'en');
 let myId     = null;
 let myName   = '';
 let roomCode = '';
@@ -26,6 +27,7 @@ const LANGS = {
     startBtn:     '🎮 Rozpocznij',  leaveRoom:   '🚪 Wyjdź',
     shareCode:    'Udostępnij kod znajomym',
     copyCode:     'Skopiuj kod',
+    createDisclaimer: 'Stwórz pokój otwarty lub prywatny. Zaproś znajomych — otrzymasz kod pokoju, który przekażesz innym graczom.',
     waitingForHost: 'Czekam na hosta...',
     needPlayers:  'Potrzeba minimum 2 graczy',
     howToPlay:    'Zasady gry',
@@ -62,6 +64,7 @@ const LANGS = {
     startBtn:     '🎮 Start Game',  leaveRoom:   '🚪 Leave Room',
     shareCode:    'Share this code with friends',
     copyCode:     'Copy Code',
+    createDisclaimer: 'Create a public or private room. Invite friends — you\'ll get a room code to share with other players.',
     waitingForHost: 'Waiting for host...',
     needPlayers:  'Need at least 2 players',
     howToPlay:    'How to play',
@@ -506,7 +509,7 @@ function doGoHome()     { closeConfirm(); goHome(); }
 
 // ─── LANG BAR ────────────────────────────────────────────────────
 
-function setLang(code) {
+function setUiLang(code) {
   lang = code; L = LANGS[code] || LANGS['en'];
   document.querySelectorAll('.lang-btn').forEach(b =>
     b.classList.toggle('active', b.textContent === LANGS[code].name));
@@ -517,7 +520,7 @@ function setLang(code) {
 function applyTranslations() {
   const map = {
     'game-title':       'gameTitle',   'game-subtitle':    'subtitle',
-    'lbl-create-room':  'createRoom',  'lbl-join-room':    'joinRoom',
+    'lbl-create-room':  'createRoom',  'lbl-create-disclaimer': 'createDisclaimer',  'lbl-join-room':    'joinRoom',
     'lbl-your-name':    'yourName',    'lbl-join-name':    'joinName',
     'lbl-room-code':    'roomCode',    'lbl-create-btn':   'createBtn',
     'lbl-join-btn':     'joinBtn',     'lbl-settings':     'settings',
