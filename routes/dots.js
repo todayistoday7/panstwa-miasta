@@ -131,6 +131,7 @@ function register(io, socket) {
     room.players.push({ id: socket.id, name: name || 'Host', color, connected: true, score: 0 });
     socket.join(room.code);
     socket.emit('dots_room_created', { code: room.code });
+    lobby.announce('dots', room);
     room._lobbyTimer = setTimeout(() => {
       if (dotsRooms[room.code] && dotsRooms[room.code].state.phase === 'lobby') delete dotsRooms[room.code];
     }, 24 * 60 * 60 * 1000);
@@ -277,6 +278,7 @@ function register(io, socket) {
     }
     socket.join(room.code);
     socket.emit('dots_room_joined', { code: room.code });
+    lobby.announce('dots', room);
     emitDotsState(io, room);
   });
 

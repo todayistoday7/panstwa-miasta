@@ -188,6 +188,11 @@ function renderLobby(data) {
   const { players, settings, hostId } = data;
   const isHost    = myId === hostId;
   const connected = players.filter(p => p.connected !== false);
+  // Sync visibility toggle
+  const togWrap = document.getElementById('visibility-toggle');
+  if (togWrap) togWrap.style.pointerEvents = isHost ? 'auto' : 'none';
+  if (togWrap) togWrap.style.opacity = isHost ? '1' : '0.4';
+  if (settings && settings.isPublic !== undefined) setVisibility(settings.isPublic);
 
   const el = document.getElementById('lobby-players');
   el.innerHTML = '';

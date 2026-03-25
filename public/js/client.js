@@ -144,7 +144,13 @@ function applyRoomState(data) {
 // ─── LOBBY ───────────────────────────────────────────────
 function renderLobby(data) {
   const { players, settings } = data;
+  const isHost = players.some(p => p.id === roomCode ? false : p.isHost && p.id === socket.id);
   const el = document.getElementById('lobby-players');
+  // Sync visibility toggle — only host can toggle
+  const _amHost = players.find(p => p.isHost) && players.find(p => p.isHost).id === socket.id;
+  const togWrap = document.getElementById('visibility-toggle');
+  if (togWrap) { togWrap.style.pointerEvents = _amHost ? 'auto' : 'none'; togWrap.style.opacity = _amHost ? '1' : '0.4'; }
+  if (settings && settings.isPublic !== undefined) setVisibility(settings.isPublic);
   el.innerHTML = '';
   players.forEach((p, i) => {
     el.innerHTML += '<div class="lobby-player' + (p.isHost?' host':'') + '">' +

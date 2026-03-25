@@ -249,6 +249,7 @@
     });
     renderCards(l);
     history.replaceState(null, '', '/games?lang=' + l);
+    if (window.hubRerenderRooms) window.hubRerenderRooms();
   }
 
   // Build lang bar
@@ -274,11 +275,11 @@
   var knownCodes = {};
 
   var LIVE_LABELS = {
-    pl: { title: 'Otwarte pokoje na żywo', empty: 'Brak otwartych pokoi. Stwórz pierwszy!', join: 'Dołącz', private: '🔒 Prywatny', players: 'graczy' },
-    en: { title: 'Live Open Rooms',        empty: 'No open rooms right now. Create one!',  join: 'Join',   private: '🔒 Private',   players: 'players' },
-    de: { title: 'Offene Räume live',      empty: 'Keine offenen Räume. Erstelle einen!',  join: 'Beitreten', private: '🔒 Privat', players: 'Spieler' },
-    fr: { title: 'Salles ouvertes en live',empty: 'Aucune salle ouverte. Créez-en une !',  join: 'Rejoindre', private: '🔒 Privé',  players: 'joueurs' },
-    es: { title: 'Salas abiertas en vivo', empty: 'Sin salas abiertas. ¡Crea una!',        join: 'Unirse',    private: '🔒 Privado', players: 'jugadores' },
+    pl: { title: 'Otwarte pokoje na żywo', empty: 'Brak otwartych pokoi. Stwórz pierwszy!', join: 'Dołącz', private: '🔒 Prywatny', players: 'graczy', createdPrivate: 'stworzył prywatny pokój' },
+    en: { title: 'Live Open Rooms',        empty: 'No open rooms right now. Create one!',  join: 'Join',   private: '🔒 Private',   players: 'players', createdPrivate: 'created a private room' },
+    de: { title: 'Offene Räume live',      empty: 'Keine offenen Räume. Erstelle einen!',  join: 'Beitreten', private: '🔒 Privat', players: 'Spieler', createdPrivate: 'hat einen privaten Raum erstellt' },
+    fr: { title: 'Salles ouvertes en live',empty: 'Aucune salle ouverte. Créez-en une !',  join: 'Rejoindre', private: '🔒 Privé',  players: 'joueurs', createdPrivate: 'a créé une salle privée' },
+    es: { title: 'Salas abiertas en vivo', empty: 'Sin salas abiertas. ¡Crea una!',        join: 'Unirse',    private: '🔒 Privado', players: 'jugadores', createdPrivate: 'creó una sala privada' },
   };
 
   hubSocket.on('connect', function() {
@@ -305,7 +306,7 @@
     var openRooms    = rooms.filter(function(r) { return r.isPublic; });
     var privateRooms = rooms.filter(function(r) { return !r.isPublic; });
 
-    if (rooms.length === 0) {
+    if (openRooms.length === 0 && privateRooms.length === 0) {
       list.innerHTML = '<div class="hub-empty-rooms">' + ll.empty + '</div>';
       return;
     }
@@ -341,7 +342,7 @@
             '<div class="hub-room-icon">' + room.gameIcon + '</div>' +
             '<div class="hub-room-info">' +
               '<div class="hub-room-game">' + room.gameName + '</div>' +
-              '<div class="hub-room-meta">' + room.hostMasked + ' created a private room</div>' +
+              '<div class="hub-room-meta">' + room.hostMasked + ' ' + (ll.createdPrivate || 'created a private room') + '</div>' +
             '</div>' +
             '<span class="hub-room-private">' + ll.private + '</span>' +
           '</div>';

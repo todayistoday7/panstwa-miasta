@@ -281,6 +281,7 @@ function register(io, socket) {
     }
     socket.join(room.code);
     socket.emit('tt_room_joined', { code: room.code });
+    lobby.announce('twotruth', room);
     emitTTState(io, room);
   });
 

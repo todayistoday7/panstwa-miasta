@@ -161,18 +161,18 @@ var _isPublic = false;
 
 function getIsPublic() { return _isPublic; }
 
-function toggleVisibility() {
-  _isPublic = !_isPublic;
+function setVisibility(isPublic) {
+  _isPublic = !!isPublic;
   var priv = document.getElementById('vis-private');
   var pub  = document.getElementById('vis-public');
   if (priv) priv.classList.toggle('active', !_isPublic);
-  if (pub)  pub.classList.toggle('active',  _isPublic);
-  // Trigger game-specific settings update
+  if (pub)  pub.classList.toggle('active',   _isPublic);
   if (typeof updateSettings === 'function') updateSettings();
 }
 
+// Keep toggleVisibility as alias for backward compat (not used in new HTML)
+function toggleVisibility() { setVisibility(!_isPublic); }
+
 function initVisibilityToggle() {
-  // Set private as default active
-  var priv = document.getElementById('vis-private');
-  if (priv) priv.classList.add('active');
+  setVisibility(false); // default: private
 }

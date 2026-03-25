@@ -145,6 +145,7 @@ function register(io, socket) {
     room.players.push({ id: socket.id, name: name || 'Host', connected: true });
     socket.join(room.code);
     socket.emit('taboo_room_created', { code: room.code });
+    lobby.announce('taboo', room);
     room._lobbyTimer = setTimeout(() => {
       if (tabooRooms[room.code] && tabooRooms[room.code].state.phase === 'lobby') delete tabooRooms[room.code];
     }, 24 * 60 * 60 * 1000);
@@ -303,6 +304,7 @@ function register(io, socket) {
     if (room.state.phase === 'playing') {
       socket.emit('taboo_timer_tick', { remaining: room.state.turnTimeRemaining });
     }
+    lobby.announce('taboo', room);
     emitTabooState(io, room);
   });
 

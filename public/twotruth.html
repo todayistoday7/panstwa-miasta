@@ -225,9 +225,9 @@
         <label class="field-label" id="lbl-lang-title">Language</label>
         <div class="lang-pills" id="lobby-lang-pills"></div>
         <label class="field-label" style="margin-top:14px;" id="lbl-room-visibility">Room visibility</label>
-        <div class="visibility-toggle" id="visibility-toggle" onclick="toggleVisibility()">
-          <div class="vis-option" id="vis-private" style="border-radius:8px 0 0 8px;">🔒 <span id="lbl-vis-private">Private</span></div>
-          <div class="vis-option" id="vis-public"  style="border-radius:0 8px 8px 0;">🌐 <span id="lbl-vis-public">Public</span></div>
+        <div class="visibility-toggle" id="visibility-toggle">
+          <div class="vis-option" id="vis-private" style="border-radius:8px 0 0 8px;" onclick="setVisibility(false)">🔒 <span id="lbl-vis-private">Private</span></div>
+          <div class="vis-option" id="vis-public"  style="border-radius:0 8px 8px 0;" onclick="setVisibility(true)">🌐 <span id="lbl-vis-public">Public</span></div>
         </div>
         <p id="lbl-vis-hint" style="font-size:11px;color:var(--muted);margin-top:6px;font-weight:700;"></p>
       </div>
