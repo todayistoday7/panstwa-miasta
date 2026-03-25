@@ -1,0 +1,258 @@
+/* ══ WAVELENGTH STYLES ══ */
+
+/* ─── DIAL ────────────────────────────────────────────── */
+.wave-game-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0 16px;
+}
+
+.wave-dial-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  touch-action: none;
+  user-select: none;
+}
+
+.wave-dial-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  cursor: pointer;
+}
+
+/* ─── CARD ────────────────────────────────────────────── */
+.wave-card {
+  background: var(--card);
+  border: 2px solid var(--accent);
+  border-radius: 18px;
+  padding: 20px 28px;
+  text-align: center;
+  margin-bottom: 16px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 0 30px rgba(255,107,53,0.12);
+}
+
+.wave-card-spectrum {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.wave-card-side {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(22px, 5vw, 32px);
+  letter-spacing: 2px;
+  line-height: 1.1;
+  flex: 1;
+}
+
+.wave-card-side.left  { color: var(--accent);  text-align: left; }
+.wave-card-side.right { color: var(--accent2); text-align: right; }
+
+.wave-card-arrow {
+  color: var(--muted);
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+/* ─── CLUE DISPLAY ────────────────────────────────────── */
+.wave-clue-display {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(28px, 7vw, 48px);
+  letter-spacing: 4px;
+  color: var(--accent2);
+  text-align: center;
+  padding: 12px 0 4px;
+  min-height: 60px;
+}
+
+.wave-clue-hint {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+/* ─── CLUE INPUT (psychic) ────────────────────────────── */
+.wave-clue-input-wrap {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.wave-clue-input {
+  flex: 1;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 3px;
+  padding: 10px 16px;
+  outline: none;
+  text-transform: uppercase;
+}
+
+.wave-clue-input::placeholder {
+  color: var(--muted);
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+
+/* ─── ROLE BANNER ─────────────────────────────────────── */
+.wave-role-banner {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 3px;
+  text-align: center;
+  padding: 8px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  margin-bottom: 12px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.wave-role-banner.psychic {
+  border-color: var(--accent2);
+  color: var(--accent2);
+  background: rgba(255,209,102,0.08);
+}
+
+.wave-role-banner.guesser {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(255,107,53,0.07);
+}
+
+/* ─── GUESS COUNT BAR ─────────────────────────────────── */
+.wave-guess-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 8px 0;
+}
+
+.wave-guess-pip {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  transition: all 0.2s;
+}
+
+.wave-guess-pip.done {
+  background: var(--green);
+  border-color: var(--green);
+}
+
+/* ─── SCOREBOARD ──────────────────────────────────────── */
+.wave-scoreboard {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 12px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.wave-score-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 800;
+  transition: border-color 0.2s;
+}
+
+.wave-score-chip.psychic-turn {
+  border-color: var(--accent2);
+  color: var(--accent2);
+}
+
+.wave-score-pts {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 1px;
+  color: var(--accent);
+}
+
+/* ─── ROUND RESULT ────────────────────────────────────── */
+.wave-result-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-radius: 10px;
+  margin-bottom: 7px;
+  border: 1px solid var(--border);
+  width: 100%;
+  max-width: 480px;
+}
+
+.wave-result-pts {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 2px;
+}
+
+.wave-pts-4 { color: #ffd166; }
+.wave-pts-3 { color: #06d6a0; }
+.wave-pts-2 { color: #4dabf7; }
+.wave-pts-1 { color: var(--muted); }
+.wave-pts-0 { color: var(--border); }
+
+/* ─── FINAL SCREEN ────────────────────────────────────── */
+.wave-final-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--surface);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  border: 2px solid var(--border);
+  width: 100%;
+  max-width: 480px;
+}
+
+.wave-final-row.winner {
+  border-color: var(--accent2);
+  background: rgba(255,209,102,0.06);
+}
+
+.wave-final-pts {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  letter-spacing: 2px;
+  color: var(--accent2);
+}
+
+/* ─── MOBILE ──────────────────────────────────────────── */
+@media (max-width: 500px) {
+  .wave-card { padding: 14px 16px; }
+  .wave-clue-input { font-size: 20px; }
+}

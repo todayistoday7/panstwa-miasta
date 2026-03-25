@@ -13,14 +13,16 @@ const compression = require('compression');
 
 const pm    = require('./routes/pm');
 const taboo = require('./routes/taboo');
-const dots  = require('./routes/dots');
+const dots       = require('./routes/dots');
+const wavelength = require('./routes/wavelength');
 
 const app = express();
 app.use(compression());
 
 // ─── STATIC + PAGE ROUTES ────────────────────────────────
 app.get('/taboo', (req, res) => res.sendFile(path.join(__dirname, 'public/taboo.html')));
-app.get('/dots',  (req, res) => res.sendFile(path.join(__dirname, 'public/dots.html')));
+app.get('/dots',        (req, res) => res.sendFile(path.join(__dirname, 'public/dots.html')));
+app.get('/wavelength',  (req, res) => res.sendFile(path.join(__dirname, 'public/wavelength.html')));
 app.get('/games', (req, res) => res.sendFile(path.join(__dirname, 'public/games.html')));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -29,7 +31,8 @@ app.get('/health', (req, res) => res.json({
   status: 'ok',
   pm_rooms:    pm.getRoomCount(),
   taboo_rooms: taboo.getTabooRoomCount(),
-  dots_rooms:  dots.getDotsRoomCount(),
+  dots_rooms:       dots.getDotsRoomCount(),
+  wavelength_rooms: wavelength.getWaveRoomCount(),
 }));
 
 app.get('/room/:code', (req, res) => {
@@ -52,6 +55,7 @@ io.on('connection', (socket) => {
   pm.register(io, socket);
   taboo.register(io, socket);
   dots.register(io, socket);
+  wavelength.register(io, socket);
 });
 
 // ─── START ───────────────────────────────────────────────
