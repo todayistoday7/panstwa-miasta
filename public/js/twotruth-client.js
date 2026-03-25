@@ -497,7 +497,7 @@ function createRoom() {
   const name = document.getElementById('host-name').value.trim();
   if (!name) { showError(lang === 'pl' ? 'Wpisz swoje imię!' : 'Enter your name!'); return; }
   myName = name;
-  socket.emit('tt_create', { name, settings: { lang } });
+  socket.emit('tt_create', { name, settings: { lang, isPublic: getIsPublic() } });
 }
 
 function joinRoom() {
@@ -514,7 +514,7 @@ function startGame() { socket.emit('tt_start', { code: roomCode }); }
 function setGameLang(code) {
   lang = code; L = LANGS[code] || LANGS['en'];
   applyTranslations();
-  socket.emit('tt_update_settings', { code: roomCode, settings: { lang: code } });
+  socket.emit('tt_update_settings', { code: roomCode, settings: { lang: code, isPublic: getIsPublic() } });
 }
 
 function copyRoomCode() {
@@ -566,3 +566,4 @@ function applyTranslations() {
 buildLangBar();
 applyTranslations();
 prefillJoinCode();
+initVisibilityToggle();

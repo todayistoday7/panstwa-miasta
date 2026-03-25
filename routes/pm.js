@@ -2,6 +2,7 @@
 // PAŃSTWA-MIASTA — Game Logic
 // ════════════════════════════════════════════════════════
 'use strict';
+const lobby = require('./lobby');
 
 const rooms   = {};
 const ALPHABET = 'ABCDEFGHIJKLMNOPRSTUWZ'.split('');
@@ -18,11 +19,13 @@ function makeRoom(hostId, settings) {
   const code = generateCode();
   rooms[code] = {
     code, hostId,
+    isPublic: settings.isPublic || false,
     settings: {
       totalRounds: settings.totalRounds || 5,
       gracePeriod: settings.gracePeriod || 20,
       categories:  settings.categories  || ['Country','City','Animal','Plant','Thing','Name','Color','Job'],
       lang:        settings.lang        || 'en',
+      isPublic:    settings.isPublic    || false,
     },
     players: [],
     state: {
@@ -174,6 +177,7 @@ function endGame(io, room) {
   room.state.phase = 'final';
   emitRoomState(io, room);
   // 1h after game ends, delete room so code can't be reused
+  lobby.remove(room.code);
   setTimeout(() => { if (rooms[room.code]) delete rooms[room.code]; }, 60 * 60 * 1000);
 }
 
@@ -192,6 +196,7 @@ function register(io, socket) {
     room._lobbyTimer = setTimeout(() => {
       if (rooms[room.code] && rooms[room.code].state.phase === 'lobby') delete rooms[room.code];
     }, 24 * 60 * 60 * 1000);
+    lobby.announce('pm', room);
     emitRoomState(io, room);
   });
 
@@ -226,6 +231,7 @@ function register(io, socket) {
     }
     socket.join(room.code);
     socket.emit('room_joined', { code: room.code, isHost: socket.id === room.hostId });
+    lobby.announce('pm', room);
     emitRoomState(io, room);
   });
 
@@ -252,6 +258,8 @@ function register(io, socket) {
     const room = getRoom(code);
     if (!room || room.state.phase !== 'lobby') return;
     room.settings = { ...room.settings, ...settings };
+    if (settings.isPublic !== undefined) room.isPublic = settings.isPublic;
+    lobby.announce('pm', room);
     emitRoomState(io, room);
   });
 
@@ -263,6 +271,7 @@ function register(io, socket) {
     }
     if (room._lobbyTimer) { clearTimeout(room._lobbyTimer); room._lobbyTimer = null; }
     if (room._lobbyTimer) { clearTimeout(room._lobbyTimer); room._lobbyTimer = null; }
+    lobby.remove(room.code);
     room.state.phase            = 'drawing';
     room.state.round            = 0;
     room.state.usedLetters      = [];
@@ -451,7 +460,7 @@ function register(io, socket) {
         io.to(room.code).emit('player_disconnected', { playerId: socket.id, name: p.name });
         emitRoomState(io, room);
         const allGone = room.players.every(p => !p.connected);
-        if (allGone) setTimeout(() => { if (rooms[code]) delete rooms[code]; }, 30 * 60 * 1000);
+        if (allGone) { lobby.remove(code); setTimeout(() => { if (rooms[code]) delete rooms[code]; }, 30 * 60 * 1000); }
         break;
       }
     }

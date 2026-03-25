@@ -191,21 +191,21 @@ function toggleCat(cat, el) {
   const idx = cats.indexOf(cat);
   if (idx >= 0) { if (cats.length <= 3) return; cats.splice(idx,1); }
   else cats.push(cat);
-  socket.emit('update_settings', { code: roomCode, settings: { categories: cats } });
+  socket.emit('update_settings', { code: roomCode, settings: { categories: cats, isPublic: getIsPublic() } });
 }
 
 function setGameLang(code) {
   lang = code; L = LANGS[code];
   applyTranslations();
 prefillJoinCode();
-  socket.emit('update_settings', { code: roomCode, settings: { lang: code, categories: L.cats.slice(0,8) } });
+  socket.emit('update_settings', { code: roomCode, settings: { lang: code, categories: L.cats.slice(0,8), isPublic: getIsPublic() } });
 }
 
 function updateSettings() {
   const rounds = parseInt(document.getElementById('settings-rounds').value);
   const graceEl = document.getElementById('settings-grace');
   const grace = graceEl ? parseInt(graceEl.value) : 20;
-  socket.emit('update_settings', { code: roomCode, settings: { totalRounds: rounds, gracePeriod: grace } });
+  socket.emit('update_settings', { code: roomCode, settings: { totalRounds: rounds, gracePeriod: grace, isPublic: getIsPublic() } });
 }
 
 // ─── DRAWING SCREEN ───────────────────────────────────────────────
@@ -638,7 +638,7 @@ function createRoom() {
   const name = document.getElementById('host-name').value.trim();
   if (!name) { showError('Enter your name!'); return; }
   myName = name; isHost = true;
-  socket.emit('create_room', { name, settings: { totalRounds: 5, categories: L.cats.slice(0,8), lang } });
+  socket.emit('create_room', { name, settings: { totalRounds: 5, categories: L.cats.slice(0,8), lang, isPublic: getIsPublic() } });
 }
 
 function joinRoom() {

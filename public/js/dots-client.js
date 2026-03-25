@@ -470,7 +470,7 @@ function createRoom() {
   const name = document.getElementById('host-name').value.trim();
   if (!name) { showError(lang === 'pl' ? 'Wpisz swoje imię!' : 'Enter your name!'); return; }
   myName = name;
-  socket.emit('dots_create', { name, settings: { gridSize: 4, maxPlayers: 4 } });
+  socket.emit('dots_create', { name, settings: { gridSize: 4, maxPlayers: 4, isPublic: getIsPublic() } });
 }
 
 function joinRoom() {
@@ -488,7 +488,7 @@ function rematch()   { socket.emit('dots_rematch', { code: roomCode }); }
 function updateSettings() {
   const gridSize  = parseInt(document.getElementById('settings-grid').value);
   const maxPlayers = parseInt(document.getElementById('settings-maxplayers').value);
-  socket.emit('dots_update_settings', { code: roomCode, settings: { gridSize, maxPlayers } });
+  socket.emit('dots_update_settings', { code: roomCode, settings: { gridSize, maxPlayers, isPublic: getIsPublic() } });
 }
 
 
@@ -545,4 +545,5 @@ function svgEl(tag, attrs) {
 // ─── INIT ────────────────────────────────────────────────────────
 buildLangBar();
 applyTranslations();
+initVisibilityToggle();
 prefillJoinCode();

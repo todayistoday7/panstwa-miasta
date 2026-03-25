@@ -15,6 +15,7 @@ const pm    = require('./routes/pm');
 const taboo = require('./routes/taboo');
 const dots       = require('./routes/dots');
 const twotruth   = require('./routes/twotruth');
+const lobbyHub   = require('./routes/lobby');
 
 const app = express();
 app.use(compression());
@@ -50,6 +51,8 @@ const io     = new Server(server, {
   pingTimeout:   60000,
   pingInterval:  25000,
 });
+
+lobbyHub.init(io);
 
 io.on('connection', (socket) => {
   pm.register(io, socket);

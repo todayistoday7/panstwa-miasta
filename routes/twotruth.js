@@ -5,6 +5,7 @@
 // Scoring: correct vote = 1pt · fooling others = 1pt per person fooled
 // ════════════════════════════════════════════════════════
 'use strict';
+const lobby = require('./lobby');
 
 const ttRooms = {};
 
@@ -20,8 +21,10 @@ function makeTTRoom(hostId, settings) {
   const code = generateTTCode();
   ttRooms[code] = {
     code, hostId,
+    isPublic: settings.isPublic || false,
     settings: {
-      lang: settings.lang || 'en',
+      lang:     settings.lang     || 'en',
+      isPublic: settings.isPublic || false,
     },
     players: [],
     state: {
@@ -123,6 +126,7 @@ function register(io, socket) {
     room.state.totalScores[socket.id] = 0;
     socket.join(room.code);
     socket.emit('tt_room_created', { code: room.code });
+    lobby.announce('twotruth', room);
     room._lobbyTimer = setTimeout(() => {
       if (ttRooms[room.code] && ttRooms[room.code].state.phase === 'lobby')
         delete ttRooms[room.code];
@@ -149,6 +153,7 @@ function register(io, socket) {
     }
     socket.join(room.code);
     socket.emit('tt_room_joined', { code: room.code });
+    lobby.announce('twotruth', room);
     emitTTState(io, room);
   });
 
@@ -156,6 +161,8 @@ function register(io, socket) {
     const room = getTTRoom(code);
     if (!room || socket.id !== room.hostId) return;
     room.settings = { ...room.settings, ...settings };
+    if (settings.isPublic !== undefined) room.isPublic = settings.isPublic;
+    lobby.announce('twotruth', room);
     emitTTState(io, room);
   });
 
@@ -166,6 +173,7 @@ function register(io, socket) {
       socket.emit('tt_error', { msg: 'Need at least 3 players.' }); return;
     }
     if (room._lobbyTimer) { clearTimeout(room._lobbyTimer); room._lobbyTimer = null; }
+    lobby.remove(room.code);
     room.state.phase        = 'writing';
     room.state.activeIndex  = 0;
     room.state.roundsPlayed = 0;
@@ -242,6 +250,7 @@ function register(io, socket) {
     // Check if everyone has had a turn
     if (room.state.roundsPlayed >= connected.length) {
       room.state.phase = 'final';
+      lobby.remove(room.code);
       emitTTState(io, room);
       return;
     }

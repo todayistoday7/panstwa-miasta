@@ -468,3 +468,158 @@ header p { color:var(--muted); font-size:14px; margin-top:4px; font-weight:600; 
     text-align: center;
   }
 }
+
+/* ══ VISIBILITY TOGGLE ══ */
+.visibility-toggle {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.vis-option {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  background: var(--surface);
+  color: var(--muted);
+  transition: all 0.2s;
+  user-select: none;
+}
+.vis-option.active {
+  background: rgba(255,107,53,0.15);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.vis-option:hover:not(.active) { background: var(--card); }
+
+/* ══ HUB LIVE ROOMS ══ */
+.hub-live-section {
+  margin-top: 36px;
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+}
+.hub-live-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hub-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: livePulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes livePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.7); }
+}
+.hub-empty-rooms {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  padding: 24px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+}
+.hub-room-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+  animation: fadeIn 0.4s ease;
+}
+.hub-room-card.new-room {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(255,107,53,0.15);
+  animation: roomPop 0.5s ease, roomPulse 2.5s ease 0.5s infinite;
+}
+@keyframes roomPop {
+  0%   { transform: scale(0.96); opacity: 0; }
+  60%  { transform: scale(1.02); }
+  100% { transform: scale(1);    opacity: 1; }
+}
+@keyframes roomPulse {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(255,107,53,0.15); }
+  50%       { box-shadow: 0 0 0 5px rgba(255,107,53,0.08); }
+}
+.hub-room-icon { font-size: 28px; flex-shrink: 0; }
+.hub-room-info { flex: 1; min-width: 0; }
+.hub-room-game {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  line-height: 1;
+}
+.hub-room-meta {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hub-room-code {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 4px;
+  color: var(--accent2);
+  flex-shrink: 0;
+}
+.hub-room-join-btn {
+  background: linear-gradient(135deg, var(--accent), #ff8c55);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+  transition: transform 0.15s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.hub-room-join-btn:hover { transform: translateY(-1px); }
+.hub-room-private {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  flex-shrink: 0;
+}
+.hub-room-players {
+  font-size: 11px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2px 8px;
+  color: var(--muted);
+  font-weight: 700;
+  flex-shrink: 0;
+}

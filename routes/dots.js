@@ -2,6 +2,7 @@
 // DOTS AND BOXES — Game Logic
 // ════════════════════════════════════════════════════════
 'use strict';
+const lobby = require('./lobby');
 
 const dotsRooms = {};
 
@@ -32,6 +33,7 @@ function makeDotsRoom(hostId, settings) {
   const n    = settings.gridSize || 4;
   dotsRooms[code] = {
     code, hostId,
+    isPublic: settings.isPublic || false,
     settings: { gridSize: n, maxPlayers: settings.maxPlayers || 4 },
     players: [],     // { id, name, color, connected, score }
     state: {
@@ -156,6 +158,7 @@ function register(io, socket) {
     }
     socket.join(room.code);
     socket.emit('dots_room_joined', { code: room.code });
+    lobby.announce('dots', room);
     emitDotsState(io, room);
   });
 
@@ -164,8 +167,10 @@ function register(io, socket) {
     if (!room || socket.id !== room.hostId || room.state.phase !== 'lobby') return;
     const n = settings.gridSize || room.settings.gridSize;
     room.settings = { ...room.settings, ...settings, gridSize: n };
+    if (settings.isPublic !== undefined) room.isPublic = settings.isPublic;
     room.state.grid       = makeGrid(n);
     room.state.totalBoxes = n * n;
+    lobby.announce('dots', room);
     emitDotsState(io, room);
   });
 
@@ -177,6 +182,7 @@ function register(io, socket) {
     }
     const n = room.settings.gridSize;
     if (room._lobbyTimer) { clearTimeout(room._lobbyTimer); room._lobbyTimer = null; }
+    lobby.remove(room.code);
     room.state.phase         = 'playing';
     room.state.grid          = makeGrid(n);
     room.state.totalBoxes    = n * n;
@@ -224,6 +230,7 @@ function register(io, socket) {
     if (room.state.claimedBoxes >= room.state.totalBoxes) {
       room.state.phase = 'final';
       emitDotsState(io, room);
+      lobby.remove(room.code);
       setTimeout(() => { if (dotsRooms[room.code]) delete dotsRooms[room.code]; }, 60 * 60 * 1000);
       return;
     }
@@ -241,6 +248,7 @@ function register(io, socket) {
     if (!room || socket.id !== room.hostId) return;
     const n = room.settings.gridSize;
     if (room._lobbyTimer) { clearTimeout(room._lobbyTimer); room._lobbyTimer = null; }
+    lobby.remove(room.code);
     room.state.phase         = 'playing';
     room.state.grid          = makeGrid(n);
     room.state.claimedBoxes  = 0;
@@ -291,7 +299,7 @@ function register(io, socket) {
       emitDotsState(io, room);
 
       const allGone = room.players.every(pl => !pl.connected);
-      if (allGone) setTimeout(() => { if (dotsRooms[code]) delete dotsRooms[code]; }, 30 * 60 * 1000);
+      if (allGone) { lobby.remove(code); setTimeout(() => { if (dotsRooms[code]) delete dotsRooms[code]; }, 30 * 60 * 1000); }
       break;
     }
   });

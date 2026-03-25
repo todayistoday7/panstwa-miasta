@@ -462,7 +462,7 @@ function createRoom() {
   const name = document.getElementById('host-name').value.trim();
   if (!name) { showError(lang === 'pl' ? 'Wpisz swoje imię!' : 'Enter your name!'); return; }
   myName = name;
-  socket.emit('taboo_create', { name, settings: { rounds: 5, turnTime: 60, lang } });
+  socket.emit('taboo_create', { name, settings: { rounds: 5, turnTime: 60, lang, isPublic: getIsPublic() } });
 }
 
 function joinRoom() {
@@ -478,7 +478,7 @@ function startGame()    { socket.emit('taboo_start', { code: roomCode }); }
 function updateSettings() {
   const rounds   = parseInt(document.getElementById('settings-rounds').value);
   const turnTime = parseInt(document.getElementById('settings-timer').value);
-  socket.emit('taboo_update_settings', { code: roomCode, settings: { rounds, turnTime, lang } });
+  socket.emit('taboo_update_settings', { code: roomCode, settings: { rounds, turnTime, lang, isPublic: getIsPublic() } });
 }
 
 function setLang(code) {
@@ -603,4 +603,5 @@ function showToast(msg) {
 // ─── INIT ────────────────────────────────────────────────────────
 buildLangBar();
 applyTranslations();
+initVisibilityToggle();
 prefillJoinCode();

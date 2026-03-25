@@ -2,6 +2,7 @@
 // TABOO — Game Logic (Team Mode)
 // ════════════════════════════════════════════════════════
 'use strict';
+const lobby = require('./lobby');
 
 const tabooRooms = {};
 
@@ -17,10 +18,12 @@ function makeTabooRoom(hostId, settings) {
   const code = generateTabooCode();
   tabooRooms[code] = {
     code, hostId,
+    isPublic: settings.isPublic || false,
     settings: {
       rounds:   settings.rounds   || 5,
       turnTime: settings.turnTime || 60,
       lang:     settings.lang     || 'en',
+      isPublic: settings.isPublic || false,
     },
     players: [],
     state: {
@@ -168,6 +171,7 @@ function register(io, socket) {
     socket.join(room.code);
     socket.emit('taboo_room_joined', { code: room.code });
     assignTeams(room);
+    lobby.announce('taboo', room);
     emitTabooState(io, room);
   });
 
@@ -175,6 +179,8 @@ function register(io, socket) {
     const room = getTabooRoom(code);
     if (!room || socket.id !== room.hostId) return;
     room.settings = { ...room.settings, ...settings };
+    if (settings.isPublic !== undefined) room.isPublic = settings.isPublic;
+    lobby.announce('taboo', room);
     emitTabooState(io, room);
   });
 
@@ -201,6 +207,7 @@ function register(io, socket) {
     room.state.blueDescriberIndex = 0;
     room.state.describerTeam      = 'red';
     assignTeams(room);
+    lobby.remove(room.code);
     startTabooTurn(io, room);
   });
 
@@ -259,6 +266,7 @@ function register(io, socket) {
       if (room.state.turnTimer) clearInterval(room.state.turnTimer);
       room.state.phase = 'final';
       emitTabooState(io, room);
+      lobby.remove(room.code);
       setTimeout(() => { if (tabooRooms[room.code]) delete tabooRooms[room.code]; }, 60 * 60 * 1000);
     } else {
       startTabooTurn(io, room);

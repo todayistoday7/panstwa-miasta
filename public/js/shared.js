@@ -153,3 +153,26 @@ function prefillJoinCode() {
     if (joinCard) joinCard.focus();
   }
 }
+
+// ─── ROOM VISIBILITY TOGGLE ──────────────────────────────────────
+// Shared toggle for private/public rooms.
+// Each game's updateSettings() must read getIsPublic() and include it.
+var _isPublic = false;
+
+function getIsPublic() { return _isPublic; }
+
+function toggleVisibility() {
+  _isPublic = !_isPublic;
+  var priv = document.getElementById('vis-private');
+  var pub  = document.getElementById('vis-public');
+  if (priv) priv.classList.toggle('active', !_isPublic);
+  if (pub)  pub.classList.toggle('active',  _isPublic);
+  // Trigger game-specific settings update
+  if (typeof updateSettings === 'function') updateSettings();
+}
+
+function initVisibilityToggle() {
+  // Set private as default active
+  var priv = document.getElementById('vis-private');
+  if (priv) priv.classList.add('active');
+}

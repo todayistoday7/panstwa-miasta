@@ -36,6 +36,73 @@
   .coming-badge { display:inline-block; background:var(--surface); border:1px solid var(--border); color:var(--muted); font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; letter-spacing:2px; }
   .back-link { display:inline-flex; align-items:center; gap:8px; color:var(--muted); font-weight:700; font-size:13px; text-decoration:none; margin-bottom:16px; }
   .back-link:hover { color:var(--accent); }
+
+  /* ══ LIVE ROOMS SECTION ══ */
+  .hub-live-section { margin-top: 36px; }
+  .hub-live-title {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 22px;
+    letter-spacing: 3px; color: var(--text); margin-bottom: 14px;
+  }
+  .hub-live-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 0 rgba(6,214,160,0.6);
+    animation: hub-pulse 2s ease-in-out infinite;
+  }
+  @keyframes hub-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(6,214,160,0.6); }
+    70%  { box-shadow: 0 0 0 8px rgba(6,214,160,0); }
+    100% { box-shadow: 0 0 0 0 rgba(6,214,160,0); }
+  }
+  .hub-empty-rooms {
+    color: var(--muted); font-size: 14px; font-weight: 700;
+    text-align: center; padding: 24px 0; font-style: italic;
+  }
+  .hub-room-card {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px 16px; margin-bottom: 10px;
+    transition: border-color 0.2s;
+  }
+  .hub-room-card.new-room {
+    border-color: var(--green);
+    animation: hub-newroom 3s ease-out forwards;
+  }
+  @keyframes hub-newroom {
+    0%   { box-shadow: 0 0 0 0 rgba(6,214,160,0.5); }
+    50%  { box-shadow: 0 0 0 10px rgba(6,214,160,0); }
+    100% { box-shadow: none; }
+  }
+  .hub-room-card.private-room { opacity: 0.65; }
+  .hub-room-icon { font-size: 28px; flex-shrink: 0; }
+  .hub-room-info { flex: 1; min-width: 0; }
+  .hub-room-game { font-weight: 900; font-size: 14px; color: var(--accent); }
+  .hub-room-meta { font-size: 12px; color: var(--muted); font-weight: 700; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hub-room-players { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--muted); letter-spacing: 2px; flex-shrink: 0; }
+  .hub-room-code {
+    font-family: 'Bebas Neue', sans-serif; font-size: 20px;
+    letter-spacing: 4px; color: var(--accent2);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 4px 10px; flex-shrink: 0;
+  }
+  .hub-room-join-btn {
+    background: linear-gradient(135deg, var(--accent), #ff8c55);
+    color: #fff; font-weight: 900; font-size: 13px;
+    padding: 8px 16px; border-radius: 8px; text-decoration: none;
+    letter-spacing: 1px; text-transform: uppercase; flex-shrink: 0;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .hub-room-join-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,107,53,0.35); }
+  .hub-room-private {
+    font-size: 12px; font-weight: 700; color: var(--muted);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 4px 10px; flex-shrink: 0;
+  }
+  @media (max-width: 480px) {
+    .hub-room-code { display: none; }
+    .hub-room-players { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -70,6 +137,17 @@
   </div>
 
   <div id="games-grid" class="games-grid">
+  </div>
+
+  <!-- ══ LIVE ROOMS SECTION ══ -->
+  <div class="hub-live-section" id="hub-live-section">
+    <div class="hub-live-title">
+      <div class="hub-live-dot"></div>
+      <span id="hub-live-title-text">Live Rooms</span>
+    </div>
+    <div id="hub-rooms-list">
+      <div class="hub-empty-rooms" id="hub-empty-msg">No open rooms right now. Create one!</div>
+    </div>
   </div>
 </div>
 
@@ -187,6 +265,96 @@
   document.querySelector('.container').insertBefore(bar, document.querySelector('.container').firstChild);
 
   applyLang(lang);
+})();
+</script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+(function() {
+  var hubSocket = io();
+  var knownCodes = {};
+
+  var LIVE_LABELS = {
+    pl: { title: 'Otwarte pokoje na żywo', empty: 'Brak otwartych pokoi. Stwórz pierwszy!', join: 'Dołącz', private: '🔒 Prywatny', players: 'graczy' },
+    en: { title: 'Live Open Rooms',        empty: 'No open rooms right now. Create one!',  join: 'Join',   private: '🔒 Private',   players: 'players' },
+    de: { title: 'Offene Räume live',      empty: 'Keine offenen Räume. Erstelle einen!',  join: 'Beitreten', private: '🔒 Privat', players: 'Spieler' },
+    fr: { title: 'Salles ouvertes en live',empty: 'Aucune salle ouverte. Créez-en une !',  join: 'Rejoindre', private: '🔒 Privé',  players: 'joueurs' },
+    es: { title: 'Salas abiertas en vivo', empty: 'Sin salas abiertas. ¡Crea una!',        join: 'Unirse',    private: '🔒 Privado', players: 'jugadores' },
+  };
+
+  hubSocket.on('connect', function() {
+    hubSocket.emit('hub_watch');
+  });
+
+  hubSocket.on('hub_rooms', function(rooms) {
+    renderRooms(rooms);
+  });
+
+  function renderRooms(rooms) {
+    var currentLang = (typeof lang !== 'undefined' ? lang : 'en') || 'en';
+    var ll = LIVE_LABELS[currentLang] || LIVE_LABELS['en'];
+
+    // Update section title
+    var titleEl = document.getElementById('hub-live-title-text');
+    if (titleEl) titleEl.textContent = ll.title;
+
+    var list  = document.getElementById('hub-rooms-list');
+    var empty = document.getElementById('hub-empty-msg');
+    if (!list) return;
+
+    // Separate open vs private
+    var openRooms    = rooms.filter(function(r) { return r.isPublic; });
+    var privateRooms = rooms.filter(function(r) { return !r.isPublic; });
+
+    if (rooms.length === 0) {
+      list.innerHTML = '<div class="hub-empty-rooms">' + ll.empty + '</div>';
+      return;
+    }
+
+    var html = '';
+
+    // Open rooms first
+    openRooms.forEach(function(room) {
+      var isNew = !knownCodes[room.code];
+      knownCodes[room.code] = true;
+      html +=
+        '<div class="hub-room-card' + (isNew ? ' new-room' : '') + '">' +
+          '<div class="hub-room-icon">' + room.gameIcon + '</div>' +
+          '<div class="hub-room-info">' +
+            '<div class="hub-room-game">' + room.gameName + '</div>' +
+            '<div class="hub-room-meta">' +
+              room.hostName + ' · ' +
+              room.players + '/' + room.maxPlayers + ' ' + ll.players +
+              (room.lang ? ' · ' + room.lang.toUpperCase() : '') +
+            '</div>' +
+          '</div>' +
+          '<span class="hub-room-players">' + room.players + '/' + room.maxPlayers + '</span>' +
+          '<div class="hub-room-code">' + room.code + '</div>' +
+          '<a href="' + room.gameSlug + '?join=' + room.code + '" class="hub-room-join-btn">' + ll.join + '</a>' +
+        '</div>';
+    });
+
+    // Private rooms (masked, no join button)
+    if (privateRooms.length > 0) {
+      privateRooms.forEach(function(room) {
+        html +=
+          '<div class="hub-room-card">' +
+            '<div class="hub-room-icon">' + room.gameIcon + '</div>' +
+            '<div class="hub-room-info">' +
+              '<div class="hub-room-game">' + room.gameName + '</div>' +
+              '<div class="hub-room-meta">' + room.hostMasked + ' created a private room</div>' +
+            '</div>' +
+            '<span class="hub-room-private">' + ll.private + '</span>' +
+          '</div>';
+      });
+    }
+
+    list.innerHTML = html;
+  }
+
+  // Re-render when language changes (hub applyLang calls this)
+  window.hubRerenderRooms = function() {
+    hubSocket.emit('hub_watch'); // re-request to trigger re-render
+  };
 })();
 </script>
 </body>
