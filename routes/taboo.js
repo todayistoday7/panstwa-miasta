@@ -142,6 +142,9 @@ function register(io, socket) {
     room.players.push({ id: socket.id, name: name || 'Host', connected: true });
     socket.join(room.code);
     socket.emit('taboo_room_created', { code: room.code });
+    room._lobbyTimer = setTimeout(() => {
+      if (tabooRooms[room.code] && tabooRooms[room.code].state.phase === 'lobby') delete tabooRooms[room.code];
+    }, 24 * 60 * 60 * 1000);
     assignTeams(room);
     emitTabooState(io, room);
   });
@@ -149,7 +152,8 @@ function register(io, socket) {
   socket.on('taboo_join', ({ code, name }) => {
     const room = getTabooRoom(code.toUpperCase().trim());
     if (!room) { socket.emit('taboo_error', { msg: 'Room not found.' }); return; }
-    if (room.state.phase !== 'lobby') { socket.emit('taboo_error', { msg: 'Game already started.' }); return; }
+    if (room.state.phase === 'final')  { socket.emit('taboo_error', { msg: 'This game has ended.' }); return; }
+    if (room.state.phase !== 'lobby')  { socket.emit('taboo_error', { msg: 'Game already started.' }); return; }
     if (room.players.length >= 12)    { socket.emit('taboo_error', { msg: 'Room is full.' }); return; }
 
     const existing = room.players.find(p => p.name.toLowerCase() === name.toLowerCase() && !p.connected);
@@ -187,6 +191,7 @@ function register(io, socket) {
     if (room.players.filter(p => p.connected).length < 4) {
       socket.emit('taboo_error', { msg: 'Need at least 4 players (2 per team).' }); return;
     }
+    if (room._lobbyTimer) { clearTimeout(room._lobbyTimer); room._lobbyTimer = null; }
     room.state.round              = 0;
     room.state.roundJustPlayed    = -1;
     room.state.scores             = [];
@@ -254,6 +259,7 @@ function register(io, socket) {
       if (room.state.turnTimer) clearInterval(room.state.turnTimer);
       room.state.phase = 'final';
       emitTabooState(io, room);
+      setTimeout(() => { if (tabooRooms[room.code]) delete tabooRooms[room.code]; }, 60 * 60 * 1000);
     } else {
       startTabooTurn(io, room);
     }

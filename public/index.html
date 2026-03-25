@@ -188,6 +188,7 @@
         <div class="room-code-display" id="room-code-display"></div>
         <p class="room-code-hint" id="lbl-share-code">Share this code with your friends</p>
         <button class="btn share-btn" onclick="copyRoomCode()" id="lbl-share-btn">📋 Copy Code</button>
+        <button class="btn share-btn" style="background:var(--card);border:1px solid var(--border);color:var(--text);" onclick="shareRoom('','Join my Państwa-Miasta game!')">📤 Share Room</button>
       </div>
       <div id="lobby-status"></div>
     </div>
@@ -318,6 +319,7 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/langs.js?v=2"></script>
+<script src="/js/shared.js"></script>
 <script src="/js/client.js?v=2"></script>
 </body>
 </html>

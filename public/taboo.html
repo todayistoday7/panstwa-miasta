@@ -117,6 +117,7 @@
         <div class="room-code-display" id="room-code-display"></div>
         <p class="room-code-hint" id="lbl-share-code">Share this code with your friends</p>
         <button class="btn share-btn" onclick="copyRoomCode()">📋 <span id="lbl-copy-code">Copy Code</span></button>
+        <button class="btn secondary" style="margin-top:8px;" onclick="shareRoom('taboo')">📤 <span id="lbl-share-room">Share Room</span></button>
       </div>
     </div>
     <div id="player-warning" class="error-box" style="display:none;margin-bottom:12px;"></div>
@@ -227,6 +228,7 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/taboo-words.js"></script>
+<script src="/js/shared.js"></script>
 <script src="/js/taboo-client.js"></script>
 </body>
 </html>

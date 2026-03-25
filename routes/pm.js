@@ -173,6 +173,8 @@ function endGame(io, room) {
   }
   room.state.phase = 'final';
   emitRoomState(io, room);
+  // 1h after game ends, delete room so code can't be reused
+  setTimeout(() => { if (rooms[room.code]) delete rooms[room.code]; }, 60 * 60 * 1000);
 }
 
 // ─── REGISTER SOCKET EVENTS ──────────────────────────────────────
@@ -186,13 +188,18 @@ function register(io, socket) {
     room.state.totalScores[socket.id] = 0;
     socket.join(room.code);
     socket.emit('room_created', { code: room.code });
+    // 24h lobby expiry — cancelled once game starts
+    room._lobbyTimer = setTimeout(() => {
+      if (rooms[room.code] && rooms[room.code].state.phase === 'lobby') delete rooms[room.code];
+    }, 24 * 60 * 60 * 1000);
     emitRoomState(io, room);
   });
 
   socket.on('join_room', ({ code, name }) => {
     const room = getRoom(code.toUpperCase().trim());
     if (!room) { socket.emit('error', { msg: 'Room not found.' }); return; }
-    if (room.state.phase !== 'lobby') { socket.emit('error', { msg: 'Game already started.' }); return; }
+    if (room.state.phase === 'final')  { socket.emit('error', { msg: 'This game has ended.' }); return; }
+    if (room.state.phase !== 'lobby')  { socket.emit('error', { msg: 'Game already started.' }); return; }
     if (room.players.length >= 12)    { socket.emit('error', { msg: 'Room is full (max 12).' }); return; }
 
     const trimmedName = (name || 'Player').trim();
@@ -254,6 +261,8 @@ function register(io, socket) {
     if (room.players.filter(p => p.connected).length < 2) {
       socket.emit('error', { msg: 'Need at least 2 players.' }); return;
     }
+    if (room._lobbyTimer) { clearTimeout(room._lobbyTimer); room._lobbyTimer = null; }
+    if (room._lobbyTimer) { clearTimeout(room._lobbyTimer); room._lobbyTimer = null; }
     room.state.phase            = 'drawing';
     room.state.round            = 0;
     room.state.usedLetters      = [];

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dots and Boxes Online — Free Multiplayer Game</title>
-<meta name="description" content="Play Dots and Boxes online free! Classic grid strategy game for 2-4 players. Zagraj w Kropki i Pudełka online za darmo!">
+<title>Kropki i Kreski / Dots and Boxes Online — Free Multiplayer Game</title>
+<meta name="description" content="Play Dots and Boxes / Kropki i Kreski online free! Classic grid strategy game for 2-4 players. Zagraj za darmo!">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
@@ -123,6 +123,7 @@
         <div class="room-code-display" id="room-code-display"></div>
         <p class="room-code-hint" id="lbl-share-code">Share this code with friends</p>
         <button class="btn share-btn" onclick="copyRoomCode()">📋 <span id="lbl-copy-code">Copy Code</span></button>
+        <button class="btn secondary" style="margin-top:8px;" onclick="shareRoom('dots')">📤 <span id="lbl-share-room">Share Room</span></button>
       </div>
     </div>
 
@@ -184,6 +185,7 @@
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
+<script src="/js/shared.js"></script>
 <script src="/js/dots-client.js"></script>
 </body>
 </html>

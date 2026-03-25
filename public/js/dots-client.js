@@ -15,30 +15,30 @@ let keepAliveInterval = null;
 const LANGS = {
   pl: {
     name: '🇵🇱 PL',
-    gameTitle:    'KROPKI I PUDEŁKA',
-    subtitle:     'Strategiczna gra sieciowa · 2-4 graczy',
+    gameTitle:    'KROPKI I KRESKI',
+    subtitle:     'Klasyczna gra strategiczna online · 2-4 graczy',
     createRoom:   'Stwórz pokój',   joinRoom:    'Dołącz do pokoju',
     yourName:     'Twoje imię',     joinName:    'Twoje imię',
     roomCode:     'Kod pokoju',     createBtn:   'Stwórz pokój',
     joinBtn:      'Dołącz',         settings:    'Ustawienia',
-    gridSize:     'Rozmiar siatki', maxPlayers:  'Max graczy',
+    gridSize:     'Rozmiar planszy', maxPlayers:  'Max graczy',
     playersTitle: 'Gracze',
     startBtn:     '🎮 Rozpocznij',  leaveRoom:   '🚪 Wyjdź',
     shareCode:    'Udostępnij kod znajomym',
     copyCode:     'Skopiuj kod',
     waitingForHost: 'Czekam na hosta...',
-    needPlayers:  'Potrzeba min. 2 graczy',
+    needPlayers:  'Potrzeba minimum 2 graczy',
     howToPlay:    'Zasady gry',
     rule1:        'Stwórz pokój i udostępnij kod znajomym',
-    rule2:        'Na przemian rysuj linię między sąsiednimi kropkami',
-    rule3:        'Zamknij 4. bok pudełka — zdobywasz punkt i grasz dalej!',
-    rule4:        'Gracz z największą liczbą pudełek wygrywa',
-    yourTurn:     'Twoja tura!',
-    theirTurn:    (n) => `Tura gracza ${n}`,
+    rule2:        'Na zmianę rysuj kreskę między dwiema sąsiednimi kropkami',
+    rule3:        'Narysuj ostatnią krawędź kwadratu — zdobywasz punkt i grasz dalej!',
+    rule4:        'Gracz z największą liczbą pól wygrywa',
+    yourTurn:     'Twoja kolej!',
+    theirTurn:    (n) => `Kolej gracza ${n}`,
     gameOver:     'Koniec gry!',
     winner:       (n) => `🏆 ${n} wygrywa!`,
     draw:         'Remis! 🤝',
-    boxes:        'pudełek',
+    boxes:        'pól',
     rematch:      '🔄 Rewanż',
     newGame:      '🏠 Powrót',
     hostBadge:    'HOST',
@@ -491,13 +491,6 @@ function updateSettings() {
   socket.emit('dots_update_settings', { code: roomCode, settings: { gridSize, maxPlayers } });
 }
 
-function copyRoomCode() {
-  var ta = document.createElement('textarea');
-  ta.value = roomCode; ta.style.position = 'fixed'; ta.style.opacity = '0';
-  document.body.appendChild(ta); ta.focus(); ta.select();
-  try { document.execCommand('copy'); showToast('📋 ' + roomCode); } catch(e) { prompt('Room code:', roomCode); }
-  document.body.removeChild(ta);
-}
 
 function goHome() {
   roomCode = ''; roomState = null; myName = '';
@@ -506,27 +499,9 @@ function goHome() {
   showScreen('screen-home');
 }
 
-function confirmGoHome() {
-  if (roomCode) {
-    const inGame = roomState && roomState.phase === 'playing';
-    document.getElementById('confirm-title').textContent = L.leaveTitle;
-    document.getElementById('confirm-msg').textContent   = inGame ? L.leaveMsg : L.confirmLeave;
-    document.getElementById('confirm-yes').textContent   = L.leaveYes;
-    document.getElementById('confirm-no').textContent    = L.leaveNo;
-    document.getElementById('confirm-modal').style.display = 'flex';
-  } else { doGoHome(); }
-}
-function closeConfirm() { document.getElementById('confirm-modal').style.display = 'none'; }
 function doGoHome()     { closeConfirm(); goHome(); }
 
 // ─── LANG BAR ────────────────────────────────────────────────────
-function buildLangBar() {
-  const bar = document.getElementById('lang-bar');
-  bar.innerHTML = Object.keys(LANGS).map(code =>
-    '<button class="lang-btn' + (code === lang ? ' active' : '') +
-    '" onclick="setLang(\'' + code + '\')">' + LANGS[code].name + '</button>'
-  ).join('');
-}
 
 function setLang(code) {
   lang = code; L = LANGS[code] || LANGS['en'];
@@ -565,37 +540,9 @@ function svgEl(tag, attrs) {
   return el;
 }
 
-// ─── UTILS ───────────────────────────────────────────────────────
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  const topNav = document.getElementById('top-nav');
-  if (topNav) topNav.style.display = id === 'screen-home' ? 'none' : 'flex';
-  const navCode = document.getElementById('nav-room-code');
-  if (navCode && roomCode) navCode.textContent = roomCode;
-  const navShare = document.getElementById('nav-share-btn');
-  if (navShare) navShare.style.display = (roomCode && id !== 'screen-home') ? 'flex' : 'none';
-}
 
-function showError(msg) {
-  const box = document.getElementById('home-error');
-  box.textContent = msg; box.style.display = 'block';
-  setTimeout(() => box.style.display = 'none', 3500);
-}
-function clearHomeError() { const b = document.getElementById('home-error'); if (b) b.style.display = 'none'; }
-
-function showToast(msg) {
-  let t = document.getElementById('toast');
-  if (!t) {
-    t = document.createElement('div'); t.id = 'toast';
-    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:10px;font-weight:700;font-size:14px;z-index:999;';
-    document.body.appendChild(t);
-  }
-  t.textContent = msg; t.style.display = 'block';
-  clearTimeout(t._timeout);
-  t._timeout = setTimeout(() => t.style.display = 'none', 3000);
-}
 
 // ─── INIT ────────────────────────────────────────────────────────
 buildLangBar();
 applyTranslations();
+prefillJoinCode();

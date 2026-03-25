@@ -197,6 +197,7 @@ function toggleCat(cat, el) {
 function setGameLang(code) {
   lang = code; L = LANGS[code];
   applyTranslations();
+prefillJoinCode();
   socket.emit('update_settings', { code: roomCode, settings: { lang: code, categories: L.cats.slice(0,8) } });
 }
 

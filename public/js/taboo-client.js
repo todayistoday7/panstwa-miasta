@@ -603,3 +603,4 @@ function showToast(msg) {
 // ─── INIT ────────────────────────────────────────────────────────
 buildLangBar();
 applyTranslations();
+prefillJoinCode();

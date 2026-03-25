@@ -129,13 +129,17 @@ function register(io, socket) {
     room.players.push({ id: socket.id, name: name || 'Host', color, connected: true, score: 0 });
     socket.join(room.code);
     socket.emit('dots_room_created', { code: room.code });
+    room._lobbyTimer = setTimeout(() => {
+      if (dotsRooms[room.code] && dotsRooms[room.code].state.phase === 'lobby') delete dotsRooms[room.code];
+    }, 24 * 60 * 60 * 1000);
     emitDotsState(io, room);
   });
 
   socket.on('dots_join', ({ code, name }) => {
     const room = getDotsRoom(code.toUpperCase().trim());
     if (!room) { socket.emit('dots_error', { msg: 'Room not found.' }); return; }
-    if (room.state.phase !== 'lobby') { socket.emit('dots_error', { msg: 'Game already started.' }); return; }
+    if (room.state.phase === 'final')  { socket.emit('dots_error', { msg: 'This game has ended.' }); return; }
+    if (room.state.phase !== 'lobby')  { socket.emit('dots_error', { msg: 'Game already started.' }); return; }
     if (room.players.length >= (room.settings.maxPlayers || 4)) {
       socket.emit('dots_error', { msg: 'Room is full.' }); return;
     }
@@ -172,6 +176,7 @@ function register(io, socket) {
       socket.emit('dots_error', { msg: 'Need at least 2 players.' }); return;
     }
     const n = room.settings.gridSize;
+    if (room._lobbyTimer) { clearTimeout(room._lobbyTimer); room._lobbyTimer = null; }
     room.state.phase         = 'playing';
     room.state.grid          = makeGrid(n);
     room.state.totalBoxes    = n * n;
@@ -219,6 +224,7 @@ function register(io, socket) {
     if (room.state.claimedBoxes >= room.state.totalBoxes) {
       room.state.phase = 'final';
       emitDotsState(io, room);
+      setTimeout(() => { if (dotsRooms[room.code]) delete dotsRooms[room.code]; }, 60 * 60 * 1000);
       return;
     }
 
@@ -234,6 +240,7 @@ function register(io, socket) {
     const room = getDotsRoom(code);
     if (!room || socket.id !== room.hostId) return;
     const n = room.settings.gridSize;
+    if (room._lobbyTimer) { clearTimeout(room._lobbyTimer); room._lobbyTimer = null; }
     room.state.phase         = 'playing';
     room.state.grid          = makeGrid(n);
     room.state.claimedBoxes  = 0;
