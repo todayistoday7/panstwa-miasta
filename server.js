@@ -15,6 +15,7 @@ const pm    = require('./routes/pm');
 const taboo = require('./routes/taboo');
 const dots       = require('./routes/dots');
 const twotruth   = require('./routes/twotruth');
+const hangman    = require('./routes/hangman');
 const lobbyHub   = require('./routes/lobby');
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(compression());
 app.get('/taboo', (req, res) => res.sendFile(path.join(__dirname, 'public/taboo.html')));
 app.get('/twotruth', (req, res) => res.sendFile(path.join(__dirname, 'public/twotruth.html')));
 app.get('/dots',        (req, res) => res.sendFile(path.join(__dirname, 'public/dots.html')));
+app.get('/hangman',     (req, res) => res.sendFile(path.join(__dirname, 'public/hangman.html')));
 app.get('/games', (req, res) => res.sendFile(path.join(__dirname, 'public/games.html')));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -34,6 +36,7 @@ app.get('/health', (req, res) => res.json({
   taboo_rooms: taboo.getTabooRoomCount(),
   dots_rooms:       dots.getDotsRoomCount(),
   twotruth_rooms:   twotruth.getTTRoomCount(),
+  hangman_rooms:    hangman.getHangRoomCount(),
 }));
 
 app.get('/room/:code', (req, res) => {
@@ -59,6 +62,7 @@ io.on('connection', (socket) => {
   taboo.register(io, socket);
   dots.register(io, socket);
   twotruth.register(io, socket);
+  hangman.register(io, socket);
 });
 
 // ─── START ───────────────────────────────────────────────

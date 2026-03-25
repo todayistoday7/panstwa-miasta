@@ -11,6 +11,7 @@ const GAME_INFO = {
   taboo:    { name: 'Tabu',           icon: '🎭', slug: '/taboo' },
   dots:     { name: 'Kropki i Kreski',icon: '🔵', slug: '/dots' },
   twotruth: { name: '2 Truths 1 Lie', icon: '🤥', slug: '/twotruth' },
+  hangman:  { name: 'Hangman',         icon: '🪢', slug: '/hangman' },
 };
 
 // In-memory registry: code → public room entry
@@ -94,6 +95,7 @@ function maxPlayersFor(game, room) {
   if (game === 'taboo')    return 12;
   if (game === 'dots')     return room.settings && room.settings.maxPlayers || 4;
   if (game === 'twotruth') return 20;
+  if (game === 'hangman')  return 10;
   return 12;
 }
 
