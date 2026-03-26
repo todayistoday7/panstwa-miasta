@@ -552,6 +552,7 @@ function setUiLang(code) {
   document.querySelectorAll('.lang-btn').forEach(b =>
     b.classList.toggle('active', b.textContent === LANGS[code].name));
   applyTranslations();
+  history.replaceState(null, '', window.location.pathname + '?lang=' + code);
 }
 
 function applyTranslations() {

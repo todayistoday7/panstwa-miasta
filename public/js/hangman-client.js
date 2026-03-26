@@ -653,6 +653,7 @@ function setUiLang(code) {
     b.classList.toggle('active', b.textContent === LANGS[code].name));
   applyTranslations();
   if (roomState) applyState(roomState);
+  history.replaceState(null, '', window.location.pathname + '?lang=' + code);
 }
 
 function applyTranslations() {

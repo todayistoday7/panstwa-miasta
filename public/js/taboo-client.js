@@ -562,6 +562,7 @@ function setUiLang(code) {
   // Also update game lang setting if in a room
   if (roomCode) socket.emit('taboo_update_settings', { code: roomCode, settings: { lang: code, isPublic: getIsPublic() } });
   if (roomState) applyState(roomState);
+  history.replaceState(null, '', window.location.pathname + '?lang=' + code);
 }
 
 function applyTranslations() {

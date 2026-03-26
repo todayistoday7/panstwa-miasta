@@ -741,6 +741,7 @@ function setLang(code) {
   lang = code; L = LANGS[code];
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang===code));
   applyTranslations();
+  history.replaceState(null, '', window.location.pathname + '?lang=' + code);
 }
 
 function buildLangBar() {
