@@ -321,8 +321,7 @@
     document.getElementById('hub-title').textContent = t.title;
     document.getElementById('hub-subtitle').textContent = t.subtitle;
     var backLink = document.getElementById('hub-back-link');
-    backLink.textContent = t.back;
-    backLink.href = '/?lang=' + l;
+    if (backLink) { backLink.textContent = t.back; backLink.href = '/?lang=' + l; }
     document.querySelectorAll('.hub-lang-btn').forEach(function(btn) {
       btn.classList.toggle('active', btn.dataset.lang === l);
     });
