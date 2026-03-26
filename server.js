@@ -86,7 +86,23 @@ app.get('/share', (req, res) => {
     '</head>\n<body><p>Redirecting... <a href="' + playUrl + '">Click here</a></p></body>\n</html>'
   );
 });
-app.use(express.static(path.join(__dirname, 'public')));
+// JS files: 1 hour cache — short enough that deploys propagate quickly
+app.use('/js', express.static(path.join(__dirname, 'public/js'), {
+  setHeaders: function(res) {
+    res.setHeader('Cache-Control', 'public, max-age=3600, must-revalidate');
+  }
+}));
+// HTML: never cache — always fresh so deploys are instant
+// CSS/images: 1 day
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders: function(res, filePath) {
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    } else if (filePath.match(/\.(css|png|ico|svg|woff2?)$/)) {
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+    }
+  }
+}));
 
 // ─── HEALTH + DEBUG ──────────────────────────────────────
 app.get('/health', (req, res) => res.json({
