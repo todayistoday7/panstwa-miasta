@@ -309,6 +309,19 @@ function register(io, socket) {
   });
 
   // Disconnect: mark player offline, promote new host if needed, clean up empty rooms
+  socket.on('taboo_rejoin', ({ code, name }) => {
+    const room = tabooRooms[code];
+    if (!room) { socket.emit('taboo_error', { msg: 'Room expired.' }); return; }
+    const existing = room.players.find(p => p.name === name);
+    if (!existing) { socket.emit('taboo_error', { msg: 'Player not found.' }); return; }
+    if (existing._disconnectTimer) { clearTimeout(existing._disconnectTimer); existing._disconnectTimer = null; }
+    if (room.hostId === existing.id) room.hostId = socket.id;
+    existing.id = socket.id; existing.connected = true;
+    socket.join(code);
+    socket.emit('taboo_room_joined', { code });
+    emitTabooState(io, room);
+  });
+
   socket.on('disconnect', () => {
     for (const code of Object.keys(tabooRooms)) {
       const room = tabooRooms[code];
@@ -316,15 +329,21 @@ function register(io, socket) {
       if (!p) continue;
       p.connected = false;
 
-      // Promote next connected player to host (covers lobby + in-game)
-      if (socket.id === room.hostId) {
-        const next = room.players.find(pl => pl.connected && pl.id !== socket.id);
-        if (next) room.hostId = next.id;
-      }
+      // Promote next connected player to host after grace period
+      if (p._disconnectTimer) clearTimeout(p._disconnectTimer);
+      p._disconnectTimer = setTimeout(() => {
+        if (!p.connected) {
+          if (room.hostId === p.id) {
+            const next = room.players.find(pl => pl.connected && pl.id !== p.id);
+            if (next) room.hostId = next.id;
+          }
+          emitTabooState(io, room);
+        }
+        p._disconnectTimer = null;
+      }, 15000);
 
       emitTabooState(io, room);
 
-      // Clean up room if everyone left
       const allGone = room.players.every(pl => !pl.connected);
       if (allGone) {
         if (room.state.turnTimer) clearInterval(room.state.turnTimer);

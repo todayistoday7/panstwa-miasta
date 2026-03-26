@@ -276,6 +276,11 @@ function register(io, socket) {
       const color = PLAYER_COLORS[room.players.length % PLAYER_COLORS.length];
       room.players.push({ id: socket.id, name, color, connected: true, score: 0 });
     }
+    // Cancel any pending turn-advance timer from their disconnect
+    if (existing && existing._turnTimer) {
+      clearTimeout(existing._turnTimer);
+      existing._turnTimer = null;
+    }
     socket.join(room.code);
     socket.emit('dots_room_joined', { code: room.code });
     lobby.announce('dots', room);
@@ -293,15 +298,27 @@ function register(io, socket) {
 
       if (socket.id === room.hostId) promoteDotsHost(room);
 
-      // If it was this player's turn, advance to next
-      if (room.state.phase === 'playing' && room.state.currentPlayer === socket.id) {
-        room.state.currentPlayer = nextPlayerIndex(room, socket.id);
-      }
-
       emitDotsState(io, room);
 
+      // Give disconnected player 15 seconds to reconnect before advancing their turn.
+      // Store the timeout on the player object so rejoin can cancel it.
+      if (room.state.phase === 'playing' && room.state.currentPlayer === socket.id) {
+        if (p._turnTimer) clearTimeout(p._turnTimer);
+        p._turnTimer = setTimeout(() => {
+          // Only advance if they haven't reconnected
+          if (!p.connected && room.state.currentPlayer === p.id) {
+            room.state.currentPlayer = nextPlayerIndex(room, p.id);
+            emitDotsState(io, room);
+          }
+          p._turnTimer = null;
+        }, 15000);
+      }
+
       const allGone = room.players.every(pl => !pl.connected);
-      if (allGone) { lobby.remove(code); setTimeout(() => { if (dotsRooms[code]) delete dotsRooms[code]; }, 30 * 60 * 1000); }
+      if (allGone) {
+        lobby.remove(code);
+        setTimeout(() => { if (dotsRooms[code]) delete dotsRooms[code]; }, 30 * 60 * 1000);
+      }
       break;
     }
   });

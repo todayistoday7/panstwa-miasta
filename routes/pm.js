@@ -450,6 +450,18 @@ function register(io, socket) {
     socket.emit('keep_alive_ack');
   });
 
+  socket.on('rejoin', ({ code, name }) => {
+    const room = rooms[code];
+    if (!room) { socket.emit('error', { msg: 'Room expired.' }); return; }
+    const existing = room.players.find(p => p.name === name);
+    if (!existing) { socket.emit('error', { msg: 'Player not found.' }); return; }
+    if (existing._disconnectTimer) { clearTimeout(existing._disconnectTimer); existing._disconnectTimer = null; }
+    if (room.hostId === existing.id) room.hostId = socket.id;
+    existing.id = socket.id; existing.connected = true;
+    socket.join(code);
+    emitRoomState(io, room);
+  });
+
   socket.on('disconnect', () => {
     for (const code of Object.keys(rooms)) {
       const room = rooms[code];
@@ -457,7 +469,15 @@ function register(io, socket) {
       if (p) {
         p.connected = false;
         if (socket.id === room.hostId) promoteNewHost(io, room);
-        io.to(room.code).emit('player_disconnected', { playerId: socket.id, name: p.name });
+        // Give 15s grace before announcing disconnect to other players
+        if (p._disconnectTimer) clearTimeout(p._disconnectTimer);
+        p._disconnectTimer = setTimeout(() => {
+          if (!p.connected) {
+            io.to(room.code).emit('player_disconnected', { playerId: p.id, name: p.name });
+            emitRoomState(io, room);
+          }
+          p._disconnectTimer = null;
+        }, 15000);
         emitRoomState(io, room);
         const allGone = room.players.every(p => !p.connected);
         if (allGone) { lobby.remove(code); setTimeout(() => { if (rooms[code]) delete rooms[code]; }, 30 * 60 * 1000); }

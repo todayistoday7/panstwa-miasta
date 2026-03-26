@@ -22,9 +22,17 @@ socket.on('connect', () => {
   keepAliveInterval = setInterval(() => {
     if (roomCode) socket.emit('keep_alive', { code: roomCode });
   }, 20000);
+  // Auto-rejoin on reconnect
+  const savedCode = sessionStorage.getItem('pm_code');
+  const savedName = sessionStorage.getItem('pm_name');
+  if (savedCode && savedName) {
+    roomCode = ''; myName = savedName;
+    socket.emit('rejoin', { code: savedCode, name: savedName });
+  }
 });
 
 socket.on('room_created', ({ code }) => {
+  sessionStorage.setItem('pm_code', code); sessionStorage.setItem('pm_name', myName);
   roomCode = code;
   isHost = true;
   document.getElementById('room-code-display').textContent = code;
@@ -33,6 +41,7 @@ socket.on('room_created', ({ code }) => {
 });
 
 socket.on('room_joined', ({ code, isHost: h }) => {
+  sessionStorage.setItem('pm_code', code); sessionStorage.setItem('pm_name', myName);
   _ga('room_joined', { game:'panstwa_miasta', language:lang });
   roomCode = code;
   isHost = h;

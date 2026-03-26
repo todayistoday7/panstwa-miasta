@@ -126,8 +126,8 @@ const io     = new Server(server, {
   cors:          { origin: '*' },
   transports:    ['websocket', 'polling'],
   allowEIO3:     true,
-  pingTimeout:   60000,
-  pingInterval:  25000,
+  pingTimeout:   120000,
+  pingInterval:  30000,
 });
 
 lobbyHub.init(io);

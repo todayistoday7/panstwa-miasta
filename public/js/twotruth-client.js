@@ -149,7 +149,8 @@ socket.on('connect', () => {
   }, 20000);
   const sc = sessionStorage.getItem('tt_code');
   const sn = sessionStorage.getItem('tt_name');
-  if (sc && sn && !roomCode) {
+  if (sc && sn) {
+    roomCode = '';
     roomCode = sc; myName = sn;
     socket.emit('tt_rejoin', { code: sc, name: sn });
   }

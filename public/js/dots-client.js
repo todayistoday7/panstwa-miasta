@@ -106,11 +106,12 @@ socket.on('connect', () => {
     if (roomCode) socket.emit('dots_keep_alive');
   }, 20000);
 
-  // Rejoin on reconnect
+  // Always attempt rejoin on (re)connect if we have saved session data.
+  // Reset roomCode so the rejoin response sets it cleanly.
   const savedCode = sessionStorage.getItem('dots_code');
   const savedName = sessionStorage.getItem('dots_name');
-  if (savedCode && savedName && !roomCode) {
-    roomCode = savedCode; myName = savedName;
+  if (savedCode && savedName) {
+    roomCode = ''; myName = savedName;
     socket.emit('dots_rejoin', { code: savedCode, name: savedName });
   }
 });

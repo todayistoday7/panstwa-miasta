@@ -287,13 +287,36 @@ function register(io, socket) {
 
   socket.on('tt_keep_alive', () => { /* keep warm */ });
 
+  socket.on('tt_rejoin', ({ code, name }) => {
+    const room = ttRooms[code];
+    if (!room) { socket.emit('tt_error', { msg: 'Room expired.' }); return; }
+    const existing = room.players.find(p => p.name === name);
+    if (!existing) { socket.emit('tt_error', { msg: 'Player not found.' }); return; }
+    if (existing._disconnectTimer) { clearTimeout(existing._disconnectTimer); existing._disconnectTimer = null; }
+    if (room.hostId === existing.id) room.hostId = socket.id;
+    existing.id = socket.id; existing.connected = true;
+    socket.join(code);
+    socket.emit('tt_room_joined', { code });
+    emitTTState(io, room);
+  });
+
   socket.on('disconnect', () => {
     for (const code of Object.keys(ttRooms)) {
       const room = ttRooms[code];
       const p    = room.players.find(p => p.id === socket.id);
       if (!p) continue;
       p.connected = false;
-      if (socket.id === room.hostId) promoteTTHost(room);
+      if (p._disconnectTimer) clearTimeout(p._disconnectTimer);
+      p._disconnectTimer = setTimeout(() => {
+        if (!p.connected) {
+          if (room.hostId === p.id) {
+            const next = room.players.find(pl => pl.connected && pl.id !== p.id);
+            if (next) room.hostId = next.id;
+          }
+          emitTTState(io, room);
+        }
+        p._disconnectTimer = null;
+      }, 15000);
       emitTTState(io, room);
       const allGone = room.players.every(pl => !pl.connected);
       if (allGone) {

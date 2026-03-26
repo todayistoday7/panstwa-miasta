@@ -121,8 +121,8 @@ socket.on('connect', () => {
   // Bug 5 fix: auto-rejoin on reconnect if we were in a room
   const savedCode = sessionStorage.getItem('taboo_code');
   const savedName = sessionStorage.getItem('taboo_name');
-  if (savedCode && savedName && !roomCode) {
-    roomCode = savedCode;
+  if (savedCode && savedName) {
+    roomCode = '';
     myName   = savedName;
     socket.emit('taboo_rejoin', { code: savedCode, name: savedName });
   }

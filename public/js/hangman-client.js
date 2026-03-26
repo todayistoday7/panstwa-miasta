@@ -282,7 +282,8 @@ socket.on('connect', () => {
   }, 20000);
   const sc = sessionStorage.getItem('hang_code');
   const sn = sessionStorage.getItem('hang_name');
-  if (sc && sn && !roomCode) {
+  if (sc && sn) {
+    roomCode = '';
     roomCode = sc; myName = sn;
     socket.emit('hang_rejoin', { code: sc, name: sn });
   }
