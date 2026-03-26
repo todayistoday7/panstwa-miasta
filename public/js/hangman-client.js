@@ -289,6 +289,7 @@ socket.on('connect', () => {
 });
 
 socket.on('hang_room_created', ({ code }) => {
+  _ga('room_created', { game:'hangman', language:lang });
   roomCode = code; roomState = null;
   sessionStorage.setItem('hang_code', code);
   sessionStorage.setItem('hang_name', myName);
@@ -297,6 +298,7 @@ socket.on('hang_room_created', ({ code }) => {
 });
 
 socket.on('hang_room_joined', ({ code }) => {
+  _ga('room_joined', { game:'hangman', language:lang });
   roomCode = code; roomState = null;
   sessionStorage.setItem('hang_code', code);
   sessionStorage.setItem('hang_name', myName);
@@ -312,9 +314,9 @@ function applyState(data) {
   switch (data.phase) {
     case 'lobby':    showScreen('screen-lobby');     renderLobby(data);    break;
     case 'picking':  showScreen('screen-picking');   renderPicking(data);  break;
-    case 'guessing': showScreen('screen-guessing');  renderGuessing(data); break;
+    case 'guessing': showScreen('screen-guessing');  renderGuessing(data); if(!window._gaGameStarted){_ga('game_started',{game:'hangman',language:lang});window._gaGameStarted=true;} break;
     case 'roundEnd': showScreen('screen-round-end'); renderRoundEnd(data); break;
-    case 'final':    showScreen('screen-final');     renderFinal(data);    break;
+    case 'final':    showScreen('screen-final');     renderFinal(data);    _ga('game_completed',{game:'hangman',language:lang}); window._gaGameStarted=false; break;
   }
 }
 

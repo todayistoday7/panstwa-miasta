@@ -156,6 +156,7 @@ socket.on('connect', () => {
 });
 
 socket.on('tt_room_created', ({ code }) => {
+  _ga('room_created', { game:'two_truths', language:lang });
   roomCode = code; roomState = null; myVote = null; myLieIdx = null;
   sessionStorage.setItem('tt_code', code);
   sessionStorage.setItem('tt_name', myName);
@@ -164,6 +165,7 @@ socket.on('tt_room_created', ({ code }) => {
 });
 
 socket.on('tt_room_joined', ({ code }) => {
+  _ga('room_joined', { game:'two_truths', language:lang });
   roomCode = code; roomState = null; myVote = null; myLieIdx = null;
   sessionStorage.setItem('tt_code', code);
   sessionStorage.setItem('tt_name', myName);
@@ -184,7 +186,7 @@ function applyState(data) {
     case 'writing': showScreen('screen-writing'); renderWriting(data); break;
     case 'voting':  showScreen('screen-voting');  renderVoting(data);  break;
     case 'reveal':  showScreen('screen-reveal');  renderReveal(data);  break;
-    case 'final':   showScreen('screen-final');   renderFinal(data);   break;
+    case 'final':   showScreen('screen-final');   renderFinal(data);   _ga('game_completed',{game:'two_truths',language:lang}); window._gaGameStarted=false; break;
   }
 }
 

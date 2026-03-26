@@ -129,6 +129,7 @@ socket.on('connect', () => {
 });
 
 socket.on('taboo_room_created', ({ code }) => {
+  _ga('room_created', { game:'taboo', language:lang });
   roomCode = code; roomState = null;
   sessionStorage.setItem('taboo_code', code);
   sessionStorage.setItem('taboo_name', myName);
@@ -138,6 +139,7 @@ socket.on('taboo_room_created', ({ code }) => {
 });
 
 socket.on('taboo_room_joined', ({ code }) => {
+  _ga('room_joined', { game:'taboo', language:lang });
   roomCode = code; roomState = null;
   sessionStorage.setItem('taboo_code', code);
   sessionStorage.setItem('taboo_name', myName);
@@ -155,9 +157,9 @@ socket.on('taboo_timer_tick',  ({ remaining })        => { updateTimerDisplay(re
 function applyState(data) {
   switch (data.phase) {
     case 'lobby':    showScreen('screen-lobby');    renderLobby(data);    break;
-    case 'playing':  showScreen('screen-playing');  renderPlaying(data);  break;
+    case 'playing':  showScreen('screen-playing');  renderPlaying(data);  if(!window._gaGameStarted){_ga('game_started',{game:'taboo',language:lang});window._gaGameStarted=true;} break;
     case 'roundend': showScreen('screen-roundend'); renderRoundEnd(data); break;
-    case 'final':    showScreen('screen-final');    renderFinal(data);    break;
+    case 'final':    showScreen('screen-final');    renderFinal(data);    _ga('game_completed',{game:'taboo',language:lang}); window._gaGameStarted=false; break;
   }
 }
 
@@ -482,7 +484,7 @@ function joinRoom() {
   socket.emit('taboo_join', { name, code });
 }
 
-function startGame()    { socket.emit('taboo_start', { code: roomCode }); }
+function startGame()    { _ga('game_start_pressed',{game:'taboo',language:lang}); socket.emit('taboo_start', { code: roomCode }); }
 function updateSettings() {
   const rounds   = parseInt(document.getElementById('settings-rounds').value);
   const turnTime = parseInt(document.getElementById('settings-timer').value);
@@ -562,6 +564,7 @@ function setUiLang(code) {
   // Also update game lang setting if in a room
   if (roomCode) socket.emit('taboo_update_settings', { code: roomCode, settings: { lang: code, isPublic: getIsPublic() } });
   if (roomState) applyState(roomState);
+  _ga('language_switched',{game:'taboo',new_language:code});
   history.replaceState(null, '', window.location.pathname + '?lang=' + code);
 }
 

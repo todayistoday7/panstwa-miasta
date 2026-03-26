@@ -33,6 +33,7 @@ socket.on('room_created', ({ code }) => {
 });
 
 socket.on('room_joined', ({ code, isHost: h }) => {
+  _ga('room_joined', { game:'panstwa_miasta', language:lang });
   roomCode = code;
   isHost = h;
   document.getElementById('room-code-display').textContent = code;
@@ -71,6 +72,7 @@ socket.on('new_host', ({ playerId, name }) => {
 });
 
 socket.on('letter_drawn', ({ letter }) => {
+  if (!window._gaGameStarted) { _ga('game_started', { game:'panstwa_miasta', language:lang }); window._gaGameStarted = true; }
   if (rollingInterval) clearInterval(rollingInterval);
   const el = document.getElementById('drawing-letter');
   el.classList.remove('rolling');
@@ -137,7 +139,7 @@ function applyRoomState(data) {
     case 'stopped':     showScreen('screen-stopped');     renderStoppedScreen(data); break;
     case 'calculating': showScreen('screen-calculating'); window.scrollTo(0,0); break;
     case 'scoring':     showScreen('screen-scoring');     renderScoringScreen(data); break;
-    case 'final':       showScreen('screen-final');       renderFinalScreen(data);   break;
+    case 'final':       showScreen('screen-final');       renderFinalScreen(data);   _ga('game_completed', { game:'panstwa_miasta', language:lang }); window._gaGameStarted=false; break;
   }
 }
 
@@ -609,12 +611,14 @@ function copyRoomCode() {
 function shareRoom() { copyRoomCode(); }
 
 function doShareRoom() {
+  _ga('share_room', { game:'panstwa_miasta', language:lang });
   var L2 = LANGS[lang] || LANGS['pl'];
   var title = L2.shareInviteTitle || 'Join my game!';
   shareRoom('', title);
 }
 
 function shareGame() {
+  _ga('share_results', { game:'panstwa_miasta', language:lang });
   // Get my score from last final screen render
   var myScore = window._lastMyScore || 0;
   var shareUrl = 'https://panstwamiastagra.com/share?game=pm&score=' + myScore + '&lang=' + lang;
@@ -741,6 +745,7 @@ function setLang(code) {
   lang = code; L = LANGS[code];
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang===code));
   applyTranslations();
+  _ga('language_switched', { game:'panstwa_miasta', new_language:code });
   history.replaceState(null, '', window.location.pathname + '?lang=' + code);
 }
 // Alias — shared.js buildLangBar calls setUiLang; PM only defined setLang

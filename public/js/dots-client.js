@@ -116,6 +116,7 @@ socket.on('connect', () => {
 });
 
 socket.on('dots_room_created', ({ code }) => {
+  _ga('room_created', { game:'dots', language:lang });
   roomCode = code; roomState = null;
   sessionStorage.setItem('dots_code', code);
   sessionStorage.setItem('dots_name', myName);
@@ -124,6 +125,7 @@ socket.on('dots_room_created', ({ code }) => {
 });
 
 socket.on('dots_room_joined', ({ code }) => {
+  _ga('room_joined', { game:'dots', language:lang });
   roomCode = code; roomState = null;
   sessionStorage.setItem('dots_code', code);
   sessionStorage.setItem('dots_name', myName);
@@ -139,8 +141,8 @@ socket.on('dots_move_made', (move)  => { applyMove(move); });
 function applyState(data) {
   switch (data.phase) {
     case 'lobby':   showScreen('screen-lobby');   renderLobby(data);   break;
-    case 'playing': showScreen('screen-playing'); renderPlaying(data); break;
-    case 'final':   showScreen('screen-final');   renderFinal(data);   break;
+    case 'playing': showScreen('screen-playing'); renderPlaying(data); if(!window._gaGameStarted){_ga('game_started',{game:'dots',language:lang});window._gaGameStarted=true;} break;
+    case 'final':   showScreen('screen-final');   renderFinal(data);   _ga('game_completed',{game:'dots',language:lang}); window._gaGameStarted=false; break;
   }
 }
 

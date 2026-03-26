@@ -1,3 +1,12 @@
+// ─── GA4 EVENT HELPER ────────────────────────────────────────────
+// Safe wrapper — fires only if gtag is loaded, never throws
+function _ga(event_name, params) {
+  try {
+    if (typeof gtag === 'function') {
+      gtag('event', event_name, params || {});
+    }
+  } catch(e) {}
+}
 // ════════════════════════════════════════════════════════
 // SHARED CLIENT UTILITIES
 // Included in all game HTML files.
