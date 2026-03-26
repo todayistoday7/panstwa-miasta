@@ -3,133 +3,202 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How to Play Countries & Cities Online — Rules & Guide | panstwamiastagra.com</title>
-<meta name="description" content="Complete rules for Countries & Cities (Państwa-Miasta) online. How to score, challenge answers, set categories, and win. Play free with 2-12 players!">
-<meta property="og:title" content="How to Play Countries & Cities Online">
-<meta property="og:description" content="Complete rules for Countries & Cities online — scoring, challenges, categories, and tips for beginners.">
+<title>How to Play — Game Rules | panstwamiastagra.com</title>
+<meta name="description" content="Rules for all games on panstwamiastagra.com — Countries & Cities, Taboo, Hangman, Dots & Boxes, 2 Truths 1 Lie. Full guide in English.">
+<meta property="og:title" content="Game Rules — panstwamiastagra.com">
+<meta property="og:description" content="How to play Countries & Cities, Taboo, Hangman and other online multiplayer games. Full rules in English.">
 <meta property="og:url" content="https://panstwamiastagra.com/how-to-play">
 <meta property="og:type" content="article">
+<link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play">
+<link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="alternate icon" href="/favicon.ico">
-<link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play">
-<link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac">
 <script async data-cfasync="false" src="https://www.googletagmanager.com/gtag/js?id=G-BJ79ZM6WPQ"></script>
-<script data-cfasync="false">
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date()); gtag('config', 'G-BJ79ZM6WPQ');
-</script>
+<script data-cfasync="false">window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BJ79ZM6WPQ');</script>
 <style>
-  .seo-page { max-width: 780px; margin: 0 auto; padding: 0 16px 60px; }
-  .seo-page h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(32px,7vw,56px); letter-spacing:3px; line-height:1.1; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin:24px 0 8px; }
-  .seo-page h2 { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:2px; color:var(--accent2); margin:36px 0 12px; }
-  .seo-page h3 { font-size:16px; font-weight:900; color:var(--accent); margin:20px 0 8px; text-transform:uppercase; letter-spacing:1px; }
-  .seo-page p  { color:var(--muted); font-size:15px; line-height:1.8; margin-bottom:12px; font-weight:600; }
-  .seo-page ul, .seo-page ol { color:var(--muted); font-size:15px; line-height:1.8; margin:0 0 16px 20px; font-weight:600; }
-  .seo-page li { margin-bottom:6px; }
-  .seo-page strong { color:var(--text); }
-  .seo-cta { background:var(--card); border:1px solid var(--border); border-radius:18px; padding:28px; text-align:center; margin:40px 0; }
-  .seo-cta p { color:var(--text); font-size:17px; font-weight:800; margin-bottom:16px; }
-  .seo-tip { background:rgba(255,107,53,0.07); border-left:3px solid var(--accent); border-radius:0 10px 10px 0; padding:12px 16px; margin:16px 0; }
-  .seo-tip p { margin:0; color:var(--text); }
-  .score-table { width:100%; border-collapse:collapse; margin:16px 0; }
-  .score-table th { background:var(--surface); color:var(--accent); font-size:12px; text-transform:uppercase; letter-spacing:1px; padding:10px 14px; text-align:left; border:1px solid var(--border); }
-  .score-table td { padding:10px 14px; border:1px solid var(--border); color:var(--muted); font-size:14px; font-weight:600; }
+  .rules-page { max-width:820px; margin:0 auto; padding:0 16px 80px; }
+  .rules-topbar { display:flex; align-items:center; justify-content:space-between; padding:16px 0 8px; flex-wrap:wrap; gap:8px; }
+  .rules-lang { display:flex; gap:6px; }
+  .rules-lang a { font-size:13px; font-weight:700; color:var(--muted); text-decoration:none; padding:5px 12px; border-radius:20px; border:1px solid var(--border); transition:all 0.2s; }
+  .rules-lang a.active, .rules-lang a:hover { border-color:var(--accent); color:var(--accent); }
+  .rules-hero { text-align:center; padding:28px 0 32px; }
+  .rules-hero h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(40px,9vw,64px); letter-spacing:4px; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin:0 0 8px; }
+  .rules-hero p { color:var(--muted); font-size:15px; font-weight:600; }
+  .game-pills { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:36px; }
+  .game-pill { display:flex; align-items:center; gap:8px; background:var(--card); border:2px solid var(--border); border-radius:50px; padding:10px 20px; font-weight:800; font-size:14px; color:var(--muted); text-decoration:none; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+  .game-pill:hover, .game-pill.active { border-color:var(--accent); color:var(--accent); background:rgba(255,107,53,0.07); transform:translateY(-2px); box-shadow:0 4px 16px rgba(255,107,53,0.2); }
+  .game-pill-icon { font-size:20px; }
+  .game-section { display:none; border-top:2px solid var(--border); padding-top:28px; margin-top:4px; animation:fadeIn 0.25s ease; }
+  .game-section.active { display:block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+  .game-section-header { display:flex; align-items:center; gap:14px; margin-bottom:18px; }
+  .game-section-icon { font-size:38px; }
+  .game-section-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(26px,6vw,42px); letter-spacing:3px; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; }
+  .game-section-sub { color:var(--muted); font-size:13px; font-weight:700; margin-top:2px; }
+  .rules-h2 { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; color:var(--accent2); margin:24px 0 10px; }
+  .rules-p { color:var(--muted); font-size:15px; line-height:1.8; margin-bottom:12px; font-weight:600; }
+  .rules-ul { color:var(--muted); font-size:15px; line-height:1.8; margin:0 0 12px 20px; font-weight:600; }
+  .rules-ul li { margin-bottom:5px; }
+  .rules-p strong, .rules-ul strong { color:var(--text); }
+  .rules-tip { background:rgba(255,107,53,0.07); border-left:3px solid var(--accent); border-radius:0 10px 10px 0; padding:10px 14px; margin:12px 0; }
+  .rules-tip p { margin:0; color:var(--text); font-size:14px; font-weight:600; }
+  .score-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:14px; }
+  .score-table th { background:var(--surface); color:var(--accent); font-size:11px; text-transform:uppercase; letter-spacing:1px; padding:8px 12px; text-align:left; border:1px solid var(--border); }
+  .score-table td { padding:8px 12px; border:1px solid var(--border); color:var(--muted); font-weight:600; }
   .score-table tr:nth-child(even) td { background:var(--surface); }
-  .nav-links { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:24px; }
+  .game-cta { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px 20px; text-align:center; margin:24px 0 0; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+  .game-cta p { color:var(--text); font-size:14px; font-weight:800; margin:0; }
+  .game-cta a { text-decoration:none; }
+  @media(max-width:500px){ .game-pill{padding:8px 14px;font-size:13px;} .game-cta{flex-direction:column;text-align:center;} }
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="seo-page">
-    <div class="nav-links">
-      <a href="/?lang=en" class="nav-home-btn" style="text-decoration:none;">🏠 Play now</a>
-      <a href="/jak-grac" class="nav-home-btn" style="text-decoration:none;">🇵🇱 PL</a>
-      <a href="/how-to-play" class="nav-home-btn" style="text-decoration:none;border-color:var(--accent);color:var(--accent);">🇬🇧 EN</a>
-      <a href="/how-to-play/taboo" class="nav-home-btn" style="text-decoration:none;">🎭 Taboo</a>
-      <a href="/how-to-play/hangman" class="nav-home-btn" style="text-decoration:none;">🪢 Hangman</a>
-      <a href="/how-to-play/dots-and-boxes" class="nav-home-btn" style="text-decoration:none;">🔵 Dots</a>
-      <a href="/how-to-play/two-truths-one-lie" class="nav-home-btn" style="text-decoration:none;">🤥 2 Truths</a>
-      <a href="/kategorie" class="nav-home-btn" style="text-decoration:none;">📋 Categories</a>
+<div class="rules-page">
+
+  <div class="rules-topbar">
+    <a href="/?lang=en" class="nav-home-btn" style="text-decoration:none;">← Back to game</a>
+    <div class="rules-lang">
+      <a href="/jak-grac">🇵🇱 PL</a>
+      <a href="/how-to-play" class="active">🇬🇧 EN</a>
     </div>
+  </div>
 
-    <h1>How to Play Countries &amp; Cities Online</h1>
-    <p>Countries &amp; Cities (known in Polish as <em>Państwa-Miasta</em>) is a classic multiplayer word game you can now play online with friends, family or colleagues — free, no registration needed, from any phone or computer.</p>
+  <div class="rules-hero">
+    <h1>How to Play</h1>
+    <p>Pick a game to see the rules</p>
+  </div>
 
-    <h2>The Basic Rules</h2>
-    <p>The game is played in rounds. At the start of each round, a random letter is drawn. All players simultaneously fill in categories — writing words that start with that letter. The first player to complete all their categories shouts <strong>STOP!</strong> — everyone else must stop writing.</p>
+  <div class="game-pills">
+    <a class="game-pill active" onclick="return showGame('pm')" href="#pm"><span class="game-pill-icon">🌍</span> Countries &amp; Cities</a>
+    <a class="game-pill" onclick="return showGame('taboo')" href="#taboo"><span class="game-pill-icon">🎭</span> Taboo</a>
+    <a class="game-pill" onclick="return showGame('hangman')" href="#hangman"><span class="game-pill-icon">🪢</span> Hangman</a>
+    <a class="game-pill" onclick="return showGame('dots')" href="#dots"><span class="game-pill-icon">🔵</span> Dots &amp; Boxes</a>
+    <a class="game-pill" onclick="return showGame('twotruth')" href="#twotruth"><span class="game-pill-icon">🤥</span> 2 Truths 1 Lie</a>
+  </div>
 
-    <h3>1. Create or Join a Room</h3>
-    <p>The host creates a room and gets a 5-letter code. They share it with others — over text, WhatsApp, or out loud. Other players type the code to join. You need at least 2 players, up to 12.</p>
-
-    <h3>2. Drawing a Letter</h3>
-    <p>The host draws a letter by pressing the button. Each letter can only appear once per game — no repeats. Difficult letters like X and Q may be excluded depending on the language setting.</p>
-
-    <h3>3. Filling in Categories</h3>
-    <p>Once the letter is drawn, everyone writes simultaneously. Default categories include: <strong>Country, City, Animal, Plant, Thing, Name, Colour, Job</strong>. The host can customise categories before the game starts.</p>
-
-    <h3>4. STOP! — Ending the Round</h3>
-    <p>The first player to fill in all categories hits STOP. Remaining players get a short grace period to finish (configurable, default 20 seconds). After that, answers are revealed.</p>
-
-    <h2>Scoring</h2>
+  <div id="pm" class="game-section active">
+    <div class="game-section-header"><span class="game-section-icon">🌍</span><div><div class="game-section-title">Countries &amp; Cities</div><div class="game-section-sub">2–12 players · PL/EN/DE/FR/ES</div></div></div>
+    <p class="rules-p">A classic word game. A letter is drawn — everyone simultaneously fills in categories with words starting with that letter. First to finish calls STOP!</p>
+    <div class="rules-h2">How a Round Works</div>
+    <ul class="rules-ul">
+      <li><strong>Host draws a letter</strong> — each letter appears only once per game</li>
+      <li><strong>Everyone writes</strong> — fills in categories (Country, City, Animal…)</li>
+      <li><strong>STOP!</strong> — first to finish stops the round. Others have a few more seconds</li>
+      <li><strong>Scoring</strong> — answers are compared and scored</li>
+    </ul>
+    <div class="rules-h2">Scoring</div>
     <table class="score-table">
       <tr><th>Situation</th><th>Points</th></tr>
-      <tr><td>Unique answer — only you wrote this word</td><td><strong style="color:var(--green)">10 pts</strong></td></tr>
-      <tr><td>Duplicate answer — someone else wrote the same</td><td><strong style="color:var(--accent2)">5 pts</strong></td></tr>
+      <tr><td>Unique answer (only you wrote it)</td><td><strong style="color:var(--green)">10 pts</strong></td></tr>
+      <tr><td>Duplicate answer (someone else wrote the same)</td><td><strong style="color:var(--accent2)">5 pts</strong></td></tr>
       <tr><td>No answer / blank</td><td><strong style="color:var(--red)">0 pts</strong></td></tr>
-      <tr><td>Answer challenged and rejected by vote</td><td><strong style="color:var(--red)">0 pts</strong></td></tr>
     </table>
-
-    <div class="seo-tip">
-      <p>💡 <strong>Pro tip:</strong> Go for niche, unusual answers. "El Salvador" beats "Spain" for S every time — the less likely someone else thinks of it, the more points you score.</p>
-    </div>
-
-    <h2>The Challenge System</h2>
-    <p>After each round, players can challenge any answer they think is invalid by clicking the ⚠ Challenge button. All players then vote whether the word is acceptable. The majority decides.</p>
-    <ul>
-      <li>If the word is <strong>rejected</strong> — the player who wrote it scores 0 for that category</li>
-      <li>If the word is <strong>accepted</strong> — points stand and the challenge fails</li>
-      <li>The challenged player can argue their case before the vote</li>
-    </ul>
-
-    <h2>Rounds and Endgame</h2>
-    <p>Games last 5 rounds by default. The host can set 3 to 10 rounds before starting. After all rounds, a final leaderboard shows the total score for every player.</p>
-
-    <h2>Host Settings</h2>
-    <ul>
-      <li><strong>Number of rounds</strong> — 3 to 10</li>
-      <li><strong>Grace period after STOP</strong> — 10, 20, or 30 seconds</li>
-      <li><strong>Categories</strong> — choose from presets or customise</li>
-      <li><strong>Language</strong> — PL, EN, DE, FR, ES</li>
-      <li><strong>Room visibility</strong> — private (code only) or public (listed on Game Hub)</li>
-    </ul>
-
-    <h2>Multilingual Play</h2>
-    <p>The game runs in five languages: Polish, English, German, French, and Spanish. The language setting changes category names and the interface. Players speaking different languages can share one room.</p>
-
-    <h2>FAQ</h2>
-    <h3>Is it free?</h3>
-    <p>Yes, completely. No sign-up, no fees, no ads.</p>
-    <h3>How many players can join?</h3>
-    <p>2 to 12 players per room.</p>
-    <h3>Does it work on mobile?</h3>
-    <p>Yes — it runs in any browser on any device.</p>
-    <h3>What if a player disconnects?</h3>
-    <p>Players can rejoin within 30 minutes using the same room code and name.</p>
-    <h3>How long is the room code valid?</h3>
-    <p>Room codes stay active for 24 hours before the game starts. Once the game ends, the room expires after 1 hour.</p>
-
-    <div class="seo-cta">
-      <p>Ready to play? Create a room in 30 seconds and play with friends!</p>
-      <a href="/?lang=en" class="btn" style="text-decoration:none;">🎮 Play now — it's free</a>
-    </div>
-
-    <p style="text-align:center;margin-top:24px;"><a href="/kategorie" style="color:var(--accent);font-weight:700;">📋 See the full list of category ideas →</a></p>
+    <div class="rules-h2">Challenges</div>
+    <p class="rules-p">You can challenge any answer by clicking ⚠ Challenge. All players vote — majority decides. A rejected answer scores 0 points.</p>
+    <div class="rules-tip"><p>💡 Write unusual, niche answers — a unique answer scores 10 pts instead of 5!</p></div>
+    <div class="game-cta"><p>Ready to play?</p><a href="/?lang=en" class="btn">🎮 Play Countries &amp; Cities</a></div>
   </div>
+
+  <div id="taboo" class="game-section">
+    <div class="game-section-header"><span class="game-section-icon">🎭</span><div><div class="game-section-title">Taboo</div><div class="game-section-sub">4–12 players · 2 teams · PL/EN</div></div></div>
+    <p class="rules-p">A team party game. Describe words to your team without using the forbidden expressions. The opposing team watches and enforces the rules.</p>
+    <div class="rules-h2">Roles</div>
+    <ul class="rules-ul">
+      <li><strong>Describer</strong> — sees the word and the forbidden list. Describes using any other words, gestures, or context</li>
+      <li><strong>Guessers</strong> — rest of the team tries to guess the word</li>
+      <li><strong>Referee</strong> — a player from the opposing team who catches forbidden words</li>
+    </ul>
+    <div class="rules-h2">Scoring</div>
+    <ul class="rules-ul">
+      <li><strong>+1 for the team</strong> — for each correctly guessed word</li>
+      <li><strong>+1 for the opposing team</strong> — when the referee catches a forbidden word</li>
+    </ul>
+    <div class="rules-tip"><p>💡 Describe by purpose or context — instead of naming the thing, say what it's used for or when you'd encounter it.</p></div>
+    <div class="game-cta"><p>Ready to play?</p><a href="/taboo?lang=en" class="btn">🎮 Play Taboo</a></div>
+  </div>
+
+  <div id="hangman" class="game-section">
+    <div class="game-section-header"><span class="game-section-icon">🪢</span><div><div class="game-section-title">Hangman</div><div class="game-section-sub">2–10 players · rotating · PL/EN/DE</div></div></div>
+    <p class="rules-p">Classic word guessing with rotation. Each player takes turns picking a secret word while everyone else guesses letter by letter. 7 wrong guesses and the hangman is complete.</p>
+    <div class="rules-h2">How a Round Works</div>
+    <ul class="rules-ul">
+      <li><strong>Picker types a word</strong> — only they see it. An optional hint/category can be added</li>
+      <li><strong>Guessers tap letters</strong> — correct letters reveal themselves in the word</li>
+      <li><strong>7 wrong = game over</strong> — Picker wins the round</li>
+      <li><strong>Guess the full word</strong> — at any time. Wrong answer = instant loss!</li>
+    </ul>
+    <div class="rules-h2">Scoring</div>
+    <ul class="rules-ul">
+      <li><strong>+1 for the Guesser</strong> — whoever guesses the word first</li>
+      <li><strong>+1 for the Picker</strong> — if nobody guesses</li>
+    </ul>
+    <div class="rules-tip"><p>💡 As a Guesser: start with common letters (E, T, A, O, I, N, S). As a Picker: choose words with rare letters.</p></div>
+    <div class="game-cta"><p>Ready to play?</p><a href="/hangman?lang=en" class="btn">🎮 Play Hangman</a></div>
+  </div>
+
+  <div id="dots" class="game-section">
+    <div class="game-section-header"><span class="game-section-icon">🔵</span><div><div class="game-section-title">Dots &amp; Boxes</div><div class="game-section-sub">2–4 players · strategy</div></div></div>
+    <p class="rules-p">A classic strategy game. Draw lines between dots and claim boxes — the player with the most boxes wins.</p>
+    <div class="rules-h2">Rules</div>
+    <ul class="rules-ul">
+      <li><strong>Take turns drawing a line</strong> — one horizontal or vertical line between adjacent dots</li>
+      <li><strong>Complete a box = point + extra turn</strong> — you can score multiple times in a row!</li>
+      <li><strong>Game ends</strong> — when all boxes are claimed. Most boxes wins</li>
+    </ul>
+    <div class="rules-h2">Grid Sizes</div>
+    <ul class="rules-ul">
+      <li><strong>3×3</strong> — 9 boxes, quick game (~5 min)</li>
+      <li><strong>4×4</strong> — 16 boxes, standard game (~10 min)</li>
+      <li><strong>5×5 / 6×6</strong> — longer strategic games (15–25 min)</li>
+    </ul>
+    <div class="rules-tip"><p>💡 Avoid drawing the third line on an uncomplete box — you hand your opponent an easy point!</p></div>
+    <div class="game-cta"><p>Ready to play?</p><a href="/dots?lang=en" class="btn">🎮 Play Dots &amp; Boxes</a></div>
+  </div>
+
+  <div id="twotruth" class="game-section">
+    <div class="game-section-header"><span class="game-section-icon">🤥</span><div><div class="game-section-title">2 Truths 1 Lie</div><div class="game-section-sub">3–20 players · icebreaker · PL/EN</div></div></div>
+    <p class="rules-p">A classic icebreaker. Each player takes turns writing 2 truths and 1 lie about themselves — everyone votes which one is the lie.</p>
+    <div class="rules-h2">How a Round Works</div>
+    <ul class="rules-ul">
+      <li><strong>Active player writes 3 statements</strong> — 2 true, 1 lie. They choose which is which</li>
+      <li><strong>Everyone votes</strong> — taps the statement they think is the lie</li>
+      <li><strong>Reveal</strong> — the active player reveals the lie. Everyone sees who guessed right</li>
+    </ul>
+    <div class="rules-h2">Scoring</div>
+    <ul class="rules-ul">
+      <li><strong>+1 for Guessers</strong> — for correctly identifying the lie</li>
+      <li><strong>+1 for the Active player</strong> — for each person they fooled</li>
+    </ul>
+    <div class="rules-tip"><p>💡 The best lies sound plausible — pick something others might genuinely believe about you.</p></div>
+    <div class="game-cta"><p>Ready to play?</p><a href="/twotruth?lang=en" class="btn">🎮 Play 2 Truths 1 Lie</a></div>
+  </div>
+
+  <div style="text-align:center;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);">
+    <a href="/kategorie" style="color:var(--accent);font-weight:700;font-size:14px;text-decoration:none;">📋 Category ideas for Countries &amp; Cities →</a>
+  </div>
+
 </div>
+</div>
+
+<script>
+function showGame(id) {
+  document.querySelectorAll('.game-section').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.game-pill').forEach(function(p){p.classList.remove('active');});
+  var sec = document.getElementById(id);
+  if(sec) sec.classList.add('active');
+  document.querySelectorAll('.game-pill').forEach(function(p){
+    if(p.getAttribute('href')==='#'+id) p.classList.add('active');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+  return false;
+}
+var hash = window.location.hash.replace('#','');
+if(hash) showGame(hash);
+</script>
+<script src="/js/shared.js"></script>
 </body>
 </html>
