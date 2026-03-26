@@ -372,6 +372,25 @@ window._switchLang = function(code) {
 // Keep old name as alias so nothing breaks
 window._footerSetLang = window._switchLang;
 
+// Called after all game scripts have loaded so LANGS is available
+window._buildFooterLangBtns = function() {
+  var el = document.getElementById('footer-lang-btns');
+  if (!el) return;
+  var langs = (typeof LANGS !== 'undefined')
+    ? Object.keys(LANGS).map(function(code) {
+        return { code: code, label: LANGS[code].name };
+      })
+    : [{code:'pl',label:'🇵🇱 PL'},{code:'en',label:'🇬🇧 EN'}];
+  el.innerHTML = langs.map(function(l) {
+    return '<button onclick="window._switchLang(\'' + l.code + '\')" ' +
+      'style="background:none;border:none;color:var(--muted);font-size:12px;' +
+      'cursor:pointer;font-family:Nunito,sans-serif;font-weight:700;padding:0 3px;">' +
+      l.label + '</button>';
+  }).join('');
+};
+// Run after everything is loaded
+window.addEventListener('load', window._buildFooterLangBtns);
+
 // ─── SITE FOOTER ─────────────────────────────────────────────────
 // Injected into every game page automatically on DOMContentLoaded
 (function() {
@@ -450,16 +469,7 @@ window._footerSetLang = window._switchLang;
         '<div style="border-top:1px solid var(--border);padding-top:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">' +
           '<span style="color:var(--muted);font-size:12px;font-weight:600;">© 2025 panstwamiastagra.com · ' + t.tagline + '</span>' +
           '<div style="display:flex;gap:8px;">' +
-            (function() {
-              var flagBtns = '';
-              var footerLangs = (typeof LANGS !== 'undefined')
-                ? Object.keys(LANGS).map(function(code) { return { code: code, label: LANGS[code].name }; })
-                : [{code:'pl',label:'🇵🇱 PL'},{code:'en',label:'🇬🇧 EN'}];
-              footerLangs.forEach(function(l) {
-                flagBtns += '<button onclick="window._switchLang(\'' + l.code + '\')" style="background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:Nunito,sans-serif;font-weight:700;padding:0;">' + l.label + '</button>';
-              });
-              return flagBtns;
-            }()) +
+            '<span id="footer-lang-btns">🇵🇱 🇬🇧</span>' +
           '</div>' +
         '</div>' +
       '</div>';
