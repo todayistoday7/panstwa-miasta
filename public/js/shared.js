@@ -345,6 +345,21 @@ function initVisibilityToggle() {
 })();
 
 
+
+// Footer language switcher — translates in place, falls back to navigation
+window._footerSetLang = function(code) {
+  if (typeof setUiLang === 'function') {
+    setUiLang(code);
+  } else if (typeof setLang === 'function') {
+    setLang(code);
+  } else {
+    // Fallback: navigate to current page with new lang param
+    var url = new URL(window.location.href);
+    url.searchParams.set('lang', code);
+    window.location.href = url.toString();
+  }
+};
+
 // ─── SITE FOOTER ─────────────────────────────────────────────────
 // Injected into every game page automatically on DOMContentLoaded
 (function() {
@@ -423,8 +438,8 @@ function initVisibilityToggle() {
         '<div style="border-top:1px solid var(--border);padding-top:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">' +
           '<span style="color:var(--muted);font-size:12px;font-weight:600;">© 2025 panstwamiastagra.com · ' + t.tagline + '</span>' +
           '<div style="display:flex;gap:8px;">' +
-            '<a href="/?lang=pl" style="color:var(--muted);font-size:12px;text-decoration:none;">🇵🇱 PL</a>' +
-            '<a href="/?lang=en" style="color:var(--muted);font-size:12px;text-decoration:none;">🇬🇧 EN</a>' +
+            '<button onclick="window._footerSetLang(\'pl\')" style="background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:Nunito,sans-serif;font-weight:700;padding:0;">🇵🇱 PL</button>' +
+            '<button onclick="window._footerSetLang(\'en\')" style="background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:Nunito,sans-serif;font-weight:700;padding:0;">🇬🇧 EN</button>' +
           '</div>' +
         '</div>' +
       '</div>';

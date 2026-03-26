@@ -743,6 +743,8 @@ function setLang(code) {
   applyTranslations();
   history.replaceState(null, '', window.location.pathname + '?lang=' + code);
 }
+// Alias — shared.js buildLangBar calls setUiLang; PM only defined setLang
+function setUiLang(code) { setLang(code); }
 
 function buildLangBar() {
   const bar = document.getElementById('lang-bar');
