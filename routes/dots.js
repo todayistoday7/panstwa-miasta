@@ -319,7 +319,7 @@ function register(io, socket) {
             emitDotsState(io, room);
           }
           p._turnTimer = null;
-        }, 15000);
+        }, 45000);
       }
 
       const allGone = room.players.every(pl => !pl.connected);

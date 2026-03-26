@@ -352,7 +352,7 @@ function register(io, socket) {
           emitTabooState(io, room);
         }
         p._disconnectTimer = null;
-      }, 15000);
+      }, 45000);
 
       emitTabooState(io, room);
 

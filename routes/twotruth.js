@@ -330,7 +330,7 @@ function register(io, socket) {
           emitTTState(io, room);
         }
         p._disconnectTimer = null;
-      }, 15000);
+      }, 45000);
       emitTTState(io, room);
       const allGone = room.players.every(pl => !pl.connected);
       if (allGone) {

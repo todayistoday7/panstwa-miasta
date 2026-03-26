@@ -368,7 +368,7 @@ function register(io, socket) {
           emitHangState(io, room);
         }
         p._disconnectTimer = null;
-      }, 15000);
+      }, 45000);
       emitHangState(io, room);
       const allGone = room.players.every(pl => !pl.connected);
       if (allGone) {

@@ -81,10 +81,16 @@ function copyRoomCode() {
 // gameSlug: 'taboo', 'dots', 'twotruth', or '' for PM
 function shareRoom(gameSlug, titleText) {
   if (typeof roomCode === 'undefined' || !roomCode) return;
+  var currentLang = (typeof lang !== 'undefined' && lang) ||
+    (new URLSearchParams(window.location.search).get('lang')) || 'pl';
   const path = gameSlug ? '/' + gameSlug : '/';
-  const url  = 'https://panstwamiastagra.com' + path + '?join=' + roomCode;
-  const text = (titleText || 'Join my game!') + '\n\n' +
-               'Room code: ' + roomCode + '\n' + url;
+  const url  = 'https://panstwamiastagra.com' + path + '?join=' + roomCode + '&lang=' + currentLang;
+  var joinLabels = {pl:'Dołącz do gry',en:'Join my game',de:'Spiel beitreten',fr:'Rejoins ma partie',es:'Únete al juego'};
+  var codeLabels = {pl:'Kod pokoju',en:'Room code',de:'Raumcode',fr:'Code de salle',es:'Código de sala'};
+  var joinLabel = joinLabels[currentLang] || joinLabels['en'];
+  var codeLabel = codeLabels[currentLang] || codeLabels['en'];
+  const text = (titleText || joinLabel) + '\n\n' +
+               codeLabel + ': ' + roomCode + '\n' + url;
 
   if (navigator.share) {
     navigator.share({ title: titleText || 'Join my game!', text, url })

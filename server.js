@@ -74,7 +74,7 @@ app.get('/share', (req, res) => {
     '<html lang="' + lang + '">\n<head>\n' +
     '<meta charset="UTF-8">\n' +
     '<title>' + gameName + ' — panstwamiastagra.com</title>\n' +
-    '<meta property="og:title" content="' + gameName + ' — zagraj online za darmo!">\n' +
+    '<meta property="og:title" content="' + gameName + ' — ' + ({pl:'Zagraj online za darmo!',en:'Play free online!',de:'Kostenlos online spielen!',fr:'Joue gratuitement en ligne!',es:'¡Juega gratis en línea!'}[lang]||'Play free online!') + '">\n' +
     '<meta property="og:description" content="' + ogDesc + '">\n' +
     '<meta property="og:url" content="' + shareUrl + '">\n' +
     '<meta property="og:type" content="website">\n' +

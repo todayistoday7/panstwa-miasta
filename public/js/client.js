@@ -792,6 +792,7 @@ function applyTranslations() {
     'lbl-final-sub':'finalSub','lbl-final-ranking':'finalRanking',
     'lbl-new-game':'newGame','lbl-force-scoring':'forceScoring',
     'lbl-share-btn':'shareBtnLabel','lbl-share-game':'shareGameBtn','nav-share-btn':'shareInviteBtn',
+    'lbl-home-rejoin-tip':'homeRejoinTip',
     'lbl-nav-home':'navHome','lbl-leave-room':'leaveRoom',
     'lbl-other-games':'otherGames',
   };

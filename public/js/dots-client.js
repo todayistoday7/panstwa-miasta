@@ -27,6 +27,9 @@ const LANGS = {
     playersTitle: 'Gracze',
     startBtn:     '🎮 Rozpocznij',  leaveRoom:   '🚪 Wyjdź',
     shareCode:    'Udostępnij kod znajomym',
+    shareRoom:    'Udostępnij pokój',
+    demoCaption:  'Kliknij na linię między kropkami żeby ją narysować',
+    homeRejoinTip:'Jeśli przypadkowo opuścisz grę, wróć z tym samym imieniem i kodem pokoju.',
     copyCode:     'Skopiuj kod',
     createDisclaimer: 'Stwórz pokój otwarty lub prywatny. Zaproś znajomych — otrzymasz kod pokoju, który przekażesz innym graczom.',
     waitingForHost: 'Czekam na hosta...',
@@ -45,7 +48,7 @@ const LANGS = {
     rematch:      '🔄 Zagraj jeszcze raz z tą grupą',
     newGame:      '🏠 Powrót',
     hostBadge:    'HOST',
-    youBadge:     'TY',
+    youBadge:     'TY ·',
     leaveTitle:   'Opuścić grę?',
     leaveMsg:     'Gra jest w toku. Na pewno chcesz wyjść?',
     leaveYes:     'Tak, wyjdź',
@@ -65,6 +68,9 @@ const LANGS = {
     playersTitle: 'Players',
     startBtn:     '🎮 Start Game',  leaveRoom:   '🚪 Leave Room',
     shareCode:    'Share this code with friends',
+    shareRoom:    'Share Room',
+    demoCaption:  'Tap on a line between two dots to draw it',
+    homeRejoinTip:'If you accidentally leave mid-game, rejoin with the same name and room code.',
     copyCode:     'Copy Code',
     createDisclaimer: 'Create a public or private room. Invite friends — you\'ll get a room code to share with other players.',
     waitingForHost: 'Waiting for host...',
@@ -83,7 +89,7 @@ const LANGS = {
     rematch:      '🔄 Play Again With This Group',
     newGame:      '🏠 Home',
     hostBadge:    'HOST',
-    youBadge:     'YOU',
+    youBadge:     'YOU ·',
     leaveTitle:   'Leave Game?',
     leaveMsg:     'A game is in progress. Are you sure?',
     leaveYes:     'Yes, leave',
@@ -220,6 +226,7 @@ socket.on('dots_room_created', ({ code }) => {
   sessionStorage.setItem('dots_name', myName);
   document.getElementById('room-code-display').textContent = code;
   showScreen('screen-lobby');
+  var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
 });
 
 socket.on('dots_room_joined', ({ code }) => {
@@ -229,6 +236,7 @@ socket.on('dots_room_joined', ({ code }) => {
   sessionStorage.setItem('dots_name', myName);
   document.getElementById('room-code-display').textContent = code;
   showScreen('screen-lobby');
+  var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
 });
 
 socket.on('dots_error',  ({ msg })  => { showError(msg); });
@@ -657,7 +665,9 @@ function applyTranslations() {
     'lbl-rule-1':       'rule1',       'lbl-rule-2':       'rule2',
     'lbl-rule-3':       'rule3',       'lbl-rule-4':       'rule4',
     'lbl-rematch':      'rematch',     'lbl-new-game':     'newGame',
-    'lbl-game-over':    'gameOver',
+    'lbl-game-over':    'gameOver',     'lbl-share-room':   'shareRoom',
+    'lbl-demo-caption': 'demoCaption',  'lbl-home-rejoin-tip': 'homeRejoinTip',
+    'lbl-rejoin-tip':   'rejoinTip',
   };
   for (const [id, key] of Object.entries(map)) {
     const el = document.getElementById(id);
