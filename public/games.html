@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gry Online Za Darmo — Game Hub | panstwamiastagra.com</title>
-<meta name="description" content="Darmowe gry online dla znajomych i rodziny. Państwa Miasta, Tabu i więcej. Free online multiplayer games — Countries Cities, Taboo and more.">
+<meta name="description" content="Darmowe gry integracyjne i zabawy integracyjne online — Państwa Miasta, Tabu, Wisielec i więcej. Fun ice breaker games free to play with friends, family and teams. Bez rejestracji.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
@@ -104,6 +104,16 @@
     .hub-room-players { display: none; }
   }
 
+
+  .game-age-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 800;
+    background: rgba(6,214,160,0.1); border: 1px solid rgba(6,214,160,0.3);
+    color: var(--green); border-radius: 20px; padding: 3px 9px;
+    margin-top: 6px;
+  }
+  .game-tag.icebreaker { background:rgba(255,107,53,0.1); border-color:rgba(255,107,53,0.35); color:var(--accent); }
+  .game-tag.integration { background:rgba(255,209,102,0.1); border-color:rgba(255,209,102,0.35); color:var(--accent2); }
 </style>
 </head>
 <body>
@@ -147,37 +157,37 @@
 (function() {
   var GAMES = {
     pl: {
-      pm:        { title: 'Państwa-Miasta', desc: 'Klasyczna polska gra słowna online. Wpisuj państwa, miasta, zwierzęta i inne słowa na wylosowaną literę — szybciej niż inni!', players: '2-12 graczy', tag1: 'Wiedza', play: '🎮 Zagraj teraz', coming: 'WKRÓTCE' },
-      taboo:     { title: 'Tabu', desc: 'Gra drużynowa! Opisuj słowa bez zakazanych — Twoja drużyna zgaduje, sędzia przeciwników pilnuje. Min. 4 graczy.', players: '4-12 graczy', tag1: 'Drużynowa', play: '🎮 Zagraj teraz', coming: 'WKRÓTCE' },
-      twotruth:  { title: 'Dwie Prawdy Jedno Kłamstwo', desc: 'Powiedz dwie prawdy i jedno kłamstwo o sobie. Wszyscy głosują, które to kłamstwo!', players: '3-20 graczy', tag1: 'Integracja', play: '🎮 Zagraj teraz', coming: 'WKRÓTCE' },
-      dots:      { desc: 'Klasyczna gra strategiczna! Rysuj kreski między kropkami i zamykaj pola. Gracz z największą liczbą pól wygrywa!', players: '2-4 graczy', tag1: 'Strategia', title: 'Kropki i Kreski', play: '🎮 Zagraj teraz', coming: 'WKRÓTCE' },
-      hangman:   { title: 'Wisielec', desc: 'Klasyczna gra słowna! Odgadnij tajne słowo litera po literze. 7 błędów i koniec!', players: '2-10 graczy', tag1: 'Słowna', play: '🎮 Zagraj teraz', coming: 'WKRÓTCE' },
+      pm:        { title: 'Państwa-Miasta', desc: 'Klasyczna polska gra integracyjna online! Wpisuj państwa, miasta, zwierzęta i inne słowa na wylosowaną literę — szybciej niż wszyscy inni!', players: '2-12 graczy', tag1: 'Gra integracyjna', age: 'od 7 lat', play: '🎮 Zagraj teraz', coming: 'WKRÓTCE' },
+      taboo:     { title: 'Tabu', desc: 'Drużynowa gra integracyjna! Opisuj słowa bez zakazanych wyrażeń — świetna zabawa na imprezy i team building. Min. 4 graczy.', players: '4-12 graczy', tag1: 'Team building', age: 'od 11 lat', play: '🎮 Zagraj teraz', coming: 'WKRÓTCE' },
+      twotruth:  { title: 'Dwie Prawdy Jedno Kłamstwo', desc: 'Kultowa gra integracyjna — ice breaker na każdą imprezę! Powiedz 2 prawdy i 1 kłamstwo o sobie. Wszyscy głosują, które to kłamstwo!', players: '3-20 graczy', tag1: 'Ice breaker', age: 'od 12 lat', play: '🎮 Zagraj teraz', coming: 'WKRÓTCE' },
+      dots:      { title: 'Kropki i Kreski', desc: 'Klasyczna gra strategiczna dla całej rodziny! Rysuj kreski między kropkami i zamykaj pola. Prosta zasada, niekończąca się frajda.', players: '2-4 graczy', tag1: 'Rodzinna', age: 'od 5 lat', play: '🎮 Zagraj teraz', coming: 'WKRÓTCE' },
+      hangman:   { title: 'Wisielec', desc: 'Klasyczna gra słowna i edukacyjna! Odgadnij tajne słowo litera po literze — świetna zabawa i nauka jednocześnie. 7 błędów i koniec!', players: '2-10 graczy', tag1: 'Edukacyjna', age: 'od 8 lat', play: '🎮 Zagraj teraz', coming: 'WKRÓTCE' },
     },
     en: {
-      pm:        { title: 'Countries & Cities', desc: 'Classic word game online. Fill in countries, cities, animals and more starting with a random letter — faster than everyone else!', players: '2-12 players', tag1: 'Knowledge', play: '🎮 Play now', coming: 'COMING SOON' },
-      taboo:     { title: 'Taboo', desc: 'Team game! Describe words without the forbidden ones — your team guesses, opposing referee watches. Min. 4 players.', players: '4-12 players', tag1: 'Teams', play: '🎮 Play now', coming: 'COMING SOON' },
-      twotruth:  { title: '2 Truths 1 Lie', desc: 'Say two truths and one lie about yourself. Everyone votes which one is the lie!', players: '3-20 players', tag1: 'Icebreaker', play: '🎮 Play now', coming: 'COMING SOON' },
-      dots:      { desc: 'Classic grid strategy game! Draw lines between dots and claim boxes. The player with the most boxes wins! 2-4 players.', players: '2-4 players', tag1: 'Strategy', title: 'Dots & Boxes', play: '🎮 Play now', coming: 'COMING SOON' },
-      hangman:   { title: 'Hangman', desc: 'Classic word guessing! Guess the secret word letter by letter. 7 wrong and game over!', players: '2-10 players', tag1: 'Word', play: '🎮 Play now', coming: 'COMING SOON' },
+      pm:        { title: 'Countries & Cities', desc: 'Fun ice breaker game for groups! Fill in countries, cities, animals and more starting with a random letter — faster than everyone else!', players: '2-12 players', tag1: 'Ice breaker', age: 'ages 7+', play: '🎮 Play now', coming: 'COMING SOON' },
+      taboo:     { title: 'Taboo', desc: 'Classic team ice breaker game! Describe words without using the forbidden ones — great for parties, team building and group bonding. Min. 4 players.', players: '4-12 players', tag1: 'Team building', age: 'ages 11+', play: '🎮 Play now', coming: 'COMING SOON' },
+      twotruth:  { title: '2 Truths 1 Lie', desc: 'The ultimate ice breaker game! Say 2 truths and 1 lie about yourself — perfect for getting to know new people at parties and team events.', players: '3-20 players', tag1: 'Ice breaker', age: 'ages 12+', play: '🎮 Play now', coming: 'COMING SOON' },
+      dots:      { title: 'Dots & Boxes', desc: 'Classic strategy game for all the family! Draw lines between dots and claim boxes. Simple rules, endless fun — great for all ages.', players: '2-4 players', tag1: 'Family', age: 'ages 5+', play: '🎮 Play now', coming: 'COMING SOON' },
+      hangman:   { title: 'Hangman', desc: 'Classic word guessing and learning game! Guess the secret word letter by letter — fun and educational. 7 wrong guesses and game over!', players: '2-10 players', tag1: 'Educational', age: 'ages 8+', play: '🎮 Play now', coming: 'COMING SOON' },
     },
     de: {
-      pm:        { title: 'Länder & Städte', desc: 'Klassisches Wortspiel online. Trage Länder, Städte, Tiere und mehr mit einem zufälligen Buchstaben ein — schneller als die anderen!', players: '2-12 Spieler', tag1: 'Wissen', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
-      taboo:     { title: 'Tabu', desc: 'Teamspiel! Beschreibe Wörter ohne verbotene — dein Team rät, der gegnerische Schiedsrichter passt auf. Min. 4 Spieler.', players: '4-12 Spieler', tag1: 'Teams', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
-      twotruth:  { title: '2 Wahrheiten 1 Lüge', desc: 'Sage zwei Wahrheiten und eine Lüge über dich. Alle stimmen ab, welche die Lüge ist!', players: '3-20 Spieler', tag1: 'Kennenlernen', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
-      dots:      { desc: 'Klassisches Strategiespiel! Verbinde Punkte mit Linien und beanspruche Felder. Wer die meisten Felder hat, gewinnt! 2-4 Spieler.', players: '2-4 Spieler', tag1: 'Strategie', title: 'Punkte & Linien', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
-      hangman:   { title: 'Galgenmännchen', desc: 'Klassisches Wortspiel! Rate das Wort Buchstabe für Buchstabe. 7 Fehler bedeutet Ende!', players: '2-10 Spieler', tag1: 'Wortspiel', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
+      pm:        { title: 'Länder & Städte', desc: 'Klassisches Kennenlernspiel online! Trage Länder, Städte, Tiere und mehr mit einem zufälligen Buchstaben ein — schneller als alle anderen!', players: '2-12 Spieler', tag1: 'Kennenlernen', age: 'ab 7 Jahren', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
+      taboo:     { title: 'Tabu', desc: 'Team-Kennenlernspiel! Beschreibe Wörter ohne verbotene Begriffe — perfekt für Parties, Teambuilding und Gruppenabende. Min. 4 Spieler.', players: '4-12 Spieler', tag1: 'Teambuilding', age: 'ab 11 Jahren', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
+      twotruth:  { title: '2 Wahrheiten 1 Lüge', desc: 'Das ultimative Eisbrecher-Spiel! Sage zwei Wahrheiten und eine Lüge über dich — ideal zum Kennenlernen bei Parties und Events.', players: '3-20 Spieler', tag1: 'Eisbrecher', age: 'ab 12 Jahren', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
+      dots:      { title: 'Punkte & Linien', desc: 'Klassisches Strategiespiel für die ganze Familie! Verbinde Punkte mit Linien und beanspruche Felder. Einfache Regeln, endloser Spaß.', players: '2-4 Spieler', tag1: 'Familie', age: 'ab 5 Jahren', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
+      hangman:   { title: 'Galgenmännchen', desc: 'Klassisches Lern- und Ratespiel! Rate das geheime Wort Buchstabe für Buchstabe — Spaß und Bildung zugleich. 7 Fehler bedeutet Ende!', players: '2-10 Spieler', tag1: 'Lernspiel', age: 'ab 8 Jahren', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
     },
     fr: {
-      pm:        { title: 'Pays & Villes', desc: 'Jeu de mots classique en ligne. Remplissez pays, villes, animaux et plus avec une lettre aléatoire — plus vite que les autres!', players: '2-12 joueurs', tag1: 'Culture', play: '🎮 Jouer maintenant', coming: 'BIENTÔT' },
+      pm:        { title: 'Pays & Villes', desc: 'Jeu brise-glace classique en ligne! Remplissez pays, villes, animaux et plus avec une lettre aléatoire — plus vite que tout le monde!', players: '2-12 joueurs', tag1: 'Brise-glace', age: 'dès 7 ans', play: '🎮 Jouer maintenant', coming: 'BIENTÔT' },
       taboo:     { title: 'Tabou', desc: 'Jeu en équipes! Décrivez des mots sans les interdits — votre équipe devine, l\'arbitre adverse surveille. Min. 4 joueurs.', players: '4-12 joueurs', tag1: 'Équipes', play: '🎮 Jouer maintenant', coming: 'BIENTÔT' },
-      twotruth:  { title: '2 Vérités 1 Mensonge', desc: 'Dites deux vérités et un mensonge sur vous. Tout le monde vote lequel est le mensonge!', players: '3-20 joueurs', tag1: 'Brise-glace', play: '🎮 Jouer maintenant', coming: 'BIENTÔT' },
+      twotruth:  { title: '2 Vérités 1 Mensonge', desc: 'Le jeu brise-glace ultime! Dites deux vérités et un mensonge sur vous — parfait pour faire connaissance en soirée ou en équipe.', players: '3-20 joueurs', tag1: 'Brise-glace', age: 'dès 12 ans', play: '🎮 Jouer maintenant', coming: 'BIENTÔT' },
       dots:      { desc: 'Jeu de stratégie classique! Tracez des lignes entre les points et réclamez des cases. Le plus de cases gagne! 2-4 joueurs.', players: '2-4 joueurs', tag1: 'Stratégie', title: 'Points & Lignes', play: '🎮 Jouer maintenant', coming: 'BIENTÔT' },
       hangman:   { title: 'Pendu', desc: 'Jeu de mots classique! Devinez le mot secret lettre par lettre. 7 erreurs et fini!', players: '2-10 joueurs', tag1: 'Mots', play: '🎮 Jouer maintenant', coming: 'BIENTÔT' },
     },
     es: {
-      pm:        { title: 'Países & Ciudades', desc: 'Juego de palabras clásico online. Rellena países, ciudades, animales y más con una letra aleatoria — ¡más rápido que los demás!', players: '2-12 jugadores', tag1: 'Conocimiento', play: '🎮 Jugar ahora', coming: 'PRÓXIMAMENTE' },
+      pm:        { title: 'Países & Ciudades', desc: '¡Juego de integración clásico online! Rellena países, ciudades, animales y más con una letra aleatoria — ¡más rápido que todos!', players: '2-12 jugadores', tag1: 'Integración', age: 'desde 7 años', play: '🎮 Jugar ahora', coming: 'PRÓXIMAMENTE' },
       taboo:     { title: 'Tabú', desc: '¡Juego en equipos! Describe palabras sin las prohibidas — tu equipo adivina, el árbitro contrario vigila. Mín. 4 jugadores.', players: '4-12 jugadores', tag1: 'Equipos', play: '🎮 Jugar ahora', coming: 'PRÓXIMAMENTE' },
-      twotruth:  { title: '2 Verdades 1 Mentira', desc: 'Di dos verdades y una mentira sobre ti. ¡Todos votan cuál es la mentira!', players: '3-20 jugadores', tag1: 'Integración', play: '🎮 Jugar ahora', coming: 'PRÓXIMAMENTE' },
+      twotruth:  { title: '2 Verdades 1 Mentira', desc: '¡El mejor juego de presentación! Di dos verdades y una mentira sobre ti — perfecto para conocer gente nueva en fiestas y eventos.', players: '3-20 jugadores', tag1: 'Rompe-hielos', age: 'desde 12 años', play: '🎮 Jugar ahora', coming: 'PRÓXIMAMENTE' },
       dots:      { desc: '¡Juego de estrategia clásico! Dibuja líneas entre puntos y reclama casillas. ¡El que tenga más casillas gana! 2-4 jugadores.', players: '2-4 jugadores', tag1: 'Estrategia', title: 'Puntos & Líneas', play: '🎮 Jugar ahora', coming: 'PRÓXIMAMENTE' },
       hangman:   { title: 'El Ahorcado', desc: 'Juego clásico de palabras. Adivina la palabra secreta letra a letra. 7 errores y se acabó!', players: '2-10 jugadores', tag1: 'Palabras', play: '🎮 Jugar ahora', coming: 'PRÓXIMAMENTE' },
     },
@@ -221,17 +231,26 @@
   function renderCards(l) {
     var g = GAMES[l] || GAMES['pl'];
     document.getElementById('games-grid').innerHTML =
-      card('/', '🌍', g.pm.title || 'Państwa-Miasta', g.pm.desc, g.pm.players, 'PL/EN/DE/FR/ES', g.pm.tag1, false, g.pm.play, l) +
-      card('/taboo', '🎭', g.taboo.title || 'Tabu', g.taboo.desc, g.taboo.players, 'PL/EN', g.taboo.tag1, false, g.taboo.play, l) +
-      card('/twotruth', '🤥', g.twotruth.title || '2 Truths 1 Lie', g.twotruth.desc, g.twotruth.players, 'PL/EN', g.twotruth.tag1, false, g.twotruth.play, l) +
-      card('/dots', '🔵', g.dots.title || 'Dots & Boxes', g.dots.desc, g.dots.players, '', g.dots.tag1, false, g.dots.play, l) +
-      card('/hangman', '🪢', g.hangman.title || 'Hangman', g.hangman.desc, g.hangman.players, 'PL/EN/DE', g.hangman.tag1, false, g.hangman.play, l);
+      card('/', '🌍', g.pm.title || 'Państwa-Miasta', g.pm.desc, g.pm.players, 'PL/EN/DE/FR/ES', g.pm.tag1, false, g.pm.play, l, g.pm.age) +
+      card('/taboo', '🎭', g.taboo.title || 'Tabu', g.taboo.desc, g.taboo.players, 'PL/EN', g.taboo.tag1, false, g.taboo.play, l, g.taboo.age) +
+      card('/twotruth', '🤥', g.twotruth.title || '2 Truths 1 Lie', g.twotruth.desc, g.twotruth.players, 'PL/EN', g.twotruth.tag1, false, g.twotruth.play, l, g.twotruth.age) +
+      card('/dots', '🔵', g.dots.title || 'Dots & Boxes', g.dots.desc, g.dots.players, '', g.dots.tag1, false, g.dots.play, l, g.dots.age) +
+      card('/hangman', '🪢', g.hangman.title || 'Hangman', g.hangman.desc, g.hangman.players, 'PL/EN/DE', g.hangman.tag1, false, g.hangman.play, l, g.hangman.age);
   }
 
-  function card(href, icon, title, desc, players, lang_tag, tag1, comingSoon, btnLabel, l) {
+  function card(href, icon, title, desc, players, lang_tag, tag1, comingSoon, btnLabel, l, age) {
     var wrap_open  = comingSoon ? '<div class="game-card coming-soon">' : '<a href="' + href + '?lang=' + l + '" class="game-card">';
     var wrap_close = comingSoon ? '</div>' : '</a>';
-    var tags = '<span class="game-tag">' + players + '</span><span class="game-tag">' + tag1 + '</span>' + (lang_tag ? '<span class="game-tag">' + lang_tag + '</span>' : '');
+    var t1lower = (tag1 || '').toLowerCase();
+    var t1class = (t1lower.indexOf('ice') !== -1 || t1lower.indexOf('brise') !== -1 || t1lower.indexOf('eisbrecher') !== -1 || t1lower.indexOf('rompe') !== -1)
+      ? 'game-tag icebreaker'
+      : (t1lower.indexOf('integr') !== -1 || t1lower.indexOf('team') !== -1 || t1lower.indexOf('kennen') !== -1)
+      ? 'game-tag integration'
+      : 'game-tag';
+    var tags = '<span class="game-tag">' + players + '</span>' +
+               '<span class="' + t1class + '">' + tag1 + '</span>' +
+               (lang_tag ? '<span class="game-tag">' + lang_tag + '</span>' : '');
+    var ageBadge = age ? '<div class="game-age-badge">👶 ' + age + '</div>' : '';
     var btn = comingSoon
       ? '<span class="coming-badge">' + btnLabel + '</span>'
       : '<span class="game-card-btn">' + btnLabel + '</span>';
@@ -240,6 +259,7 @@
       '<div class="game-card-title">' + title + '</div>' +
       '<div class="game-card-desc">' + desc + '</div>' +
       '<div class="game-card-tags">' + tags + '</div>' +
+      ageBadge +
       btn +
       wrap_close;
   }
