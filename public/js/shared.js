@@ -355,19 +355,22 @@ function initVisibilityToggle() {
 
 
 
-// Footer language switcher — translates in place, falls back to navigation
-window._footerSetLang = function(code) {
+// Unified language switcher — same behaviour everywhere.
+// On game pages: calls setUiLang (translates in place + updates URL).
+// On SEO/static pages: navigates to same page with new lang param.
+window._switchLang = function(code) {
   if (typeof setUiLang === 'function') {
     setUiLang(code);
   } else if (typeof setLang === 'function') {
     setLang(code);
   } else {
-    // Fallback: navigate to current page with new lang param
     var url = new URL(window.location.href);
     url.searchParams.set('lang', code);
     window.location.href = url.toString();
   }
 };
+// Keep old name as alias so nothing breaks
+window._footerSetLang = window._switchLang;
 
 // ─── SITE FOOTER ─────────────────────────────────────────────────
 // Injected into every game page automatically on DOMContentLoaded
@@ -430,10 +433,10 @@ window._footerSetLang = function(code) {
             '<div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;">' + t.rules + '</div>' +
             '<div style="display:flex;flex-direction:column;gap:6px;">' +
               '<a href="' + ruleBase + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_pm + '</a>' +
-              '<a href="' + ruleBase + '/tabu" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_tabu + '</a>' +
-              '<a href="' + ruleBase + '/wisielec" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_hang + '</a>' +
-              '<a href="' + ruleBase + '/kropki-i-kreski" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_dots + '</a>' +
-              '<a href="' + ruleBase + '/dwie-prawdy-jedno-klamstwo" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_tt + '</a>' +
+              '<a href="' + (lp==='pl' ? '/jak-grac/tabu' : '/how-to-play/taboo') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_tabu + '</a>' +
+              '<a href="' + (lp==='pl' ? '/jak-grac/wisielec' : '/how-to-play/hangman') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_hang + '</a>' +
+              '<a href="' + (lp==='pl' ? '/jak-grac/kropki-i-kreski' : '/how-to-play/dots-and-boxes') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_dots + '</a>' +
+              '<a href="' + (lp==='pl' ? '/jak-grac/dwie-prawdy-jedno-klamstwo' : '/how-to-play/two-truths-one-lie') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_tt + '</a>' +
             '</div>' +
           '</div>' +
           '<div>' +
@@ -447,8 +450,16 @@ window._footerSetLang = function(code) {
         '<div style="border-top:1px solid var(--border);padding-top:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">' +
           '<span style="color:var(--muted);font-size:12px;font-weight:600;">© 2025 panstwamiastagra.com · ' + t.tagline + '</span>' +
           '<div style="display:flex;gap:8px;">' +
-            '<button onclick="window._footerSetLang(\'pl\')" style="background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:Nunito,sans-serif;font-weight:700;padding:0;">🇵🇱 PL</button>' +
-            '<button onclick="window._footerSetLang(\'en\')" style="background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:Nunito,sans-serif;font-weight:700;padding:0;">🇬🇧 EN</button>' +
+            (function() {
+              var flagBtns = '';
+              var footerLangs = (typeof LANGS !== 'undefined')
+                ? Object.keys(LANGS).map(function(code) { return { code: code, label: LANGS[code].name }; })
+                : [{code:'pl',label:'🇵🇱 PL'},{code:'en',label:'🇬🇧 EN'}];
+              footerLangs.forEach(function(l) {
+                flagBtns += '<button onclick="window._switchLang(\'' + l.code + '\')" style="background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:Nunito,sans-serif;font-weight:700;padding:0;">' + l.label + '</button>';
+              });
+              return flagBtns;
+            }()) +
           '</div>' +
         '</div>' +
       '</div>';
