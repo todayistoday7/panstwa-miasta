@@ -178,12 +178,21 @@ function renderLobby(data) {
   const gridSel = document.getElementById('settings-grid');
   const maxSel  = document.getElementById('settings-maxplayers');
   if (isHost) {
-    if (gridSel) gridSel.value = settings.gridSize || 4;
-    if (maxSel)  maxSel.value  = settings.maxPlayers || 4;
-    gridSel.disabled = false; maxSel.disabled = false;
+    // Don't overwrite select values while host is actively using them —
+    // that causes the flicker. The server always echoes back what we sent,
+    // so skipping the update here is safe. Only sync if the element isn't focused.
+    if (gridSel) {
+      if (document.activeElement !== gridSel) gridSel.value = settings.gridSize || 4;
+      gridSel.disabled = false;
+    }
+    if (maxSel) {
+      if (document.activeElement !== maxSel) maxSel.value = settings.maxPlayers || 4;
+      maxSel.disabled = false;
+    }
     document.getElementById('lobby-btn-row').style.display = 'flex';
     document.getElementById('waiting-msg').style.display   = 'none';
   } else {
+    // Non-host: always sync to whatever host set
     if (gridSel) { gridSel.value = settings.gridSize || 4; gridSel.disabled = true; }
     if (maxSel)  { maxSel.value  = settings.maxPlayers || 4; maxSel.disabled = true; }
     document.getElementById('lobby-btn-row').style.display = 'none';
