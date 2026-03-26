@@ -367,12 +367,15 @@ window._switchLang = function(code) {
     var url = new URL(window.location.href);
     url.searchParams.set('lang', code);
     window.location.href = url.toString();
+    return; // navigating away, no need to refresh footer
   }
+  // Refresh footer links and flags to match new language
+  if (typeof window._refreshFooter === 'function') window._refreshFooter();
 };
 // Keep old name as alias so nothing breaks
 window._footerSetLang = window._switchLang;
 
-// Called after all game scripts have loaded so LANGS is available
+// Legacy — replaced by _refreshFooter
 window._buildFooterLangBtns = function() {
   var el = document.getElementById('footer-lang-btns');
   if (!el) return;
@@ -394,6 +397,105 @@ window.addEventListener('load', window._buildFooterLangBtns);
 // ─── SITE FOOTER ─────────────────────────────────────────────────
 // Injected into every game page automatically on DOMContentLoaded
 (function() {
+  function getFooterLang() {
+    // Use the live page lang variable if available, else URL param, else browser lang
+    if (typeof lang !== 'undefined' && lang) return lang;
+    return (new URLSearchParams(window.location.search).get('lang')) ||
+           (navigator.language || '').slice(0,2) || 'pl';
+  }
+
+  function buildFooterHTML(footerLang) {
+    var lp = footerLang === 'pl' ? 'pl' : 'en';
+    var ruleBase   = lp === 'pl' ? '/jak-grac'   : '/how-to-play';
+    var rulesLinks = lp === 'pl'
+      ? { pm:   '/jak-grac',
+          tabu: '/jak-grac/tabu',
+          hang: '/jak-grac/wisielec',
+          dots: '/jak-grac/kropki-i-kreski',
+          tt:   '/jak-grac/dwie-prawdy-jedno-klamstwo' }
+      : { pm:   '/how-to-play',
+          tabu: '/how-to-play/taboo',
+          hang: '/how-to-play/hangman',
+          dots: '/how-to-play/dots-and-boxes',
+          tt:   '/how-to-play/two-truths-one-lie' };
+
+    var L = {
+      pl: { games:'Gry', rules:'Zasady gry', about:'O grze',
+            cats:'Kategorie', tagline:'Darmowe gry online dla znajomych i rodziny',
+            privacy:'Prywatność',
+            howto_pm:'Jak grać — Państwa-Miasta',
+            howto_tabu:'Jak grać — Tabu',
+            howto_hang:'Jak grać — Wisielec',
+            howto_dots:'Jak grać — Kropki i Kreski',
+            howto_tt:'Jak grać — Dwie Prawdy' },
+      en: { games:'Games', rules:'Rules', about:'About',
+            cats:'Categories', tagline:'Free online multiplayer games for friends and family',
+            privacy:'Privacy',
+            howto_pm:'How to play — Countries & Cities',
+            howto_tabu:'How to play — Taboo',
+            howto_hang:'How to play — Hangman',
+            howto_dots:'How to play — Dots & Boxes',
+            howto_tt:'How to play — 2 Truths 1 Lie' },
+    };
+    var t = L[lp] || L['en'];
+
+    // Build lang flag buttons from LANGS if available, else PL+EN
+    var flagBtns = '';
+    var footerLangs = (typeof LANGS !== 'undefined')
+      ? Object.keys(LANGS).map(function(code) { return { code:code, label:LANGS[code].name }; })
+      : [{code:'pl',label:'🇵🇱 PL'},{code:'en',label:'🇬🇧 EN'}];
+    footerLangs.forEach(function(l) {
+      flagBtns += '<button onclick="window._switchLang(\'' + l.code + '\')" ' +
+        'style="background:none;border:none;color:var(--muted);font-size:12px;' +
+        'cursor:pointer;font-family:Nunito,sans-serif;font-weight:700;padding:0 3px;">' +
+        l.label + '</button>';
+    });
+
+    return '<div style="max-width:980px;margin:0 auto;">' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:28px;margin-bottom:28px;">' +
+        '<div>' +
+          '<div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;">' + t.games + '</div>' +
+          '<div style="display:flex;flex-direction:column;gap:6px;">' +
+            '<a href="/?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🌍 Państwa-Miasta</a>' +
+            '<a href="/taboo?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎭 Tabu / Taboo</a>' +
+            '<a href="/hangman?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🪢 Wisielec / Hangman</a>' +
+            '<a href="/dots?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔵 Kropki i Kreski</a>' +
+            '<a href="/twotruth?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🤥 Dwie Prawdy / 2 Truths</a>' +
+            '<a href="/games?lang=' + footerLang + '" style="color:var(--accent);font-size:13px;font-weight:700;text-decoration:none;">→ ' + t.games + '</a>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;">' + t.rules + '</div>' +
+          '<div style="display:flex;flex-direction:column;gap:6px;">' +
+            '<a href="' + rulesLinks.pm   + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_pm   + '</a>' +
+            '<a href="' + rulesLinks.tabu + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_tabu + '</a>' +
+            '<a href="' + rulesLinks.hang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_hang + '</a>' +
+            '<a href="' + rulesLinks.dots + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_dots + '</a>' +
+            '<a href="' + rulesLinks.tt   + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_tt   + '</a>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;">' + t.about + '</div>' +
+          '<div style="display:flex;flex-direction:column;gap:6px;">' +
+            '<a href="/kategorie" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">📋 ' + t.cats + '</a>' +
+            '<a href="/slowa" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔤 Słowa na literę</a>' +
+            '<a href="/privacy" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔒 ' + t.privacy + '</a>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="border-top:1px solid var(--border);padding-top:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">' +
+        '<span style="color:var(--muted);font-size:12px;font-weight:600;">© 2025 panstwamiastagra.com · ' + t.tagline + '</span>' +
+        '<div id="footer-lang-btns" style="display:flex;gap:4px;">' + flagBtns + '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // Rebuild footer content whenever language changes
+  window._refreshFooter = function() {
+    var el = document.getElementById('site-footer');
+    if (el) el.innerHTML = buildFooterHTML(getFooterLang());
+  };
+
   function injectFooter() {
     if (document.getElementById('site-footer')) return;
     var footer = document.createElement('div');
@@ -404,79 +506,11 @@ window.addEventListener('load', window._buildFooterLangBtns);
       'padding:32px 16px 24px',
       'background:var(--surface)',
     ].join(';');
-
-    var lang = (new URLSearchParams(window.location.search).get('lang')) ||
-               (navigator.language || '').slice(0,2) || 'pl';
-
-    var L = {
-      pl: {
-        games: 'Gry',       rules: 'Zasady gry',   about: 'O grze',
-        faq: 'FAQ',         privacy: 'Prywatność', contact: 'Kontakt',
-        cats: 'Kategorie',  tagline: 'Darmowe gry online dla znajomych i rodziny',
-        howto_pm: 'Jak grać — Państwa-Miasta',
-        howto_tabu: 'Jak grać — Tabu',
-        howto_hang: 'Jak grać — Wisielec',
-        howto_dots: 'Jak grać — Kropki i Kreski',
-        howto_tt:   'Jak grać — Dwie Prawdy',
-      },
-      en: {
-        games: 'Games',     rules: 'Rules',        about: 'About',
-        faq: 'FAQ',         privacy: 'Privacy',    contact: 'Contact',
-        cats: 'Categories', tagline: 'Free online multiplayer games for friends and family',
-        howto_pm: 'How to play — Countries & Cities',
-        howto_tabu: 'How to play — Taboo',
-        howto_hang: 'How to play — Hangman',
-        howto_dots: 'How to play — Dots & Boxes',
-        howto_tt:   'How to play — 2 Truths 1 Lie',
-      },
-    };
-    var t = L[lang] || L['en'];
-    var lp = lang === 'pl' ? 'pl' : 'en';
-    var ruleBase = lp === 'pl' ? '/jak-grac' : '/how-to-play';
-
-    footer.innerHTML =
-      '<div style="max-width:980px;margin:0 auto;">' +
-        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:28px;margin-bottom:28px;">' +
-          '<div>' +
-            '<div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;">' + t.games + '</div>' +
-            '<div style="display:flex;flex-direction:column;gap:6px;">' +
-              '<a href="/?lang=' + lang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🌍 Państwa-Miasta</a>' +
-              '<a href="/taboo?lang=' + lang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎭 Tabu / Taboo</a>' +
-              '<a href="/hangman?lang=' + lang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🪢 Wisielec / Hangman</a>' +
-              '<a href="/dots?lang=' + lang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔵 Kropki i Kreski</a>' +
-              '<a href="/twotruth?lang=' + lang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🤥 Dwie Prawdy / 2 Truths</a>' +
-              '<a href="/games?lang=' + lang + '" style="color:var(--accent);font-size:13px;font-weight:700;text-decoration:none;">→ ' + t.games + '</a>' +
-            '</div>' +
-          '</div>' +
-          '<div>' +
-            '<div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;">' + t.rules + '</div>' +
-            '<div style="display:flex;flex-direction:column;gap:6px;">' +
-              '<a href="' + ruleBase + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_pm + '</a>' +
-              '<a href="' + (lp==='pl' ? '/jak-grac/tabu' : '/how-to-play/taboo') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_tabu + '</a>' +
-              '<a href="' + (lp==='pl' ? '/jak-grac/wisielec' : '/how-to-play/hangman') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_hang + '</a>' +
-              '<a href="' + (lp==='pl' ? '/jak-grac/kropki-i-kreski' : '/how-to-play/dots-and-boxes') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_dots + '</a>' +
-              '<a href="' + (lp==='pl' ? '/jak-grac/dwie-prawdy-jedno-klamstwo' : '/how-to-play/two-truths-one-lie') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_tt + '</a>' +
-            '</div>' +
-          '</div>' +
-          '<div>' +
-            '<div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;">' + t.about + '</div>' +
-            '<div style="display:flex;flex-direction:column;gap:6px;">' +
-              '<a href="/kategorie" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">📋 ' + t.cats + '</a>' +
-              '<a href="/privacy" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔒 ' + t.privacy + '</a>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-        '<div style="border-top:1px solid var(--border);padding-top:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">' +
-          '<span style="color:var(--muted);font-size:12px;font-weight:600;">© 2025 panstwamiastagra.com · ' + t.tagline + '</span>' +
-          '<div style="display:flex;gap:8px;">' +
-            '<span id="footer-lang-btns">🇵🇱 🇬🇧</span>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
-
+    footer.innerHTML = buildFooterHTML(getFooterLang());
     document.body.appendChild(footer);
+    // Rebuild after all scripts load so LANGS flags are correct
+    window.addEventListener('load', window._refreshFooter);
   }
-
   // ─── GDPR COOKIE BANNER ────────────────────────────────────────
   function injectGDPR() {
     if (localStorage.getItem('gdpr_consent')) return;
