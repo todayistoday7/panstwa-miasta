@@ -149,6 +149,12 @@
       <div class="hub-empty-rooms" id="hub-empty-msg">No open rooms right now. Create one!</div>
     </div>
   </div>
+
+  <!-- ══ HOW TO PLAY SECTION ══ -->
+  <div id="hub-rules-section" style="margin-top:40px;border-top:1px solid var(--border);padding-top:28px;">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--text);margin-bottom:16px;" id="hub-rules-title">Game Rules</div>
+    <div id="hub-rules-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;"></div>
+  </div>
 </div>
 
 <script>
@@ -256,6 +262,7 @@
     renderCards(l);
     history.replaceState(null, '', '/games?lang=' + l);
     if (window.hubRerenderRooms) window.hubRerenderRooms();
+    if (typeof buildRulesGrid === 'function') buildRulesGrid(l);
   }
 
   // Build lang bar
@@ -359,6 +366,38 @@
   }
 
   // Re-render when language changes (hub applyLang calls this)
+  function buildRulesGrid(currentLang) {
+    var el = document.getElementById('hub-rules-grid');
+    var titleEl = document.getElementById('hub-rules-title');
+    if (!el) return;
+    var ruleBase = currentLang === 'pl' ? '/jak-grac' : '/how-to-play';
+    var titles = {
+      pl: { label: 'Zasady gier', pm: 'Państwa-Miasta', tabu: 'Tabu', hang: 'Wisielec', dots: 'Kropki i Kreski', tt: 'Dwie Prawdy' },
+      en: { label: 'Game Rules', pm: 'Countries & Cities', tabu: 'Taboo', hang: 'Hangman', dots: 'Dots & Boxes', tt: '2 Truths 1 Lie' },
+      de: { label: 'Spielregeln', pm: 'Länder & Städte', tabu: 'Tabu', hang: 'Galgenmännchen', dots: 'Punkte & Linien', tt: '2 Wahrheiten 1 Lüge' },
+      fr: { label: 'Règles du jeu', pm: 'Pays & Villes', tabu: 'Tabou', hang: 'Pendu', dots: 'Points & Lignes', tt: '2 Vérités 1 Mensonge' },
+      es: { label: 'Reglas', pm: 'Países & Ciudades', tabu: 'Tabú', hang: 'El Ahorcado', dots: 'Puntos & Líneas', tt: '2 Verdades 1 Mentira' },
+    };
+    var t = titles[currentLang] || titles['en'];
+    if (titleEl) titleEl.textContent = t.label;
+    var plBase = '/jak-grac'; var enBase = '/how-to-play';
+    var games = [
+      { icon: '🌍', name: t.pm,   pl: plBase,                              en: enBase },
+      { icon: '🎭', name: t.tabu, pl: plBase + '/tabu',                    en: enBase + '/taboo' },
+      { icon: '🪢', name: t.hang, pl: plBase + '/wisielec',                en: enBase + '/hangman' },
+      { icon: '🔵', name: t.dots, pl: plBase + '/kropki-i-kreski',         en: enBase + '/dots-and-boxes' },
+      { icon: '🤥', name: t.tt,   pl: plBase + '/dwie-prawdy-jedno-klamstwo', en: enBase + '/two-truths-one-lie' },
+    ];
+    var ll = currentLang === 'pl' ? 'pl' : 'en';
+    el.innerHTML = games.map(function(g) {
+      var href = ll === 'pl' ? g.pl : g.en;
+      return '<a href="' + href + '" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;text-decoration:none;display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;font-weight:700;transition:border-color 0.2s;">' +
+        '<span style="font-size:20px;">' + g.icon + '</span>' +
+        '<span style="color:var(--text);">📖 ' + g.name + '</span>' +
+        '</a>';
+    }).join('');
+  }
+
   window.hubRerenderRooms = function() {
     hubSocket.emit('hub_watch'); // re-request to trigger re-render
   };

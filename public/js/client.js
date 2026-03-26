@@ -608,6 +608,12 @@ function copyRoomCode() {
 
 function shareRoom() { copyRoomCode(); }
 
+function doShareRoom() {
+  var L2 = LANGS[lang] || LANGS['pl'];
+  var title = L2.shareInviteTitle || 'Join my game!';
+  shareRoom('', title);
+}
+
 function shareGame() {
   // Get my score from last final screen render
   var myScore = window._lastMyScore || 0;
@@ -760,7 +766,7 @@ function applyTranslations() {
     'lbl-next-round':'nextRound','lbl-game-over':'gameOver',
     'lbl-final-sub':'finalSub','lbl-final-ranking':'finalRanking',
     'lbl-new-game':'newGame','lbl-force-scoring':'forceScoring',
-    'lbl-share-btn':'shareBtn','lbl-share-game':'shareGameBtn','nav-share-btn':'shareInviteBtn',
+    'lbl-share-btn':'shareBtnLabel','lbl-share-game':'shareGameBtn','nav-share-btn':'shareInviteBtn',
     'lbl-nav-home':'navHome','lbl-leave-room':'leaveRoom',
     'lbl-other-games':'otherGames',
   };
