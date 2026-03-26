@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Słowa do Państwa-Miasta — Państwa, Miasta, Zwierzęta na każdą literę | panstwamiastagra.com</title>
+<meta name="description" content="Pełna lista słów do gry Państwa-Miasta na każdą literę — państwa, miasta, zwierzęta, rośliny, imiona i więcej. Idealne podpowiedzi do gry online!">
+<meta property="og:title" content="Słowa do Państwa-Miasta na każdą literę">
+<meta property="og:description" content="Państwa, miasta, zwierzęta, rośliny i inne słowa na każdą literę alfabetu. Pomoc do gry Państwa-Miasta.">
+<meta property="og:url" content="https://panstwamiastagra.com/slowa">
+<meta property="og:type" content="article">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script async data-cfasync="false" src="https://www.googletagmanager.com/gtag/js?id=G-BJ79ZM6WPQ"></script>
+<script data-cfasync="false">window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BJ79ZM6WPQ');</script>
+<style>
+  .slowa-page { max-width:900px; margin:0 auto; padding:0 16px 80px; }
+  .slowa-topbar { display:flex; align-items:center; justify-content:space-between; padding:14px 0 8px; flex-wrap:wrap; gap:8px; }
+  h1.slowa-h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(32px,7vw,56px); letter-spacing:3px; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin:20px 0 6px; }
+  .slowa-intro { color:var(--muted); font-size:15px; font-weight:600; line-height:1.7; margin-bottom:24px; }
+  .slowa-intro strong { color:var(--text); }
+
+  /* Language tabs */
+  .lang-tabs { display:flex; gap:8px; margin-bottom:28px; flex-wrap:wrap; }
+  .lang-tab { padding:8px 20px; border-radius:24px; border:2px solid var(--border); background:var(--card); color:var(--muted); font-weight:800; font-size:14px; cursor:pointer; transition:all 0.2s; text-decoration:none; }
+  .lang-tab.active, .lang-tab:hover { border-color:var(--accent); color:var(--accent); background:rgba(255,107,53,0.07); }
+
+  /* Letter selector */
+  .letter-strip { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:28px; }
+  .letter-btn { width:38px; height:38px; display:flex; align-items:center; justify-content:center; border-radius:8px; border:1px solid var(--border); background:var(--card); color:var(--muted); font-family:'Bebas Neue',sans-serif; font-size:18px; cursor:pointer; transition:all 0.15s; text-decoration:none; }
+  .letter-btn:hover, .letter-btn.active { border-color:var(--accent); color:var(--accent); background:rgba(255,107,53,0.1); transform:translateY(-2px); }
+
+  /* Word section */
+  .letter-section { display:none; animation:fadeIn 0.2s ease; }
+  .letter-section.active { display:block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:none} }
+
+  .letter-hero { font-family:'Bebas Neue',sans-serif; font-size:clamp(60px,15vw,100px); letter-spacing:4px; line-height:1; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin:0 0 4px; }
+  .letter-subtitle { color:var(--muted); font-size:13px; font-weight:700; margin-bottom:20px; }
+
+  .cat-block { margin-bottom:24px; }
+  .cat-title { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:2px; color:var(--accent2); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .cat-title span { font-size:20px; }
+  .word-grid { display:flex; flex-wrap:wrap; gap:7px; }
+  .word-chip { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:5px 12px; font-size:13px; font-weight:700; color:var(--muted); transition:border-color 0.15s; }
+  .word-chip:hover { border-color:var(--accent); color:var(--text); }
+  .word-chip.rare { border-color:rgba(255,209,102,0.4); color:var(--accent2); }
+
+  .no-letter { text-align:center; padding:40px 0; color:var(--muted); font-size:15px; font-weight:600; }
+
+  .seo-cta { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; text-align:center; margin:32px 0; }
+  .seo-cta p { color:var(--text); font-weight:800; margin-bottom:12px; }
+  .seo-cta a { text-decoration:none; }
+
+  @media(max-width:480px){ .letter-btn{width:32px;height:32px;font-size:15px;} }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="slowa-page">
+
+  <div class="slowa-topbar">
+    <a href="/" class="nav-home-btn" style="text-decoration:none;">🏠 Zagraj</a>
+    <div style="display:flex;gap:6px;">
+      <a href="/jak-grac" class="nav-home-btn" style="text-decoration:none;">📖 Zasady</a>
+      <a href="/kategorie" class="nav-home-btn" style="text-decoration:none;">📋 Kategorie</a>
+    </div>
+  </div>
+
+  <h1 class="slowa-h1">Słowa na każdą literę</h1>
+  <p class="slowa-intro">
+    Szukasz podpowiedzi do gry <strong>Państwa Miasta</strong>? Poniżej znajdziesz listy słów na każdą literę w kategoriach: państwa, miasta, zwierzęta, rośliny, imiona i inne.
+    Dostępne dla języka polskiego, angielskiego i niemieckiego.
+  </p>
+
+  <!-- Language tabs -->
+  <div class="lang-tabs">
+    <a class="lang-tab active" onclick="return setLang('pl')" href="#pl">🇵🇱 Polski</a>
+    <a class="lang-tab" onclick="return setLang('en')" href="#en">🇬🇧 English</a>
+    <a class="lang-tab" onclick="return setLang('de')" href="#de">🇩🇪 Deutsch</a>
+  </div>
+
+  <!-- Letter strip — rendered by JS per language -->
+  <div class="letter-strip" id="letter-strip"></div>
+
+  <!-- Word content — rendered by JS -->
+  <div id="letter-content"></div>
+
+  <div class="seo-cta">
+    <p>Zagraj teraz w Państwa Miasta online!</p>
+    <a href="/" class="btn">🎮 Zagraj za darmo →</a>
+  </div>
+
+</div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────
+var WORDS = {
+  pl: {
+    A: {
+      'Państwo':['Argentyna','Angola','Australia','Austria','Algieria','Armenia','Afganistan','Albania','Andora','Azerbejdżan'],
+      'Miasto':['Amsterdam','Ateny','Ankara','Algier','Addis Abeba','Astana','Asunción','Auckland'],
+      'Zwierzę':['Antylopa','Albatros','Aligator','Anakonda','Arktyczny lis','Axolotl'],
+      'Roślina':['Agawa','Akacja','Anyż','Aloes','Arnika'],
+      'Imię':['Anna','Adam','Agnieszka','Aleksandra','Artur','Andrzej','Alicja'],
+      'Rzecz':['Aparat','Autobus','Antena','Atlas','Akwarium'],
+    },
+    B: {
+      'Państwo':['Brazylia','Belgia','Bułgaria','Białoruś','Bangladesz','Boliwia','Bośnia','Bahamy','Botswana'],
+      'Miasto':['Berlin','Barcelona','Bratysława','Bukareszt','Bagdad','Bogota','Bruksela','Budapeszt','Buenos Aires'],
+      'Zwierzę':['Bóbr','Bison','Bocian','Borsuk','Bazyliszek','Bawół','Błotniak','Bizon'],
+      'Roślina':['Brzoza','Buk','Begonia','Bazylia','Bambus','Borówka'],
+      'Imię':['Barbara','Bartosz','Beata','Benedykt','Blanka','Bogdan','Bożena'],
+      'Rzecz':['Biurko','Butelka','Bluzka','Basen','Bateria','Brama'],
+    },
+    C: {
+      'Państwo':['Chiny','Chile','Chorwacja','Czechy','Czad','Cypr'],
+      'Miasto':['Chicago','Caracas','Casablanca','Colombo','Calgary','Czikago'],
+      'Zwierzę':['Cietrzew','Czapla','Czmiel','Chelonia','Czarna pantera'],
+      'Roślina':['Cykoria','Cytryna','Cynamon','Chmiel','Cedrus'],
+      'Imię':['Celina','Cyprian','Czesław','Cecylia','Cezar'],
+      'Rzecz':['Chleb','Czajnik','Czekolada','Cegła','Cyrkiel'],
+    },
+    D: {
+      'Państwo':['Dania','Demokratyczna Republika Konga','Dominikana','Dżibuti','Dominika'],
+      'Miasto':['Dubaj','Delhi','Dakar','Dżakarta','Dublin','Denver','Detroit','Doha'],
+      'Zwierzę':['Delfin','Dzik','Dudek','Drozdz','Diament żółw'],
+      'Roślina':['Dąb','Dalia','Dzika róża','Dynia','Dziurawiec'],
+      'Imię':['Dorota','Dawid','Danuta','Damian','Diana','Dominika'],
+      'Rzecz':['Dom','Drabina','Dach','Dywan','Drukarka'],
+    },
+    E: {
+      'Państwo':['Egipt','Estonia','Ekwador','Erytrea','Etiopia','Emiraty Arabskie'],
+      'Miasto':['Edynburg','Essen','Edmonton','El Paso'],
+      'Zwierzę':['Elefant słoń','Emka emu','Egret czapla biała'],
+      'Roślina':['Eukaliptus','Echinacea','Endywia'],
+      'Imię':['Elżbieta','Emilia','Ewa','Emil','Edward','Edyta'],
+      'Rzecz':['Ekran','Etykieta','Ekspres','Encyklopedia'],
+    },
+    F: {
+      'Państwo':['Francja','Finlandia','Filipiny','Fidżi'],
+      'Miasto':['Frankfurt','Florencja','Filadelfia','Fez','Fukushima'],
+      'Zwierzę':['Foka','Flamingo','Fennek','Fazan'],
+      'Roślina':['Fiołek','Figa','Fasola','Forsycja','Funki'],
+      'Imię':['Filip','Franciszek','Felicja','Fryderyk'],
+      'Rzecz':['Fotel','Flaga','Fartuch','Filiżanka','Filtr'],
+    },
+    G: {
+      'Państwo':['Grecja','Gwatemala','Ghana','Gruzja','Gwinea','Gabon'],
+      'Miasto':['Genewa','Glasgow','Gdańsk','Guadalajara','Guangzhou','Guatemala City'],
+      'Zwierzę':['Goryl','Gepard','Gołąb','Gil','Głuszec','Gryf'],
+      'Roślina':['Grusza','Głóg','Geranium','Gingko','Goździk'],
+      'Imię':['Grażyna','Grzegorz','Gabriela','Gustaw','Gertruda'],
+      'Rzecz':['Gitara','Garnek','Grzebień','Garaż','Globus'],
+    },
+    H: {
+      'Państwo':['Holandia','Hiszpania','Indie','Hondoras','Haity'],
+      'Miasto':['Hamburg','Helsinki','Hawana','Ho Chi Minh','Hanoi','Houston'],
+      'Zwierzę':['Hiena','Hipopotam','Harpia','Halibut'],
+      'Roślina':['Hiacynt','Heliotropa','Herbata'],
+      'Imię':['Helena','Henryk','Hanna','Hubert','Honorata'],
+      'Rzecz':['Hamak','Hełm','Herbata','Harmonijka'],
+    },
+    I: {
+      'Państwo':['Indie','Indonezja','Iran','Irak','Irlandia','Islandia','Izrael','Włochy'],
+      'Miasto':['Istambuł','Isfahan','Islamabad','Indianapolis'],
+      'Zwierzę':['Ibis','Iguana','Impala'],
+      'Roślina':['Irys','Imbirz','Iwa','Iglica'],
+      'Imię':['Irena','Igor','Izabela','Iwona','Ignacy'],
+      'Rzecz':['Igła','Izolatka','Instrument'],
+    },
+    J: {
+      'Państwo':['Japonia','Jordania','Jamajka','Jemen'],
+      'Miasto':['Johannesburg','Jakarta','Jerozolima','Jokohama'],
+      'Zwierzę':['Jaguar','Jeż','Jaskółka','Jaszczurka'],
+      'Roślina':['Jodła','Jaśmin','Jabłoń','Jałowiec'],
+      'Imię':['Jan','Joanna','Jakub','Julia','Jadwiga'],
+      'Rzecz':['Jacht','Jajko','Jedwab','Jutro'],
+    },
+    K: {
+      'Państwo':['Korea','Kenia','Kanada','Kazachstan','Kambodża','Kolumbia','Kuba','Kuwejt'],
+      'Miasto':['Kraków','Kijów','Kair','Kapsztad','Karachi','Kopenhaga','Kalkuta'],
+      'Zwierzę':['Koń','Krokodyl','Kangur','Kot','Koala','Kruk','Krab','Kret','Kuna'],
+      'Roślina':['Kaktus','Klon','Kalina','Konwalia','Kminek','Koper'],
+      'Imię':['Katarzyna','Krzysztof','Kamila','Karol','Kinga','Konrad'],
+      'Rzecz':['Klucz','Komputer','Kamera','Krzesło','Kurtka','Kubek'],
+    },
+    L: {
+      'Państwo':['Litwa','Luksemburg','Laos','Liban','Libya','Łotwa'],
+      'Miasto':['Londyn','Lizbona','Lwów','Lima','Lagos','Lozanna','Lyon','Los Angeles'],
+      'Zwierzę':['Lew','Lis','Łabędź','Łoś','Lama','Lemur'],
+      'Roślina':['Lipa','Lawenda','Lilia','Len','Lukrecja'],
+      'Imię':['Lucia','Lena','Lech','Ludwik','Lidia','Leon'],
+      'Rzecz':['Lampa','Lustro','Laptop','Łyżka','Latarnia'],
+    },
+    M: {
+      'Państwo':['Meksyk','Maroko','Mozambik','Malezja','Madagaskar','Mongolia','Myanmar'],
+      'Miasto':['Madryt','Moskwa','Mediolan','Mumbai','Montreal','Melbourne','Manila','Meksyk'],
+      'Zwierzę':['Małpa','Morświnia','Mrówkojad','Mysz','Muł','Motyl','Mors'],
+      'Roślina':['Magnolia','Malina','Majeranek','Marchew','Mięta','Modrzew'],
+      'Imię':['Maria','Marcin','Monika','Michał','Magdalena','Marta'],
+      'Rzecz':['Mapa','Motor','Muzyka','Mikrofon','Meble','Most'],
+    },
+    N: {
+      'Państwo':['Niemcy','Nigeria','Nepal','Norwegia','Nikaragua','Namibia'],
+      'Miasto':['Nowy Jork','Nairobi','Nicea','Neapol','Niamej'],
+      'Zwierzę':['Niedźwiedź','Norka','Nutria','Nilgaj'],
+      'Roślina':['Narcyz','Nagietek','Nefar'],
+      'Imię':['Natalia','Norbert','Nikola','Nina','Nadine'],
+      'Rzecz':['Nóż','Naczynie','Narty','Notes','Narzędzie'],
+    },
+    O: {
+      'Państwo':['Oman','Norwegia','Pakistan','Polska','Portugalia'],
+      'Miasto':['Oslo','Ottawa','Osaka','Odessa'],
+      'Zwierzę':['Orzeł','Osioł','Osa','Otter wydra'],
+      'Roślina':['Orchidea','Oleander','Oliwka','Ogórek'],
+      'Imię':['Olga','Oskar','Oliwia','Oktawia'],
+      'Rzecz':['Okno','Okulary','Ołówek','Ogień','Obraz'],
+    },
+    P: {
+      'Państwo':['Polska','Portugalia','Peru','Pakistan','Panama','Paragwaj','Papua Nowa Gwinea'],
+      'Miasto':['Paryż','Praga','Pekin','Pretoria','Perth','Poznań'],
+      'Zwierzę':['Pingwin','Panda','Pies','Puma','Pardwa','Pelikan','Pantera'],
+      'Roślina':['Palma','Pinia','Poziomka','Powój','Pietruszka'],
+      'Imię':['Piotr','Paulina','Patryk','Paweł','Przemysław'],
+      'Rzecz':['Parasol','Plecak','Pulpit','Piłka','Płaszcz','Poczta'],
+    },
+    R: {
+      'Państwo':['Rosja','Rumunia','Rwanda','Republika Środkowej Afryki'],
+      'Miasto':['Rzym','Rio de Janeiro','Rotterdam','Rijad','Reykjavik'],
+      'Zwierzę':['Ryś','Renifer','Rekord','Rak','Ryba','Ryjówka'],
+      'Roślina':['Róża','Rzepak','Rukola','Rozmaryn','Rabarbar'],
+      'Imię':['Robert','Rafał','Renata','Roman','Ryszard'],
+      'Rzecz':['Radio','Rower','Ręcznik','Rura','Rama'],
+    },
+    S: {
+      'Państwo':['Szwecja','Szwajcaria','Słowacja','Słowenia','Senegal','Serbia','Singapur'],
+      'Miasto':['Sydney','Sztokholm','Seul','Singapur','Sofia','Sarajewo'],
+      'Zwierzę':['Słoń','Ślimak','Sowa','Szczur','Struś','Szakal','Sandacz'],
+      'Roślina':['Sosna','Słonecznik','Szałwia','Seler','Słodka papryka'],
+      'Imię':['Stefan','Sylwia','Sebastian','Stanisław','Sara','Szymon'],
+      'Rzecz':['Samochód','Sofa','Stół','Siatka','Szalik'],
+    },
+    T: {
+      'Państwo':['Turcja','Tajlandia','Tanzania','Tunezja','Togo'],
+      'Miasto':['Tokio','Toronto','Teheran','Tunis','Tbilisi'],
+      'Zwierzę':['Tygrys','Tapir','Tuńczyk','Termit','Trzmiel'],
+      'Roślina':['Tulipan','Tymianek','Topola','Trawa','Tuja'],
+      'Imię':['Tomasz','Teresa','Tadeusz','Tatiana'],
+      'Rzecz':['Telefon','Telewizor','Torebka','Talerz','Traktor'],
+    },
+    W: {
+      'Państwo':['Włochy','Wietnam','Wenezuela','Węgry'],
+      'Miasto':['Warszawa','Wiedeń','Waszyngton','Wilno','Wellington'],
+      'Zwierzę':['Wilk','Wiewiórka','Wieloryb','Wąż','Wydra'],
+      'Roślina':['Wierzba','Wiśnia','Wrzos','Winorośl'],
+      'Imię':['Wojciech','Wanda','Witold','Weronika'],
+      'Rzecz':['Walizka','Wanna','Waza','Wentylator'],
+    },
+    Z: {
+      'Państwo':['Zimbabwe','Zambia','Zjednoczone Emiraty','Zjednoczone Królestwo'],
+      'Miasto':['Zurych','Zagrzeb','Zanzibar'],
+      'Zwierzę':['Zebra','Zając','Żyrafa','Żółw','Żubr','Żaba'],
+      'Roślina':['Złotnik','Ziemniak','Żurawina','Ziele angielskie'],
+      'Imię':['Zofia','Zbigniew','Zuzanna','Zenon'],
+      'Rzecz':['Zegarek','Zamek','Zeszyt','Zupa'],
+    },
+  },
+  en: {
+    A: {
+      'Country':['Argentina','Australia','Austria','Algeria','Armenia','Afghanistan','Albania','Angola','Azerbaijan'],
+      'City':['Amsterdam','Athens','Ankara','Adelaide','Atlanta','Auckland','Almaty'],
+      'Animal':['Alligator','Antelope','Armadillo','Anaconda','Axolotl','Albatross','Ant','Ape'],
+      'Plant':['Aloe','Acacia','Agave','Anemone','Ash tree','Avocado'],
+      'Name':['Alice','Adam','Anna','Andrew','Amy','Arthur','Angela'],
+      'Thing':['Airplane','Anchor','Arrow','Axe','Antenna','Album'],
+    },
+    B: {
+      'Country':['Brazil','Belgium','Bulgaria','Bangladesh','Bolivia','Bosnia','Bahamas','Botswana'],
+      'City':['Berlin','Barcelona','Brussels','Budapest','Bangkok','Buenos Aires','Beijing','Bogota'],
+      'Animal':['Bear','Beaver','Buffalo','Baboon','Bat','Bison','Butterfly','Boa'],
+      'Plant':['Bamboo','Blueberry','Birch','Basil','Bougainvillea'],
+      'Name':['Benjamin','Barbara','Brian','Beth','Brandon','Bella'],
+      'Thing':['Bottle','Bicycle','Book','Blanket','Bridge','Balloon'],
+    },
+    C: {
+      'Country':['Canada','China','Colombia','Croatia','Cuba','Cyprus','Cambodia','Cameroon'],
+      'City':['Cairo','Chicago','Cape Town','Caracas','Casablanca','Calgary','Copenhagen','Colombo'],
+      'Animal':['Cat','Camel','Crocodile','Cheetah','Cobra','Crane','Crab','Coyote'],
+      'Plant':['Cactus','Cherry','Cedar','Clover','Cypress','Carnation'],
+      'Name':['Catherine','Charles','Charlotte','Christopher','Claire','Carl'],
+      'Thing':['Camera','Car','Chair','Clock','Cup','Carpet'],
+    },
+    D: {
+      'Country':['Denmark','Dominican Republic','Djibouti','Democratic Republic of Congo'],
+      'City':['Dubai','Delhi','Doha','Dublin','Denver','Detroit','Dakar'],
+      'Animal':['Dolphin','Deer','Dog','Donkey','Duck','Dragonfly'],
+      'Plant':['Daisy','Dandelion','Daffodil','Douglas fir'],
+      'Name':['David','Diana','Daniel','Dorothy','Derek','Daphne'],
+      'Thing':['Desk','Door','Drum','Diamond','Diary'],
+    },
+    E: {
+      'Country':['Egypt','Estonia','Ecuador','Ethiopia','El Salvador','Eritrea'],
+      'City':['Edinburgh','Essen','Edmonton','El Paso'],
+      'Animal':['Eagle','Elephant','Eel','Elk','Echidna','Emu'],
+      'Plant':['Eucalyptus','Elderberry','Echinacea','Elm'],
+      'Name':['Emily','Edward','Emma','Ethan','Eleanor','Eric'],
+      'Thing':['Engine','Envelope','Easel','Encyclopedia'],
+    },
+    F: {
+      'Country':['France','Finland','Fiji','Philippines'],
+      'City':['Frankfurt','Florence','Florianopolis','Fukuoka'],
+      'Animal':['Fox','Flamingo','Frog','Falcon','Ferret','Firefly'],
+      'Plant':['Fig','Fern','Forsythia','Foxglove'],
+      'Name':['Frank','Frances','Felix','Fiona','Frederick'],
+      'Thing':['Fork','Flag','Fence','Fan','Flashlight'],
+    },
+    G: {
+      'Country':['Germany','Greece','Ghana','Georgia','Guatemala','Guinea','Gabon'],
+      'City':['Geneva','Glasgow','Guatemala City','Guangzhou','Guadalajara'],
+      'Animal':['Gorilla','Giraffe','Goat','Gecko','Goose','Goldfish'],
+      'Plant':['Grape','Geranium','Gingko','Gladiolus'],
+      'Name':['George','Grace','Gabriel','Gloria','Gregory','Gwen'],
+      'Thing':['Guitar','Glass','Globe','Glove','Gate'],
+    },
+    H: {
+      'Country':['Hungary','Honduras','Haiti','Netherlands'],
+      'City':['Hamburg','Helsinki','Havana','Hanoi','Houston','Hong Kong'],
+      'Animal':['Horse','Hippo','Hawk','Hedgehog','Heron','Hyena'],
+      'Plant':['Hyacinth','Holly','Hazel','Hemp'],
+      'Name':['Henry','Helen','Harry','Hannah','Hugo','Harriet'],
+      'Thing':['Hammer','Hat','Hose','Hinge','Helmet'],
+    },
+    K: {
+      'Country':['Kenya','Kazakhstan','Kosovo','Kuwait','Kyrgyzstan'],
+      'City':['Kathmandu','Kyoto','Kabul','Krakow','Kuala Lumpur','Kiev'],
+      'Animal':['Kangaroo','Koala','Kingfisher','Kite','Komodo dragon','Krill'],
+      'Plant':['Kale','Kiwi','Kudzu'],
+      'Name':['Kevin','Karen','Kyle','Katherine','Keith','Kelly'],
+      'Thing':['Key','Kettle','Kite','Knife','Knapsack'],
+    },
+    L: {
+      'Country':['Lithuania','Luxembourg','Laos','Lebanon','Libya','Latvia'],
+      'City':['London','Lisbon','Lagos','Lima','Lausanne','Lyon','Los Angeles'],
+      'Animal':['Lion','Leopard','Llama','Lemur','Lobster','Lynx'],
+      'Plant':['Lavender','Lily','Lemon','Linden','Lotus'],
+      'Name':['Laura','Leo','Lily','Lucas','Linda','Lawrence'],
+      'Thing':['Lamp','Laptop','Leaf','Ladder','Lock'],
+    },
+    M: {
+      'Country':['Mexico','Morocco','Malaysia','Madagascar','Mongolia','Myanmar'],
+      'City':['Madrid','Moscow','Milan','Mumbai','Montreal','Melbourne','Manila'],
+      'Animal':['Monkey','Moose','Mouse','Meerkat','Manatee','Moth'],
+      'Plant':['Mango','Magnolia','Mint','Maple','Mistletoe'],
+      'Name':['Michael','Maria','Matthew','Michelle','Martin','Margaret'],
+      'Thing':['Map','Mirror','Microphone','Mattress','Mug'],
+    },
+    N: {
+      'Country':['Nigeria','Nepal','Norway','Nicaragua','Namibia','Niger'],
+      'City':['New York','Nairobi','Nice','Naples','Niamey'],
+      'Animal':['Narwhal','Nightingale','Newt','Numbat'],
+      'Plant':['Narcissus','Nettle','Nectarine'],
+      'Name':['Nathan','Nicole','Noah','Natalie','Neil','Nancy'],
+      'Thing':['Needle','Notebook','Net','Nail','Necklace'],
+    },
+    P: {
+      'Country':['Poland','Portugal','Peru','Pakistan','Panama','Paraguay','Papua New Guinea'],
+      'City':['Paris','Prague','Peking','Pretoria','Perth'],
+      'Animal':['Penguin','Panda','Parrot','Pig','Puma','Pelican','Python'],
+      'Plant':['Palm','Pine','Peach','Primrose','Poppy'],
+      'Name':['Peter','Patricia','Paul','Philippa','Patrick','Penelope'],
+      'Thing':['Phone','Pencil','Pillow','Piano','Painting','Plate'],
+    },
+    R: {
+      'Country':['Russia','Romania','Rwanda'],
+      'City':['Rome','Rio de Janeiro','Rotterdam','Riyadh','Reykjavik'],
+      'Animal':['Rabbit','Raccoon','Reindeer','Rhinoceros','Robin','Ray'],
+      'Plant':['Rose','Rosemary','Raspberry','Rhubarb','Reed'],
+      'Name':['Robert','Rachel','Richard','Rebecca','Roger','Ruth'],
+      'Thing':['Radio','Rope','Ring','Rug','Ruler'],
+    },
+    S: {
+      'Country':['Sweden','Switzerland','Slovakia','Slovenia','Senegal','Serbia','Singapore'],
+      'City':['Sydney','Stockholm','Seoul','Singapore','Sofia','Sarajevo','Santiago'],
+      'Animal':['Snake','Seal','Shark','Squirrel','Sloth','Stork','Swan'],
+      'Plant':['Sunflower','Sage','Sequoia','Strawberry','Spruce'],
+      'Name':['Sarah','Steven','Sophia','Samuel','Susan','Simon'],
+      'Thing':['Sofa','Scissors','Suitcase','Spoon','Shirt','Shoe'],
+    },
+    T: {
+      'Country':['Turkey','Thailand','Tanzania','Tunisia','Togo'],
+      'City':['Tokyo','Toronto','Tehran','Tunis','Tbilisi'],
+      'Animal':['Tiger','Tortoise','Toucan','Tapir','Termite'],
+      'Plant':['Tulip','Thyme','Teak','Thistle'],
+      'Name':['Thomas','Teresa','Timothy','Tiffany','Trevor'],
+      'Thing':['Table','Telephone','Television','Tent','Torch'],
+    },
+    W: {
+      'Country':['Wales','Western Sahara'],
+      'City':['Warsaw','Vienna','Washington','Wellington','Winnipeg'],
+      'Animal':['Wolf','Whale','Weasel','Walrus','Wasp','Wren'],
+      'Plant':['Willow','Wheat','Wisteria','Walnut'],
+      'Name':['William','Wendy','Walter','Whitney','Wayne'],
+      'Thing':['Watch','Window','Wallet','Wheelchair','Whistle'],
+    },
+  },
+  de: {
+    A: {
+      'Land':['Argentinien','Australien','Österreich','Algerien','Armenien','Afghanistan','Albanien'],
+      'Stadt':['Amsterdam','Athen','Ankara','Algier','Addis Abeba'],
+      'Tier':['Affe','Alligator','Antilope','Ameise','Albatros','Axolotl'],
+      'Pflanze':['Ahorn','Agave','Aloe','Akazie','Ananas'],
+      'Name':['Anna','Adam','Andreas','Angela','Alexander'],
+      'Sache':['Auto','Apfel','Antenne','Aquarium','Atlas'],
+    },
+    B: {
+      'Land':['Brasilien','Belgien','Bulgarien','Bangladesch','Bolivien','Bosnien'],
+      'Stadt':['Berlin','Barcelona','Brüssel','Budapest','Bukarest','Bangkok'],
+      'Tier':['Bär','Biber','Büffel','Biber','Bison','Schmetterling'],
+      'Pflanze':['Birke','Buche','Bambus','Basilikum','Beere'],
+      'Name':['Benjamin','Barbara','Bernd','Brigitte','Boris'],
+      'Sache':['Buch','Brücke','Ball','Blume','Bett'],
+    },
+    K: {
+      'Land':['Kanada','Kenia','Korea','Kasachstan','Kambodscha','Kolumbien','Kuba'],
+      'Stadt':['Krakau','Kiew','Kairo','Kapstadt','Karatschi','Kopenhagen'],
+      'Tier':['Krokodil','Känguru','Koala','Katze','Krake','Krabbe','Käfer'],
+      'Pflanze':['Kaktus','Kastanie','Kirsche','Klee','Kamille'],
+      'Name':['Karl','Katharina','Klaus','Karin','Konrad'],
+      'Sache':['Kühlschrank','Kamera','Klavier','Küche','Kette'],
+    },
+    L: {
+      'Land':['Litauen','Luxemburg','Laos','Libanon','Libyen','Lettland'],
+      'Stadt':['London','Lissabon','Lima','Lausanne','Lyon','Los Angeles'],
+      'Tier':['Löwe','Leopard','Lama','Luchs','Lemur','Libelle'],
+      'Pflanze':['Lavendel','Lilie','Linde','Lorbeer'],
+      'Name':['Ludwig','Laura','Leon','Luisa','Lars'],
+      'Sache':['Lampe','Laptop','Löffel','Laterne'],
+    },
+    M: {
+      'Land':['Mexiko','Marokko','Mosambik','Malaysia','Madagaskar','Mongolei'],
+      'Stadt':['Madrid','Moskau','Mailand','Mumbai','Montreal','Melbourne'],
+      'Tier':['Maus','Möwe','Murmeltier','Moose','Maulwurf'],
+      'Pflanze':['Mango','Magnolie','Minze','Mohn'],
+      'Name':['Michael','Maria','Martin','Monika','Markus'],
+      'Sache':['Messer','Mikrofon','Motor','Mütze'],
+    },
+    S: {
+      'Land':['Schweden','Schweiz','Slowakei','Slowenien','Senegal','Serbien'],
+      'Stadt':['Sydney','Stockholm','Seoul','Singapur','Sofia'],
+      'Tier':['Schlange','Schaf','Schwein','Schmetterling','Seehund'],
+      'Pflanze':['Sonnenblume','Salbei','Sequoie','Strauch'],
+      'Name':['Stefan','Sabine','Sebastian','Sandra','Simon'],
+      'Sache':['Schere','Schuh','Sofa','Spiegel','Stuhl'],
+    },
+    W: {
+      'Land':['Wales','Westafrika'],
+      'Stadt':['Wien','Warschau','Washington','Wellington','Winnipeg'],
+      'Tier':['Wolf','Wal','Wiesel','Walross','Wespe'],
+      'Pflanze':['Weide','Weizen','Wein'],
+      'Name':['Wilhelm','Werner','Wolfgang','Waltraud'],
+      'Sache':['Wecker','Waffe','Werkzeug','Weste'],
+    },
+  },
+};
+
+var CAT_ICONS = {
+  'Państwo':'🌍','Country':'🌍','Land':'🌍',
+  'Miasto':'🏙️','City':'🏙️','Stadt':'🏙️',
+  'Zwierzę':'🐘','Animal':'🐘','Tier':'🐘',
+  'Roślina':'🌿','Plant':'🌿','Pflanze':'🌿',
+  'Imię':'🙋','Name':'🙋',
+  'Rzecz':'📦','Thing':'📦','Sache':'📦',
+};
+
+var currentLang = 'pl';
+var currentLetter = 'K';
+
+function setLang(l) {
+  currentLang = l;
+  document.querySelectorAll('.lang-tab').forEach(function(t) {
+    t.classList.toggle('active', t.getAttribute('href') === '#' + l);
+  });
+  buildLetterStrip();
+  showLetter(currentLetter);
+  return false;
+}
+
+function buildLetterStrip() {
+  var data = WORDS[currentLang] || {};
+  var letters = Object.keys(data).sort();
+  var strip = document.getElementById('letter-strip');
+  strip.innerHTML = letters.map(function(l) {
+    return '<a class="letter-btn' + (l === currentLetter ? ' active' : '') + '" onclick="return showLetter(\'' + l + '\')" href="#' + l + '">' + l + '</a>';
+  }).join('');
+}
+
+function showLetter(letter) {
+  currentLetter = letter;
+  var data = (WORDS[currentLang] || {})[letter];
+
+  document.querySelectorAll('.letter-btn').forEach(function(b) {
+    b.classList.toggle('active', b.getAttribute('href') === '#' + letter);
+  });
+
+  var container = document.getElementById('letter-content');
+  if (!data) {
+    container.innerHTML = '<div class="no-letter">Brak słów na tę literę w tym języku.</div>';
+    return;
+  }
+
+  var html = '<div class="letter-section active">';
+  html += '<div class="letter-hero">' + letter + '</div>';
+
+  var cats = Object.keys(data);
+  cats.forEach(function(cat) {
+    var words = data[cat];
+    var icon = CAT_ICONS[cat] || '📌';
+    html += '<div class="cat-block">';
+    html += '<div class="cat-title"><span>' + icon + '</span>' + cat + '</div>';
+    html += '<div class="word-grid">';
+    words.forEach(function(w) {
+      html += '<span class="word-chip">' + w + '</span>';
+    });
+    html += '</div></div>';
+  });
+  html += '</div>';
+  container.innerHTML = html;
+  return false;
+}
+
+// Init
+buildLetterStrip();
+showLetter('K');
+</script>
+<script src="/js/shared.js"></script>
+</body>
+</html>

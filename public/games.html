@@ -103,33 +103,100 @@
     .hub-room-code { display: none; }
     .hub-room-players { display: none; }
   }
+
+  /* ══ BURGER MENU ══ */
+  .hub-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0 8px; border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+  .hub-logo-link { display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .hub-logo-link span {
+    font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+  .burger-btn {
+    display: flex; flex-direction: column; justify-content: center;
+    gap: 5px; background: none; border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 10px; cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .burger-btn:hover { border-color: var(--accent); }
+  .burger-btn span {
+    display: block; width: 20px; height: 2px;
+    background: var(--muted); border-radius: 2px;
+    transition: all 0.25s;
+  }
+  .burger-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); background:var(--accent); }
+  .burger-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .burger-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background:var(--accent); }
+  .burger-nav {
+    display: none; flex-direction: column;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 12px; margin-bottom: 12px;
+    gap: 4px; animation: slideDown 0.2s ease;
+  }
+  .burger-nav.open { display: flex; }
+  @keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:none} }
+  .burger-nav-section {
+    font-size: 10px; font-weight: 800; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted);
+    padding: 8px 10px 4px; margin-top: 4px;
+  }
+  .burger-nav-section:first-child { margin-top: 0; }
+  .burger-nav a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: 8px; text-decoration: none;
+    color: var(--text); font-size: 14px; font-weight: 700;
+    transition: background 0.15s;
+  }
+  .burger-nav a:hover { background: var(--surface); color: var(--accent); }
+  .burger-nav-icon { font-size: 18px; width: 24px; text-align: center; }
+  .burger-nav-divider {
+    height: 1px; background: var(--border); margin: 6px 4px;
+  }
 </style>
 </head>
 <body>
 <div class="container">
-  <header>
-    <div class="logo-wrap">
-      <div class="logo-globe">
-        <svg viewBox="0 0 80 80" width="52" height="52" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="40" cy="40" r="34" fill="none" stroke="#ff6b35" stroke-width="3"/>
-          <path d="M6 40 Q40 24 74 40" fill="none" stroke="rgba(255,107,53,0.35)" stroke-width="1.5"/>
-          <path d="M6 40 Q40 56 74 40" fill="none" stroke="rgba(255,107,53,0.35)" stroke-width="1.5"/>
-          <ellipse cx="40" cy="40" rx="17" ry="34" fill="none" stroke="rgba(255,107,53,0.35)" stroke-width="1.5"/>
-          <line x1="6" y1="40" x2="74" y2="40" stroke="rgba(255,107,53,0.35)" stroke-width="1.5"/>
-          <circle cx="32" cy="22" r="5" fill="#06d6a0"/>
-          <circle cx="55" cy="32" r="5" fill="#06d6a0"/>
-          <circle cx="27" cy="50" r="5" fill="#06d6a0"/>
-          <circle cx="50" cy="56" r="4" fill="#06d6a0"/>
-        </svg>
-      </div>
-      <div class="logo-text">
-        <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,6vw,60px);letter-spacing:3px;line-height:1;margin:0;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Game Hub</h1>
-        <p style="color:var(--muted);font-size:13px;font-weight:700;margin:2px 0 0;">panstwamiastagra.com</p>
-      </div>
-    </div>
-  </header>
+  <!-- TOPBAR WITH BURGER -->
+  <div class="hub-topbar">
+    <a href="/" class="hub-logo-link">
+      <svg viewBox="0 0 80 80" width="34" height="34" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="34" fill="none" stroke="#ff6b35" stroke-width="3"/>
+        <path d="M6 40 Q40 24 74 40" fill="none" stroke="rgba(255,107,53,0.35)" stroke-width="1.5"/>
+        <path d="M6 40 Q40 56 74 40" fill="none" stroke="rgba(255,107,53,0.35)" stroke-width="1.5"/>
+        <ellipse cx="40" cy="40" rx="17" ry="34" fill="none" stroke="rgba(255,107,53,0.35)" stroke-width="1.5"/>
+        <circle cx="32" cy="22" r="5" fill="#06d6a0"/>
+        <circle cx="55" cy="32" r="5" fill="#06d6a0"/>
+        <circle cx="27" cy="50" r="5" fill="#06d6a0"/>
+        <circle cx="50" cy="56" r="4" fill="#06d6a0"/>
+      </svg>
+      <span id="hub-site-name">panstwamiastagra.com</span>
+    </a>
+    <button class="burger-btn" id="burger-btn" onclick="toggleBurger()" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
 
-  <a id="hub-back-link" href="/" class="back-link">← Back to home</a>
+  <!-- BURGER DROPDOWN NAV — all links crawlable by Google -->
+  <nav class="burger-nav" id="burger-nav">
+    <div class="burger-nav-section" id="bn-games-label">Games</div>
+    <a href="/"><span class="burger-nav-icon">🌍</span> <span id="bn-pm">Państwa-Miasta</span></a>
+    <a href="/taboo"><span class="burger-nav-icon">🎭</span> <span id="bn-taboo">Tabu / Taboo</span></a>
+    <a href="/hangman"><span class="burger-nav-icon">🪢</span> <span id="bn-hangman">Wisielec / Hangman</span></a>
+    <a href="/dots"><span class="burger-nav-icon">🔵</span> <span id="bn-dots">Kropki i Kreski</span></a>
+    <a href="/twotruth"><span class="burger-nav-icon">🤥</span> <span id="bn-twotruth">Dwie Prawdy / 2 Truths</span></a>
+    <div class="burger-nav-divider"></div>
+    <div class="burger-nav-section" id="bn-rules-label">Rules</div>
+    <a href="/jak-grac"><span class="burger-nav-icon">📖</span> <span id="bn-rules-pl">Zasady gier (PL)</span></a>
+    <a href="/how-to-play"><span class="burger-nav-icon">📖</span> <span id="bn-rules-en">Game Rules (EN)</span></a>
+    <div class="burger-nav-divider"></div>
+    <div class="burger-nav-section" id="bn-more-label">More</div>
+    <a href="/kategorie"><span class="burger-nav-icon">📋</span> <span id="bn-categories">Kategorie</span></a>
+    <a href="/slowa"><span class="burger-nav-icon">🔤</span> <span id="bn-words">Słowa na literę</span></a>
+  </nav>
 
   <div class="hub-hero">
     <h1 id="hub-title">Darmowe Gry Online</h1>
@@ -263,6 +330,7 @@
     history.replaceState(null, '', '/games?lang=' + l);
     if (window.hubRerenderRooms) window.hubRerenderRooms();
     if (typeof buildRulesGrid === 'function') buildRulesGrid(l);
+    updateBurgerNav(l);
   }
 
   // Build lang bar
@@ -287,8 +355,80 @@
   var hubSocket = io();
   var knownCodes = {};
 
+  var BURGER_T = {
+    pl: { games:'Gry', rules:'Zasady gier', more:'Więcej',
+          pm:'Państwa-Miasta', taboo:'Tabu', hangman:'Wisielec',
+          dots:'Kropki i Kreski', twotruth:'Dwie Prawdy',
+          rulesPl:'Zasady gier (PL)', rulesEn:'Game Rules (EN)',
+          cats:'Kategorie', words:'Słowa na literę' },
+    en: { games:'Games', rules:'Rules', more:'More',
+          pm:'Countries & Cities', taboo:'Taboo', hangman:'Hangman',
+          dots:'Dots & Boxes', twotruth:'2 Truths 1 Lie',
+          rulesPl:'Zasady gier (PL)', rulesEn:'Game Rules (EN)',
+          cats:'Categories', words:'Words by Letter' },
+    de: { games:'Spiele', rules:'Spielregeln', more:'Mehr',
+          pm:'Länder & Städte', taboo:'Tabu', hangman:'Galgenmännchen',
+          dots:'Punkte & Linien', twotruth:'2 Wahrheiten 1 Lüge',
+          rulesPl:'Regeln (PL)', rulesEn:'Regeln (EN)',
+          cats:'Kategorien', words:'Wörter nach Buchstaben' },
+    fr: { games:'Jeux', rules:'Règles', more:'Plus',
+          pm:'Pays & Villes', taboo:'Tabou', hangman:'Pendu',
+          dots:'Points & Lignes', twotruth:'2 Vérités 1 Mensonge',
+          rulesPl:'Règles (PL)', rulesEn:'Règles (EN)',
+          cats:'Catégories', words:'Mots par lettre' },
+    es: { games:'Juegos', rules:'Reglas', more:'Más',
+          pm:'Países & Ciudades', taboo:'Tabú', hangman:'El Ahorcado',
+          dots:'Puntos & Líneas', twotruth:'2 Verdades 1 Mentira',
+          rulesPl:'Reglas (PL)', rulesEn:'Reglas (EN)',
+          cats:'Categorías', words:'Palabras por letra' },
+  };
+
+  function updateBurgerNav(l) {
+    var t = BURGER_T[l] || BURGER_T['en'];
+    var ids = {
+      'bn-games-label':t.games, 'bn-rules-label':t.rules, 'bn-more-label':t.more,
+      'bn-pm':t.pm, 'bn-taboo':t.taboo, 'bn-hangman':t.hangman,
+      'bn-dots':t.dots, 'bn-twotruth':t.twotruth,
+      'bn-rules-pl':t.rulesPl, 'bn-rules-en':t.rulesEn,
+      'bn-categories':t.cats, 'bn-words':t.words,
+    };
+    Object.keys(ids).forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = ids[id];
+    });
+    // Update game links to include ?lang= param
+    var nav = document.getElementById('burger-nav');
+    if (!nav) return;
+    nav.querySelectorAll('a').forEach(function(a) {
+      var href = a.getAttribute('href');
+      if (href && !href.includes('jak-grac') && !href.includes('how-to-play') && !href.includes('kategorie') && !href.includes('slowa')) {
+        a.href = href.split('?')[0] + '?lang=' + l;
+      }
+    });
+  }
+
+  function toggleBurger() {
+    var btn = document.getElementById('burger-btn');
+    var nav = document.getElementById('burger-nav');
+    if (!btn || !nav) return;
+    var isOpen = nav.classList.toggle('open');
+    btn.classList.toggle('open', isOpen);
+    btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  }
+
+  // Close burger when clicking outside
+  document.addEventListener('click', function(e) {
+    var btn = document.getElementById('burger-btn');
+    var nav = document.getElementById('burger-nav');
+    if (nav && nav.classList.contains('open') && !nav.contains(e.target) && !btn.contains(e.target)) {
+      nav.classList.remove('open');
+      btn.classList.remove('open');
+      btn.setAttribute('aria-expanded','false');
+    }
+  });
+
   var LIVE_LABELS = {
-    pl: { title: 'Otwarte pokoje na żywo', empty: 'Brak otwartych pokoi. Stwórz pierwszy!', join: 'Dołącz', private: '🔒 Prywatny', players: 'graczy', createdPrivate: 'stworzył prywatny pokój' },
+    pl: { title: 'Otwarte Pokoje do Gry',  empty: 'Brak otwartych pokoi. Stwórz pierwszy!', join: 'Dołącz', private: '🔒 Prywatny', players: 'graczy', createdPrivate: 'stworzył prywatny pokój' },
     en: { title: 'Live Open Rooms',        empty: 'No open rooms right now. Create one!',  join: 'Join',   private: '🔒 Private',   players: 'players', createdPrivate: 'created a private room' },
     de: { title: 'Offene Räume live',      empty: 'Keine offenen Räume. Erstelle einen!',  join: 'Beitreten', private: '🔒 Privat', players: 'Spieler', createdPrivate: 'hat einen privaten Raum erstellt' },
     fr: { title: 'Salles ouvertes en live',empty: 'Aucune salle ouverte. Créez-en une !',  join: 'Rejoindre', private: '🔒 Privé',  players: 'joueurs', createdPrivate: 'a créé une salle privée' },
@@ -303,66 +443,107 @@
     renderRooms(rooms);
   });
 
+  function cardKey(room) {
+    // Unique cache key combining code + player count + isPublic state
+    return room.code + '|' + room.players + '|' + (room.isPublic ? '1' : '0');
+  }
+
+  function buildCardHtml(room, ll, isNew) {
+    if (room.isPublic) {
+      return '<div class="hub-room-card' + (isNew ? ' new-room' : '') + '" data-code="' + room.code + '">' +
+        '<div class="hub-room-icon">' + room.gameIcon + '</div>' +
+        '<div class="hub-room-info">' +
+          '<div class="hub-room-game">' + room.gameName + '</div>' +
+          '<div class="hub-room-meta">' +
+            room.hostName + ' · ' +
+            room.players + '/' + room.maxPlayers + ' ' + ll.players +
+            (room.lang ? ' · ' + room.lang.toUpperCase() : '') +
+          '</div>' +
+        '</div>' +
+        '<span class="hub-room-players">' + room.players + '/' + room.maxPlayers + '</span>' +
+        '<div class="hub-room-code">' + room.code + '</div>' +
+        '<a href="' + room.gameSlug + '?join=' + room.code + '" class="hub-room-join-btn">' + ll.join + '</a>' +
+      '</div>';
+    } else {
+      return '<div class="hub-room-card private-room" data-code="' + room.code + '">' +
+        '<div class="hub-room-icon">' + room.gameIcon + '</div>' +
+        '<div class="hub-room-info">' +
+          '<div class="hub-room-game">' + room.gameName + '</div>' +
+          '<div class="hub-room-meta">' + room.hostMasked + ' ' + (ll.createdPrivate || 'created a private room') + '</div>' +
+        '</div>' +
+        '<span class="hub-room-private">' + ll.private + '</span>' +
+      '</div>';
+    }
+  }
+
   function renderRooms(rooms) {
     var currentLang = (typeof lang !== 'undefined' ? lang : 'en') || 'en';
     var ll = LIVE_LABELS[currentLang] || LIVE_LABELS['en'];
 
-    // Update section title
     var titleEl = document.getElementById('hub-live-title-text');
     if (titleEl) titleEl.textContent = ll.title;
 
-    var list  = document.getElementById('hub-rooms-list');
-    var empty = document.getElementById('hub-empty-msg');
+    var list = document.getElementById('hub-rooms-list');
     if (!list) return;
 
-    // Separate open vs private
     var openRooms    = rooms.filter(function(r) { return r.isPublic; });
     var privateRooms = rooms.filter(function(r) { return !r.isPublic; });
+    var allRooms     = openRooms.concat(privateRooms);
 
-    if (openRooms.length === 0 && privateRooms.length === 0) {
+    // Empty state
+    if (allRooms.length === 0) {
       list.innerHTML = '<div class="hub-empty-rooms">' + ll.empty + '</div>';
+      knownCodes = {};
       return;
     }
 
-    var html = '';
+    // Build map of incoming codes
+    var incomingCodes = {};
+    allRooms.forEach(function(r) { incomingCodes[r.code] = r; });
 
-    // Open rooms first
-    openRooms.forEach(function(room) {
-      var isNew = !knownCodes[room.code];
-      knownCodes[room.code] = true;
-      html +=
-        '<div class="hub-room-card' + (isNew ? ' new-room' : '') + '">' +
-          '<div class="hub-room-icon">' + room.gameIcon + '</div>' +
-          '<div class="hub-room-info">' +
-            '<div class="hub-room-game">' + room.gameName + '</div>' +
-            '<div class="hub-room-meta">' +
-              room.hostName + ' · ' +
-              room.players + '/' + room.maxPlayers + ' ' + ll.players +
-              (room.lang ? ' · ' + room.lang.toUpperCase() : '') +
-            '</div>' +
-          '</div>' +
-          '<span class="hub-room-players">' + room.players + '/' + room.maxPlayers + '</span>' +
-          '<div class="hub-room-code">' + room.code + '</div>' +
-          '<a href="' + room.gameSlug + '?join=' + room.code + '" class="hub-room-join-btn">' + ll.join + '</a>' +
-        '</div>';
+    // Remove cards for rooms that no longer exist
+    var existingCards = list.querySelectorAll('[data-code]');
+    existingCards.forEach(function(card) {
+      var code = card.getAttribute('data-code');
+      if (!incomingCodes[code]) {
+        card.style.opacity = '0';
+        card.style.transform = 'translateX(-8px)';
+        card.style.transition = 'opacity 0.2s, transform 0.2s';
+        setTimeout(function() { if (card.parentNode) card.parentNode.removeChild(card); }, 220);
+        delete knownCodes[code];
+      }
     });
 
-    // Private rooms (masked, no join button)
-    if (privateRooms.length > 0) {
-      privateRooms.forEach(function(room) {
-        html +=
-          '<div class="hub-room-card">' +
-            '<div class="hub-room-icon">' + room.gameIcon + '</div>' +
-            '<div class="hub-room-info">' +
-              '<div class="hub-room-game">' + room.gameName + '</div>' +
-              '<div class="hub-room-meta">' + room.hostMasked + ' ' + (ll.createdPrivate || 'created a private room') + '</div>' +
-            '</div>' +
-            '<span class="hub-room-private">' + ll.private + '</span>' +
-          '</div>';
-      });
-    }
+    // Remove empty-state message if present
+    var emptyMsg = list.querySelector('.hub-empty-rooms');
+    if (emptyMsg) list.removeChild(emptyMsg);
 
-    list.innerHTML = html;
+    // Add or update cards
+    allRooms.forEach(function(room, idx) {
+      var isNew     = !knownCodes[room.code];
+      var cacheKey  = cardKey(room);
+      var existing  = list.querySelector('[data-code="' + room.code + '"]');
+
+      if (!existing) {
+        // New room — create and insert
+        knownCodes[room.code] = cacheKey;
+        var tmp = document.createElement('div');
+        tmp.innerHTML = buildCardHtml(room, ll, true);
+        var card = tmp.firstChild;
+        // Insert in correct position
+        var allCards = list.querySelectorAll('[data-code]');
+        var ref = allCards[idx] || null;
+        list.insertBefore(card, ref);
+      } else if (knownCodes[room.code] !== cacheKey) {
+        // Changed (player count etc) — update in place without removing
+        knownCodes[room.code] = cacheKey;
+        var tmp2 = document.createElement('div');
+        tmp2.innerHTML = buildCardHtml(room, ll, false);
+        var newCard = tmp2.firstChild;
+        list.replaceChild(newCard, existing);
+      }
+      // else: identical — do nothing (no flicker!)
+    });
   }
 
   // Re-render when language changes (hub applyLang calls this)

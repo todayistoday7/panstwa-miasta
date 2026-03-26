@@ -38,6 +38,7 @@ app.get('/how-to-play/two-truths-one-lie', (req, res) => res.sendFile(path.join(
 app.get('/jak-grac',    (req, res) => res.sendFile(path.join(__dirname, 'public/jak-grac/index.html')));
 app.get('/how-to-play', (req, res) => res.sendFile(path.join(__dirname, 'public/how-to-play/index.html')));
 app.get('/kategorie',   (req, res) => res.sendFile(path.join(__dirname, 'public/kategorie/index.html')));
+app.get('/slowa',       (req, res) => res.sendFile(path.join(__dirname, 'public/slowa/index.html')));
 
 // ─── SHARE ROUTE (OG tags with score for social preview) ─────────
 app.get('/share', (req, res) => {
