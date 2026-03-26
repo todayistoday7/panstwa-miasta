@@ -177,6 +177,158 @@ function initVisibilityToggle() {
   setVisibility(false); // default: private
 }
 
+// ─── GLOBAL BURGER MENU ──────────────────────────────────────────
+// Injected at top of every page that loads shared.js
+(function() {
+
+  var BURGER_CSS = [
+    '.gb-topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;}',
+    '.gb-logo{display:flex;align-items:center;gap:9px;text-decoration:none;}',
+    '.gb-logo-text{font-family:"Bebas Neue",sans-serif;font-size:20px;letter-spacing:2px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}',
+    '.gb-btn{display:flex;flex-direction:column;justify-content:center;gap:5px;background:none;border:1px solid var(--border);border-radius:8px;padding:7px 9px;cursor:pointer;transition:border-color 0.2s;}',
+    '.gb-btn:hover{border-color:var(--accent);}',
+    '.gb-btn span{display:block;width:18px;height:2px;background:var(--muted);border-radius:2px;transition:all 0.22s;}',
+    '.gb-btn.open span:nth-child(1){transform:translateY(7px) rotate(45deg);background:var(--accent);}',
+    '.gb-btn.open span:nth-child(2){opacity:0;transform:scaleX(0);}',
+    '.gb-btn.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);background:var(--accent);}',
+    '.gb-nav{display:none;flex-direction:column;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px;margin-bottom:10px;gap:2px;animation:gbSlide 0.18s ease;}',
+    '.gb-nav.open{display:flex;}',
+    '@keyframes gbSlide{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}',
+    '.gb-section{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:7px 10px 3px;margin-top:2px;}',
+    '.gb-section:first-child{margin-top:0;}',
+    '.gb-nav a{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;text-decoration:none;color:var(--text);font-size:13px;font-weight:700;transition:background 0.15s;}',
+    '.gb-nav a:hover{background:var(--surface);color:var(--accent);}',
+    '.gb-nav-icon{font-size:17px;width:22px;text-align:center;flex-shrink:0;}',
+    '.gb-divider{height:1px;background:var(--border);margin:4px 6px;}',
+  ].join('');
+
+  function injectBurgerCSS() {
+    if (document.getElementById('gb-style')) return;
+    var style = document.createElement('style');
+    style.id = 'gb-style';
+    style.textContent = BURGER_CSS;
+    document.head.appendChild(style);
+  }
+
+  function getLang() {
+    return (new URLSearchParams(window.location.search).get('lang')) ||
+           (navigator.language || '').slice(0,2) || 'pl';
+  }
+
+  var BURGER_LABELS = {
+    pl: { home:'Strona główna', games:'Wszystkie gry', rules:'Zasady gier',
+          cats:'Kategorie', words:'Słowa na literę',
+          secGames:'Gry', secRules:'Zasady', secMore:'Więcej' },
+    en: { home:'Home', games:'All Games', rules:'Game Rules',
+          cats:'Categories', words:'Words by Letter',
+          secGames:'Games', secRules:'Rules', secMore:'More' },
+    de: { home:'Startseite', games:'Alle Spiele', rules:'Spielregeln',
+          cats:'Kategorien', words:'Wörter nach Buchstabe',
+          secGames:'Spiele', secRules:'Regeln', secMore:'Mehr' },
+    fr: { home:'Accueil', games:'Tous les jeux', rules:'Règles',
+          cats:'Catégories', words:'Mots par lettre',
+          secGames:'Jeux', secRules:'Règles', secMore:'Plus' },
+    es: { home:'Inicio', games:'Todos los juegos', rules:'Reglas',
+          cats:'Categorías', words:'Palabras por letra',
+          secGames:'Juegos', secRules:'Reglas', secMore:'Más' },
+  };
+
+  function buildBurgerHTML(lang) {
+    var t = BURGER_LABELS[lang] || BURGER_LABELS['en'];
+    var lp  = (lang === 'pl') ? 'pl' : 'en';
+    var ruleBase = (lp === 'pl') ? '/jak-grac' : '/how-to-play';
+    var ql  = '?lang=' + lang;
+
+    return (
+      '<button class="gb-btn" id="gb-toggle" aria-label="Menu" aria-expanded="false" onclick="window._gbToggle()">' +
+        '<span></span><span></span><span></span>' +
+      '</button>' +
+      '</div>' +   // close topbar — will be opened by the wrapper
+      '<nav class="gb-nav" id="gb-nav">' +
+        '<div class="gb-section">' + t.secGames + '</div>' +
+        '<a href="/' + ql + '"><span class="gb-nav-icon">🏠</span>' + t.home + '</a>' +
+        '<a href="/games' + ql + '"><span class="gb-nav-icon">🎮</span>' + t.games + '</a>' +
+        '<a href="/' + ql + '"><span class="gb-nav-icon">🌍</span>Państwa-Miasta</a>' +
+        '<a href="/taboo' + ql + '"><span class="gb-nav-icon">🎭</span>Tabu / Taboo</a>' +
+        '<a href="/hangman' + ql + '"><span class="gb-nav-icon">🪢</span>Wisielec / Hangman</a>' +
+        '<a href="/dots' + ql + '"><span class="gb-nav-icon">🔵</span>Kropki i Kreski</a>' +
+        '<a href="/twotruth' + ql + '"><span class="gb-nav-icon">🤥</span>Dwie Prawdy / 2 Truths</a>' +
+        '<div class="gb-divider"></div>' +
+        '<div class="gb-section">' + t.secRules + '</div>' +
+        '<a href="' + ruleBase + '"><span class="gb-nav-icon">📖</span>' + t.rules + '</a>' +
+        '<div class="gb-divider"></div>' +
+        '<div class="gb-section">' + t.secMore + '</div>' +
+        '<a href="/kategorie"><span class="gb-nav-icon">📋</span>' + t.cats + '</a>' +
+        '<a href="/slowa"><span class="gb-nav-icon">🔤</span>' + t.words + '</a>' +
+      '</nav>'
+    );
+  }
+
+  function injectBurger() {
+    if (document.getElementById('gb-topbar')) return;
+
+    injectBurgerCSS();
+
+    var lang = getLang();
+    var t    = BURGER_LABELS[lang] || BURGER_LABELS['en'];
+
+    // Build wrapper
+    var wrapper = document.createElement('div');
+    wrapper.innerHTML =
+      '<div class="gb-topbar" id="gb-topbar">' +
+        '<a class="gb-logo" href="/?lang=' + lang + '">' +
+          '<svg viewBox="0 0 80 80" width="28" height="28" xmlns="http://www.w3.org/2000/svg">' +
+            '<circle cx="40" cy="40" r="34" fill="none" stroke="#ff6b35" stroke-width="3"/>' +
+            '<path d="M6 40 Q40 24 74 40" fill="none" stroke="rgba(255,107,53,0.4)" stroke-width="1.5"/>' +
+            '<path d="M6 40 Q40 56 74 40" fill="none" stroke="rgba(255,107,53,0.4)" stroke-width="1.5"/>' +
+            '<ellipse cx="40" cy="40" rx="17" ry="34" fill="none" stroke="rgba(255,107,53,0.4)" stroke-width="1.5"/>' +
+            '<circle cx="32" cy="22" r="4" fill="#06d6a0"/>' +
+            '<circle cx="55" cy="32" r="4" fill="#06d6a0"/>' +
+            '<circle cx="27" cy="50" r="4" fill="#06d6a0"/>' +
+          '</svg>' +
+          '<span class="gb-logo-text">panstwamiastagra.com</span>' +
+        '</a>' +
+        buildBurgerHTML(lang);
+
+    // Insert at very top of container (before everything else)
+    var container = document.querySelector('.container');
+    if (container) {
+      container.insertBefore(wrapper, container.firstChild);
+    } else {
+      document.body.insertBefore(wrapper, document.body.firstChild);
+    }
+
+    // Toggle function
+    window._gbToggle = function() {
+      var btn = document.getElementById('gb-toggle');
+      var nav = document.getElementById('gb-nav');
+      if (!btn || !nav) return;
+      var isOpen = nav.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.setAttribute('aria-expanded', String(isOpen));
+    };
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      var btn = document.getElementById('gb-toggle');
+      var nav = document.getElementById('gb-nav');
+      if (nav && nav.classList.contains('open') &&
+          btn && !nav.contains(e.target) && !btn.contains(e.target)) {
+        nav.classList.remove('open');
+        btn.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  // ── INIT ────────────────────────────────────────────────────────
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectBurger);
+  } else {
+    injectBurger();
+  }
+})();
+
 // ─── SITE FOOTER ─────────────────────────────────────────────────
 // Injected into every game page automatically on DOMContentLoaded
 (function() {

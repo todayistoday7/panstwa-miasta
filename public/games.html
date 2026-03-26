@@ -104,103 +104,15 @@
     .hub-room-players { display: none; }
   }
 
-  /* ══ BURGER MENU ══ */
-  .hub-topbar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 0 8px; border-bottom: 1px solid var(--border);
-    margin-bottom: 4px;
-  }
-  .hub-logo-link { display:flex; align-items:center; gap:10px; text-decoration:none; }
-  .hub-logo-link span {
-    font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px;
-    background:linear-gradient(135deg,var(--accent),var(--accent2));
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  }
-  .burger-btn {
-    display: flex; flex-direction: column; justify-content: center;
-    gap: 5px; background: none; border: 1px solid var(--border);
-    border-radius: 8px; padding: 8px 10px; cursor: pointer;
-    transition: border-color 0.2s;
-  }
-  .burger-btn:hover { border-color: var(--accent); }
-  .burger-btn span {
-    display: block; width: 20px; height: 2px;
-    background: var(--muted); border-radius: 2px;
-    transition: all 0.25s;
-  }
-  .burger-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); background:var(--accent); }
-  .burger-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-  .burger-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background:var(--accent); }
-  .burger-nav {
-    display: none; flex-direction: column;
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 14px; padding: 12px; margin-bottom: 12px;
-    gap: 4px; animation: slideDown 0.2s ease;
-  }
-  .burger-nav.open { display: flex; }
-  @keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:none} }
-  .burger-nav-section {
-    font-size: 10px; font-weight: 800; letter-spacing: 2px;
-    text-transform: uppercase; color: var(--muted);
-    padding: 8px 10px 4px; margin-top: 4px;
-  }
-  .burger-nav-section:first-child { margin-top: 0; }
-  .burger-nav a {
-    display: flex; align-items: center; gap: 10px;
-    padding: 9px 12px; border-radius: 8px; text-decoration: none;
-    color: var(--text); font-size: 14px; font-weight: 700;
-    transition: background 0.15s;
-  }
-  .burger-nav a:hover { background: var(--surface); color: var(--accent); }
-  .burger-nav-icon { font-size: 18px; width: 24px; text-align: center; }
-  .burger-nav-divider {
-    height: 1px; background: var(--border); margin: 6px 4px;
-  }
 </style>
 </head>
 <body>
 <div class="container">
   <!-- TOPBAR WITH BURGER -->
-  <div class="hub-topbar">
-    <a href="/" class="hub-logo-link">
-      <svg viewBox="0 0 80 80" width="34" height="34" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="40" cy="40" r="34" fill="none" stroke="#ff6b35" stroke-width="3"/>
-        <path d="M6 40 Q40 24 74 40" fill="none" stroke="rgba(255,107,53,0.35)" stroke-width="1.5"/>
-        <path d="M6 40 Q40 56 74 40" fill="none" stroke="rgba(255,107,53,0.35)" stroke-width="1.5"/>
-        <ellipse cx="40" cy="40" rx="17" ry="34" fill="none" stroke="rgba(255,107,53,0.35)" stroke-width="1.5"/>
-        <circle cx="32" cy="22" r="5" fill="#06d6a0"/>
-        <circle cx="55" cy="32" r="5" fill="#06d6a0"/>
-        <circle cx="27" cy="50" r="5" fill="#06d6a0"/>
-        <circle cx="50" cy="56" r="4" fill="#06d6a0"/>
-      </svg>
-      <span id="hub-site-name">panstwamiastagra.com</span>
-    </a>
-    <button class="burger-btn" id="burger-btn" onclick="toggleBurger()" aria-label="Menu" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-
-  <!-- BURGER DROPDOWN NAV — all links crawlable by Google -->
-  <nav class="burger-nav" id="burger-nav">
-    <div class="burger-nav-section" id="bn-games-label">Games</div>
-    <a href="/"><span class="burger-nav-icon">🌍</span> <span id="bn-pm">Państwa-Miasta</span></a>
-    <a href="/taboo"><span class="burger-nav-icon">🎭</span> <span id="bn-taboo">Tabu / Taboo</span></a>
-    <a href="/hangman"><span class="burger-nav-icon">🪢</span> <span id="bn-hangman">Wisielec / Hangman</span></a>
-    <a href="/dots"><span class="burger-nav-icon">🔵</span> <span id="bn-dots">Kropki i Kreski</span></a>
-    <a href="/twotruth"><span class="burger-nav-icon">🤥</span> <span id="bn-twotruth">Dwie Prawdy / 2 Truths</span></a>
-    <div class="burger-nav-divider"></div>
-    <div class="burger-nav-section" id="bn-rules-label">Rules</div>
-    <a href="/jak-grac"><span class="burger-nav-icon">📖</span> <span id="bn-rules-pl">Zasady gier (PL)</span></a>
-    <a href="/how-to-play"><span class="burger-nav-icon">📖</span> <span id="bn-rules-en">Game Rules (EN)</span></a>
-    <div class="burger-nav-divider"></div>
-    <div class="burger-nav-section" id="bn-more-label">More</div>
-    <a href="/kategorie"><span class="burger-nav-icon">📋</span> <span id="bn-categories">Kategorie</span></a>
-    <a href="/slowa"><span class="burger-nav-icon">🔤</span> <span id="bn-words">Słowa na literę</span></a>
-  </nav>
 
   <div class="hub-hero">
-    <h1 id="hub-title">Darmowe Gry Online</h1>
-    <p id="hub-subtitle">Free multiplayer games for friends, family & teams · Za darmo · Dla wszystkich</p>
+    <h1 id="hub-title">Darmowe Gry Integracyjne Online</h1>
+    <p id="hub-subtitle">Zaproś znajomych i razem świetnie się bawcie — albo dołącz do otwartego pokoju i poznaj nowych graczy! Śmiej się, rywalizuj i spędź czas jakiego jeszcze nie było.</p>
   </div>
 
   <div id="games-grid" class="games-grid">
@@ -265,11 +177,21 @@
   };
 
   var T = {
-    pl: { title: 'Darmowe Gry Online', subtitle: 'Gry multiplayer dla znajomych, rodziny i zespołów · Za darmo · Dla wszystkich', back: '← Wróć do strony głównej' },
-    en: { title: 'Free Games Online',  subtitle: 'Free multiplayer games for friends, family & teams · No registration · For everyone', back: '← Back to home' },
-    de: { title: 'Kostenlose Spiele',  subtitle: 'Multiplayer-Spiele für Freunde, Familie & Teams · Kostenlos · Für alle', back: '← Zurück zur Startseite' },
-    fr: { title: 'Jeux Gratuits',      subtitle: 'Jeux multijoueur pour amis, famille & équipes · Gratuit · Pour tous', back: "← Retour à l'accueil" },
-    es: { title: 'Juegos Gratis',      subtitle: 'Juegos multijugador para amigos, familia y equipos · Gratis · Para todos', back: '← Volver al inicio' },
+    pl: { title: 'Darmowe Gry Integracyjne Online',
+          subtitle: 'Zaproś znajomych i razem świetnie się bawcie — albo dołącz do otwartego pokoju i poznaj nowych graczy! Śmiej się, rywalizuj i spędź czas jakiego jeszcze nie było.',
+          back: '← Wróć do strony głównej' },
+    en: { title: 'Free Online Social Games',
+          subtitle: "Invite your friends and enjoy unlimited fun together — or jump into an open room and meet new players. Laugh, compete, and experience something truly different. Start playing now.",
+          back: '← Back to home' },
+    de: { title: 'Kostenlose Online-Partyspiele',
+          subtitle: 'Lade deine Freunde ein und erlebt gemeinsam grenzenlosen Spaß — oder tritt einem offenen Raum bei und lerne neue Leute kennen. Lache, miss dich mit anderen und entdecke ein Spielerlebnis, das begeistert. Jetzt starten.',
+          back: '← Zurück zur Startseite' },
+    fr: { title: 'Jeux de groupe en ligne gratuits',
+          subtitle: "Invite tes amis et profitez ensemble d'un moment inoubliable — ou rejoins une salle ouverte pour rencontrer de nouveaux joueurs. Rires, défis et fun garantis. Commence dès maintenant.",
+          back: "← Retour à l'accueil" },
+    es: { title: 'Juegos sociales online gratis',
+          subtitle: 'Invita a tus amigos y disfruten juntos sin límites — o únete a una sala abierta y conoce a nuevos jugadores. Ríe, compite y vive una experiencia diferente. Empieza ahora.',
+          back: '← Volver al inicio' },
   };
   var LANGS = [
     { code: 'pl', label: '🇵🇱 PL' },
@@ -329,7 +251,6 @@
     history.replaceState(null, '', '/games?lang=' + l);
     if (window.hubRerenderRooms) window.hubRerenderRooms();
     if (typeof buildRulesGrid === 'function') buildRulesGrid(l);
-    updateBurgerNav(l);
   }
 
   // Build lang bar
@@ -354,77 +275,9 @@
   var hubSocket = io();
   var knownCodes = {};
 
-  var BURGER_T = {
-    pl: { games:'Gry', rules:'Zasady gier', more:'Więcej',
-          pm:'Państwa-Miasta', taboo:'Tabu', hangman:'Wisielec',
-          dots:'Kropki i Kreski', twotruth:'Dwie Prawdy',
-          rulesPl:'Zasady gier (PL)', rulesEn:'Game Rules (EN)',
-          cats:'Kategorie', words:'Słowa na literę' },
-    en: { games:'Games', rules:'Rules', more:'More',
-          pm:'Countries & Cities', taboo:'Taboo', hangman:'Hangman',
-          dots:'Dots & Boxes', twotruth:'2 Truths 1 Lie',
-          rulesPl:'Zasady gier (PL)', rulesEn:'Game Rules (EN)',
-          cats:'Categories', words:'Words by Letter' },
-    de: { games:'Spiele', rules:'Spielregeln', more:'Mehr',
-          pm:'Länder & Städte', taboo:'Tabu', hangman:'Galgenmännchen',
-          dots:'Punkte & Linien', twotruth:'2 Wahrheiten 1 Lüge',
-          rulesPl:'Regeln (PL)', rulesEn:'Regeln (EN)',
-          cats:'Kategorien', words:'Wörter nach Buchstaben' },
-    fr: { games:'Jeux', rules:'Règles', more:'Plus',
-          pm:'Pays & Villes', taboo:'Tabou', hangman:'Pendu',
-          dots:'Points & Lignes', twotruth:'2 Vérités 1 Mensonge',
-          rulesPl:'Règles (PL)', rulesEn:'Règles (EN)',
-          cats:'Catégories', words:'Mots par lettre' },
-    es: { games:'Juegos', rules:'Reglas', more:'Más',
-          pm:'Países & Ciudades', taboo:'Tabú', hangman:'El Ahorcado',
-          dots:'Puntos & Líneas', twotruth:'2 Verdades 1 Mentira',
-          rulesPl:'Reglas (PL)', rulesEn:'Reglas (EN)',
-          cats:'Categorías', words:'Palabras por letra' },
-  };
 
-  function updateBurgerNav(l) {
-    var t = BURGER_T[l] || BURGER_T['en'];
-    var ids = {
-      'bn-games-label':t.games, 'bn-rules-label':t.rules, 'bn-more-label':t.more,
-      'bn-pm':t.pm, 'bn-taboo':t.taboo, 'bn-hangman':t.hangman,
-      'bn-dots':t.dots, 'bn-twotruth':t.twotruth,
-      'bn-rules-pl':t.rulesPl, 'bn-rules-en':t.rulesEn,
-      'bn-categories':t.cats, 'bn-words':t.words,
-    };
-    Object.keys(ids).forEach(function(id) {
-      var el = document.getElementById(id);
-      if (el) el.textContent = ids[id];
-    });
-    // Update game links to include ?lang= param
-    var nav = document.getElementById('burger-nav');
-    if (!nav) return;
-    nav.querySelectorAll('a').forEach(function(a) {
-      var href = a.getAttribute('href');
-      if (href && !href.includes('jak-grac') && !href.includes('how-to-play') && !href.includes('kategorie') && !href.includes('slowa')) {
-        a.href = href.split('?')[0] + '?lang=' + l;
-      }
-    });
-  }
 
-  function toggleBurger() {
-    var btn = document.getElementById('burger-btn');
-    var nav = document.getElementById('burger-nav');
-    if (!btn || !nav) return;
-    var isOpen = nav.classList.toggle('open');
-    btn.classList.toggle('open', isOpen);
-    btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-  }
 
-  // Close burger when clicking outside
-  document.addEventListener('click', function(e) {
-    var btn = document.getElementById('burger-btn');
-    var nav = document.getElementById('burger-nav');
-    if (nav && nav.classList.contains('open') && !nav.contains(e.target) && !btn.contains(e.target)) {
-      nav.classList.remove('open');
-      btn.classList.remove('open');
-      btn.setAttribute('aria-expanded','false');
-    }
-  });
 
   var LIVE_LABELS = {
     pl: { title: 'Otwarte Pokoje do Gry',  empty: 'Brak otwartych pokoi. Stwórz pierwszy!', join: 'Dołącz', private: '🔒 Prywatny', players: 'graczy', createdPrivate: 'stworzył prywatny pokój' },
