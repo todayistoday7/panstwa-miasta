@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tabu Online — Darmowa Gra Multiplayer</title>
 <meta name="description" content="Zagraj w Tabu online za darmo! Klasyczna gra imprezowa w wersji multiplayer. Play Taboo online free.">
+<meta property="og:title" content="Tabu Online — Darmowa Gra Drużynowa Multiplayer">
+<meta property="og:description" content="Zagraj w Tabu online za darmo! Opisuj słowa bez zakazanych. Play Taboo online free with friends.">
+<meta property="og:url" content="https://panstwamiastagra.com/taboo">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:locale:alternate" content="en_GB">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
@@ -225,9 +231,12 @@
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:50px;letter-spacing:2px;color:var(--accent2);" id="lbl-game-over">Game Over!</h2>
     </div>
     <div id="final-leaderboard"></div>
-    <div class="btn-row" style="margin-top:24px;">
-      <button class="btn" onclick="goHome()">🔄 <span id="lbl-new-game">New Game</span></button>
-      <button class="btn share-btn" onclick="shareResults()">📤 <span id="lbl-share">Share Results</span></button>
+    <div class="btn-row" style="flex-direction:column;align-items:center;gap:12px;margin-top:24px;">
+      <button class="btn" style="font-size:17px;padding:15px 32px;width:100%;max-width:400px;" onclick="playAgainGroup()" id="lbl-play-again-group">🔄 <span id="lbl-play-again">Play Again With This Group</span></button>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+        <button class="btn secondary" onclick="goHome()">🏠 <span id="lbl-new-game">New Game</span></button>
+        <button class="btn share-btn" onclick="shareResults()">📤 <span id="lbl-share">Share Results</span></button>
+      </div>
     </div>
   </div>
 

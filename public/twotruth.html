@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Two Truths One Lie Online — Free Multiplayer Party Game</title>
 <meta name="description" content="Play Two Truths One Lie online free! Classic icebreaker party game for 3-20 players. Zagraj w Dwie Prawdy Jedno Kłamstwo online za darmo!">
+<meta property="og:title" content="Dwie Prawdy Jedno Kłamstwo — 2 Truths 1 Lie Online">
+<meta property="og:description" content="Zagraj w Dwie Prawdy Jedno Kłamstwo online za darmo! Play 2 Truths 1 Lie free with friends.">
+<meta property="og:url" content="https://panstwamiastagra.com/twotruth">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:locale:alternate" content="en_GB">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
@@ -275,7 +281,8 @@
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:50px;letter-spacing:2px;color:var(--accent2);" id="lbl-game-over">Game Over!</h2>
     </div>
     <div id="final-results" style="max-width:560px;margin:24px auto;"></div>
-    <div class="btn-row">
+    <div class="btn-row" style="flex-direction:column;align-items:center;gap:12px;">
+      <button class="btn" style="font-size:17px;padding:15px 32px;width:100%;max-width:400px;" onclick="playAgainGroup()" id="lbl-play-again-group">🔄 <span id="lbl-play-again">Play Again With This Group</span></button>
       <button class="btn secondary" onclick="confirmGoHome()" id="lbl-go-home">🏠 Home</button>
     </div>
   </div>

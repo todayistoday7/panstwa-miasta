@@ -59,7 +59,7 @@ function emitTTState(io, room) {
   const base = {
     phase:        room.state.phase,
     hostId:       room.hostId,
-    settings:     room.settings,
+    settings:     { ...room.settings, isPublic: room.isPublic },
     players:      room.players.map(p => ({ id: p.id, name: p.name, connected: p.connected })),
     activeId:     active ? active.id : null,
     // Statements shown to voters but NOT which is the lie
@@ -161,7 +161,7 @@ function register(io, socket) {
     const room = getTTRoom(code);
     if (!room || socket.id !== room.hostId) return;
     room.settings = { ...room.settings, ...settings };
-    if (settings.isPublic !== undefined) room.isPublic = settings.isPublic;
+    if (settings.isPublic !== undefined) { room.isPublic = settings.isPublic; room.settings.isPublic = settings.isPublic; }
     lobby.announce('twotruth', room);
     emitTTState(io, room);
   });

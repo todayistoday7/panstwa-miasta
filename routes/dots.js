@@ -58,7 +58,7 @@ function emitDotsState(io, room) {
       id: p.id, name: p.name, color: p.color,
       connected: p.connected, score: p.score,
     })),
-    settings:      room.settings,
+    settings:      { ...room.settings, isPublic: room.isPublic },
     currentPlayer: room.state.currentPlayer,
     grid:          room.state.grid,
     claimedBoxes:  room.state.claimedBoxes,
@@ -168,7 +168,7 @@ function register(io, socket) {
     if (!room || socket.id !== room.hostId || room.state.phase !== 'lobby') return;
     const n = settings.gridSize || room.settings.gridSize;
     room.settings = { ...room.settings, ...settings, gridSize: n };
-    if (settings.isPublic !== undefined) room.isPublic = settings.isPublic;
+    if (settings.isPublic !== undefined) { room.isPublic = settings.isPublic; room.settings.isPublic = settings.isPublic; }
     room.state.grid       = makeGrid(n);
     room.state.totalBoxes = n * n;
     lobby.announce('dots', room);

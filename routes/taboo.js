@@ -91,7 +91,7 @@ function emitTabooState(io, room) {
     totalRounds:       room.settings.rounds,
     hostId:            room.hostId,
     players:           room.players.map(p => ({ id: p.id, name: p.name, connected: p.connected })),
-    settings:          room.settings,
+    settings:          { ...room.settings, isPublic: room.isPublic },
     teams:             room.state.teams,
     describerTeam:     room.state.describerTeam,
     turnDescriber:     room.state.turnDescriber,
@@ -180,7 +180,7 @@ function register(io, socket) {
     const room = getTabooRoom(code);
     if (!room || socket.id !== room.hostId) return;
     room.settings = { ...room.settings, ...settings };
-    if (settings.isPublic !== undefined) room.isPublic = settings.isPublic;
+    if (settings.isPublic !== undefined) { room.isPublic = settings.isPublic; room.settings.isPublic = settings.isPublic; }
     lobby.announce('taboo', room);
     emitTabooState(io, room);
   });

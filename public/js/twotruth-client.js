@@ -66,6 +66,7 @@ const LANGS = {
     winner:         (n) => `🏆 ${n} wygrywa!`,
     draw:           'Remis! 🤝',
     pts:            'pkt',
+    playAgain:      '🔄 Zagraj jeszcze raz z tą grupą',
     goHome:         '🏠 Powrót',
     hostBadge:      'HOST',
     youBadge:       'TY',
@@ -126,6 +127,7 @@ const LANGS = {
     winner:         (n) => `🏆 ${n} wins!`,
     draw:           "It's a draw! 🤝",
     pts:            'pts',
+    playAgain:      '🔄 Play Again With This Group',
     goHome:         '🏠 Home',
     hostBadge:      'HOST',
     youBadge:       'YOU',
@@ -529,6 +531,10 @@ function copyRoomCode() {
   if (typeof roomCode === 'undefined' || !roomCode) return;
   _copyText(roomCode);
   showToast('📋 ' + roomCode);
+}
+
+function playAgainGroup() {
+  socket.emit('tt_create', { name: myName, settings: { lang, isPublic: getIsPublic() }});
 }
 
 function goHome() {

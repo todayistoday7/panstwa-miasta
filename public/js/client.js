@@ -508,6 +508,7 @@ function renderLeaderboard(elId, data, rIdx) {
 // ─── FINAL SCREEN ───────────────────────────────────────────────
 function renderFinalScreen(data) {
   const { state, players } = data;
+  window._lastMyScore = state.totalScores[myId] || 0;
   const el = document.getElementById('final-leaderboard');
   el.innerHTML = '';
   players.map(p => ({ name: p.name, id: p.id, total: state.totalScores[p.id]||0 }))
@@ -608,10 +609,23 @@ function copyRoomCode() {
 function shareRoom() { copyRoomCode(); }
 
 function shareGame() {
-  var url = 'https://panstwamiastagra.com';
+  // Get my score from last final screen render
+  var myScore = window._lastMyScore || 0;
+  var shareUrl = 'https://panstwamiastagra.com/share?game=pm&score=' + myScore + '&lang=' + lang;
   var L2 = LANGS[lang] || LANGS['pl'];
-  var text = (L2.inviteText || 'Come play Panstwa-Miasta with me! Free multiplayer word game.') + ' ' + url;
-  copyTextFallback(text);
+  var text = myScore > 0
+    ? (lang === 'pl'
+        ? 'Zagrałem w Państwa-Miasta i zdobyłem ' + myScore + ' punktów — spróbuj mnie pobić! 🎮 ' + shareUrl
+        : 'Just played Countries & Cities and scored ' + myScore + ' points — beat my score! 🎮 ' + shareUrl)
+    : (L2.inviteText || 'Come play Państwa-Miasta with me!') + ' ' + shareUrl;
+
+  if (navigator.share) {
+    navigator.share({ title: 'Państwa-Miasta', text: text, url: shareUrl })
+      .catch(function() { copyTextFallback(text); });
+  } else {
+    copyTextFallback(text);
+    showToast('📋 Skopiowano link do udostępnienia!');
+  }
 }
 
 function copyTextFallback(text) {
@@ -696,6 +710,17 @@ function closeConfirm() {
 function doGoHome() {
   closeConfirm();
   goHome();
+}
+
+function playAgainGroup() {
+  // Reset scores and start new game with same players in same room
+  socket.emit('create_room', { name: myName, settings: {
+    totalRounds: 5,
+    categories: L.cats.slice(0,8),
+    lang: lang,
+    isPublic: getIsPublic(),
+    keepGroup: true,
+  }});
 }
 
 function goHome() {

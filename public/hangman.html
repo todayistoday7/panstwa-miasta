@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hangman Online — Wisielec | Free Multiplayer Game</title>
 <meta name="description" content="Play Hangman online free! Classic word guessing game for 2-10 players. Zagraj w Wisielca online za darmo — wieloosobowa gra słowna!">
+<meta property="og:title" content="Wisielec / Hangman Online — Darmowa Gra Słowna Multiplayer">
+<meta property="og:description" content="Zagraj w Wisielca online za darmo! Play Hangman online free with 2-10 players.">
+<meta property="og:url" content="https://panstwamiastagra.com/hangman">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:locale:alternate" content="en_GB">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
@@ -468,7 +474,7 @@
     </div>
     <div style="display:flex;flex-direction:column;align-items:center;margin:24px 0;" id="final-results"></div>
     <div class="btn-row">
-      <button class="btn" onclick="playAgain()" id="lbl-play-again" style="display:none;">🔄 Play Again</button>
+      <button class="btn" onclick="playAgain()" id="lbl-play-again" style="display:none;font-size:17px;padding:15px 32px;width:100%;max-width:400px;">🔄 <span id="lbl-play-again-inner">Play Again With This Group</span></button>
       <button class="btn secondary" onclick="confirmGoHome()" id="lbl-go-home">🏠 Home</button>
     </div>
   </div>

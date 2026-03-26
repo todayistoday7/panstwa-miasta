@@ -65,7 +65,7 @@ function getRoomPlayers(room) {
 function emitRoomState(io, room) {
   io.to(room.code).emit('room_state', {
     code: room.code,
-    settings: room.settings,
+    settings: { ...room.settings, isPublic: room.isPublic },
     players: getRoomPlayers(room),
     state: room.state,
   });
@@ -258,7 +258,7 @@ function register(io, socket) {
     const room = getRoom(code);
     if (!room || room.state.phase !== 'lobby') return;
     room.settings = { ...room.settings, ...settings };
-    if (settings.isPublic !== undefined) room.isPublic = settings.isPublic;
+    if (settings.isPublic !== undefined) { room.isPublic = settings.isPublic; room.settings.isPublic = settings.isPublic; }
     lobby.announce('pm', room);
     emitRoomState(io, room);
   });

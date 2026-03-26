@@ -519,6 +519,12 @@ function shareResults() {
   }
 }
 
+function playAgainGroup() {
+  socket.emit('taboo_create', { name: myName, settings: {
+    rounds: 5, turnTime: 60, lang, isPublic: getIsPublic(),
+  }});
+}
+
 function goHome() {
   roomCode = ''; roomState = null; myName = '';
   sessionStorage.removeItem('taboo_code');

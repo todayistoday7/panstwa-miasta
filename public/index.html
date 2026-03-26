@@ -317,12 +317,26 @@
     </div>
     <p class="section-title" id="lbl-final-ranking"></p>
     <div id="final-leaderboard"></div>
-    <div class="btn-row">
-      <button class="btn" onclick="goHome()" id="lbl-new-game">🔄 New Game</button>
-      <button class="btn share-btn" onclick="shareGame()" id="lbl-share-game">📤 Share This Game</button>
+    <div class="btn-row" style="flex-direction:column;align-items:center;gap:12px;">
+      <button class="btn" style="font-size:18px;padding:16px 36px;width:100%;max-width:400px;" onclick="playAgainGroup()" id="lbl-play-again-group">🔄 Zagraj jeszcze raz z tą grupą</button>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+        <button class="btn secondary" onclick="goHome()" id="lbl-new-game">🏠 Nowa gra</button>
+        <button class="btn share-btn" onclick="shareGame()" id="lbl-share-game">📤 Udostępnij wynik</button>
+      </div>
     </div>
   </div>
 </div>
+
+  <!-- SEO FOOTER LINKS -->
+  <div style="text-align:center;padding:32px 0 8px;border-top:1px solid var(--border);margin-top:40px;">
+    <p style="color:var(--muted);font-size:13px;font-weight:600;margin-bottom:10px;">Więcej o grze</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="/jak-grac" style="color:var(--accent);font-weight:700;font-size:13px;text-decoration:none;">📖 Jak grać? (PL)</a>
+      <a href="/how-to-play" style="color:var(--accent);font-weight:700;font-size:13px;text-decoration:none;">📖 How to play (EN)</a>
+      <a href="/kategorie" style="color:var(--accent);font-weight:700;font-size:13px;text-decoration:none;">📋 Kategorie</a>
+      <a href="/games" style="color:var(--muted);font-weight:700;font-size:13px;text-decoration:none;">🎮 Inne gry</a>
+    </div>
+  </div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/langs.js?v=2"></script>

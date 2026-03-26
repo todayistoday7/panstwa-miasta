@@ -81,7 +81,7 @@ function emitHangState(io, room) {
   const base = {
     phase:          room.state.phase,
     hostId:         room.hostId,
-    settings:       room.settings,
+    settings:       { ...room.settings, isPublic: room.isPublic },
     players:        room.players.map(p => ({
       id: p.id, name: p.name, connected: p.connected,
       score: room.state.scores[p.id] || 0,
@@ -170,7 +170,7 @@ function register(io, socket) {
   socket.on('hang_update_settings', ({ code, settings }) => {
     const room = getHangRoom(code);
     if (!room || socket.id !== room.hostId) return;
-    if (settings.isPublic !== undefined) room.isPublic = settings.isPublic;
+    if (settings.isPublic !== undefined) { room.isPublic = settings.isPublic; room.settings.isPublic = settings.isPublic; }
     room.settings = { ...room.settings, ...settings };
     lobby.announce('hangman', room);
     emitHangState(io, room);
