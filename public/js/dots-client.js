@@ -23,6 +23,7 @@ const LANGS = {
     roomCode:     'Kod pokoju',     createBtn:   'Stwórz pokój',
     joinBtn:      'Dołącz',         settings:    'Ustawienia',
     gridSize:     'Rozmiar planszy', maxPlayers:  'Max graczy',
+    rejoinTip:    'Jeśli przypadkowo opuścisz grę, wróć z tym samym imieniem i kodem pokoju.',
     playersTitle: 'Gracze',
     startBtn:     '🎮 Rozpocznij',  leaveRoom:   '🚪 Wyjdź',
     shareCode:    'Udostępnij kod znajomym',
@@ -60,6 +61,7 @@ const LANGS = {
     roomCode:     'Room code',      createBtn:   'Create Room',
     joinBtn:      'Join Room',      settings:    'Settings',
     gridSize:     'Grid size',      maxPlayers:  'Max players',
+    rejoinTip:    'If you accidentally leave, rejoin using the same name and room code.',
     playersTitle: 'Players',
     startBtn:     '🎮 Start Game',  leaveRoom:   '🚪 Leave Room',
     shareCode:    'Share this code with friends',
@@ -98,6 +100,99 @@ const MARGIN  = 20;    // px margin around grid
 const LINE_W  = 6;     // claimed line stroke width
 const HOVER_W = 4;     // hover line stroke width
 
+
+// ─── HOME SCREEN DEMO ANIMATION ──────────────────────────────────
+function runDemoAnimation() {
+  var line   = document.getElementById('demo-line');
+  var box    = document.getElementById('demo-box');
+  var finger = document.getElementById('demo-finger');
+  var label  = document.getElementById('demo-label');
+  if (!line) return;
+
+  var step = 0;
+  function next() {
+    // Reset
+    if (step === 0) {
+      line.style.transition   = 'none';
+      line.setAttribute('stroke-dashoffset', '70');
+      line.setAttribute('opacity', '0');
+      box.setAttribute('opacity', '0');
+      finger.setAttribute('opacity', '0');
+      if (label) { label.textContent = ''; label.setAttribute('opacity','0'); }
+      setTimeout(function() { step = 1; next(); }, 600);
+      return;
+    }
+    // Finger appears near the line
+    if (step === 1) {
+      finger.setAttribute('opacity', '1');
+      finger.setAttribute('x', '118'); finger.setAttribute('y', '55');
+      setTimeout(function() { step = 2; next(); }, 700);
+      return;
+    }
+    // Line draws in
+    if (step === 2) {
+      line.setAttribute('opacity', '1');
+      line.style.transition = 'stroke-dashoffset 0.5s ease';
+      line.setAttribute('stroke-dashoffset', '0');
+      setTimeout(function() { step = 3; next(); }, 700);
+      return;
+    }
+    // Finger disappears, box fills
+    if (step === 3) {
+      finger.setAttribute('opacity', '0');
+      box.style.transition = 'opacity 0.35s ease';
+      box.setAttribute('opacity', '0.25');
+      if (label) {
+        label.setAttribute('opacity','1');
+        label.textContent = lang === 'pl' ? '🎉 Pole zdobyte!' : '🎉 Box claimed!';
+      }
+      setTimeout(function() { step = 0; next(); }, 2200);
+      return;
+    }
+  }
+  next();
+  return setInterval(function() {}, 99999); // keep alive reference
+}
+
+// Start demo when home screen is visible
+var _demoStarted = false;
+function maybeStartDemo() {
+  if (!_demoStarted && document.getElementById('demo-line')) {
+    _demoStarted = true;
+    runDemoAnimation();
+  }
+}
+
+// ─── FIRST-MOVE HINT ─────────────────────────────────────────────
+var _hintShown = false;
+function showFirstMoveHint() {
+  var hint = document.getElementById('first-move-hint');
+  if (!hint) return;
+  // Only show if player has never played before (localStorage flag)
+  if (localStorage.getItem('dots_played')) return;
+  var title = document.getElementById('hint-title');
+  var body  = document.getElementById('hint-body');
+  if (title) title.textContent = lang === 'pl' ? 'Twoja kolej!' : 'Your Turn!';
+  if (body)  body.textContent  = lang === 'pl'
+    ? 'Kliknij na linię między kropkami żeby ją narysować'
+    : 'Tap on a line between two dots to draw it';
+  hint.style.display = 'block';
+  _hintShown = true;
+  // Dismiss on any click/tap on the SVG
+  var svg = document.getElementById('dots-svg');
+  if (svg) {
+    svg.addEventListener('click', function dismissHint() {
+      hint.style.display = 'none';
+      localStorage.setItem('dots_played', '1');
+      svg.removeEventListener('click', dismissHint);
+    }, { once: true });
+  }
+}
+
+function hideFirstMoveHint() {
+  var hint = document.getElementById('first-move-hint');
+  if (hint) hint.style.display = 'none';
+}
 // ─── SOCKET EVENTS ───────────────────────────────────────────────
 socket.on('connect', () => {
   const prevId = myId;
@@ -154,6 +249,12 @@ function renderLobby(data) {
   const { players, settings, hostId } = data;
   const isHost = myId === hostId;
   const connected = players.filter(p => p.connected !== false);
+  // Show rejoin tip with correct translation
+  var rejoinTip = document.getElementById('rejoin-tip');
+  var rejoinLbl = document.getElementById('lbl-rejoin-tip');
+  if (rejoinTip) rejoinTip.style.display = 'block';
+  if (rejoinLbl && L.rejoinTip) rejoinLbl.textContent = L.rejoinTip;
+
   const togWrap = document.getElementById('visibility-toggle');
   if (togWrap) { togWrap.style.pointerEvents = isHost ? 'auto' : 'none'; togWrap.style.opacity = isHost ? '1' : '0.4'; }
   if (settings && settings.isPublic !== undefined) setVisibility(settings.isPublic);
@@ -222,6 +323,12 @@ function renderScoreboard(data) {
 
 function renderTurnBar(data) {
   const { players, currentPlayer } = data;
+  // Show first-move hint on first ever turn
+  if (currentPlayer === myId && !localStorage.getItem('dots_played')) {
+    showFirstMoveHint();
+  } else {
+    hideFirstMoveHint();
+  }
   const el  = document.getElementById('dots-turn-bar');
   const cur = players.find(p => p.id === currentPlayer);
   if (!cur) return;
@@ -516,9 +623,11 @@ function updateSettings() {
 
 function goHome() {
   roomCode = ''; roomState = null; myName = '';
+  _demoStarted = false; // allow demo to restart
   sessionStorage.removeItem('dots_code');
   sessionStorage.removeItem('dots_name');
   showScreen('screen-home');
+  maybeStartDemo();
 }
 
 function doGoHome()     { closeConfirm(); goHome(); }
@@ -570,3 +679,10 @@ buildLangBar();
 applyTranslations();
 initVisibilityToggle();
 prefillJoinCode();
+
+// Start demo animation on page load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', maybeStartDemo);
+} else {
+  maybeStartDemo();
+}

@@ -36,6 +36,7 @@ socket.on('connect', () => {
 
 socket.on('room_created', ({ code }) => {
   sessionStorage.setItem('pm_code', code); sessionStorage.setItem('pm_name', myName);
+  var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   roomCode = code;
   isHost = true;
   document.getElementById('room-code-display').textContent = code;
@@ -45,6 +46,7 @@ socket.on('room_created', ({ code }) => {
 
 socket.on('room_joined', ({ code, isHost: h }) => {
   sessionStorage.setItem('pm_code', code); sessionStorage.setItem('pm_name', myName);
+  var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   _ga('room_joined', { game:'panstwa_miasta', language:lang });
   roomCode = code;
   isHost = h;
@@ -120,7 +122,10 @@ socket.on('stop_called', ({ playerName, gracePeriod }) => {
 });
 
 socket.on('player_disconnected', ({ name }) => {
-  showToast('⚠ ' + name + ' disconnected');
+  var rejoinMsg = (lang === 'pl')
+    ? '⚠ ' + name + ' rozłączył się — może wrócić z tym samym imieniem i kodem'
+    : '⚠ ' + name + ' disconnected — they can rejoin with the same name and code';
+  showToast(rejoinMsg, 6000);
 });
 
 socket.on('challenge_opened', ({ rIdx, playerId, catIndex, word, category, playerName, challengerName }) => {
@@ -852,18 +857,18 @@ function clearHomeError() {
   if (box) box.style.display = 'none';
 }
 
-function showToast(msg) {
+function showToast(msg, duration) {
   let t = document.getElementById('toast');
   if (!t) {
     t = document.createElement('div');
     t.id = 'toast';
-    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:10px;font-weight:700;font-size:14px;z-index:999;';
+    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:10px;font-weight:700;font-size:14px;z-index:999;max-width:90vw;text-align:center;';
     document.body.appendChild(t);
   }
   t.textContent = msg;
   t.style.display = 'block';
   clearTimeout(t._timeout);
-  t._timeout = setTimeout(() => t.style.display = 'none', 3000);
+  t._timeout = setTimeout(() => t.style.display = 'none', duration || 3000);
 }
 
 function saveSession() {

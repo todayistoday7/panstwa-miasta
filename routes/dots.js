@@ -141,22 +141,30 @@ function register(io, socket) {
   socket.on('dots_join', ({ code, name }) => {
     const room = getDotsRoom(code.toUpperCase().trim());
     if (!room) { socket.emit('dots_error', { msg: 'Room not found.' }); return; }
-    if (room.state.phase === 'final')  { socket.emit('dots_error', { msg: 'This game has ended.' }); return; }
-    if (room.state.phase !== 'lobby')  { socket.emit('dots_error', { msg: 'Game already started.' }); return; }
+    if (room.state.phase === 'final') { socket.emit('dots_error', { msg: 'This game has ended.' }); return; }
+
+    // Mid-game rejoin: if a player with this name exists (even connected — tab duplication),
+    // let them back in rather than blocking with "Game already started"
+    const existing = room.players.find(p => p.name.toLowerCase() === (name||'').toLowerCase());
+    if (existing) {
+      if (existing._disconnectTimer) { clearTimeout(existing._disconnectTimer); existing._disconnectTimer = null; }
+      if (room.hostId === existing.id) room.hostId = socket.id;
+      if (room.state.currentPlayer === existing.id) room.state.currentPlayer = socket.id;
+      existing.id = socket.id; existing.connected = true;
+      socket.join(room.code);
+      socket.emit('dots_room_joined', { code: room.code });
+      lobby.announce('dots', room);
+      emitDotsState(io, room);
+      return;
+    }
+
+    // New player — only allowed in lobby
+    if (room.state.phase !== 'lobby') { socket.emit('dots_error', { msg: 'Game already started.' }); return; }
     if (room.players.length >= (room.settings.maxPlayers || 4)) {
       socket.emit('dots_error', { msg: 'Room is full.' }); return;
     }
-
-    const existing = room.players.find(p => p.name.toLowerCase() === (name||'').toLowerCase() && !p.connected);
-    if (existing) {
-      existing.id = socket.id; existing.connected = true;
-    } else {
-      if (room.players.find(p => p.name.toLowerCase() === (name||'').toLowerCase() && p.connected)) {
-        socket.emit('dots_error', { msg: 'Name already taken.' }); return;
-      }
-      const color = PLAYER_COLORS[room.players.length % PLAYER_COLORS.length];
-      room.players.push({ id: socket.id, name: name || 'Player', color, connected: true, score: 0 });
-    }
+    const color = PLAYER_COLORS[room.players.length % PLAYER_COLORS.length];
+    room.players.push({ id: socket.id, name: name || 'Player', color, connected: true, score: 0 });
     socket.join(room.code);
     socket.emit('dots_room_joined', { code: room.code });
     lobby.announce('dots', room);

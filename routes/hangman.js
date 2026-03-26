@@ -148,6 +148,19 @@ function register(io, socket) {
     const room = getHangRoom(code.toUpperCase().trim());
     if (!room) { socket.emit('hang_error', { msg: 'Room not found.' }); return; }
     if (room.state.phase === 'final') { socket.emit('hang_error', { msg: 'This game has already ended.' }); return; }
+
+    // Mid-game rejoin by name
+    const anyMatch = room.players.find(p => p.name.toLowerCase() === (name||'').toLowerCase());
+    if (anyMatch && room.state.phase !== 'lobby') {
+      if (anyMatch._disconnectTimer) { clearTimeout(anyMatch._disconnectTimer); anyMatch._disconnectTimer = null; }
+      if (room.hostId === anyMatch.id) room.hostId = socket.id;
+      anyMatch.id = socket.id; anyMatch.connected = true;
+      socket.join(room.code);
+      socket.emit('hang_room_joined', { code: room.code });
+      emitHangState(io, room);
+      return;
+    }
+
     if (room.state.phase !== 'lobby') { socket.emit('hang_error', { msg: 'Game already started.' }); return; }
     if (room.players.length >= 10)    { socket.emit('hang_error', { msg: 'Room is full.' }); return; }
 

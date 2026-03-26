@@ -138,11 +138,25 @@ function register(io, socket) {
     const room = getTTRoom(code.toUpperCase().trim());
     if (!room) { socket.emit('tt_error', { msg: 'Room not found.' }); return; }
     if (room.state.phase === 'final')  { socket.emit('tt_error', { msg: 'This game has ended.' }); return; }
+
+    // Mid-game rejoin by name
+    const existing = room.players.find(p => p.name.toLowerCase() === (name||'').toLowerCase());
+    if (existing && room.state.phase !== 'lobby') {
+      if (existing._disconnectTimer) { clearTimeout(existing._disconnectTimer); existing._disconnectTimer = null; }
+      if (room.hostId === existing.id) room.hostId = socket.id;
+      existing.id = socket.id; existing.connected = true;
+      // Restore score tracking
+      if (room.state.totalScores[existing.id] === undefined) room.state.totalScores[socket.id] = 0;
+      socket.join(room.code);
+      socket.emit('tt_room_joined', { code: room.code });
+      emitTTState(io, room);
+      return;
+    }
+
     if (room.state.phase !== 'lobby')  { socket.emit('tt_error', { msg: 'Game already started.' }); return; }
     if (room.players.length >= 20)     { socket.emit('tt_error', { msg: 'Room is full.' }); return; }
 
-    const existing = room.players.find(p => p.name.toLowerCase() === (name||'').toLowerCase() && !p.connected);
-    if (existing) {
+    if (existing && !existing.connected) {
       existing.id = socket.id; existing.connected = true;
     } else {
       if (room.players.find(p => p.name.toLowerCase() === (name||'').toLowerCase() && p.connected)) {

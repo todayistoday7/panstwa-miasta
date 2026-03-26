@@ -156,6 +156,7 @@ socket.on('connect', () => {
 });
 
 socket.on('tt_room_created', ({ code }) => {
+  var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   _ga('room_created', { game:'two_truths', language:lang });
   roomCode = code; roomState = null; myVote = null; myLieIdx = null;
   sessionStorage.setItem('tt_code', code);
@@ -165,6 +166,7 @@ socket.on('tt_room_created', ({ code }) => {
 });
 
 socket.on('tt_room_joined', ({ code }) => {
+  var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   _ga('room_joined', { game:'two_truths', language:lang });
   roomCode = code; roomState = null; myVote = null; myLieIdx = null;
   sessionStorage.setItem('tt_code', code);

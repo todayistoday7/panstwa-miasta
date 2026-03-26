@@ -289,6 +289,7 @@ socket.on('connect', () => {
 });
 
 socket.on('hang_room_created', ({ code }) => {
+  var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   _ga('room_created', { game:'hangman', language:lang });
   roomCode = code; roomState = null;
   sessionStorage.setItem('hang_code', code);
@@ -298,6 +299,7 @@ socket.on('hang_room_created', ({ code }) => {
 });
 
 socket.on('hang_room_joined', ({ code }) => {
+  var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   _ga('room_joined', { game:'hangman', language:lang });
   roomCode = code; roomState = null;
   sessionStorage.setItem('hang_code', code);

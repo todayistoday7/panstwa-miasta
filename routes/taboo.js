@@ -157,14 +157,26 @@ function register(io, socket) {
     const room = getTabooRoom(code.toUpperCase().trim());
     if (!room) { socket.emit('taboo_error', { msg: 'Room not found.' }); return; }
     if (room.state.phase === 'final')  { socket.emit('taboo_error', { msg: 'This game has ended.' }); return; }
+
+    // Mid-game rejoin by name
+    const existing = room.players.find(p => p.name.toLowerCase() === (name||'').toLowerCase());
+    if (existing && room.state.phase !== 'lobby') {
+      if (existing._disconnectTimer) { clearTimeout(existing._disconnectTimer); existing._disconnectTimer = null; }
+      if (room.hostId === existing.id) room.hostId = socket.id;
+      existing.id = socket.id; existing.connected = true;
+      socket.join(room.code);
+      socket.emit('taboo_room_joined', { code: room.code });
+      emitTabooState(io, room);
+      return;
+    }
+
     if (room.state.phase !== 'lobby')  { socket.emit('taboo_error', { msg: 'Game already started.' }); return; }
     if (room.players.length >= 12)    { socket.emit('taboo_error', { msg: 'Room is full.' }); return; }
 
-    const existing = room.players.find(p => p.name.toLowerCase() === name.toLowerCase() && !p.connected);
-    if (existing) {
+    if (existing && !existing.connected) {
       existing.id = socket.id; existing.connected = true;
     } else {
-      if (room.players.find(p => p.name.toLowerCase() === name.toLowerCase() && p.connected)) {
+      if (room.players.find(p => p.name.toLowerCase() === (name||'').toLowerCase() && p.connected)) {
         socket.emit('taboo_error', { msg: 'Name already taken.' }); return;
       }
       room.players.push({ id: socket.id, name: name || 'Player', connected: true });

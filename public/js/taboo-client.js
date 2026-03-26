@@ -132,6 +132,7 @@ socket.on('connect', () => {
   }});
 
 socket.on('taboo_room_created', ({ code }) => {
+  var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   _ga('room_created', { game:'taboo', language:lang });
   roomCode = code; roomState = null;
   sessionStorage.setItem('taboo_code', code);
@@ -142,6 +143,7 @@ socket.on('taboo_room_created', ({ code }) => {
 });
 
 socket.on('taboo_room_joined', ({ code }) => {
+  var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   _ga('room_joined', { game:'taboo', language:lang });
   roomCode = code; roomState = null;
   sessionStorage.setItem('taboo_code', code);

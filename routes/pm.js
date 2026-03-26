@@ -204,10 +204,24 @@ function register(io, socket) {
     const room = getRoom(code.toUpperCase().trim());
     if (!room) { socket.emit('error', { msg: 'Room not found.' }); return; }
     if (room.state.phase === 'final')  { socket.emit('error', { msg: 'This game has ended.' }); return; }
+
+    const trimmedName = (name || 'Player').trim();
+
+    // Mid-game rejoin: name matches an existing player — let them back in
+    const existing_mg = room.players.find(p => p.name.toLowerCase() === trimmedName.toLowerCase());
+    if (existing_mg && room.state.phase !== 'lobby') {
+      if (existing_mg._disconnectTimer) { clearTimeout(existing_mg._disconnectTimer); existing_mg._disconnectTimer = null; }
+      if (room.hostId === existing_mg.id) room.hostId = socket.id;
+      existing_mg.id = socket.id; existing_mg.connected = true;
+      socket.join(room.code);
+      socket.emit('room_joined', { code: room.code, isHost: socket.id === room.hostId });
+      emitRoomState(io, room);
+      return;
+    }
+
     if (room.state.phase !== 'lobby')  { socket.emit('error', { msg: 'Game already started.' }); return; }
     if (room.players.length >= 12)    { socket.emit('error', { msg: 'Room is full (max 12).' }); return; }
 
-    const trimmedName = (name || 'Player').trim();
     const nameTaken   = room.players.find(p =>
       p.name.toLowerCase() === trimmedName.toLowerCase() && p.id !== socket.id
     );
