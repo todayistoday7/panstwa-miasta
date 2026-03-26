@@ -100,19 +100,21 @@ const HOVER_W = 4;     // hover line stroke width
 
 // ─── SOCKET EVENTS ───────────────────────────────────────────────
 socket.on('connect', () => {
+  const prevId = myId;
   myId = socket.id;
   clearInterval(keepAliveInterval);
   keepAliveInterval = setInterval(() => {
     if (roomCode) socket.emit('dots_keep_alive');
   }, 20000);
 
-  // Always attempt rejoin on (re)connect if we have saved session data.
-  // Reset roomCode so the rejoin response sets it cleanly.
-  const savedCode = sessionStorage.getItem('dots_code');
-  const savedName = sessionStorage.getItem('dots_name');
-  if (savedCode && savedName) {
-    roomCode = ''; myName = savedName;
-    socket.emit('dots_rejoin', { code: savedCode, name: savedName });
+  // Only attempt rejoin if this is a REconnect (we had a previous socket id)
+  // and we actually have a saved room. Never clear roomCode — it breaks the game.
+  if (prevId && prevId !== socket.id) {
+    const savedCode = sessionStorage.getItem('dots_code');
+    const savedName = sessionStorage.getItem('dots_name');
+    if (savedCode && savedName) {
+      socket.emit('dots_rejoin', { code: savedCode, name: savedName });
+    }
   }
 });
 
@@ -178,21 +180,14 @@ function renderLobby(data) {
   const gridSel = document.getElementById('settings-grid');
   const maxSel  = document.getElementById('settings-maxplayers');
   if (isHost) {
-    // Don't overwrite select values while host is actively using them —
-    // that causes the flicker. The server always echoes back what we sent,
-    // so skipping the update here is safe. Only sync if the element isn't focused.
-    if (gridSel) {
-      if (document.activeElement !== gridSel) gridSel.value = settings.gridSize || 4;
-      gridSel.disabled = false;
-    }
-    if (maxSel) {
-      if (document.activeElement !== maxSel) maxSel.value = settings.maxPlayers || 4;
-      maxSel.disabled = false;
-    }
+    // Only update selects if we're not mid-edit (suppressed by updateSettings debounce)
+    if (gridSel && !gridSel._suppressSync) gridSel.value = settings.gridSize || 4;
+    if (maxSel  && !maxSel._suppressSync)  maxSel.value  = settings.maxPlayers || 4;
+    if (gridSel) gridSel.disabled = false;
+    if (maxSel)  maxSel.disabled  = false;
     document.getElementById('lobby-btn-row').style.display = 'flex';
     document.getElementById('waiting-msg').style.display   = 'none';
   } else {
-    // Non-host: always sync to whatever host set
     if (gridSel) { gridSel.value = settings.gridSize || 4; gridSel.disabled = true; }
     if (maxSel)  { maxSel.value  = settings.maxPlayers || 4; maxSel.disabled = true; }
     document.getElementById('lobby-btn-row').style.display = 'none';
@@ -504,8 +499,17 @@ function startGame() { socket.emit('dots_start', { code: roomCode }); }
 function rematch()   { socket.emit('dots_rematch', { code: roomCode }); }
 
 function updateSettings() {
-  const gridSize  = parseInt(document.getElementById('settings-grid').value);
-  const maxPlayers = parseInt(document.getElementById('settings-maxplayers').value);
+  const gridSel    = document.getElementById('settings-grid');
+  const maxSel     = document.getElementById('settings-maxplayers');
+  const gridSize   = parseInt(gridSel.value);
+  const maxPlayers = parseInt(maxSel.value);
+  // Suppress server echo from overwriting these selects for 1.5s
+  gridSel._suppressSync = true;
+  maxSel._suppressSync  = true;
+  clearTimeout(gridSel._syncTimer);
+  clearTimeout(maxSel._syncTimer);
+  gridSel._syncTimer = setTimeout(function() { gridSel._suppressSync = false; }, 1500);
+  maxSel._syncTimer  = setTimeout(function() { maxSel._suppressSync  = false; }, 1500);
   socket.emit('dots_update_settings', { code: roomCode, settings: { gridSize, maxPlayers, isPublic: getIsPublic() } });
 }
 

@@ -112,6 +112,7 @@ let L = LANGS_TABOO[lang];
 
 // ─── SOCKET EVENTS ───────────────────────────────────────────────
 socket.on('connect', () => {
+  const prevId = myId;
   myId = socket.id;
   clearInterval(keepAliveInterval);
   keepAliveInterval = setInterval(() => {
@@ -121,12 +122,14 @@ socket.on('connect', () => {
   // Bug 5 fix: auto-rejoin on reconnect if we were in a room
   const savedCode = sessionStorage.getItem('taboo_code');
   const savedName = sessionStorage.getItem('taboo_name');
-  if (savedCode && savedName) {
-    roomCode = '';
-    myName   = savedName;
-    socket.emit('taboo_rejoin', { code: savedCode, name: savedName });
-  }
-});
+  if (prevId && prevId !== socket.id) {
+    const savedCode = sessionStorage.getItem('taboo_code');
+    const savedName = sessionStorage.getItem('taboo_name');
+    if (savedCode && savedName) {
+      myName = savedName;
+      socket.emit('taboo_rejoin', { code: savedCode, name: savedName });
+    }
+  }});
 
 socket.on('taboo_room_created', ({ code }) => {
   _ga('room_created', { game:'taboo', language:lang });

@@ -17,6 +17,7 @@ let keepAliveInterval = null;
 
 // ─── SOCKET EVENTS ───────────────────────────────────────────────
 socket.on('connect', () => {
+  const prevId = myId;
   myId = socket.id;
   clearInterval(keepAliveInterval);
   keepAliveInterval = setInterval(() => {
@@ -25,9 +26,11 @@ socket.on('connect', () => {
   // Auto-rejoin on reconnect
   const savedCode = sessionStorage.getItem('pm_code');
   const savedName = sessionStorage.getItem('pm_name');
-  if (savedCode && savedName) {
-    roomCode = ''; myName = savedName;
-    socket.emit('rejoin', { code: savedCode, name: savedName });
+  if (prevId && prevId !== socket.id) {
+    if (savedCode && savedName) {
+      myName = savedName;
+      socket.emit('rejoin', { code: savedCode, name: savedName });
+    }
   }
 });
 

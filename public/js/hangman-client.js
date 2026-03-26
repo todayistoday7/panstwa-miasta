@@ -275,17 +275,16 @@ function buildKeyboard(guessedLetters, word) {
 
 // ─── SOCKET EVENTS ───────────────────────────────────────────────
 socket.on('connect', () => {
+  const prevId = myId;
   myId = socket.id;
   clearInterval(keepAliveInterval);
   keepAliveInterval = setInterval(() => {
     if (roomCode) socket.emit('hang_keep_alive');
   }, 20000);
-  const sc = sessionStorage.getItem('hang_code');
-  const sn = sessionStorage.getItem('hang_name');
-  if (sc && sn) {
-    roomCode = '';
-    roomCode = sc; myName = sn;
-    socket.emit('hang_rejoin', { code: sc, name: sn });
+  if (prevId && prevId !== socket.id) {
+    const sc = sessionStorage.getItem('hang_code');
+    const sn = sessionStorage.getItem('hang_name');
+    if (sc && sn) { myName = sn; socket.emit('hang_rejoin', { code: sc, name: sn }); }
   }
 });
 

@@ -142,17 +142,16 @@ let L = LANGS[lang];
 
 // ─── SOCKET EVENTS ───────────────────────────────────────────────
 socket.on('connect', () => {
+  const prevId = myId;
   myId = socket.id;
   clearInterval(keepAliveInterval);
   keepAliveInterval = setInterval(() => {
     if (roomCode) socket.emit('tt_keep_alive');
   }, 20000);
-  const sc = sessionStorage.getItem('tt_code');
-  const sn = sessionStorage.getItem('tt_name');
-  if (sc && sn) {
-    roomCode = '';
-    roomCode = sc; myName = sn;
-    socket.emit('tt_rejoin', { code: sc, name: sn });
+  if (prevId && prevId !== socket.id) {
+    const sc = sessionStorage.getItem('tt_code');
+    const sn = sessionStorage.getItem('tt_name');
+    if (sc && sn) { myName = sn; socket.emit('tt_rejoin', { code: sc, name: sn }); }
   }
 });
 
