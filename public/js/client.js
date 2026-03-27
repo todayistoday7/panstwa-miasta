@@ -85,6 +85,10 @@ socket.on('new_host', ({ playerId, name }) => {
   }
 });
 
+socket.on('alphabet_reset', () => {
+  showToast(L.alphabetReset || '🔄 Reshuffling alphabet!', 4000);
+});
+
 socket.on('letter_drawn', ({ letter }) => {
   if (!window._gaGameStarted) { _ga('game_started', { game:'panstwa_miasta', language:lang }); window._gaGameStarted = true; }
   if (rollingInterval) clearInterval(rollingInterval);
@@ -181,10 +185,16 @@ function renderLobby(data) {
   });
 
   document.getElementById('settings-card').style.opacity = '1';
-  document.getElementById('settings-rounds').value = settings.totalRounds;
-  const graceEl = document.getElementById('settings-grace');
-  if (graceEl) graceEl.value = settings.gracePeriod || 20;
-  renderCatGrid(settings.categories, true);
+  // Only update selects if not mid-edit (suppress flag set by updateSettings)
+  const roundsEl = document.getElementById('settings-rounds');
+  const graceEl  = document.getElementById('settings-grace');
+  if (roundsEl && !roundsEl._suppressSync) roundsEl.value = settings.totalRounds;
+  if (graceEl  && !graceEl._suppressSync)  graceEl.value  = settings.gracePeriod || 20;
+  // Only rebuild cat grid if server value differs from what's rendered
+  // (prevents wiping a just-clicked category before server confirms)
+  if (!document.getElementById('lobby-cat-grid')._suppressSync) {
+    renderCatGrid(settings.categories, true);
+  }
   renderLangPills(settings.lang, true);
   document.getElementById('lobby-btn-row').style.display = 'flex';
   document.getElementById('waiting-msg').style.display = 'none';
@@ -216,6 +226,15 @@ function toggleCat(cat, el) {
   const idx = cats.indexOf(cat);
   if (idx >= 0) { if (cats.length <= 3) return; cats.splice(idx,1); }
   else cats.push(cat);
+  // Suppress cat grid rebuild for 1.5s so click feels instant
+  const grid = document.getElementById('lobby-cat-grid');
+  if (grid) {
+    grid._suppressSync = true;
+    clearTimeout(grid._syncTimer);
+    grid._syncTimer = setTimeout(function() { grid._suppressSync = false; }, 1500);
+    // Apply the toggle visually immediately without waiting for server
+    el.classList.toggle('active', cats.includes(cat));
+  }
   socket.emit('update_settings', { code: roomCode, settings: { categories: cats, isPublic: getIsPublic() } });
 }
 
@@ -227,9 +246,17 @@ prefillJoinCode();
 }
 
 function updateSettings() {
-  const rounds = parseInt(document.getElementById('settings-rounds').value);
-  const graceEl = document.getElementById('settings-grace');
-  const grace = graceEl ? parseInt(graceEl.value) : 20;
+  const roundsEl = document.getElementById('settings-rounds');
+  const graceEl  = document.getElementById('settings-grace');
+  const rounds = parseInt(roundsEl.value);
+  const grace  = graceEl ? parseInt(graceEl.value) : 20;
+  // Suppress server echo for 1.5s so selects don't flicker
+  [roundsEl, graceEl].forEach(function(el) {
+    if (!el) return;
+    el._suppressSync = true;
+    clearTimeout(el._syncTimer);
+    el._syncTimer = setTimeout(function() { el._suppressSync = false; }, 1500);
+  });
   socket.emit('update_settings', { code: roomCode, settings: { totalRounds: rounds, gracePeriod: grace, isPublic: getIsPublic() } });
 }
 

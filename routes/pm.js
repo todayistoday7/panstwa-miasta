@@ -144,7 +144,6 @@ function advanceFromScoring(io, room) {
 function startNextRound(io, room) {
   room.state.round++;
   room.state.phase            = 'drawing';
-  room.state.letter           = '';
   room.state.stopCalledBy     = null;
   room.state.activeChallenge  = null;
   room.state.readyPlayers     = {};
@@ -152,7 +151,19 @@ function startNextRound(io, room) {
   room.players.forEach(p => room.state.answers[p.id] = {});
   room.state.drawingPlayerIndex =
     (room.state.round - 1) % room.players.filter(p => p.connected).length;
+  // Auto-draw the letter immediately — no manual click needed
+  const available = ALPHABET.filter(l => !room.state.usedLetters.includes(l));
+  if (!available.length) {
+    // All letters used — reset and reshuffle, notify players
+    room.state.usedLetters = [];
+    available.push(...ALPHABET);
+    io.to(room.code).emit('alphabet_reset', {});
+  }
+  const letter = available[Math.floor(Math.random() * available.length)];
+  room.state.letter = letter;
+  room.state.usedLetters.push(letter);
   emitRoomState(io, room);
+  io.to(room.code).emit('letter_drawn', { letter });
 }
 
 function moveToScoring(io, room) {
@@ -325,7 +336,8 @@ function register(io, socket) {
 
   socket.on('submit_answer', ({ code, catIndex, value }) => {
     const room = getRoom(code);
-    if (!room || room.state.phase !== 'playing') return;
+    // Accept answers during playing AND stopped (grace period) phases
+    if (!room || (room.state.phase !== 'playing' && room.state.phase !== 'stopped')) return;
     if (!room.state.answers[socket.id]) room.state.answers[socket.id] = {};
     room.state.answers[socket.id][catIndex] = value;
     io.to(room.code).emit('answer_updated', { playerId: socket.id, catIndex, value });
