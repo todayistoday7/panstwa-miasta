@@ -35,6 +35,7 @@ socket.on('connect', () => {
 });
 
 socket.on('room_created', ({ code }) => {
+  _settingsInitialized = false;
   sessionStorage.setItem('pm_code', code); sessionStorage.setItem('pm_name', myName);
   var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   roomCode = code;
@@ -165,15 +166,22 @@ function applyRoomState(data) {
 }
 
 // ─── LOBBY ───────────────────────────────────────────────
+// Track whether host settings have been initialised this session
+var _settingsInitialized = false;
+
 function renderLobby(data) {
   const { players, settings } = data;
-  const isHost = players.some(p => p.id === roomCode ? false : p.isHost && p.id === socket.id);
-  const el = document.getElementById('lobby-players');
-  // Sync visibility toggle — only host can toggle
   const _amHost = players.find(p => p.isHost) && players.find(p => p.isHost).id === socket.id;
+
+  // ── Always update: player list and visibility ─────────────────
   const togWrap = document.getElementById('visibility-toggle');
-  if (togWrap) { togWrap.style.pointerEvents = _amHost ? 'auto' : 'none'; togWrap.style.opacity = _amHost ? '1' : '0.4'; }
+  if (togWrap) {
+    togWrap.style.pointerEvents = _amHost ? 'auto' : 'none';
+    togWrap.style.opacity       = _amHost ? '1' : '0.4';
+  }
   if (settings && settings.isPublic !== undefined) setVisibility(settings.isPublic);
+
+  const el = document.getElementById('lobby-players');
   el.innerHTML = '';
   players.forEach((p, i) => {
     el.innerHTML += '<div class="lobby-player' + (p.isHost?' host':'') + '">' +
@@ -185,19 +193,33 @@ function renderLobby(data) {
   });
 
   document.getElementById('settings-card').style.opacity = '1';
-  // Only update selects if not mid-edit (suppress flag set by updateSettings)
-  const roundsEl = document.getElementById('settings-rounds');
-  const graceEl  = document.getElementById('settings-grace');
-  if (roundsEl && !roundsEl._suppressSync) roundsEl.value = settings.totalRounds;
-  if (graceEl  && !graceEl._suppressSync)  graceEl.value  = settings.gracePeriod || 20;
-  // Only rebuild cat grid if server value differs from what's rendered
-  // (prevents wiping a just-clicked category before server confirms)
-  if (!document.getElementById('lobby-cat-grid')._suppressSync) {
-    renderCatGrid(settings.categories, true);
+
+  // ── Settings UI: host renders once on first load, never from server again ──
+  // Non-host always syncs from server (read-only display).
+  if (_amHost) {
+    if (!_settingsInitialized) {
+      // First render: load from server
+      document.getElementById('settings-rounds').value = settings.totalRounds;
+      const graceEl = document.getElementById('settings-grace');
+      if (graceEl) graceEl.value = settings.gracePeriod || 20;
+      renderCatGrid(settings.categories, true);
+      renderLangPills(settings.lang, true);
+      _settingsInitialized = true;
+    }
+    // Subsequent renders: do NOT touch settings UI — host owns it
+    document.getElementById('lobby-btn-row').style.display = 'flex';
+    document.getElementById('waiting-msg').style.display   = 'none';
+  } else {
+    // Non-host: always sync from server (read-only)
+    document.getElementById('settings-rounds').value = settings.totalRounds;
+    const graceEl = document.getElementById('settings-grace');
+    if (graceEl) graceEl.value = settings.gracePeriod || 20;
+    renderCatGrid(settings.categories, false);
+    renderLangPills(settings.lang, false);
+    document.getElementById('lobby-btn-row').style.display = 'none';
+    document.getElementById('waiting-msg').style.display   = 'block';
+    document.getElementById('waiting-msg').textContent     = L.waitingForHost;
   }
-  renderLangPills(settings.lang, true);
-  document.getElementById('lobby-btn-row').style.display = 'flex';
-  document.getElementById('waiting-msg').style.display = 'none';
 }
 
 function renderCatGrid(activeCats, editable) {
@@ -226,37 +248,31 @@ function toggleCat(cat, el) {
   const idx = cats.indexOf(cat);
   if (idx >= 0) { if (cats.length <= 3) return; cats.splice(idx,1); }
   else cats.push(cat);
-  // Suppress cat grid rebuild for 1.5s so click feels instant
-  const grid = document.getElementById('lobby-cat-grid');
-  if (grid) {
-    grid._suppressSync = true;
-    clearTimeout(grid._syncTimer);
-    grid._syncTimer = setTimeout(function() { grid._suppressSync = false; }, 1500);
-    // Apply the toggle visually immediately without waiting for server
-    el.classList.toggle('active', cats.includes(cat));
-  }
+  // Apply toggle visually immediately — host owns settings UI
+  el.classList.toggle('active', cats.includes(cat));
+  // Keep roomState in sync for subsequent clicks
+  if (roomState && roomState.settings) roomState.settings.categories = cats;
   socket.emit('update_settings', { code: roomCode, settings: { categories: cats, isPublic: getIsPublic() } });
 }
 
 function setGameLang(code) {
   lang = code; L = LANGS[code];
   applyTranslations();
-prefillJoinCode();
+  prefillJoinCode();
+  // Update UI immediately — host owns the settings UI
+  renderLangPills(code, true);
+  renderCatGrid(L.cats.slice(0,8), true);
+  if (roomState && roomState.settings) {
+    roomState.settings.lang = code;
+    roomState.settings.categories = L.cats.slice(0,8);
+  }
   socket.emit('update_settings', { code: roomCode, settings: { lang: code, categories: L.cats.slice(0,8), isPublic: getIsPublic() } });
 }
 
 function updateSettings() {
-  const roundsEl = document.getElementById('settings-rounds');
-  const graceEl  = document.getElementById('settings-grace');
-  const rounds = parseInt(roundsEl.value);
-  const grace  = graceEl ? parseInt(graceEl.value) : 20;
-  // Suppress server echo for 1.5s so selects don't flicker
-  [roundsEl, graceEl].forEach(function(el) {
-    if (!el) return;
-    el._suppressSync = true;
-    clearTimeout(el._syncTimer);
-    el._syncTimer = setTimeout(function() { el._suppressSync = false; }, 1500);
-  });
+  const rounds = parseInt(document.getElementById('settings-rounds').value);
+  const graceEl = document.getElementById('settings-grace');
+  const grace = graceEl ? parseInt(graceEl.value) : 20;
   socket.emit('update_settings', { code: roomCode, settings: { totalRounds: rounds, gracePeriod: grace, isPublic: getIsPublic() } });
 }
 
@@ -780,6 +796,7 @@ function playAgainGroup() {
 function goHome() {
   roomCode=''; roomState=null; isHost=false; localAnswers={};
   window._timerStart = null;
+  _settingsInitialized = false;
   clearSession();
   showScreen('screen-home');
 }
