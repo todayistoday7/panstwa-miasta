@@ -177,7 +177,15 @@ function renderLobby(data) {
   const connected = players.filter(p => p.connected !== false);
   const togWrap = document.getElementById('visibility-toggle');
   if (togWrap) { togWrap.style.pointerEvents = isHost ? 'auto' : 'none'; togWrap.style.opacity = isHost ? '1' : '0.4'; }
-  if (settings && settings.isPublic !== undefined) setVisibility(settings.isPublic);
+  // Only sync visibility on first load — host owns it after that
+  // Don't call setVisibility() here as it triggers updateSettings()
+  if (!_settingsInitTaboo && settings && settings.isPublic !== undefined) {
+    _isPublic = !!settings.isPublic;
+    var _vPriv = document.getElementById('vis-private');
+    var _vPub  = document.getElementById('vis-public');
+    if (_vPriv) _vPriv.classList.toggle('active', !_isPublic);
+    if (_vPub)  _vPub.classList.toggle('active',   _isPublic);
+  }
   const playerCount = connected.length;
 
   // Bug 1: was targeting 'lobby-players', now correctly targets 'lobby-teams'

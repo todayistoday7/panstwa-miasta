@@ -179,7 +179,16 @@ function renderLobby(data) {
     togWrap.style.pointerEvents = _amHost ? 'auto' : 'none';
     togWrap.style.opacity       = _amHost ? '1' : '0.4';
   }
-  if (settings && settings.isPublic !== undefined) setVisibility(settings.isPublic);
+  // Visibility: sync from server only on first load (host owns it after that)
+  // Non-host always syncs. Also: don't call setVisibility if host is already set
+  // (setVisibility calls updateSettings which would emit a settings change)
+  if (!_amHost && settings && settings.isPublic !== undefined) {
+    _isPublic = !!settings.isPublic; // update flag without triggering updateSettings
+    var priv = document.getElementById('vis-private');
+    var pub  = document.getElementById('vis-public');
+    if (priv) priv.classList.toggle('active', !_isPublic);
+    if (pub)  pub.classList.toggle('active',   _isPublic);
+  }
 
   const el = document.getElementById('lobby-players');
   el.innerHTML = '';
@@ -198,12 +207,20 @@ function renderLobby(data) {
   // Non-host always syncs from server (read-only display).
   if (_amHost) {
     if (!_settingsInitialized) {
-      // First render: load from server
+      // First render: load from server without triggering any emissions
       document.getElementById('settings-rounds').value = settings.totalRounds;
       const graceEl = document.getElementById('settings-grace');
       if (graceEl) graceEl.value = settings.gracePeriod || 20;
       renderCatGrid(settings.categories, true);
       renderLangPills(settings.lang, true);
+      // Set visibility state without calling updateSettings
+      if (settings.isPublic !== undefined) {
+        _isPublic = !!settings.isPublic;
+        var priv = document.getElementById('vis-private');
+        var pub  = document.getElementById('vis-public');
+        if (priv) priv.classList.toggle('active', !_isPublic);
+        if (pub)  pub.classList.toggle('active',   _isPublic);
+      }
       _settingsInitialized = true;
     }
     // Subsequent renders: do NOT touch settings UI — host owns it

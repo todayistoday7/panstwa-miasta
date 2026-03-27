@@ -220,6 +220,7 @@ socket.on('connect', () => {
 });
 
 socket.on('dots_room_created', ({ code }) => {
+  window._dotsSettingsInit = false;
   _ga('room_created', { game:'dots', language:lang });
   roomCode = code; roomState = null;
   sessionStorage.setItem('dots_code', code);
@@ -230,6 +231,7 @@ socket.on('dots_room_created', ({ code }) => {
 });
 
 socket.on('dots_room_joined', ({ code }) => {
+  window._dotsSettingsInit = false;
   _ga('room_joined', { game:'dots', language:lang });
   roomCode = code; roomState = null;
   sessionStorage.setItem('dots_code', code);
@@ -265,7 +267,15 @@ function renderLobby(data) {
 
   const togWrap = document.getElementById('visibility-toggle');
   if (togWrap) { togWrap.style.pointerEvents = isHost ? 'auto' : 'none'; togWrap.style.opacity = isHost ? '1' : '0.4'; }
-  if (settings && settings.isPublic !== undefined) setVisibility(settings.isPublic);
+  // Only sync visibility on first load — host owns it after that
+  // Don't call setVisibility() here as it triggers updateSettings()
+  if (!_settingsInitDots && settings && settings.isPublic !== undefined) {
+    _isPublic = !!settings.isPublic;
+    var _vPriv = document.getElementById('vis-private');
+    var _vPub  = document.getElementById('vis-public');
+    if (_vPriv) _vPriv.classList.toggle('active', !_isPublic);
+    if (_vPub)  _vPub.classList.toggle('active',   _isPublic);
+  }
 
   const el = document.getElementById('lobby-players');
   el.innerHTML = '';
@@ -289,9 +299,12 @@ function renderLobby(data) {
   const gridSel = document.getElementById('settings-grid');
   const maxSel  = document.getElementById('settings-maxplayers');
   if (isHost) {
-    // Only update selects if we're not mid-edit (suppressed by updateSettings debounce)
-    if (gridSel && !gridSel._suppressSync) gridSel.value = settings.gridSize || 4;
-    if (maxSel  && !maxSel._suppressSync)  maxSel.value  = settings.maxPlayers || 4;
+    // Init selects once from server — host owns them after that
+    if (!window._dotsSettingsInit) {
+      if (gridSel) gridSel.value = settings.gridSize || 4;
+      if (maxSel)  maxSel.value  = settings.maxPlayers || 4;
+      window._dotsSettingsInit = true;
+    }
     if (gridSel) gridSel.disabled = false;
     if (maxSel)  maxSel.disabled  = false;
     document.getElementById('lobby-btn-row').style.display = 'flex';
@@ -614,17 +627,8 @@ function startGame() { socket.emit('dots_start', { code: roomCode }); }
 function rematch()   { socket.emit('dots_rematch', { code: roomCode }); }
 
 function updateSettings() {
-  const gridSel    = document.getElementById('settings-grid');
-  const maxSel     = document.getElementById('settings-maxplayers');
-  const gridSize   = parseInt(gridSel.value);
-  const maxPlayers = parseInt(maxSel.value);
-  // Suppress server echo from overwriting these selects for 1.5s
-  gridSel._suppressSync = true;
-  maxSel._suppressSync  = true;
-  clearTimeout(gridSel._syncTimer);
-  clearTimeout(maxSel._syncTimer);
-  gridSel._syncTimer = setTimeout(function() { gridSel._suppressSync = false; }, 1500);
-  maxSel._syncTimer  = setTimeout(function() { maxSel._suppressSync  = false; }, 1500);
+  const gridSize   = parseInt(document.getElementById('settings-grid').value);
+  const maxPlayers = parseInt(document.getElementById('settings-maxplayers').value);
   socket.emit('dots_update_settings', { code: roomCode, settings: { gridSize, maxPlayers, isPublic: getIsPublic() } });
 }
 
