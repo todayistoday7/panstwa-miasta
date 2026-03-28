@@ -514,14 +514,7 @@ function setLang(code) {
   socket.emit('taboo_update_settings', { code: roomCode, settings: { lang: code } });
 }
 
-function copyRoomCode() {
-  var ta = document.createElement('textarea');
-  ta.value = roomCode; ta.style.position = 'fixed'; ta.style.opacity = '0';
-  document.body.appendChild(ta); ta.focus(); ta.select();
-  try { document.execCommand('copy'); showToast('📋 ' + roomCode); }
-  catch(e) { prompt('Room code:', roomCode); }
-  document.body.removeChild(ta);
-}
+function copyRoomCode() { shareRoom('taboo'); }
 
 function shareResults() {
   var url  = 'https://panstwamiastagra.com/taboo';

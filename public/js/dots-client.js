@@ -8,6 +8,7 @@ const _urlLang = new URLSearchParams(window.location.search).get('lang');
 let lang     = (['pl','en'].includes(_urlLang) ? _urlLang : 'en');
 let myId     = null;
 let myName   = '';
+window._gameSlug = 'dots';
 let roomCode = '';
 let roomState = null;
 let keepAliveInterval = null;
@@ -278,13 +279,17 @@ function renderLobby(data) {
 
   const el = document.getElementById('lobby-players');
   el.innerHTML = '';
-  connected.forEach(p => {
+  players.forEach((p, i) => {
+    var isConn = p.connected !== false;
     el.innerHTML +=
-      '<div class="dots-lobby-player">' +
-        '<div class="dots-color-swatch" style="background:' + p.color + '"></div>' +
-        '<span style="font-weight:800;flex:1">' + p.name +
+      '<div class="lobby-player" style="' + (!isConn ? 'opacity:0.4;' : '') + '">' +
+        '<div class="avatar av-' + (i % 8) + '" style="background:' + p.color + ';color:#fff;">' +
+          p.name.charAt(0).toUpperCase() +
+        '</div>' +
+        '<span class="pname">' + p.name +
           (p.id === myId   ? ' <span class="you-badge">'  + L.youBadge  + '</span>' : '') +
           (p.id === hostId ? ' <span class="host-badge">' + L.hostBadge + '</span>' : '') +
+          (!isConn ? ' <span class="offline-badge">' + (L.offlineBadge || 'offline') + '</span>' : '') +
         '</span>' +
       '</div>';
   });
@@ -311,8 +316,11 @@ function renderLobby(data) {
     document.getElementById('lobby-btn-row').style.display = 'flex';
     document.getElementById('waiting-msg').style.display   = 'none';
   } else {
+    // Non-host: always sync settings from server (read-only)
     if (gridSel) { gridSel.value = settings.gridSize || 4; gridSel.disabled = true; }
     if (maxSel)  { maxSel.value  = settings.maxPlayers || 4; maxSel.disabled = true; }
+    const roundsSelNH = document.getElementById('settings-rounds');
+    if (roundsSelNH) { roundsSelNH.value = settings.totalRounds || 1; roundsSelNH.disabled = true; }
     document.getElementById('lobby-btn-row').style.display = 'none';
     document.getElementById('waiting-msg').style.display   = 'block';
     document.getElementById('waiting-msg').textContent     = L.waitingForHost;

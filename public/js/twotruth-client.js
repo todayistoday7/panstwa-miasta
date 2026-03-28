@@ -557,11 +557,7 @@ function setGameLang(code) {
   socket.emit('tt_update_settings', { code: roomCode, settings: { lang: code, isPublic: getIsPublic() } });
 }
 
-function copyRoomCode() {
-  if (typeof roomCode === 'undefined' || !roomCode) return;
-  _copyText(roomCode);
-  showToast('📋 ' + roomCode);
-}
+function copyRoomCode() { shareRoom('twotruth'); }
 
 function playAgainGroup() {
   socket.emit('tt_create', { name: myName, settings: { lang, isPublic: getIsPublic() }});

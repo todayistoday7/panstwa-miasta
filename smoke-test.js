@@ -85,8 +85,8 @@ async function testPageAvailability(browser) {
   ];
   for (const path of pages) {
     await check(path, async () => {
-      const res = await browser.request.get(BASE + path);
-      if (res.status() >= 400) throw new Error(`HTTP ${res.status()}`);
+      const res = await fetch(BASE + path);
+      if (res.status >= 400) throw new Error(`HTTP ${res.status}`);
     });
   }
 }
@@ -162,8 +162,8 @@ async function testFooterLinks(browser) {
     // Skip mailto/privacy/external
     if (!href.includes('panstwamiastagra.com')) continue;
     await check(`Footer link OK: ${href.replace(BASE, '')}`, async () => {
-      const res = await browser.request.get(href);
-      if (res.status() >= 400) throw new Error(`HTTP ${res.status()}`);
+      const res = await fetch(href);
+      if (res.status >= 400) throw new Error(`HTTP ${res.status}`);
     });
   }
   await ctx.close();

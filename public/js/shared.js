@@ -72,33 +72,25 @@ function showToast(msg, duration) {
 
 // ─── ROOM CODE COPY ───────────────────────────────────────────────
 function copyRoomCode() {
+  // Delegates to shareRoom so all games copy the full joinable link
   if (typeof roomCode === 'undefined' || !roomCode) return;
-  _copyText(roomCode);
-  showToast('📋 ' + roomCode);
+  var gameSlug = window._gameSlug || '';
+  shareRoom(gameSlug);
 }
 
-// ─── SHARE ROOM (native sheet on mobile, copy on desktop) ─────────
-// gameSlug: 'taboo', 'dots', 'twotruth', or '' for PM
+// ─── SHARE ROOM ──────────────────────────────────────────────────
+// Always copies the full joinable link to clipboard.
+// gameSlug: 'taboo', 'dots', 'hangman', 'twotruth', or '' for PM
 function shareRoom(gameSlug, titleText) {
   if (typeof roomCode === 'undefined' || !roomCode) return;
   var currentLang = (typeof lang !== 'undefined' && lang) ||
     (new URLSearchParams(window.location.search).get('lang')) || 'pl';
   const path = gameSlug ? '/' + gameSlug : '/';
   const url  = 'https://panstwamiastagra.com' + path + '?join=' + roomCode + '&lang=' + currentLang;
-  var joinLabels = {pl:'Dołącz do gry',en:'Join my game',de:'Spiel beitreten',fr:'Rejoins ma partie',es:'Únete al juego'};
-  var codeLabels = {pl:'Kod pokoju',en:'Room code',de:'Raumcode',fr:'Code de salle',es:'Código de sala'};
-  var joinLabel = joinLabels[currentLang] || joinLabels['en'];
-  var codeLabel = codeLabels[currentLang] || codeLabels['en'];
-  const text = (titleText || joinLabel) + '\n\n' +
-               codeLabel + ': ' + roomCode + '\n' + url;
-
-  if (navigator.share) {
-    navigator.share({ title: titleText || 'Join my game!', text, url })
-      .catch(() => { _copyText(url); showToast('🔗 Link copied!'); });
-  } else {
-    _copyText(url);
-    showToast('🔗 Link copied!');
-  }
+  var copiedLabels = {pl:'🔗 Link skopiowany!', en:'🔗 Link copied!', de:'🔗 Link kopiert!'};
+  var toastMsg = copiedLabels[currentLang] || copiedLabels['en'];
+  _copyText(url);
+  if (typeof showToast === 'function') showToast(toastMsg);
 }
 
 function _copyText(text) {

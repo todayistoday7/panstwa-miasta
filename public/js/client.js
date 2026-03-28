@@ -669,29 +669,13 @@ function closeChallenge() {
 
 // ─── SHARE / COPY FUNCTIONS ───────────────────────────────────────
 function copyRoomCode() {
-  var ta = document.createElement('textarea');
-  ta.value = roomCode;
-  ta.style.position = 'fixed';
-  ta.style.opacity = '0';
-  document.body.appendChild(ta);
-  ta.focus();
-  ta.select();
-  try {
-    document.execCommand('copy');
-    showToast('📋 Code copied: ' + roomCode);
-  } catch(e) {
-    prompt('Room code:', roomCode);
-  }
-  document.body.removeChild(ta);
+  // Copies the full joinable link (consistent with other games)
+  shareRoom('');
 }
-
-function shareRoom() { copyRoomCode(); }
 
 function doShareRoom() {
   _ga('share_room', { game:'panstwa_miasta', language:lang });
-  var L2 = LANGS[lang] || LANGS['pl'];
-  var title = L2.shareInviteTitle || 'Join my game!';
-  shareRoom('', title);
+  shareRoom('');
 }
 
 function shareGame() {
