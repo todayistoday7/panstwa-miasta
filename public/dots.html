@@ -253,6 +253,13 @@
           <option value="3">3 players</option>
           <option value="4" selected>4 players</option>
         </select>
+        <label class="field-label" id="lbl-rounds-label">Rounds</label>
+        <select id="settings-rounds" class="field-select" onchange="updateSettings()">
+          <option value="1">1 round</option>
+          <option value="2">2 rounds</option>
+          <option value="3">3 rounds</option>
+          <option value="5">5 rounds</option>
+        </select>
         <label class="field-label" style="margin-top:14px;" id="lbl-room-visibility">Room visibility</label>
         <div class="visibility-toggle" id="visibility-toggle">
           <div class="vis-option" id="vis-private" style="border-radius:8px 0 0 8px;" onclick="setVisibility(false)">🔒 <span id="lbl-vis-private">Private</span></div>

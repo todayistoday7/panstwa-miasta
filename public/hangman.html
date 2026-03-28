@@ -85,11 +85,20 @@
     flex-shrink: 0;
   }
 
+  /* Keyboard QWERTY rows */
+  .hang-key-row {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    margin-bottom: 5px;
+    flex-wrap: nowrap;
+  }
   /* Alphabet keyboard */
   .hang-keyboard {
     display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
     justify-content: center;
     max-width: 480px;
   }
@@ -426,6 +435,18 @@
         <h3 id="lbl-settings">Settings</h3>
         <label class="field-label" id="lbl-lang-title">Word language</label>
         <div class="lang-pills" id="lobby-lang-pills"></div>
+        <label class="field-label" id="lbl-rounds-label">Rounds</label>
+        <select id="settings-rounds" class="field-select" onchange="updateSettings()">
+          <option value="0">One round per player (default)</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="8">8</option>
+          <option value="10">10</option>
+        </select>
         <label class="field-label" style="margin-top:14px;" id="lbl-room-visibility">Room visibility</label>
         <div class="visibility-toggle" id="visibility-toggle">
           <div class="vis-option" id="vis-private" style="border-radius:8px 0 0 8px;" onclick="setVisibility(false)">🔒 <span id="lbl-vis-private">Private</span></div>
@@ -447,17 +468,38 @@
       <div id="pick-scoreboard" class="hang-scoreboard"></div>
       <div class="hang-role-banner picker" id="pick-role-banner"></div>
 
-      <!-- Picker input -->
+      <!-- Picker input — 3 clear steps -->
       <div id="pick-input-area" class="hang-word-input-wrap" style="display:none;">
-        <p style="color:var(--muted);font-size:13px;font-weight:700;text-align:center;" id="lbl-pick-instruction">Type a word for others to guess:</p>
-        <input type="text" id="word-input" class="hang-word-input" maxlength="24"
-          placeholder="WORD" oninput="this.value=this.value.toUpperCase()"/>
-        <input type="text" id="hint-input" class="field-input" maxlength="30"
-          id="lbl-hint-placeholder" style="text-align:center;font-size:14px;"
-          placeholder="Hint / category (optional)"/>
-        <button class="btn" onclick="submitWord()" id="lbl-confirm-word">✓ Set Word</button>
-        <p style="color:var(--muted);font-size:11px;font-weight:600;text-align:center;" id="lbl-pick-tip">Tip: use a random word from the word bank 👇</p>
-        <button class="btn secondary" onclick="pickRandomWord()" id="lbl-random-word">🎲 Random Word</button>
+
+        <!-- Step 1: Choose word -->
+        <div style="margin-bottom:18px;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--accent);margin-bottom:10px;text-align:center;">Step 1 — <span id="lbl-pick-instruction">Choose a word</span></div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;">
+            <input type="text" id="word-input" class="hang-word-input" maxlength="24"
+              placeholder="TYPE YOUR WORD" oninput="this.value=this.value.toUpperCase()"
+              style="flex:1;min-width:150px;font-size:clamp(18px,4vw,28px);"/>
+            <button class="btn secondary" onclick="pickRandomWord()" id="lbl-random-word"
+              style="white-space:nowrap;flex-shrink:0;">🎲 Random</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Hint (optional) -->
+        <div style="margin-bottom:18px;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--accent2);margin-bottom:10px;text-align:center;">
+            Step 2 — <span id="lbl-hint-step">Add a hint</span>
+            <span style="font-size:11px;color:var(--muted);font-family:Nunito,sans-serif;font-weight:700;letter-spacing:0;"> (optional)</span>
+          </div>
+          <input type="text" id="hint-input" class="field-input" maxlength="30"
+            style="text-align:center;font-size:14px;"
+            placeholder="e.g. Animal, Country, Movie..."/>
+        </div>
+
+        <!-- Step 3: Start -->
+        <div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--green);margin-bottom:10px;text-align:center;">Step 3 — Start</div>
+          <button class="btn" onclick="submitWord()" id="lbl-confirm-word" style="width:100%;">✓ <span id="lbl-submit-label">Set Word &amp; Start Round</span></button>
+        </div>
+
       </div>
 
       <!-- Waiting (non-picker sees this) -->

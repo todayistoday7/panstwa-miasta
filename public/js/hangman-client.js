@@ -7,6 +7,7 @@ const socket = io();
 const _urlLang = new URLSearchParams(window.location.search).get('lang');
 let lang      = (['pl','en','de'].includes(_urlLang) ? _urlLang : 'en');
 let myId      = null;
+var _settingsInitHang = false;
 let myName    = '';
 let roomCode  = '';
 let roomState = null;
@@ -248,30 +249,40 @@ function drawGallows(svgEl, wrongCount, isComplete) {
 // ─── KEYBOARD ────────────────────────────────────────────────────
 // Language-appropriate alphabet
 const ALPHABETS = {
-  pl: 'AĄBCĆDEĘFGHIJKLŁMNŃOÓPQRSŚTUVWXYZŹŻ',
-  en: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-  de: 'ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜß',
+  pl: 'QWERTYUIOPĄŚDFGHJKLŁZXĆCVBNMŃÓŹŻĘ',
+  en: 'QWERTYUIOPASDFGHJKLZXCVBNM',
+  de: 'QWERTZUIOPÄASDFGHJKLÖYXCVBNMÜß',
+};
+// Keyboard rows for QWERTY layout rendering
+const KEYBOARD_ROWS = {
+  pl: ['QWERTYUIOP','AĄSŚDFGHJKLŁ','ZXĆCVBNMŃÓŹŻĘ'],
+  en: ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'],
+  de: ['QWERTZUIOPÄ','ASDFGHJKLÖ','YXCVBNMÜß'],
 };
 
 function buildKeyboard(guessedLetters, word) {
   const el  = document.getElementById('hang-keyboard');
   el.innerHTML = '';
-  const alpha = ALPHABETS[L === LANGS.pl ? 'pl' : L === LANGS.de ? 'de' : 'en'] ||
-                ALPHABETS['en'];
-  // Determine which letters are wrong vs correct
+  const langKey = L === LANGS.pl ? 'pl' : L === LANGS.de ? 'de' : 'en';
+  const rows = KEYBOARD_ROWS[langKey] || KEYBOARD_ROWS['en'];
   const wordLetters = word ? word.toUpperCase().split('') : [];
 
-  alpha.split('').forEach(ch => {
-    const btn = document.createElement('button');
-    btn.className = 'hang-key';
-    btn.textContent = ch;
-    if (guessedLetters.includes(ch)) {
-      btn.classList.add('used');
-      btn.classList.add(wordLetters.includes(ch) ? 'correct' : 'wrong');
-    } else {
-      btn.addEventListener('click', () => guessLetter(ch));
-    }
-    el.appendChild(btn);
+  rows.forEach(function(row) {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'hang-key-row';
+    row.split('').forEach(ch => {
+      const btn = document.createElement('button');
+      btn.className = 'hang-key';
+      btn.textContent = ch;
+      if (guessedLetters.includes(ch)) {
+        btn.classList.add('used');
+        btn.classList.add(wordLetters.includes(ch) ? 'correct' : 'wrong');
+      } else {
+        btn.addEventListener('click', () => guessLetter(ch));
+      }
+      rowEl.appendChild(btn);
+    });
+    el.appendChild(rowEl);
   });
 }
 
@@ -291,6 +302,7 @@ socket.on('connect', () => {
 });
 
 socket.on('hang_room_created', ({ code }) => {
+  _settingsInitHang = false;
   var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   _ga('room_created', { game:'hangman', language:lang });
   roomCode = code; roomState = null;
@@ -301,6 +313,7 @@ socket.on('hang_room_created', ({ code }) => {
 });
 
 socket.on('hang_room_joined', ({ code }) => {
+  _settingsInitHang = false;
   var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   _ga('room_joined', { game:'hangman', language:lang });
   roomCode = code; roomState = null;
@@ -362,12 +375,17 @@ function renderLobby(data) {
   if (togWrap) { togWrap.style.pointerEvents = isHost ? 'auto' : 'none'; togWrap.style.opacity = isHost ? '1' : '0.4'; }
   // Only sync visibility on first load — host owns it after that
   // Don't call setVisibility() here as it triggers updateSettings()
-  if (!_settingsInitHang && settings && settings.isPublic !== undefined) {
-    _isPublic = !!settings.isPublic;
-    var _vPriv = document.getElementById('vis-private');
-    var _vPub  = document.getElementById('vis-public');
-    if (_vPriv) _vPriv.classList.toggle('active', !_isPublic);
-    if (_vPub)  _vPub.classList.toggle('active',   _isPublic);
+  if (!_settingsInitHang) {
+    if (settings && settings.isPublic !== undefined) {
+      _isPublic = !!settings.isPublic;
+      var _vPriv = document.getElementById('vis-private');
+      var _vPub  = document.getElementById('vis-public');
+      if (_vPriv) _vPriv.classList.toggle('active', !_isPublic);
+      if (_vPub)  _vPub.classList.toggle('active',   _isPublic);
+    }
+    var roundsSel = document.getElementById('settings-rounds');
+    if (roundsSel) roundsSel.value = (settings && settings.totalRounds) || 0;
+    _settingsInitHang = true;
   }
 
   if (isHost) {
@@ -400,12 +418,15 @@ function renderPicking(data) {
   if (!isPicker) {
     document.getElementById('pick-waiting-text').textContent = L.theirTurnPick(pickerName);
   } else {
-    // Pre-fill hint placeholder
-    const hintEl = document.getElementById('hint-input');
-    if (hintEl) hintEl.placeholder = L.hintPlaceholder;
+    // Clear previous round's word input
     const wordEl = document.getElementById('word-input');
-    if (wordEl) wordEl.focus();
+    if (wordEl) { wordEl.value = ''; wordEl.focus(); }
+    const hintEl = document.getElementById('hint-input');
+    if (hintEl) { hintEl.value = ''; hintEl.placeholder = L.hintPlaceholder; }
   }
+  // Clear keyboard from previous round
+  const kb = document.getElementById('hang-keyboard');
+  if (kb) kb.innerHTML = '';
 }
 
 // ─── GUESSING PHASE ──────────────────────────────────────────────
@@ -433,7 +454,10 @@ function renderGuessing(data) {
   const hintEl = document.getElementById('guess-hint');
   if (hint) {
     hintEl.style.display = 'block';
-    hintEl.innerHTML = '💡 <span>' + hint + '</span>';
+    var hintLabel = lang === 'pl' ? 'Podpowiedź' : (lang === 'de' ? 'Hinweis' : 'Hint');
+    hintEl.innerHTML = '<span style="color:var(--muted);font-weight:700;font-size:12px;' +
+      'text-transform:uppercase;letter-spacing:1px;">' + hintLabel + ':</span> ' +
+      '<span>' + hint + '</span>';
   } else {
     hintEl.style.display = 'none';
   }
@@ -673,7 +697,9 @@ function setGameLang(code) {
   socket.emit('hang_update_settings', { code: roomCode, settings: { lang: code, isPublic: getIsPublic() } });
 }
 function updateSettings() {
-  socket.emit('hang_update_settings', { code: roomCode, settings: { lang, isPublic: getIsPublic() } });
+  const roundsSel = document.getElementById('settings-rounds');
+  const totalRounds = roundsSel ? parseInt(roundsSel.value) : 0;
+  socket.emit('hang_update_settings', { code: roomCode, settings: { lang, isPublic: getIsPublic(), totalRounds } });
 }
 function goHome() {
   roomCode = ''; roomState = null; myName = '';
@@ -714,6 +740,7 @@ function applyTranslations() {
     'lbl-next-round':       'nextRound',   'lbl-game-over':        'gameOver',
     'lbl-play-again':       'playAgain',   'lbl-go-home':          'goHome',
     'lbl-room-visibility':  'roomVis',
+    'lbl-rounds-label':     'roundsLabel',
   };
   for (const [id, key] of Object.entries(map)) {
     const el = document.getElementById(id);

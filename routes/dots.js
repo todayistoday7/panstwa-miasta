@@ -34,7 +34,7 @@ function makeDotsRoom(hostId, settings) {
   dotsRooms[code] = {
     code, hostId,
     isPublic: settings.isPublic || false,
-    settings: { gridSize: n, maxPlayers: settings.maxPlayers || 4 },
+    settings: { gridSize: n, maxPlayers: settings.maxPlayers || 4, totalRounds: settings.totalRounds || 1 },
     players: [],     // { id, name, color, connected, score }
     state: {
       phase:         'lobby',
@@ -58,7 +58,10 @@ function emitDotsState(io, room) {
       id: p.id, name: p.name, color: p.color,
       connected: p.connected, score: p.score,
     })),
-    settings:      { ...room.settings, isPublic: room.isPublic },
+    settings:      { ...room.settings, isPublic: room.isPublic,
+                   totalRounds: room.settings.totalRounds || 1 },
+    totalRounds:   room.settings.totalRounds || 1,
+    roundsPlayed:  room.state.roundsPlayed || 0,
     currentPlayer: room.state.currentPlayer,
     grid:          room.state.grid,
     claimedBoxes:  room.state.claimedBoxes,
@@ -177,6 +180,7 @@ function register(io, socket) {
     const n = settings.gridSize || room.settings.gridSize;
     room.settings = { ...room.settings, ...settings, gridSize: n };
     if (settings.isPublic !== undefined) { room.isPublic = settings.isPublic; room.settings.isPublic = settings.isPublic; }
+    if (settings.totalRounds !== undefined) room.settings.totalRounds = parseInt(settings.totalRounds) || 1;
     room.state.grid       = makeGrid(n);
     room.state.totalBoxes = n * n;
     lobby.announce('dots', room);
@@ -197,6 +201,7 @@ function register(io, socket) {
     room.state.totalBoxes    = n * n;
     room.state.claimedBoxes  = 0;
     room.state.currentPlayer = room.players.find(p => p.connected).id;
+    room.state.roundsPlayed  = (room.state.roundsPlayed || 0) + 1;
     room.players.forEach(p => p.score = 0);
     emitDotsState(io, room);
   });
@@ -235,12 +240,21 @@ function register(io, socket) {
       scores:    Object.fromEntries(room.players.map(p => [p.id, p.score])),
     });
 
-    // Check game over
+    // Check board complete
     if (room.state.claimedBoxes >= room.state.totalBoxes) {
-      room.state.phase = 'final';
-      emitDotsState(io, room);
-      lobby.remove(room.code);
-      setTimeout(() => { if (dotsRooms[room.code]) delete dotsRooms[room.code]; }, 60 * 60 * 1000);
+      const totalRounds = room.settings.totalRounds || 1;
+      const roundsPlayed = room.state.roundsPlayed || 1;
+      if (roundsPlayed >= totalRounds) {
+        // All rounds done — go to final
+        room.state.phase = 'final';
+        emitDotsState(io, room);
+        lobby.remove(room.code);
+        setTimeout(() => { if (dotsRooms[room.code]) delete dotsRooms[room.code]; }, 60 * 60 * 1000);
+      } else {
+        // More rounds to play — go back to lobby
+        room.state.phase = 'lobby';
+        emitDotsState(io, room);
+      }
       return;
     }
 
@@ -256,12 +270,11 @@ function register(io, socket) {
     const room = getDotsRoom(code);
     if (!room || socket.id !== room.hostId) return;
     const n = room.settings.gridSize;
-    if (room._lobbyTimer) { clearTimeout(room._lobbyTimer); room._lobbyTimer = null; }
-    lobby.remove(room.code);
-    room.state.phase         = 'playing';
+    // Reset back to lobby so host can adjust settings before next game
+    room.state.phase         = 'lobby';
     room.state.grid          = makeGrid(n);
     room.state.claimedBoxes  = 0;
-    room.state.currentPlayer = room.players.find(p => p.connected).id;
+    room.state.currentPlayer = null;
     room.players.forEach(p => p.score = 0);
     emitDotsState(io, room);
   });

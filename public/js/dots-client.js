@@ -34,6 +34,7 @@ const LANGS = {
     createDisclaimer: 'Stwórz pokój otwarty lub prywatny. Zaproś znajomych — otrzymasz kod pokoju, który przekażesz innym graczom.',
     waitingForHost: 'Czekam na hosta...',
     needPlayers:  'Potrzeba minimum 2 graczy',
+    roundsLabel:  'Rundy',
     howToPlay:    'Zasady gry',
     rule1:        'Stwórz pokój i udostępnij kod znajomym',
     rule2:        'Na zmianę rysuj kreskę między dwiema sąsiednimi kropkami',
@@ -75,6 +76,7 @@ const LANGS = {
     createDisclaimer: 'Create a public or private room. Invite friends — you\'ll get a room code to share with other players.',
     waitingForHost: 'Waiting for host...',
     needPlayers:  'Need at least 2 players',
+    roundsLabel:  'Rounds',
     howToPlay:    'How to play',
     rule1:        'Create a room and share the code with friends',
     rule2:        'Take turns drawing a line between two adjacent dots',
@@ -174,7 +176,6 @@ var _hintShown = false;
 function showFirstMoveHint() {
   var hint = document.getElementById('first-move-hint');
   if (!hint) return;
-  // Only show if player has never played before (localStorage flag)
   if (localStorage.getItem('dots_played')) return;
   var title = document.getElementById('hint-title');
   var body  = document.getElementById('hint-body');
@@ -182,17 +183,15 @@ function showFirstMoveHint() {
   if (body)  body.textContent  = lang === 'pl'
     ? 'Kliknij na linię między kropkami żeby ją narysować'
     : 'Tap on a line between two dots to draw it';
+  hint.style.pointerEvents = 'auto'; // allow X button click
   hint.style.display = 'block';
   _hintShown = true;
-  // Dismiss on any click/tap on the SVG
-  var svg = document.getElementById('dots-svg');
-  if (svg) {
-    svg.addEventListener('click', function dismissHint() {
-      hint.style.display = 'none';
-      localStorage.setItem('dots_played', '1');
-      svg.removeEventListener('click', dismissHint);
-    }, { once: true });
-  }
+  // Auto-dismiss after 4 seconds — no need to tap it
+  clearTimeout(window._hintTimer);
+  window._hintTimer = setTimeout(function() {
+    hint.style.display = 'none';
+    localStorage.setItem('dots_played', '1');
+  }, 4000);
 }
 
 function hideFirstMoveHint() {
@@ -303,6 +302,8 @@ function renderLobby(data) {
     if (!window._dotsSettingsInit) {
       if (gridSel) gridSel.value = settings.gridSize || 4;
       if (maxSel)  maxSel.value  = settings.maxPlayers || 4;
+      const roundsSel = document.getElementById('settings-rounds');
+      if (roundsSel) roundsSel.value = settings.totalRounds || 1;
       window._dotsSettingsInit = true;
     }
     if (gridSel) gridSel.disabled = false;
@@ -624,12 +625,17 @@ function joinRoom() {
 }
 
 function startGame() { socket.emit('dots_start', { code: roomCode }); }
-function rematch()   { socket.emit('dots_rematch', { code: roomCode }); }
+function rematch() {
+  window._dotsSettingsInit = false; // reset so settings re-init on next lobby
+  socket.emit('dots_rematch', { code: roomCode });
+}
 
 function updateSettings() {
-  const gridSize   = parseInt(document.getElementById('settings-grid').value);
-  const maxPlayers = parseInt(document.getElementById('settings-maxplayers').value);
-  socket.emit('dots_update_settings', { code: roomCode, settings: { gridSize, maxPlayers, isPublic: getIsPublic() } });
+  const gridSize    = parseInt(document.getElementById('settings-grid').value);
+  const maxPlayers  = parseInt(document.getElementById('settings-maxplayers').value);
+  const roundsSel   = document.getElementById('settings-rounds');
+  const totalRounds = roundsSel ? parseInt(roundsSel.value) : 1;
+  socket.emit('dots_update_settings', { code: roomCode, settings: { gridSize, maxPlayers, totalRounds, isPublic: getIsPublic() } });
 }
 
 
@@ -670,6 +676,7 @@ function applyTranslations() {
     'lbl-rule-3':       'rule3',       'lbl-rule-4':       'rule4',
     'lbl-rematch':      'rematch',     'lbl-new-game':     'newGame',
     'lbl-game-over':    'gameOver',     'lbl-share-room':   'shareRoom',
+    'lbl-rounds-label': 'roundsLabel',
     'lbl-demo-caption': 'demoCaption',  'lbl-home-rejoin-tip': 'homeRejoinTip',
     'lbl-rejoin-tip':   'rejoinTip',
   };

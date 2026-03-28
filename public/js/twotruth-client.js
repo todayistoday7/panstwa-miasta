@@ -7,6 +7,7 @@ const socket = io();
 const _urlLang = new URLSearchParams(window.location.search).get('lang');
 let lang      = (['pl','en'].includes(_urlLang) ? _urlLang : 'en');
 let myId      = null;
+var _settingsInitTT = false;
 let myName    = '';
 let roomCode  = '';
 let roomState = null;
@@ -158,6 +159,7 @@ socket.on('connect', () => {
 });
 
 socket.on('tt_room_created', ({ code }) => {
+  _settingsInitTT = false;
   var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   _ga('room_created', { game:'two_truths', language:lang });
   roomCode = code; roomState = null; myVote = null; myLieIdx = null;
@@ -168,6 +170,7 @@ socket.on('tt_room_created', ({ code }) => {
 });
 
 socket.on('tt_room_joined', ({ code }) => {
+  _settingsInitTT = false;
   var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   _ga('room_joined', { game:'two_truths', language:lang });
   roomCode = code; roomState = null; myVote = null; myLieIdx = null;
@@ -198,7 +201,9 @@ function applyState(data) {
 function renderLobby(data) {
   const { players, settings, hostId } = data;
   const isHost    = myId === hostId;
+  // Show all players - connected and temporarily disconnected
   const connected = players.filter(p => p.connected !== false);
+  const allPlayers = players; // use all for display, grey out disconnected
   // Sync visibility toggle
   const togWrap = document.getElementById('visibility-toggle');
   if (togWrap) togWrap.style.pointerEvents = isHost ? 'auto' : 'none';
@@ -215,19 +220,30 @@ function renderLobby(data) {
 
   const el = document.getElementById('lobby-players');
   el.innerHTML = '';
-  connected.forEach((p, i) => {
+  allPlayers.forEach((p, i) => {
+    var isConnected = p.connected !== false;
     el.innerHTML +=
-      '<div class="lobby-player">' +
+      '<div class="lobby-player" style="' + (!isConnected ? 'opacity:0.4;' : '') + '">' +
         '<div class="avatar av-' + (i % 8) + '">' + p.name.charAt(0).toUpperCase() + '</div>' +
         '<span class="pname">' + p.name +
           (p.id === myId   ? ' <span style="font-size:11px;background:rgba(6,214,160,0.15);border:1px solid rgba(6,214,160,0.4);color:var(--green);border-radius:20px;padding:2px 8px;">' + L.youBadge + '</span>' : '') +
           (p.id === hostId ? ' <span class="host-badge">' + L.hostBadge + '</span>' : '') +
+          (!isConnected ? ' <span class="offline-badge">' + (L.offlineBadge || 'offline') + '</span>' : '') +
         '</span>' +
       '</div>';
   });
 
   const warn = document.getElementById('player-warning');
-  if (warn) { warn.style.display = connected.length < 3 ? 'block' : 'none'; warn.textContent = L.needPlayers; }
+  if (warn) {
+    warn.style.display = connected.length < 3 ? 'block' : 'none';
+    warn.textContent = L.needPlayers || 'Need at least 3 players to start';
+  }
+  // Enable/disable start button based on connected count
+  var startBtn = document.getElementById('lbl-start-btn');
+  if (startBtn && isHost) {
+    startBtn.disabled = connected.length < 3;
+    startBtn.style.opacity = connected.length < 3 ? '0.5' : '1';
+  }
 
   // Lang pills
   const pillsEl = document.getElementById('lobby-lang-pills');
