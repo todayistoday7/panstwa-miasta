@@ -230,20 +230,32 @@ function initVisibilityToggle() {
   var LABELS = {
     pl: { home:'Strona główna', games:'Wszystkie gry', rules:'Zasady gier',
           cats:'Kategorie', words:'Słowa na literę',
-          sg:'Gry', sr:'Zasady', sm:'Więcej' },
+          sg:'Gry', sr:'Zasady', sm:'Więcej',
+          gpm:'Państwa-Miasta', gtaboo:'Tabu',
+          ghang:'Wisielec', gdots:'Kropki i Kreski', gtt:'Dwie Prawdy Jedno Kłamstwo' },
     en: { home:'Home', games:'All Games', rules:'Game Rules',
           cats:'Categories', words:'Words by Letter',
-          sg:'Games', sr:'Rules', sm:'More' },
+          sg:'Games', sr:'Rules', sm:'More',
+          gpm:'Countries & Cities', gtaboo:'Taboo',
+          ghang:'Hangman', gdots:'Dots & Boxes', gtt:'2 Truths 1 Lie' },
     de: { home:'Startseite', games:'Alle Spiele', rules:'Spielregeln',
           cats:'Kategorien', words:'Wörter nach Buchstabe',
-          sg:'Spiele', sr:'Regeln', sm:'Mehr' },
+          sg:'Spiele', sr:'Regeln', sm:'Mehr',
+          gpm:'Länder & Städte', gtaboo:'Tabu',
+          ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge' },
     fr: { home:'Accueil', games:'Tous les jeux', rules:'Règles',
           cats:'Catégories', words:'Mots par lettre',
-          sg:'Jeux', sr:'Règles', sm:'Plus' },
+          sg:'Jeux', sr:'Règles', sm:'Plus',
+          gpm:'Pays & Villes', gtaboo:'Tabou',
+          ghang:'Pendu', gdots:'Points & Lignes', gtt:'2 Vérités 1 Mensonge' },
     es: { home:'Inicio', games:'Todos los juegos', rules:'Reglas',
           cats:'Categorías', words:'Palabras por letra',
-          sg:'Juegos', sr:'Reglas', sm:'Más' },
+          sg:'Juegos', sr:'Reglas', sm:'Más',
+          gpm:'Países & Ciudades', gtaboo:'Tabú',
+          ghang:'El Ahorcado', gdots:'Puntos & Líneas', gtt:'2 Verdades 1 Mentira' },
   };
+
+  window._gbLabels = LABELS;
 
   function getLang() {
     return (new URLSearchParams(window.location.search).get('lang')) ||
@@ -312,11 +324,11 @@ function initVisibilityToggle() {
       '<div class="gb-sec">' + t.sg + '</div>' +
       '<a href="/' + ql + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
       '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
-      '<a href="/' + ql + '"><span class="gb-ico">🌍</span>Państwa-Miasta</a>' +
-      '<a href="/taboo' + ql + '"><span class="gb-ico">🎭</span>Tabu / Taboo</a>' +
-      '<a href="/hangman' + ql + '"><span class="gb-ico">🪢</span>Wisielec / Hangman</a>' +
-      '<a href="/dots' + ql + '"><span class="gb-ico">🔵</span>Kropki i Kreski</a>' +
-      '<a href="/twotruth' + ql + '"><span class="gb-ico">🤥</span>Dwie Prawdy / 2 Truths</a>' +
+      '<a href="/' + ql + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
+      '<a href="/taboo' + ql + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
+      '<a href="/hangman' + ql + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
+      '<a href="/dots' + ql + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
+      '<a href="/twotruth' + ql + '"><span class="gb-ico">🤥</span>' + t.gtt + '</a>' +
       '<div class="gb-div"></div>' +
       '<div class="gb-sec">' + t.sr + '</div>' +
       '<a href="' + ruleBase + '"><span class="gb-ico">📖</span>' + t.rules + '</a>' +
@@ -373,10 +385,41 @@ window._switchLang = function(code) {
     var url = new URL(window.location.href);
     url.searchParams.set('lang', code);
     window.location.href = url.toString();
-    return; // navigating away, no need to refresh footer
+    return;
   }
+  // Rebuild burger with new language
+  if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
   // Refresh footer links and flags to match new language
   if (typeof window._refreshFooter === 'function') window._refreshFooter();
+};
+
+// Rebuild burger nav in-place when language changes
+window._rebuildBurger = function(newLang) {
+  var nav = document.getElementById('gb-nav');
+  var logo = document.querySelector('.gb-logo');
+  if (!nav) return;
+  var t        = (window._gbLabels || {})[newLang] || (window._gbLabels || {})['en'] || {};
+  var ql       = '?lang=' + newLang;
+  var ruleBase = (newLang === 'pl') ? '/jak-grac' : '/how-to-play';
+  if (!t.home) return; // labels not loaded yet
+  nav.innerHTML =
+    '<div class="gb-sec">' + t.sg + '</div>' +
+    '<a href="/' + ql + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
+    '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
+    '<a href="/' + ql + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
+    '<a href="/taboo' + ql + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
+    '<a href="/hangman' + ql + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
+    '<a href="/dots' + ql + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
+    '<a href="/twotruth' + ql + '"><span class="gb-ico">🤥</span>' + t.gtt + '</a>' +
+    '<div class="gb-div"></div>' +
+    '<div class="gb-sec">' + t.sr + '</div>' +
+    '<a href="' + ruleBase + '"><span class="gb-ico">📖</span>' + t.rules + '</a>' +
+    '<div class="gb-div"></div>' +
+    '<div class="gb-sec">' + t.sm + '</div>' +
+    '<a href="/kategorie"><span class="gb-ico">📋</span>' + t.cats + '</a>' +
+    '<a href="/slowa"><span class="gb-ico">🔤</span>' + t.words + '</a>';
+  // Update logo href
+  if (logo) logo.href = '/' + ql;
 };
 // Keep old name as alias so nothing breaks
 window._footerSetLang = window._switchLang;
@@ -411,7 +454,7 @@ window.addEventListener('load', window._buildFooterLangBtns);
   }
 
   function buildFooterHTML(footerLang) {
-    var lp = footerLang === 'pl' ? 'pl' : 'en';
+    var lp = (footerLang === 'pl') ? 'pl' : (footerLang === 'de') ? 'de' : 'en';
     var ruleBase   = lp === 'pl' ? '/jak-grac'   : '/how-to-play';
     var rulesLinks = lp === 'pl'
       ? { pm:   '/jak-grac',
@@ -429,6 +472,8 @@ window.addEventListener('load', window._buildFooterLangBtns);
       pl: { games:'Gry', rules:'Zasady gry', about:'O grze',
             cats:'Kategorie', tagline:'Darmowe gry online dla znajomych i rodziny',
             privacy:'Prywatność',
+            gpm:'Państwa-Miasta', gtaboo:'Tabu',
+            ghang:'Wisielec', gdots:'Kropki i Kreski', gtt:'Dwie Prawdy Jedno Kłamstwo',
             howto_pm:'Jak grać — Państwa-Miasta',
             howto_tabu:'Jak grać — Tabu',
             howto_hang:'Jak grać — Wisielec',
@@ -437,11 +482,23 @@ window.addEventListener('load', window._buildFooterLangBtns);
       en: { games:'Games', rules:'Rules', about:'About',
             cats:'Categories', tagline:'Free online multiplayer games for friends and family',
             privacy:'Privacy',
+            gpm:'Countries & Cities', gtaboo:'Taboo',
+            ghang:'Hangman', gdots:'Dots & Boxes', gtt:'2 Truths 1 Lie',
             howto_pm:'How to play — Countries & Cities',
             howto_tabu:'How to play — Taboo',
             howto_hang:'How to play — Hangman',
             howto_dots:'How to play — Dots & Boxes',
             howto_tt:'How to play — 2 Truths 1 Lie' },
+      de: { games:'Spiele', rules:'Regeln', about:'Über',
+            cats:'Kategorien', tagline:'Kostenlose Multiplayer-Spiele online',
+            privacy:'Datenschutz',
+            gpm:'Länder & Städte', gtaboo:'Tabu',
+            ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge',
+            howto_pm:'Spielregeln — Länder & Städte',
+            howto_tabu:'Spielregeln — Tabu',
+            howto_hang:'Spielregeln — Galgenmännchen',
+            howto_dots:'Spielregeln — Punkte & Linien',
+            howto_tt:'Spielregeln — 2 Wahrheiten 1 Lüge' },
     };
     var t = L[lp] || L['en'];
 
@@ -462,11 +519,11 @@ window.addEventListener('load', window._buildFooterLangBtns);
         '<div>' +
           '<div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;">' + t.games + '</div>' +
           '<div style="display:flex;flex-direction:column;gap:6px;">' +
-            '<a href="/?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🌍 Państwa-Miasta</a>' +
-            '<a href="/taboo?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎭 Tabu / Taboo</a>' +
-            '<a href="/hangman?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🪢 Wisielec / Hangman</a>' +
-            '<a href="/dots?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔵 Kropki i Kreski</a>' +
-            '<a href="/twotruth?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🤥 Dwie Prawdy / 2 Truths</a>' +
+            '<a href="/?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🌍 ' + t.gpm + '</a>' +
+            '<a href="/taboo?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎭 ' + t.gtaboo + '</a>' +
+            '<a href="/hangman?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🪢 ' + t.ghang + '</a>' +
+            '<a href="/dots?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔵 ' + t.gdots + '</a>' +
+            '<a href="/twotruth?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🤥 ' + t.gtt + '</a>' +
             '<a href="/games?lang=' + footerLang + '" style="color:var(--accent);font-size:13px;font-weight:700;text-decoration:none;">→ ' + t.games + '</a>' +
           '</div>' +
         '</div>' +

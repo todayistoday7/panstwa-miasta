@@ -549,21 +549,44 @@ function renderWordDisplay(elId, display, revealAll) {
   const el = document.getElementById(elId);
   if (!el || !display) return;
   el.innerHTML = '';
+
+  // Group letters into words (split on spaces) so each word
+  // wraps as a unit on small screens — letters never split mid-word
+  const words = [];
+  let current = [];
   display.forEach(ch => {
-    const letter = document.createElement('div');
     if (ch === ' ') {
-      letter.className = 'hang-letter space';
-      letter.innerHTML = '<div class="hang-letter-char">&nbsp;</div>';
+      if (current.length) { words.push(current); current = []; }
+      words.push([' ']); // space between words
     } else {
-      const isRevealed = ch !== '_';
-      letter.className = 'hang-letter';
-      letter.innerHTML =
-        '<div class="hang-letter-char' + (isRevealed ? ' revealed' : '') + '">' +
-          (isRevealed ? ch : '&nbsp;') +
-        '</div>' +
-        (ch !== ' ' ? '<div class="hang-letter-line"></div>' : '');
+      current.push(ch);
     }
-    el.appendChild(letter);
+  });
+  if (current.length) words.push(current);
+
+  words.forEach(wordChars => {
+    if (wordChars[0] === ' ') {
+      // Spacer between words
+      const spacer = document.createElement('div');
+      spacer.className = 'hang-word-spacer';
+      el.appendChild(spacer);
+    } else {
+      // Word group — never breaks across lines
+      const wordWrap = document.createElement('div');
+      wordWrap.className = 'hang-word-group';
+      wordChars.forEach(ch => {
+        const isRevealed = ch !== '_';
+        const letter = document.createElement('div');
+        letter.className = 'hang-letter';
+        letter.innerHTML =
+          '<div class="hang-letter-char' + (isRevealed ? ' revealed' : '') + '">' +
+            (isRevealed ? ch : '&nbsp;') +
+          '</div>' +
+          '<div class="hang-letter-line"></div>';
+        wordWrap.appendChild(letter);
+      });
+      el.appendChild(wordWrap);
+    }
   });
 }
 
