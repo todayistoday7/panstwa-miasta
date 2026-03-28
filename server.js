@@ -49,7 +49,7 @@ app.get('/share', (req, res) => {
 
   const titles = {
     pm:       { pl: 'Państwa-Miasta', en: 'Countries & Cities', de: 'Länder & Städte', fr: 'Pays & Villes', es: 'Países & Ciudades' },
-    taboo:    { pl: 'Tabu', en: 'Taboo', de: 'Tabu', fr: 'Tabou', es: 'Tabú' },
+    taboo:    { pl: 'Zakazane Słowa', en: 'Forbidden Words', de: 'Verbotene Wörter', fr: 'Mots Interdits', es: 'Palabras Prohibidas' },
     dots:     { pl: 'Kropki i Kreski', en: 'Dots & Boxes', de: 'Punkte & Linien', fr: 'Points & Lignes', es: 'Puntos & Líneas' },
     twotruth: { pl: 'Dwie Prawdy Jedno Kłamstwo', en: '2 Truths 1 Lie', de: '2 Wahrheiten 1 Lüge', fr: '2 Vérités 1 Mensonge', es: '2 Verdades 1 Mentira' },
     hangman:  { pl: 'Wisielec', en: 'Hangman', de: 'Galgenmännchen', fr: 'Pendu', es: 'El Ahorcado' },

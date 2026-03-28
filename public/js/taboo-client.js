@@ -519,9 +519,9 @@ function copyRoomCode() { shareRoom('taboo'); }
 function shareResults() {
   var url  = 'https://panstwamiastagra.com/taboo';
   var text = (lang === 'pl'
-    ? 'Właśnie zagraliśmy w Tabu online! 🎭\n\nZagraj za darmo: '
-    : 'We just played Taboo online! 🎭\n\nPlay for free: ') + url;
-  if (navigator.share) { navigator.share({ title: 'Taboo Online', text, url }).catch(() => {}); }
+    ? 'Właśnie zagraliśmy w Zakazane Słowa online! 🎭\n\nZagraj za darmo: '
+    : 'We just played Forbidden Words online! 🎭\n\nPlay for free: ') + url;
+  if (navigator.share) { navigator.share({ title: 'Forbidden Words Online', text, url }).catch(() => {}); }
   else {
     var ta = document.createElement('textarea');
     ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';

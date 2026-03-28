@@ -8,7 +8,7 @@
 // Game display info
 const GAME_INFO = {
   pm:       { name: 'Państwa-Miasta', icon: '🌍', slug: '/' },
-  taboo:    { name: 'Tabu',           icon: '🎭', slug: '/taboo' },
+  taboo:    { name: 'Zakazane Słowa / Forbidden Words', icon: '🎭', slug: '/taboo' },
   dots:     { name: 'Kropki i Kreski',icon: '🔵', slug: '/dots' },
   twotruth: { name: '2 Truths 1 Lie', icon: '🤥', slug: '/twotruth' },
   hangman:  { name: 'Hangman',         icon: '🪢', slug: '/hangman' },
