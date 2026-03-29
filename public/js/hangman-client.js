@@ -482,10 +482,18 @@ function renderGuessing(data) {
     const fg = document.getElementById('fullguess-input');
     if (fg) fg.placeholder = L.fullGuessPlaceholder;
   } else {
-    document.getElementById('hang-keyboard').style.display     = 'none';
+    // Picker sees the keyboard as read-only — same visual state, no click actions
+    document.getElementById('hang-keyboard').style.display     = 'flex';
     document.getElementById('hang-fullguess-wrap').style.display = 'none';
     document.getElementById('picker-watching').style.display   = 'block';
     document.getElementById('picker-watching').textContent     = L.pickerWatchingText;
+    buildKeyboard(guessedLetters, word);
+    // Disable all keyboard buttons — picker is watching only
+    document.getElementById('hang-keyboard').querySelectorAll('.hang-key').forEach(function(btn) {
+      btn.disabled = true;
+      btn.style.cursor = 'default';
+      btn.style.opacity = btn.classList.contains('used') ? '1' : '0.5';
+    });
   }
 }
 
@@ -732,6 +740,12 @@ function applyTranslations() {
     'lbl-share-code':       'shareCode',   'lbl-share-room':       'shareRoom',
     'lbl-how-to-play':      'howToPlay',
     'lbl-rule-1':           'rule1',       'lbl-rule-2':           'rule2',
+    'lbl-lobby-how-to-play':'howToPlay',
+    'lbl-lobby-rule-1':'rule1',
+    'lbl-lobby-rule-2':'rule2',
+    'lbl-lobby-rule-3':'rule3',
+    'lbl-lobby-rule-4':'rule4',
+    'lbl-lobby-rule-5':'rule5',
     'lbl-rule-3':           'rule3',       'lbl-rule-4':           'rule4',
     'lbl-rule-5':           'rule5',
     'lbl-create-disclaimer':'createDisclaimer',

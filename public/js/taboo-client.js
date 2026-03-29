@@ -594,6 +594,13 @@ function applyTranslations() {
     'lbl-how-to-play':'howToPlay',
     'lbl-rule-1':'rule1','lbl-rule-2':'rule2','lbl-rule-3':'rule3',
     'lbl-rule-4':'rule4','lbl-rule-5':'rule5','lbl-rule-6':'rule6',
+    'lbl-lobby-how-to-play':'howToPlay',
+    'lbl-lobby-rule-1':'rule1',
+    'lbl-lobby-rule-2':'rule2',
+    'lbl-lobby-rule-3':'rule3',
+    'lbl-lobby-rule-4':'rule4',
+    'lbl-lobby-rule-5':'rule5',
+    'lbl-lobby-rule-6':'rule6',
     'lbl-reshuffle':'reshuffle',
   };
   for (const [id, key] of Object.entries(map)) {

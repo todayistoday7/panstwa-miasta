@@ -183,13 +183,14 @@
     border-radius: 10px;
     color: var(--text);
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 26px;
-    letter-spacing: 4px;
+    font-size: clamp(16px, 3.5vw, 24px);
+    letter-spacing: 1px;
     padding: 10px 16px;
-    text-align: center;
+    text-align: left;
     outline: none;
     text-transform: uppercase;
     width: 100%;
+    box-sizing: border-box;
   }
   .hang-word-input::placeholder { color: var(--muted); font-size: 18px; letter-spacing: 2px; }
 
@@ -457,6 +458,18 @@
     <div class="btn-row" id="lobby-btn-row">
       <button class="btn" onclick="startGame()" id="lbl-start-btn">🎮 Start Game</button>
       <button class="btn secondary" onclick="confirmGoHome()" id="lbl-leave-room">🚪 Leave Room</button>
+    </div>
+
+    <!-- Rules in lobby — same content as home screen, translated automatically -->
+    <div class="rules-section" style="margin-top:24px;">
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent2);text-align:center;margin-bottom:12px;" id="lbl-lobby-how-to-play">How to play</h2>
+      <div class="rules-steps">
+          <div class="rule-step"><div class="step-num">1</div><p id="lbl-lobby-rule-1"></p></div>
+          <div class="rule-step"><div class="step-num">2</div><p id="lbl-lobby-rule-2"></p></div>
+          <div class="rule-step"><div class="step-num">3</div><p id="lbl-lobby-rule-3"></p></div>
+          <div class="rule-step"><div class="step-num">4</div><p id="lbl-lobby-rule-4"></p></div>
+          <div class="rule-step"><div class="step-num">5</div><p id="lbl-lobby-rule-5"></p></div>
+      </div>
     </div>
     <p class="waiting-msg" id="waiting-msg" style="display:none;"></p>
   </div>

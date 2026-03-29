@@ -286,6 +286,18 @@
       <button class="btn" onclick="startGame()" id="lbl-start-btn">🎮 Start Game</button>
       <button class="btn secondary" onclick="confirmGoHome()" id="lbl-leave-room">🚪 Leave Room</button>
     </div>
+
+    <!-- Rules in lobby -->
+    <div class="rules-section" style="margin-top:24px;">
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent2);text-align:center;margin-bottom:12px;" id="lbl-lobby-rules-title">Zasady gry</h2>
+      <div class="rules-steps">
+        <div class="rule-step"><div class="step-num">1</div><p id="lbl-lobby-rule-1">Stwórz pokój i udostępnij kod znajomym</p></div>
+        <div class="rule-step"><div class="step-num">2</div><p id="lbl-lobby-rule-2">Losuj literę — obowiązuje przez całą rundę</p></div>
+        <div class="rule-step"><div class="step-num">3</div><p id="lbl-lobby-rule-3">Wpisuj słowa na tę literę w każdej kategorii</p></div>
+        <div class="rule-step"><div class="step-num">4</div><p id="lbl-lobby-rule-4">Pierwszy który wypełni kolumny woła STOP!</p></div>
+        <div class="rule-step"><div class="step-num">5</div><p id="lbl-lobby-rule-5">Punkty: unikalne = 10 pkt, powtórzone = 5 pkt, puste = 0 pkt</p></div>
+      </div>
+    </div>
     <p class="waiting-msg" id="waiting-msg" style="display:none;"></p>
   </div>
 
