@@ -18,6 +18,7 @@ const TEAM_COLORS = {
 const LANGS_TABOO = {
   pl: {
     name: '🇵🇱 PL',
+    gameTitle: 'ZAKAZANE SŁOWA',
     subtitle: 'Drużynowa gra imprezowa · min. 4 graczy',
     createRoom: 'Stwórz pokój', joinRoom: 'Dołącz do pokoju',
     yourName: 'Twoje imię', joinName: 'Twoje imię', roomCode: 'Kod pokoju',
@@ -64,6 +65,7 @@ const LANGS_TABOO = {
   },
   en: {
     name: '🇬🇧 EN',
+    gameTitle: 'FORBIDDEN WORDS',
     subtitle: 'Team party game · min. 4 players',
     createRoom: 'Create Room', joinRoom: 'Join Room',
     yourName: 'Your name', joinName: 'Your name', roomCode: 'Room code',
@@ -580,7 +582,7 @@ function setUiLang(code) {
 
 function applyTranslations() {
   const map = {
-    'game-subtitle':'subtitle',
+    'game-title':   'gameTitle', 'game-subtitle':'subtitle',
     'lbl-create-room':'createRoom','lbl-create-disclaimer':'createDisclaimer','lbl-join-room':'joinRoom',
     'lbl-your-name':'yourName','lbl-join-name':'joinName','lbl-room-code':'roomCode',
     'lbl-create-btn':'createBtn','lbl-join-btn':'joinBtn',
