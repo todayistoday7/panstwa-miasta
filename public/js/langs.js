@@ -1,6 +1,6 @@
 const LANGS = {
   pl: {
-    name:'🇵🇱 PL', gameTitle:'Państwa-Miasta', gameSubtitle:'Gra wieloosobowa',
+    name:'🇵🇱 PL', gameTitle:'Państwa-Miasta', gameSubtitle:'Gra wieloosobowa · 2–12 graczy',
     createRoom:'Stwórz pokój', createDisclaimer:'Stwórz pokój otwarty lub prywatny. Zaproś znajomych — otrzymasz kod pokoju, który przekażesz innym graczom.', joinRoom:'Dołącz do pokoju',
     yourName:'Twoje imię', joinName:'Twoje imię', roomCode:'Kod pokoju',
     createBtn:'🎮 Stwórz pokój', joinBtn:'🚪 Dołącz',
@@ -39,7 +39,7 @@ const LANGS = {
     cats:['Państwo','Miasto','Zwierzę','Roślina','Rzecz','Imię','Kolor','Zawód','Marka','Sport','Film','Owoce/Warzywa'],
   },
   en: {
-    name:'🇬🇧 EN', gameTitle:'Countries & Cities', gameSubtitle:'Real-time multiplayer',
+    name:'🇬🇧 EN', gameTitle:'Countries & Cities', gameSubtitle:'Real-time multiplayer · 2–12 players',
     createRoom:'Create Room', createDisclaimer:'Create a public or private room. Invite friends — you\'ll get a room code to share with other players.', joinRoom:'Join Room',
     yourName:'Your name', joinName:'Your name', roomCode:'Room code',
     createBtn:'🎮 Create Room', joinBtn:'🚪 Join Room',
@@ -78,7 +78,7 @@ const LANGS = {
     cats:['Country','City','Animal','Plant','Thing','Name','Color','Job','Brand','Sport','Movie','Fruit/Veg'],
   },
   de: {
-    name:'🇩🇪 DE', gameTitle:'Länder & Städte', gameSubtitle:'Echtzeit-Multiplayer',
+    name:'🇩🇪 DE', gameTitle:'Länder & Städte', gameSubtitle:'Echtzeit-Multiplayer · 2–12 Spieler',
     createRoom:'Raum erstellen', createDisclaimer:'Erstelle einen öffentlichen oder privaten Raum. Lade Freunde ein — du bekommst einen Code zum Teilen.', joinRoom:'Raum beitreten',
     yourName:'Dein Name', joinName:'Dein Name', roomCode:'Raumcode',
     createBtn:'🎮 Raum erstellen', joinBtn:'🚪 Beitreten',
@@ -116,7 +116,7 @@ const LANGS = {
     cats:['Land','Stadt','Tier','Pflanze','Sache','Name','Farbe','Beruf','Marke','Sport','Film','Obst/Gem.'],
   },
   fr: {
-    name:'🇫🇷 FR', gameTitle:'Pays & Villes', gameSubtitle:'Multijoueur en temps réel',
+    name:'🇫🇷 FR', gameTitle:'Pays & Villes', gameSubtitle:'Multijoueur · 2–12 joueurs',
     createRoom:'Créer une salle', createDisclaimer:'Crée une salle publique ou privée. Invite tes amis — tu recevras un code à partager.', joinRoom:'Rejoindre',
     yourName:'Votre nom', joinName:'Votre nom', roomCode:'Code de salle',
     createBtn:'🎮 Créer une salle', joinBtn:'🚪 Rejoindre',
@@ -154,7 +154,7 @@ const LANGS = {
     cats:['Pays','Ville','Animal','Plante','Chose','Prénom','Couleur','Métier','Marque','Sport','Film','Fruit/Lég.'],
   },
   es: {
-    name:'🇪🇸 ES', gameTitle:'Países y Ciudades', gameSubtitle:'Multijugador en tiempo real',
+    name:'🇪🇸 ES', gameTitle:'Países y Ciudades', gameSubtitle:'Multijugador · 2–12 jugadores',
     createRoom:'Crear sala', createDisclaimer:'Crea una sala pública o privada. Invita a tus amigos — recibirás un código para compartir.', joinRoom:'Unirse',
     yourName:'Tu nombre', joinName:'Tu nombre', roomCode:'Código de sala',
     createBtn:'🎮 Crear sala', joinBtn:'🚪 Unirse',

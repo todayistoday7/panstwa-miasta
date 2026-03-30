@@ -62,6 +62,7 @@ function emitDotsState(io, room) {
                    totalRounds: room.settings.totalRounds || 1 },
     totalRounds:   room.settings.totalRounds || 1,
     roundsPlayed:  room.state.roundsPlayed || 0,
+    totalRoundsAccum: room.state.totalRoundsAccum || 0,
     currentPlayer: room.state.currentPlayer,
     grid:          room.state.grid,
     claimedBoxes:  room.state.claimedBoxes,
@@ -201,7 +202,8 @@ function register(io, socket) {
     room.state.totalBoxes    = n * n;
     room.state.claimedBoxes  = 0;
     room.state.currentPlayer = room.players.find(p => p.connected).id;
-    room.state.roundsPlayed  = (room.state.roundsPlayed || 0) + 1;
+    room.state.roundsPlayed  = 1; // first round of this game session
+    room.state.totalRoundsAccum = 0; // tracks completed rounds
     room.players.forEach(p => p.score = 0);
     emitDotsState(io, room);
   });
@@ -243,16 +245,17 @@ function register(io, socket) {
     // Check board complete
     if (room.state.claimedBoxes >= room.state.totalBoxes) {
       const totalRounds = room.settings.totalRounds || 1;
-      const roundsPlayed = room.state.roundsPlayed || 1;
-      if (roundsPlayed >= totalRounds) {
+      room.state.totalRoundsAccum = (room.state.totalRoundsAccum || 0) + 1;
+      if (room.state.totalRoundsAccum >= totalRounds) {
         // All rounds done — go to final
         room.state.phase = 'final';
         emitDotsState(io, room);
         lobby.remove(room.code);
         setTimeout(() => { if (dotsRooms[room.code]) delete dotsRooms[room.code]; }, 60 * 60 * 1000);
       } else {
-        // More rounds to play — go back to lobby
+        // More rounds to play — go back to lobby for next round
         room.state.phase = 'lobby';
+        room.state.roundsPlayed = room.state.totalRoundsAccum + 1;
         emitDotsState(io, room);
       }
       return;

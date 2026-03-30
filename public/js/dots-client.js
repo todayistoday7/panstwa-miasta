@@ -9,6 +9,7 @@ let lang     = (['pl','en'].includes(_urlLang) ? _urlLang : 'en');
 let myId     = null;
 let myName   = '';
 window._gameSlug = 'dots';
+var _settingsInitDots = false;
 let roomCode = '';
 let roomState = null;
 let keepAliveInterval = null;
@@ -220,7 +221,7 @@ socket.on('connect', () => {
 });
 
 socket.on('dots_room_created', ({ code }) => {
-  window._dotsSettingsInit = false;
+  _settingsInitDots = false;
   _ga('room_created', { game:'dots', language:lang });
   roomCode = code; roomState = null;
   sessionStorage.setItem('dots_code', code);
@@ -231,7 +232,7 @@ socket.on('dots_room_created', ({ code }) => {
 });
 
 socket.on('dots_room_joined', ({ code }) => {
-  window._dotsSettingsInit = false;
+  _settingsInitDots = false;
   _ga('room_joined', { game:'dots', language:lang });
   roomCode = code; roomState = null;
   sessionStorage.setItem('dots_code', code);
@@ -304,17 +305,30 @@ function renderLobby(data) {
   const maxSel  = document.getElementById('settings-maxplayers');
   if (isHost) {
     // Init selects once from server — host owns them after that
-    if (!window._dotsSettingsInit) {
+    if (!_settingsInitDots) {
       if (gridSel) gridSel.value = settings.gridSize || 4;
       if (maxSel)  maxSel.value  = settings.maxPlayers || 4;
       const roundsSel = document.getElementById('settings-rounds');
       if (roundsSel) roundsSel.value = settings.totalRounds || 1;
-      window._dotsSettingsInit = true;
+      _settingsInitDots = true;
     }
     if (gridSel) gridSel.disabled = false;
     if (maxSel)  maxSel.disabled  = false;
     document.getElementById('lobby-btn-row').style.display = 'flex';
     document.getElementById('waiting-msg').style.display   = 'none';
+    // Show round progress if mid-game (returning between rounds)
+    var roundBadge = document.getElementById('dots-round-badge');
+    if (roundBadge) {
+      var totalRounds = (settings && settings.totalRounds) || 1;
+      var roundsAccum = data.totalRoundsAccum || 0;
+      if (totalRounds > 1) {
+        roundBadge.style.display = 'block';
+        roundBadge.textContent = (lang === 'pl' ? 'Runda ' : 'Round ') +
+          (roundsAccum + 1) + ' / ' + totalRounds;
+      } else {
+        roundBadge.style.display = 'none';
+      }
+    }
   } else {
     // Non-host: always sync settings from server (read-only)
     if (gridSel) { gridSel.value = settings.gridSize || 4; gridSel.disabled = true; }
@@ -373,6 +387,9 @@ function renderGrid(data) {
   const n    = settings.gridSize;
   const size = MARGIN * 2 + GAP * n;
   const svg  = document.getElementById('dots-svg');
+  // My color for hover preview
+  const _meP = players.find(p => p.id === myId);
+  var myColor = _meP ? _meP.color : null;
   svg.setAttribute('width',  size);
   svg.setAttribute('height', size);
   svg.setAttribute('viewBox', '0 0 ' + size + ' ' + size);
@@ -474,7 +491,7 @@ function renderGrid(data) {
         svg.appendChild(preview);
         (function(row, col, prev) {
           hit.addEventListener('mouseenter', () => {
-            prev.setAttribute('stroke', 'var(--accent)');
+            prev.setAttribute('stroke', myColor || 'var(--accent)');
             prev.setAttribute('opacity', '0.8');
             prev.setAttribute('stroke-dasharray', 'none');
           });
@@ -514,7 +531,7 @@ function renderGrid(data) {
         svg.appendChild(preview);
         (function(row, col, prev) {
           hit.addEventListener('mouseenter', () => {
-            prev.setAttribute('stroke', 'var(--accent)');
+            prev.setAttribute('stroke', myColor || 'var(--accent)');
             prev.setAttribute('opacity', '0.8');
             prev.setAttribute('stroke-dasharray', 'none');
           });
@@ -634,7 +651,7 @@ function joinRoom() {
 
 function startGame() { socket.emit('dots_start', { code: roomCode }); }
 function rematch() {
-  window._dotsSettingsInit = false; // reset so settings re-init on next lobby
+  _settingsInitDots = false; // reset so settings re-init on next lobby
   socket.emit('dots_rematch', { code: roomCode });
 }
 

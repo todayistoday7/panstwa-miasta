@@ -71,6 +71,7 @@ const LANGS = {
     winner:            (n) => `🏆 ${n} wygrywa!`,
     draw:              'Remis! 🤝',
     wins:              'wygranych',
+    guessersWon:       (n) => `🎉 ${n} zgadł!`,
     playAgain:         '🔄 Zagraj jeszcze raz z tą grupą',
     goHome:            '🏠 Powrót',
     roomVis:           'Widoczność pokoju',
@@ -130,6 +131,7 @@ const LANGS = {
     winner:            (n) => `🏆 ${n} wins!`,
     draw:              "It's a draw! 🤝",
     wins:              'wins',
+    guessersWon:       (n) => `🎉 ${n} got it!`,
     playAgain:         '🔄 Play Again With This Group',
     goHome:            '🏠 Home',
     roomVis:           'Room visibility',
@@ -188,6 +190,7 @@ const LANGS = {
     winner:            (n) => `🏆 ${n} gewinnt!`,
     draw:              'Unentschieden! 🤝',
     wins:              'Siege',
+    guessersWon:       (n) => `🎉 ${n} hat es!`,
     playAgain:         '🔄 Nochmal mit dieser Gruppe spielen',
     goHome:            '🏠 Startseite',
     roomVis:           'Raumsichtbarkeit',
@@ -517,7 +520,7 @@ function renderRoundEnd(data) {
     banner.className   = 'hang-result-banner lose';
   } else {
     const winnerName = (players.find(p => p.id === roundWinner) || {}).name || '?';
-    banner.textContent = myId === pickerId ? `🎉 ${winnerName} ${L.wins}!` : L.pickerWonRound(pickerName);
+    banner.textContent = myId === pickerId ? L.guessersWon(winnerName) : L.pickerWonRound(pickerName);
     banner.className   = 'hang-result-banner ' + (myId === roundWinner ? 'win' : 'lose');
   }
 
@@ -739,6 +742,7 @@ function applyTranslations() {
     'lbl-start-btn':        'startBtn',    'lbl-leave-room':       'leaveRoom',
     'lbl-share-code':       'shareCode',   'lbl-share-room':       'shareRoom',
     'lbl-how-to-play':      'howToPlay',
+    'lbl-hint-step':        'hintStep',
     'lbl-rule-1':           'rule1',       'lbl-rule-2':           'rule2',
     'lbl-lobby-how-to-play':'howToPlay',
     'lbl-lobby-rule-1':'rule1',
