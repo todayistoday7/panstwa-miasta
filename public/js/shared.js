@@ -363,7 +363,44 @@ function initVisibilityToggle() {
 
 })();
 
+// ─── ANNOUNCEMENT BANNER ─────────────────────────────────────────
+(function() {
+  function injectBanner(b) {
+    if (!b || !b.active || !b.text) return;
+    var cols = {
+      info:    { bg:'rgba(29,78,216,.15)',  border:'#1d4ed8', text:'#93c5fd' },
+      warning: { bg:'rgba(120,53,15,.15)',  border:'#92400e', text:'#fbbf24' },
+      success: { bg:'rgba(20,83,45,.15)',   border:'#14532d', text:'#86efac' },
+    };
+    var col = cols[b.type] || cols.info;
+    var el = document.createElement('div');
+    el.id = 'site-banner';
+    el.style.cssText = [
+      'width:100%', 'padding:10px 20px', 'text-align:center',
+      'font-size:13px', 'font-weight:700',
+      'background:' + col.bg,
+      'border-bottom:1px solid ' + col.border,
+      'color:' + col.text,
+      'position:relative', 'z-index:100',
+    ].join(';');
+    el.textContent = b.text;
+    var wrap = document.querySelector('.gb-wrap') || document.querySelector('.container') || document.body;
+    wrap.parentNode ? wrap.parentNode.insertBefore(el, wrap) : document.body.insertBefore(el, document.body.firstChild);
+  }
 
+  function loadBanner() {
+    fetch('/api/banner')
+      .then(function(r) { return r.json(); })
+      .then(injectBanner)
+      .catch(function() {});
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadBanner);
+  } else {
+    loadBanner();
+  }
+})();
 
 // Unified language switcher — same behaviour everywhere.
 // On game pages: calls setUiLang (translates in place + updates URL).

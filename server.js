@@ -17,9 +17,11 @@ const dots       = require('./routes/dots');
 const twotruth   = require('./routes/twotruth');
 const hangman    = require('./routes/hangman');
 const lobbyHub   = require('./routes/lobby');
+const admin      = require('./routes/admin');
 
 const app = express();
 app.use(compression());
+app.use(require('cookie-parser')());
 
 // ─── STATIC + PAGE ROUTES ────────────────────────────────
 app.get('/taboo', (req, res) => res.sendFile(path.join(__dirname, 'public/taboo.html')));
@@ -105,6 +107,30 @@ app.use(express.static(path.join(__dirname, 'public'), {
 }));
 
 // ─── HEALTH + DEBUG ──────────────────────────────────────
+// ─── ADMIN PANEL ─────────────────────────────────────────
+const { getPMRooms } = require('./routes/pm');
+admin.init(() => {
+  const rooms = {};
+  try { rooms.pm       = getPMRooms       ? getPMRooms()       : []; } catch(e){ rooms.pm=[]; }
+  try { rooms.taboo    = require('./routes/taboo').getTabooRooms    ? require('./routes/taboo').getTabooRooms()    : []; } catch(e){ rooms.taboo=[]; }
+  try { rooms.dots     = require('./routes/dots').getDotsRooms      ? require('./routes/dots').getDotsRooms()      : []; } catch(e){ rooms.dots=[]; }
+  try { rooms.hangman  = require('./routes/hangman').getHangRooms   ? require('./routes/hangman').getHangRooms()   : []; } catch(e){ rooms.hangman=[]; }
+  try { rooms.twotruth = require('./routes/twotruth').getTTRooms    ? require('./routes/twotruth').getTTRooms()    : []; } catch(e){ rooms.twotruth=[]; }
+  return rooms;
+});
+app.use('/admin', admin.router);
+
+// Banner API — served to all game pages
+const BANNER_FILE_PATH = require('path').join(__dirname, 'data', 'banner.json');
+app.get('/api/banner', (req, res) => {
+  try {
+    const b = JSON.parse(require('fs').readFileSync(BANNER_FILE_PATH, 'utf8'));
+    res.json(b);
+  } catch(e) {
+    res.json({ active: false, text: '', type: 'info' });
+  }
+});
+
 app.get('/health', (req, res) => res.json({
   status: 'ok',
   pm_rooms:    pm.getRoomCount(),
