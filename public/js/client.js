@@ -809,9 +809,6 @@ function setLang(code) {
   applyTranslations();
   _ga('language_switched', { game:'panstwa_miasta', new_language:code });
   history.replaceState(null, '', window.location.pathname + '?lang=' + code);
-  // Sync burger and footer with new language
-  if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
-  if (typeof window._refreshFooter  === 'function') window._refreshFooter();
 }
 // Alias — shared.js buildLangBar calls setUiLang; PM only defined setLang
 function setUiLang(code) { setLang(code); }

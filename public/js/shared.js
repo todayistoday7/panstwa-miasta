@@ -363,44 +363,7 @@ function initVisibilityToggle() {
 
 })();
 
-// ─── ANNOUNCEMENT BANNER ─────────────────────────────────────────
-(function() {
-  function injectBanner(b) {
-    if (!b || !b.active || !b.text) return;
-    var cols = {
-      info:    { bg:'rgba(29,78,216,.15)',  border:'#1d4ed8', text:'#93c5fd' },
-      warning: { bg:'rgba(120,53,15,.15)',  border:'#92400e', text:'#fbbf24' },
-      success: { bg:'rgba(20,83,45,.15)',   border:'#14532d', text:'#86efac' },
-    };
-    var col = cols[b.type] || cols.info;
-    var el = document.createElement('div');
-    el.id = 'site-banner';
-    el.style.cssText = [
-      'width:100%', 'padding:10px 20px', 'text-align:center',
-      'font-size:13px', 'font-weight:700',
-      'background:' + col.bg,
-      'border-bottom:1px solid ' + col.border,
-      'color:' + col.text,
-      'position:relative', 'z-index:100',
-    ].join(';');
-    el.textContent = b.text;
-    var wrap = document.querySelector('.gb-wrap') || document.querySelector('.container') || document.body;
-    wrap.parentNode ? wrap.parentNode.insertBefore(el, wrap) : document.body.insertBefore(el, document.body.firstChild);
-  }
 
-  function loadBanner() {
-    fetch('/api/banner')
-      .then(function(r) { return r.json(); })
-      .then(injectBanner)
-      .catch(function() {});
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadBanner);
-  } else {
-    loadBanner();
-  }
-})();
 
 // Unified language switcher — same behaviour everywhere.
 // On game pages: calls setUiLang (translates in place + updates URL).
@@ -470,6 +433,7 @@ window._buildFooterLangBtns = function() {
   }).join('');
 };
 // Run after everything is loaded
+window.addEventListener('load', window._buildFooterLangBtns);
 
 // ─── SITE FOOTER ─────────────────────────────────────────────────
 // Injected into every game page automatically on DOMContentLoaded
@@ -530,6 +494,18 @@ window._buildFooterLangBtns = function() {
     };
     var t = L[lp] || L['en'];
 
+    // Build lang flag buttons from LANGS if available, else PL+EN
+    var flagBtns = '';
+    var footerLangs = (typeof LANGS !== 'undefined')
+      ? Object.keys(LANGS).map(function(code) { return { code:code, label:LANGS[code].name }; })
+      : [{code:'pl',label:'🇵🇱 PL'},{code:'en',label:'🇬🇧 EN'}];
+    footerLangs.forEach(function(l) {
+      flagBtns += '<button onclick="window._switchLang(\'' + l.code + '\')" ' +
+        'style="background:none;border:none;color:var(--muted);font-size:12px;' +
+        'cursor:pointer;font-family:Nunito,sans-serif;font-weight:700;padding:0 3px;">' +
+        l.label + '</button>';
+    });
+
     return '<div style="max-width:980px;margin:0 auto;">' +
       '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:28px;margin-bottom:28px;">' +
         '<div>' +
@@ -564,7 +540,7 @@ window._buildFooterLangBtns = function() {
       '</div>' +
       '<div style="border-top:1px solid var(--border);padding-top:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">' +
         '<span style="color:var(--muted);font-size:12px;font-weight:600;">© 2025 panstwamiastagra.com · ' + t.tagline + '</span>' +
-
+        '<div id="footer-lang-btns" style="display:flex;gap:4px;">' + flagBtns + '</div>' +
       '</div>' +
     '</div>';
   }

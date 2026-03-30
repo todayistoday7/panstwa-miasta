@@ -342,6 +342,4 @@ function register(io, socket) {
   });
 }
 
-function getTTRooms() { return Object.values(ttRooms); }
-
-module.exports = { getTTRooms, register, getTTRoomCount };
+module.exports = { register, getTTRoomCount };

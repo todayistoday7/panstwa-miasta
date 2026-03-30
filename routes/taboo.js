@@ -366,7 +366,5 @@ function register(io, socket) {
   });
 }
 
-function getTabooRooms() { return Object.values(tabooRooms); }
-
-module.exports = { getTabooRooms, register, getTabooRoomCount };
+module.exports = { register, getTabooRoomCount };
 // Note: disconnect handler appended below register()

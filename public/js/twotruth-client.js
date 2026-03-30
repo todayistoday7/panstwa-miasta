@@ -579,8 +579,6 @@ function setUiLang(code) {
     b.classList.toggle('active', b.textContent === LANGS[code].name));
   applyTranslations();
   history.replaceState(null, '', window.location.pathname + '?lang=' + code);
-  if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
-  if (typeof window._refreshFooter  === 'function') window._refreshFooter();
 }
 
 function applyTranslations() {

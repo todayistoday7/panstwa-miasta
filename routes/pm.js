@@ -513,6 +513,4 @@ function register(io, socket) {
   });
 }
 
-function getPMRooms() { return Object.values(pmRooms); }
-
-module.exports = { getPMRooms, register, getRoomCount, getRoomByCode };
+module.exports = { register, getRoomCount, getRoomByCode };

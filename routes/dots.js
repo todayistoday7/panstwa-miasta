@@ -348,6 +348,4 @@ function register(io, socket) {
   });
 }
 
-function getDotsRooms() { return Object.values(dotsRooms); }
-
-module.exports = { getDotsRooms, register, getDotsRoomCount };
+module.exports = { register, getDotsRoomCount };
