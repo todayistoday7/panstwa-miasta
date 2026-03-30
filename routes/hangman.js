@@ -384,4 +384,6 @@ function register(io, socket) {
   });
 }
 
-module.exports = { register, getHangRoomCount };
+function getHangRooms() { return Object.values(hangmanRooms); }
+
+module.exports = { getHangRooms, register, getHangRoomCount };

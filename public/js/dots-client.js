@@ -684,6 +684,8 @@ function setUiLang(code) {
   applyTranslations();
   if (roomState) applyState(roomState);
   history.replaceState(null, '', window.location.pathname + '?lang=' + code);
+  if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
+  if (typeof window._refreshFooter  === 'function') window._refreshFooter();
 }
 
 function applyTranslations() {
