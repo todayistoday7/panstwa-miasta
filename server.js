@@ -21,7 +21,12 @@ const admin      = require('./routes/admin');
 
 const app = express();
 app.use(compression());
-app.use(require('cookie-parser')());
+try {
+  app.use(require('cookie-parser')());
+} catch(e) {
+  // cookie-parser not installed yet — admin sessions won't work until redeploy
+  app.use(function(req, res, next) { req.cookies = {}; next(); });
+}
 
 // ─── STATIC + PAGE ROUTES ────────────────────────────────
 app.get('/taboo', (req, res) => res.sendFile(path.join(__dirname, 'public/taboo.html')));
