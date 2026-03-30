@@ -578,6 +578,8 @@ function setUiLang(code) {
   if (roomState) applyState(roomState);
   _ga('language_switched',{game:'taboo',new_language:code});
   history.replaceState(null, '', window.location.pathname + '?lang=' + code);
+  if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
+  if (typeof window._refreshFooter  === 'function') window._refreshFooter();
 }
 
 function applyTranslations() {

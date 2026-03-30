@@ -199,11 +199,22 @@ router.post('/login', express.urlencoded({ extended: false }), (req, res) => {
   }
 
   const entered  = (req.body.password || '').trim();
-  const correct  = getPassword();
-  const isValid  = crypto.timingSafeEqual(
-    Buffer.from(entered.padEnd(64)),
-    Buffer.from(correct.padEnd(64))
-  ) && entered === correct;
+  const correct  = getPassword().trim();
+  // Simple constant-time comparison that handles any length
+  let isValid = false;
+  try {
+    const a = Buffer.from(entered);
+    const b = Buffer.from(correct);
+    if (a.length === b.length) {
+      isValid = crypto.timingSafeEqual(a, b);
+    } else {
+      // Still do a dummy comparison to prevent timing attacks
+      crypto.timingSafeEqual(Buffer.alloc(1), Buffer.alloc(1));
+      isValid = false;
+    }
+  } catch(e) {
+    isValid = false;
+  }
 
   if (!isValid) {
     fail.count++;

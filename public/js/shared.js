@@ -470,7 +470,6 @@ window._buildFooterLangBtns = function() {
   }).join('');
 };
 // Run after everything is loaded
-window.addEventListener('load', window._buildFooterLangBtns);
 
 // ─── SITE FOOTER ─────────────────────────────────────────────────
 // Injected into every game page automatically on DOMContentLoaded
@@ -531,18 +530,6 @@ window.addEventListener('load', window._buildFooterLangBtns);
     };
     var t = L[lp] || L['en'];
 
-    // Build lang flag buttons from LANGS if available, else PL+EN
-    var flagBtns = '';
-    var footerLangs = (typeof LANGS !== 'undefined')
-      ? Object.keys(LANGS).map(function(code) { return { code:code, label:LANGS[code].name }; })
-      : [{code:'pl',label:'🇵🇱 PL'},{code:'en',label:'🇬🇧 EN'}];
-    footerLangs.forEach(function(l) {
-      flagBtns += '<button onclick="window._switchLang(\'' + l.code + '\')" ' +
-        'style="background:none;border:none;color:var(--muted);font-size:12px;' +
-        'cursor:pointer;font-family:Nunito,sans-serif;font-weight:700;padding:0 3px;">' +
-        l.label + '</button>';
-    });
-
     return '<div style="max-width:980px;margin:0 auto;">' +
       '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:28px;margin-bottom:28px;">' +
         '<div>' +
@@ -577,7 +564,7 @@ window.addEventListener('load', window._buildFooterLangBtns);
       '</div>' +
       '<div style="border-top:1px solid var(--border);padding-top:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">' +
         '<span style="color:var(--muted);font-size:12px;font-weight:600;">© 2025 panstwamiastagra.com · ' + t.tagline + '</span>' +
-        '<div id="footer-lang-btns" style="display:flex;gap:4px;">' + flagBtns + '</div>' +
+
       '</div>' +
     '</div>';
   }
