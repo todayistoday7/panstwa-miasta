@@ -54,7 +54,7 @@ const LANGS = {
     pickerWatching:    '👁 Obserwujesz — to Twoje słowo',
     pickInstruction:   'Wpisz słowo do odgadnięcia:',
     hintPlaceholder:   'Podpowiedź / kategoria (opcjonalnie)',
-    hintPlaceholder:   'Dodaj podpowiedź',
+    hintStep:          'Dodaj podpowiedź',
     confirmWord:       '✓ Zatwierdź słowo',
     pickTip:           'Wskazówka: możesz wylosować losowe słowo 👇',
     randomWord:        '🎲 Losowe słowo',

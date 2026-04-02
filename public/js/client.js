@@ -126,6 +126,17 @@ socket.on('stop_called', ({ playerName, gracePeriod }) => {
   }, 500);
 });
 
+socket.on('group_rematch', ({ code }) => {
+  // Host started a rematch — auto-rejoin the new room
+  roomCode = code;
+  sessionStorage.setItem('pm_code', code);
+  sessionStorage.setItem('pm_name', myName);
+  socket.emit('join_room', { name: myName, code: code });
+  showToast(lang === 'pl'
+    ? '🔄 Host zaczął nową grę — dołączasz automatycznie!'
+    : '🔄 Host started a new game — joining automatically!', 5000);
+});
+
 socket.on('player_disconnected', ({ name }) => {
   var rejoinMsg = (lang === 'pl')
     ? '⚠ ' + name + ' rozłączył się — może wrócić z tym samym imieniem i kodem'
@@ -839,6 +850,7 @@ function applyTranslations() {
     'lbl-next-round':'nextRound','lbl-game-over':'gameOver',
     'lbl-final-sub':'finalSub','lbl-final-ranking':'finalRanking',
     'lbl-new-game':'newGame','lbl-force-scoring':'forceScoring',
+    'lbl-play-again-group':'playAgainGroup',
     'lbl-share-btn':'shareBtnLabel','lbl-share-game':'shareGameBtn','nav-share-btn':'shareInviteBtn',
     'lbl-home-rejoin-tip':'homeRejoinTip',
     'lbl-nav-home':'navHome','lbl-leave-room':'leaveRoom',
@@ -863,6 +875,7 @@ function applyTranslations() {
     'lbl-about-players':'aboutPlayers', 'lbl-about-players-desc':'aboutPlayersDesc',
     'lbl-about-free':'aboutFree', 'lbl-about-free-desc':'aboutFreeDesc',
     'lbl-rules-title':'rulesTitle',
+    'lbl-other-games-text':'otherGames',
     'lbl-rule-1':'rule1', 'lbl-rule-2':'rule2', 'lbl-rule-3':'rule3',
     'lbl-rule-4':'rule4', 'lbl-rule-5':'rule5',
     'lbl-lobby-rules-title':'rulesTitle',
@@ -933,3 +946,4 @@ function clearSession() {
 // ─── INIT ───────────────────────────────────────────────
 buildLangBar();
 applyTranslations();
+prefillJoinCode();

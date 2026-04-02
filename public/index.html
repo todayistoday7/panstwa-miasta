@@ -184,9 +184,16 @@
     <div id="home-error" class="error-box" style="display:none;"></div>
     <div style="margin-top:14px;padding:10px 14px;background:rgba(6,214,160,0.07);border:1px solid rgba(6,214,160,0.25);border-radius:10px;font-size:12px;font-weight:700;color:var(--muted);text-align:center;">💡 <span id="lbl-home-rejoin-tip">Jeśli przypadkowo opuścisz grę, wróć z tym samym imieniem i kodem pokoju.</span></div>
     <div class="rules-box" id="rules-text"></div>
-    <div style="text-align:center;margin-top:20px;">
-      <a id="lbl-other-games" href="/games" class="btn secondary" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;">
-        🎮 Other Fun Games
+    <!-- Other games link — visible after create/join but before rules -->
+    <div style="text-align:center;margin-top:20px;margin-bottom:4px;">
+      <a id="lbl-other-games" href="/games"
+         style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;
+                color:var(--muted);font-size:13px;font-weight:700;
+                padding:8px 16px;border:1px solid var(--border);border-radius:8px;
+                background:var(--surface);transition:all .15s;"
+         onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'"
+         onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+        🎮 <span id="lbl-other-games-text">Inne gry</span>
       </a>
     </div>
 
@@ -244,7 +251,7 @@
       <div>
         <div class="room-code-display" id="room-code-display"></div>
         <p class="room-code-hint" id="lbl-share-code">Share this code with your friends</p>
-        <button class="btn share-btn" onclick="doShareRoom()">📤 <span id="lbl-share-btn">Udostępnij pokój</span></button>
+        <button class="btn share-btn" onclick="shareRoom('')">📤 <span id="lbl-share-room">Udostępnij pokój</span></button>
         <div id="rejoin-tip" style="margin-top:12px;padding:10px 14px;background:rgba(6,214,160,0.07);border:1px solid rgba(6,214,160,0.25);border-radius:10px;font-size:12px;font-weight:700;color:var(--muted);display:none;">💡 <span id="lbl-rejoin-tip">Jeśli przypadkowo opuścisz grę, wróć z tym samym imieniem i kodem.</span></div>
       </div>
       <div id="lobby-status"></div>

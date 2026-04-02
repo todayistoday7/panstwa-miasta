@@ -198,12 +198,38 @@ function register(io, socket) {
   socket.on('create_room', ({ name, settings }) => {
     const trimmedName = (name || '').trim();
     if (!trimmedName) { socket.emit('error', { msg: 'Please enter your name before creating a room.' }); return; }
+
+    // Find old room if keepGroup — bring all connected players along
+    let oldPlayers = [];
+    if (settings && settings.keepGroup) {
+      for (const [code, r] of Object.entries(rooms)) {
+        if (r.players.find(p => p.id === socket.id)) {
+          oldPlayers = r.players.filter(p => p.connected && p.id !== socket.id);
+          // Clean up old room
+          if (r._lobbyTimer) clearTimeout(r._lobbyTimer);
+          lobby.remove(code);
+          // Notify old room members to move
+          io.to(code).emit('room_disbanded', { reason: 'rematch' });
+          delete rooms[code];
+          break;
+        }
+      }
+    }
+
     const room = makeRoom(socket.id, settings || {});
     room.players.push({ id: socket.id, name: trimmedName, connected: true });
     room.state.totalScores[socket.id] = 0;
     socket.join(room.code);
+
+    // Re-add old players as pending (they need to rejoin by name)
+    oldPlayers.forEach(p => {
+      room.players.push({ id: p.id, name: p.name, connected: false });
+      room.state.totalScores[p.id] = 0;
+      // Notify each old player directly with the new room code
+      io.to(p.id).emit('group_rematch', { code: room.code });
+    });
+
     socket.emit('room_created', { code: room.code });
-    // 24h lobby expiry — cancelled once game starts
     room._lobbyTimer = setTimeout(() => {
       if (rooms[room.code] && rooms[room.code].state.phase === 'lobby') delete rooms[room.code];
     }, 24 * 60 * 60 * 1000);
