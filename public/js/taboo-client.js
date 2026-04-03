@@ -346,13 +346,7 @@ function renderPlaying(data) {
     }
   }
 
-  if (isGuesser) {
-    const describingOwnTeam = describerTeam === myTeam;
-    document.getElementById('lbl-guesser-instruction').innerHTML =
-      describingOwnTeam
-        ? '<strong style="color:' + myTeamColor + '">' + L.roleGuesserOwn(describerName, describerTeamLabel) + '</strong>'
-        : '<span style="color:var(--muted)">' + L.roleGuesserOpp(describerName, describerTeamLabel) + '</span>';
-  }
+
 
   // Live scores for everyone
   const liveEl = document.getElementById('live-scores');

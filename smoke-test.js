@@ -133,13 +133,18 @@ async function testBurgerMenu(browser) {
 
   // Check all expected links are present
   const expectedHrefs = ['/', '/games', '/taboo', '/hangman', '/dots',
-                          '/twotruth', '/jak-grac', '/kategorie', '/slowa'];
+                          '/twotruth', '/kategorie', '/slowa'];
   for (const href of expectedHrefs) {
     await check(`Burger has link: ${href}`, async () => {
       const link = await page.$(`#gb-nav a[href*="${href}"]`);
       if (!link) throw new Error(`Link to ${href} not found in burger`);
     });
   }
+  // Rules link is /jak-grac in PL or /how-to-play in EN
+  await check('Burger has rules link', async () => {
+    const link = await page.$('#gb-nav a[href*="/jak-grac"], #gb-nav a[href*="/how-to-play"]');
+    if (!link) throw new Error('Rules link not found in burger');
+  });
 
   await ctx.close();
 }
@@ -329,13 +334,13 @@ async function testTabuLobby(browser) {
         await pages[i].fill('#join-name', `Player${i + 1}`);
         await pages[i].fill('#join-code', code);
         await pages[i].click('button:has-text("Join"), button:has-text("Dołącz")');
-        await pages[i].waitForSelector('.lobby-player, #lobby-players', { timeout: 8000 });
+        await pages[i].waitForSelector('.lobby-player, #lobby-players, .team-player, #lobby-teams', { timeout: 8000 });
       });
     }
 
     await check('Tabu — host sees 4 players', async () => {
       await pages[0].waitForTimeout(1000);
-      const players = await pages[0].$$('.lobby-player');
+      const players = await pages[0].$$('.lobby-player, .team-player');
       if (players.length < 4) throw new Error(`Only ${players.length} player(s) visible`);
     });
 
@@ -372,7 +377,7 @@ async function testGamePageTranslations(browser) {
         const btn = await page.$(`button:has-text("${ch.flag}")`);
         if (!btn) throw new Error(`Flag ${ch.flag} not found on ${path}`);
         await btn.click();
-        await page.waitForTimeout(600);
+        await page.waitForTimeout(1000);
         if (!page.url().includes(ch.param))
           throw new Error(`URL still shows: ${page.url()}`);
       });

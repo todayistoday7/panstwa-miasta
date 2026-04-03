@@ -157,11 +157,11 @@
   <div class="explanation" id="page-explanation">
     <div class="ex-row">
       <span class="ex-icon">🌐</span>
-      <span><strong id="exp-public-title">Pokój publiczny</strong> — <span id="exp-public-desc">widoczny na tej stronie. Każdy może dołączyć używając kodu pokoju.</span></span>
+      <span><strong id="exp-public-title">Pokój publiczny</strong> — <span id="exp-public-desc">widoczny tutaj z kodem. Kliknij żeby dołączyć — świetny sposób na poznanie nowych graczy!</span></span>
     </div>
     <div class="ex-row">
       <span class="ex-icon">🔒</span>
-      <span><strong id="exp-private-title">Pokój prywatny</strong> — <span id="exp-private-desc">niewidoczny tutaj. Tylko osoby które otrzymały kod od hosta mogą dołączyć.</span></span>
+      <span><strong id="exp-private-title">Pokój prywatny</strong> — <span id="exp-private-desc">widoczny tutaj, ale bez kodu i bez nazwy hosta. Możesz dołączyć tylko jeśli masz kod od hosta.</span></span>
     </div>
     <div class="ex-row">
       <span class="ex-icon">💡</span>
@@ -199,9 +199,9 @@ const ROOMS_LANGS = {
     pageTitle:      'Aktywne Pokoje',
     pageSubtitle:   'Dołącz do publicznej gry lub stwórz własną',
     expPublicTitle: 'Pokój publiczny',
-    expPublicDesc:  'widoczny na tej stronie. Każdy może dołączyć używając kodu pokoju.',
+    expPublicDesc:  'widoczny tutaj z kodem. Kliknij żeby dołączyć — świetny sposób na poznanie nowych graczy!',
     expPrivateTitle:'Pokój prywatny',
-    expPrivateDesc: 'niewidoczny tutaj. Tylko osoby które otrzymały kod od hosta mogą dołączyć.',
+    expPrivateDesc: 'widoczny tutaj, ale bez kodu i bez nazwy hosta. Możesz dołączyć tylko jeśli masz kod od hosta.',
     expTip:         'Ta strona pokazuje tylko pokoje w fazie oczekiwania. Gry w trakcie nie są widoczne.',
     roomsLabel:     ' aktywnych pokoi',
     refresh:        '↻ Odśwież',
@@ -211,6 +211,8 @@ const ROOMS_LANGS = {
     emptyDesc:      'Nikt jeszcze nie otworzył publicznego pokoju.\nStwórz własny i zaproś znajomych!',
     emptyBtn:       '🎮 Stwórz pokój',
     loading:        'Ładowanie...',
+    private:        'Prywatny',
+    privateHost:    'Host ukryty',
     hosted:         'Host:',
     allGames:       'Wszystkie gry',
     langPm:         'Państwa-Miasta',
@@ -223,9 +225,9 @@ const ROOMS_LANGS = {
     pageTitle:      'Live Rooms',
     pageSubtitle:   'Join a public game or create your own',
     expPublicTitle: 'Public room',
-    expPublicDesc:  'visible on this page. Anyone can join using the room code.',
+    expPublicDesc:  'visible here with the room code. Click to join — great way to meet new players!',
     expPrivateTitle:'Private room',
-    expPrivateDesc: 'not listed here. Only people who received the code from the host can join.',
+    expPrivateDesc: 'visible here, but without the code or host name. You can only join if you have the code from the host.',
     expTip:         'This page only shows rooms waiting for players. Games in progress are not listed.',
     roomsLabel:     ' active rooms',
     refresh:        '↻ Refresh',
@@ -235,6 +237,8 @@ const ROOMS_LANGS = {
     emptyDesc:      'Nobody has opened a public room yet.\nCreate your own and invite friends!',
     emptyBtn:       '🎮 Create a room',
     loading:        'Loading...',
+    private:        'Private',
+    privateHost:    'Host hidden',
     hosted:         'Host:',
     allGames:       'All Games',
     langPm:         'Countries & Cities',
@@ -247,9 +251,9 @@ const ROOMS_LANGS = {
     pageTitle:      'Aktive Räume',
     pageSubtitle:   'Tritt einem öffentlichen Spiel bei oder erstelle deinen eigenen',
     expPublicTitle: 'Öffentlicher Raum',
-    expPublicDesc:  'auf dieser Seite sichtbar. Jeder kann mit dem Raumcode beitreten.',
+    expPublicDesc:  'hier mit dem Raumcode sichtbar. Klicke zum Beitreten — tolle Möglichkeit neue Spieler kennenzulernen!',
     expPrivateTitle:'Privater Raum',
-    expPrivateDesc: 'hier nicht aufgelistet. Nur Personen mit dem Code des Hosts können beitreten.',
+    expPrivateDesc: 'hier sichtbar, aber ohne Code und Hostname. Du kannst nur beitreten wenn du den Code vom Host hast.',
     expTip:         'Diese Seite zeigt nur Räume, die auf Spieler warten. Laufende Spiele werden nicht angezeigt.',
     roomsLabel:     ' aktive Räume',
     refresh:        '↻ Aktualisieren',
@@ -259,6 +263,8 @@ const ROOMS_LANGS = {
     emptyDesc:      'Noch niemand hat einen öffentlichen Raum geöffnet.\nErstelle deinen eigenen!',
     emptyBtn:       '🎮 Raum erstellen',
     loading:        'Laden...',
+    private:        'Privat',
+    privateHost:    'Host verborgen',
     hosted:         'Host:',
     allGames:       'Alle Spiele',
     langPm:         'Länder & Städte',
@@ -379,21 +385,28 @@ function renderRooms() {
   }
 
   list.innerHTML = rooms.map(function(r) {
-    var joinUrl = r.gameSlug + '?join=' + r.code + '&lang=' + lang;
+    var isPublic = r.isPublic;
+    var joinUrl  = isPublic ? (r.gameSlug + '?join=' + r.code + '&lang=' + lang) : null;
     var langPill = r.lang ? '<span class="pill pill-blue">' + r.lang.toUpperCase() + '</span>' : '';
-    var phasePill = '<span class="pill pill-green">⏳ waiting</span>';
-    return '<a href="' + joinUrl + '" class="room-card">' +
+    var privPill = isPublic ? '' : '<span class="pill pill-orange">🔒 ' + (L.private || 'Private') + '</span>';
+    var card =
       '<div class="room-icon">' + r.gameIcon + '</div>' +
       '<div class="room-info">' +
         '<div class="room-game">' + r.gameName + '</div>' +
-        '<div class="room-host">' + L.hosted + ' <strong>' + r.hostMasked + '</strong></div>' +
+        (isPublic
+          ? '<div class="room-host">' + L.hosted + ' <strong>' + r.hostMasked + '</strong></div>'
+          : '<div class="room-host" style="color:var(--muted);font-style:italic;">' + (L.privateHost || '🔒 Host hidden') + '</div>'
+        ) +
         '<div class="room-meta">' +
-          '<span class="pill pill-orange">' + L.players(r.players, r.maxPlayers) + '</span>' +
-          langPill + phasePill +
+          '<span class="pill pill-green">' + L.players(r.players, r.maxPlayers) + '</span>' +
+          langPill + privPill +
         '</div>' +
       '</div>' +
-      '<span class="room-join">' + L.join + '</span>' +
-    '</a>';
+      (isPublic ? '<span class="room-join">' + L.join + '</span>' : '<span style="font-size:12px;color:var(--muted);font-weight:700;flex-shrink:0;">🔒</span>');
+
+    return isPublic
+      ? '<a href="' + joinUrl + '" class="room-card">' + card + '</a>'
+      : '<div class="room-card" style="cursor:default;opacity:0.6;">' + card + '</div>';
   }).join('');
 }
 

@@ -36,6 +36,7 @@ app.get('/dots',        (req, res) => res.sendFile(path.join(__dirname, 'public/
 app.get('/hangman',     (req, res) => res.sendFile(path.join(__dirname, 'public/hangman.html')));
 app.get('/bingo',       (req, res) => res.sendFile(path.join(__dirname, 'public/bingo.html')));
 app.get('/rooms',       (req, res) => res.sendFile(path.join(__dirname, 'public/rooms.html')));
+app.get('/privacy',     (req, res) => res.sendFile(path.join(__dirname, 'public/privacy.html')));
 app.get('/games',       (req, res) => res.sendFile(path.join(__dirname, 'public/games.html')));
 app.get('/jak-grac/tabu',                      (req, res) => res.sendFile(path.join(__dirname, 'public/jak-grac/tabu.html')));
 app.get('/jak-grac/wisielec',                   (req, res) => res.sendFile(path.join(__dirname, 'public/jak-grac/wisielec.html')));

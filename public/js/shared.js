@@ -625,7 +625,7 @@ window._buildFooterLangBtns = function() {
 
     var texts = {
       pl: {
-        msg: 'Ta strona używa plików cookie do analizy ruchu (Google Analytics). Nie sprzedajemy danych. Możesz zaakceptować lub odrzucić analitykę.',
+        msg: 'Ta strona używa plików cookie do analizy ruchu (Google Analytics). Nie sprzedajemy danych. <a href="/privacy" style="color:var(--accent2)">Polityka prywatności</a>. Możesz zaakceptować lub odrzucić analitykę.',
         accept: '✓ Akceptuję',
         reject: 'Odrzucam',
       },
@@ -757,12 +757,12 @@ window._buildFooterLangBtns = function() {
     btn.textContent = t.btn;
     btn.title = t.title;
     btn.style.cssText = [
-      'position:fixed', 'bottom:80px', 'right:16px', 'z-index:8000',
+      'position:fixed', 'bottom:24px', 'right:16px', 'z-index:10000',
       'width:42px', 'height:42px', 'border-radius:50%',
-      'background:#1a1d2e', 'border:1px solid #2d3152',
-      'color:#64748b', 'font-size:18px', 'cursor:pointer',
+      'background:#1a1d2e', 'border:1px solid #64748b',
+      'color:#94a3b8', 'font-size:18px', 'cursor:pointer',
       'display:flex', 'align-items:center', 'justify-content:center',
-      'transition:all .2s', 'box-shadow:0 2px 8px rgba(0,0,0,.4)',
+      'transition:all .2s', 'box-shadow:0 2px 12px rgba(0,0,0,.5)',
       'font-family:sans-serif', 'line-height:1',
     ].join(';');
     btn.onmouseover = function() {
