@@ -243,27 +243,27 @@ function initVisibilityToggle() {
     '.gb-div{height:1px;background:var(--border);margin:4px 6px;}';
 
   var LABELS = {
-    pl: { home:'Strona główna', games:'Wszystkie gry', rooms:'Aktywne pokoje', rules:'Zasady gier',
+    pl: { home:'Strona główna', games:'Wszystkie gry', rooms:'Aktywne pokoje', bug:'🐛 Zgłoś błąd', rules:'Zasady gier',
           cats:'Kategorie', words:'Słowa na literę',
           sg:'Gry', sr:'Zasady', sm:'Więcej',
           gpm:'Państwa-Miasta', gtaboo:'Zakazane Słowa',
           ghang:'Wisielec', gdots:'Kropki i Kreski', gtt:'Dwie Prawdy Jedno Kłamstwo' },
-    en: { home:'Home', games:'All Games', rooms:'Live Rooms', rules:'Game Rules',
+    en: { home:'Home', games:'All Games', rooms:'Live Rooms', bug:'🐛 Report a Bug', rules:'Game Rules',
           cats:'Categories', words:'Words by Letter',
           sg:'Games', sr:'Rules', sm:'More',
           gpm:'Countries & Cities', gtaboo:'Forbidden Words',
           ghang:'Hangman', gdots:'Dots & Boxes', gtt:'2 Truths 1 Lie' },
-    de: { home:'Startseite', games:'Alle Spiele', rooms:'Aktive Räume', rules:'Spielregeln',
+    de: { home:'Startseite', games:'Alle Spiele', rooms:'Aktive Räume', bug:'🐛 Fehler melden', rules:'Spielregeln',
           cats:'Kategorien', words:'Wörter nach Buchstabe',
           sg:'Spiele', sr:'Regeln', sm:'Mehr',
           gpm:'Länder & Städte', gtaboo:'Verbotene Wörter',
           ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge' },
-    fr: { home:'Accueil', games:'Tous les jeux', rooms:'Salles actives', rules:'Règles',
+    fr: { home:'Accueil', games:'Tous les jeux', rooms:'Salles actives', bug:'🐛 Signaler un bug', rules:'Règles',
           cats:'Catégories', words:'Mots par lettre',
           sg:'Jeux', sr:'Règles', sm:'Plus',
           gpm:'Pays & Villes', gtaboo:'Mots Interdits',
           ghang:'Pendu', gdots:'Points & Lignes', gtt:'2 Vérités 1 Mensonge' },
-    es: { home:'Inicio', games:'Todos los juegos', rooms:'Salas activas', rules:'Reglas',
+    es: { home:'Inicio', games:'Todos los juegos', rooms:'Salas activas', bug:'🐛 Reportar error', rules:'Reglas',
           cats:'Categorías', words:'Palabras por letra',
           sg:'Juegos', sr:'Reglas', sm:'Más',
           gpm:'Países & Ciudades', gtaboo:'Palabras Prohibidas',
@@ -340,6 +340,8 @@ function initVisibilityToggle() {
       '<a href="/' + ql + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
       '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
       '<a href="/rooms' + ql + '"><span class="gb-ico">🔴</span>' + (t.rooms||'Live Rooms') + '</a>' +
+      '<div class="gb-div"></div>' +
+      '<a href="#" onclick="event.preventDefault();openBugModal();" style="cursor:pointer;"><span class="gb-ico">🐛</span>' + (t.bug||'Report a Bug') + '</a>' +
       '<a href="/' + ql + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
       '<a href="/taboo' + ql + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
       '<a href="/hangman' + ql + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
@@ -584,6 +586,7 @@ window._buildFooterLangBtns = function() {
             '<a href="/kategorie" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">📋 ' + t.cats + '</a>' +
             '<a href="/slowa" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔤 Słowa na literę</a>' +
             '<a href="/privacy" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔒 ' + t.privacy + '</a>' +
+            '<a href="#" onclick="event.preventDefault();if(typeof openBugModal===\'function\')openBugModal();" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;">' + (t.bug||'🐛 Report a Bug') + '</a>' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -751,34 +754,7 @@ window._buildFooterLangBtns = function() {
     var lang = getLang();
     var t = LABELS[lang] || LABELS['pl'];
 
-    // Floating button
-    var btn = document.createElement('button');
-    btn.id = 'bug-report-btn';
-    btn.textContent = t.btn;
-    btn.title = t.title;
-    btn.style.cssText = [
-      'position:fixed', 'bottom:24px', 'right:16px', 'z-index:10000',
-      'width:42px', 'height:42px', 'border-radius:50%',
-      'background:#1a1d2e', 'border:1px solid #64748b',
-      'color:#94a3b8', 'font-size:18px', 'cursor:pointer',
-      'display:flex', 'align-items:center', 'justify-content:center',
-      'transition:all .2s', 'box-shadow:0 2px 12px rgba(0,0,0,.5)',
-      'font-family:sans-serif', 'line-height:1',
-    ].join(';');
-    btn.onmouseover = function() {
-      btn.style.borderColor = 'var(--accent)';
-      btn.style.color = 'var(--accent)';
-      btn.style.transform = 'scale(1.1)';
-    };
-    btn.onmouseout = function() {
-      btn.style.borderColor = 'var(--border)';
-      btn.style.color = 'var(--muted)';
-      btn.style.transform = 'scale(1)';
-    };
-    btn.onclick = function() { openBugModal(); };
-    document.body.appendChild(btn);
-
-    // Modal overlay
+    // Modal overlay only — button is in burger menu and footer
     var overlay = document.createElement('div');
     overlay.id = 'bug-modal-overlay';
     overlay.style.cssText = [
