@@ -143,6 +143,24 @@ function register(io, socket) {
   socket.on('taboo_create', ({ name, settings }) => {
     const room = makeTabooRoom(socket.id, settings || {});
     room.players.push({ id: socket.id, name: name || 'Host', connected: true });
+    // keepGroup — move all connected players from old room to new one
+    if (settings && settings.keepGroup) {
+      for (const [code, r] of Object.entries(tabooRooms)) {
+        if (r.players.find(p => p.id === socket.id)) {
+          const oldPlayers = r.players.filter(p => p.connected && p.id !== socket.id);
+          if (r._lobbyTimer) clearTimeout(r._lobbyTimer);
+          lobby.remove(code);
+          io.to(code).emit('room_disbanded', { reason: 'rematch' });
+          delete tabooRooms[code];
+          oldPlayers.forEach(p => {
+            room.players.push({ id: p.id, name: p.name, connected: false });
+            io.to(p.id).emit('taboo_group_rematch', { code: room.code });
+          });
+          break;
+        }
+      }
+    }
+
     socket.join(room.code);
     socket.emit('taboo_room_created', { code: room.code });
     lobby.announce('taboo', room);

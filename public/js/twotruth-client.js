@@ -560,8 +560,18 @@ function setGameLang(code) {
 function copyRoomCode() { shareRoom('twotruth'); }
 
 function playAgainGroup() {
-  socket.emit('tt_create', { name: myName, settings: { lang, isPublic: getIsPublic() }});
+  socket.emit('tt_create', { name: myName, settings: { lang, isPublic: getIsPublic(), keepGroup: true }});
 }
+
+socket.on('tt_group_rematch', ({ code }) => {
+  roomCode = code;
+  sessionStorage.setItem('tt_code', code);
+  sessionStorage.setItem('tt_name', myName);
+  socket.emit('tt_join', { name: myName, code: code });
+  showToast(lang === 'pl'
+    ? '🔄 Host zaczął nową grę — dołączasz automatycznie!'
+    : '🔄 Host started a new game — joining automatically!', 5000);
+});
 
 function goHome() {
   roomCode = ''; roomState = null; myName = ''; myVote = null; myLieIdx = null;
@@ -594,6 +604,8 @@ function applyTranslations() {
     'lbl-start-btn':    'startBtn',    'lbl-leave-room':   'leaveRoom',
     'lbl-share-code':   'shareCode',   'lbl-copy-code':    'copyCode',
     'lbl-share-room':   'shareRoom',   'lbl-how-to-play':  'howToPlay',
+    'lbl-nav-home':         'navHome',
+    'lbl-nav-all-games':    'navAllGames',
     'lbl-rule-1':       'rule1',       'lbl-rule-2':       'rule2',
     'lbl-rule-3':       'rule3',       'lbl-rule-4':       'rule4',
     'lbl-lobby-how-to-play':'howToPlay',

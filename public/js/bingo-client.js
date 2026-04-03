@@ -26,6 +26,8 @@ const LANGS_BINGO = {
     playAgain:       '🔄 Zagraj jeszcze raz',
     freeSquare:      'BINGO',
     howToPlay:       'Zasady gry',
+    navHome:         'Strona główna',
+    navAllGames:     'Wszystkie gry',
     rule1:           'Stwórz pokój i udostępnij kod znajomym',
     rule2:           'Każdy gracz dostaje unikalną kartę 5×5 z hasłami korporacyjnymi',
     rule3:           'Podczas spotkania — kliknij hasło gdy je usłyszysz',
@@ -62,6 +64,8 @@ const LANGS_BINGO = {
     playAgain:       '🔄 Play Again',
     freeSquare:      'BINGO',
     howToPlay:       'How to play',
+    navHome:         'Home',
+    navAllGames:     'All Games',
     rule1:           'Create a room and share the code with friends',
     rule2:           'Each player gets a unique 5×5 card with corporate phrases',
     rule3:           'During a meeting — tap a phrase when you hear it',
@@ -98,6 +102,8 @@ const LANGS_BINGO = {
     playAgain:       '🔄 Nochmal spielen',
     freeSquare:      'BINGO',
     howToPlay:       'Spielregeln',
+    navHome:         'Startseite',
+    navAllGames:     'Alle Spiele',
     rule1:           'Erstelle einen Raum und teile den Code mit Freunden',
     rule2:           'Jeder Spieler erhält eine einzigartige 5×5-Karte mit Unternehmensphrasen',
     rule3:           'Während eines Meetings — tippe eine Phrase wenn du sie hörst',
@@ -126,7 +132,12 @@ let roomState = null;
 let isHost    = false;
 
 // ── Socket plumbing ───────────────────────────────────────
-socket.on('connect', () => { myId = socket.id; });
+socket.on('connect', () => {
+  myId = socket.id;
+});
+socket.on('reconnect', () => {
+  myId = socket.id;
+});
 
 socket.on('bingo_created', ({ code }) => {
   roomCode = code;
@@ -179,6 +190,15 @@ function renderLobby(data) {
   const codeEl = document.getElementById('room-code-display');
   if (codeEl) codeEl.textContent = data.code;
 
+  // Init visibility toggle once
+  if (isHost && typeof initVisibilityToggle === 'function') {
+    var togWrap = document.getElementById('vis-private');
+    if (togWrap && !togWrap._bingoVisInit) {
+      togWrap._bingoVisInit = true;
+      initVisibilityToggle();
+    }
+  }
+
   // Player list
   const list = document.getElementById('lobby-players');
   if (list) {
@@ -221,7 +241,9 @@ function renderLobby(data) {
 // ── Render playing ────────────────────────────────────────
 function renderPlaying(data) {
   const { players, myCard, myMarked } = data;
-  if (!myCard) return;
+  // Ensure myId is set - may be null on first render
+  if (!myId) myId = socket.id;
+  if (!myCard || !myCard.length) return;
 
   // Build/update grid
   const grid = document.getElementById('bingo-grid');
@@ -251,9 +273,9 @@ function renderProgress(players, data) {
   if (!el) return;
   el.innerHTML = '';
   players.forEach(p => {
-    const marked = (data.myCard && p.id === myId)
-      ? data.myMarked.filter(Boolean).length
-      : (p.marked ? p.marked.filter(Boolean).length : 0);
+    // Server sends full marked array in players list for progress display
+    const markedArr = (p.id === myId) ? data.myMarked : (p.marked || []);
+    const marked = markedArr.filter(Boolean).length;
     const row = document.createElement('div');
     row.className = 'progress-row';
     row.innerHTML =
@@ -385,11 +407,19 @@ function applyTranslations() {
     'lbl-call-bingo':     'callBingo',
     'lbl-play-again':     'playAgain',
     'lbl-how-to-play':    'howToPlay',
+    'lbl-nav-home':       'navHome',
+    'lbl-nav-all-games':  'navAllGames',
     'lbl-rule-1':         'rule1',
     'lbl-rule-2':         'rule2',
     'lbl-rule-3':         'rule3',
     'lbl-rule-4':         'rule4',
     'lbl-rule-5':         'rule5',
+    'lbl-lobby-how-to-play':'howToPlay',
+    'lbl-lobby-rule-1':   'rule1',
+    'lbl-lobby-rule-2':   'rule2',
+    'lbl-lobby-rule-3':   'rule3',
+    'lbl-lobby-rule-4':   'rule4',
+    'lbl-lobby-rule-5':   'rule5',
     'lbl-rejoin-tip':     'rejoinTip',
     'lbl-leave-room':     'leaveRoom',
     'lbl-language':       'language',

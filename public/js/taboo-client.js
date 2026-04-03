@@ -23,7 +23,7 @@ const LANGS_TABOO = {
     createRoom: 'Stwórz pokój', joinRoom: 'Dołącz do pokoju',
     yourName: 'Twoje imię', joinName: 'Twoje imię', roomCode: 'Kod pokoju',
     createBtn: 'Stwórz pokój', joinBtn: 'Dołącz',
-    settings: 'Ustawienia', roundsTitle: 'Rundy', timerTitle: 'Czas na turę', langTitle: 'Język',
+    settings: 'Ustawienia', roundsTitle: 'Rundy', timerTitle: 'Czas na rundę', langTitle: 'Język',
     startBtn: '🎮 Rozpocznij grę', leaveRoom: '🚪 Wyjdź',
     shareCode: 'Udostępnij ten kod znajomym', copyCode: 'Skopiuj kod',
     shareRoom: 'Udostępnij pokój', homeRejoinTip: 'Jeśli przypadkowo opuścisz grę, wróć z tym samym imieniem i kodem pokoju.',
@@ -31,13 +31,15 @@ const LANGS_TABOO = {
     createDisclaimer: 'Stwórz pokój otwarty lub prywatny. Zaproś znajomych — otrzymasz kod pokoju, który przekażesz innym graczom.',
     waitingForHost: 'Czekam na hosta...',
     howToPlay: 'Zasady gry',
+    navHome: 'Strona główna',
+    navAllGames: 'Wszystkie gry',
     minPlayers: '⚠️ Potrzebujesz minimum 4 graczy (2 na drużynę)',
     playersJoined: function(n) { return n + ' graczy dołączyło'; },
     rule1: 'Minimum 4 graczy — losowy podział na 2 drużyny',
     rule2: 'Opisujący z Drużyny A — jego drużyna zgaduje',
     rule3: 'Sędzia z Drużyny B — łapie zakazane słowa',
     rule4: 'Zgadnięte słowo = +1 dla drużyny · Zakazane słowo = +1 dla drużyny przeciwnej',
-    rule5: 'Drużyny zmieniają się rolami co turę',
+    rule5: 'Drużyny zmieniają się rolami co rundę',
     rule6: 'Wygrywa drużyna z największą liczbą punktów!',
     teamRed: '🔴 Drużyna Czerwona', teamBlue: '🔵 Drużyna Niebieska',
     yourTeam: 'Twoja drużyna',
@@ -48,18 +50,18 @@ const LANGS_TABOO = {
     roleDescriber: function(team) { return '🎤 OPISUJESZ — ' + team + ' zgaduje'; },
     roleReferee: function(team) { return '👁 SĘDZIA — pilnujesz ' + team; },
     roleGuesserOwn: function(name, team) { return '🤔 ZGADUJ! ' + name + ' (' + team + ') opisuje dla Twojej drużyny'; },
-    roleGuesserOpp: function(name, team) { return '👀 ' + name + ' (' + team + ') opisuje dla drużyny przeciwnej — czekaj na swoją turę'; },
+    roleGuesserOpp: function(name, team) { return '👀 ' + name + ' (' + team + ') opisuje dla drużyny przeciwnej — czekaj na swoją rundę'; },
     forbidden: 'Nie mów:', forbiddenRef: 'Słowa zakazane:',
     refereeSeesWord: 'Widzisz słowo (pilnuj zakazanych!):',
     waitingForWord: 'Czekam aż opisujący zacznie...',
     gotIt: 'Zgadli! +1', skip: 'Pomiń', penalty: '⚠️ Zakazane słowo! +1 dla nas',
-    roundOver: 'Koniec tury!', gameOver: 'Koniec gry!', newGame: 'Nowa gra', shareResults: 'Udostępnij wyniki',
+    roundOver: 'Koniec rundy!', gameOver: 'Koniec gry!', newGame: 'Nowa gra', shareResults: 'Udostępnij wyniki',
     correct: '✅ Punkt dla',
     penaltyLabel: function(team) { return '⚠️ +1 dla ' + team; },
-    skipLabel: '⏭ Pominięto', timeUp: 'Czas minął!', nextRound: 'Następna tura →',
+    skipLabel: '⏭ Pominięto', timeUp: 'Czas minął!', nextRound: 'Następna runda →',
     waitingNext: 'Czekam na hosta...',
     hostBadge: 'HOST', youBadge: 'TY ·',
-    thisRound: 'ta tura', total: 'łącznie',
+    thisRound: 'ta runda', total: 'łącznie',
     winner: function(team) { return '🏆 ' + team + ' wygrywa!'; },
     draw: 'Remis! 🤝',
   },
@@ -78,6 +80,8 @@ const LANGS_TABOO = {
     createDisclaimer: 'Create a public or private room. Invite friends — you\'ll get a room code to share with other players.',
     waitingForHost: 'Waiting for host...',
     howToPlay: 'How to play',
+    navHome: 'Home',
+    navAllGames: 'All Games',
     minPlayers: '⚠️ You need at least 4 players (2 per team)',
     playersJoined: function(n) { return n + ' players joined'; },
     rule1: 'Minimum 4 players — randomly split into 2 teams',
@@ -536,8 +540,19 @@ function shareResults() {
 function playAgainGroup() {
   socket.emit('taboo_create', { name: myName, settings: {
     rounds: 5, turnTime: 60, lang, isPublic: getIsPublic(),
+    keepGroup: true,
   }});
 }
+
+socket.on('taboo_group_rematch', ({ code }) => {
+  roomCode = code;
+  sessionStorage.setItem('taboo_code', code);
+  sessionStorage.setItem('taboo_name', myName);
+  socket.emit('taboo_join', { name: myName, code: code });
+  showToast(lang === 'pl'
+    ? '🔄 Host zaczął nową grę — dołączasz automatycznie!'
+    : '🔄 Host started a new game — joining automatically!', 5000);
+});
 
 function goHome() {
   roomCode = ''; roomState = null; myName = '';
@@ -594,6 +609,8 @@ function applyTranslations() {
     'lbl-share-code':'shareCode','lbl-copy-code':'copyCode',
     'lbl-share-room':'shareRoom','lbl-home-rejoin-tip':'homeRejoinTip',
     'lbl-how-to-play':'howToPlay',
+    'lbl-nav-home':         'navHome',
+    'lbl-nav-all-games':    'navAllGames',
     'lbl-rule-1':'rule1','lbl-rule-2':'rule2','lbl-rule-3':'rule3',
     'lbl-rule-4':'rule4','lbl-rule-5':'rule5','lbl-rule-6':'rule6',
     'lbl-lobby-how-to-play':'howToPlay',

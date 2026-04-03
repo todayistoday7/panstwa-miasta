@@ -747,6 +747,8 @@ function applyTranslations() {
     'lbl-start-btn':        'startBtn',    'lbl-leave-room':       'leaveRoom',
     'lbl-share-code':       'shareCode',   'lbl-share-room':       'shareRoom',
     'lbl-how-to-play':      'howToPlay',
+    'lbl-nav-home':         'navHome',
+    'lbl-nav-all-games':    'navAllGames',
     'lbl-hint-step':        'hintStep',
     'lbl-rule-1':           'rule1',       'lbl-rule-2':           'rule2',
     'lbl-lobby-how-to-play':'howToPlay',

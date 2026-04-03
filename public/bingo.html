@@ -487,9 +487,16 @@
     <div style="width:100%;text-align:center;">
       <div class="room-code-display" id="room-code-display"></div>
       <p class="room-code-hint">Udostępnij kod znajomym</p>
-      <button class="btn btn-secondary" onclick="shareRoomBingo()" style="margin-bottom:12px;">
+      <button class="btn btn-secondary" onclick="shareRoomBingo()" style="margin-bottom:8px;">
         📤 <span id="lbl-share-room">Udostępnij pokój</span>
       </button>
+      <div style="display:flex;justify-content:center;margin-bottom:4px;">
+        <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;max-width:280px;width:100%;">
+          <div class="vis-option" id="vis-private" style="border-radius:0;flex:1;padding:6px 10px;text-align:center;font-size:12px;cursor:pointer;" onclick="setVisibility(false)">🔒 <span id="lbl-vis-private">Private</span></div>
+          <div class="vis-option" id="vis-public"  style="border-radius:0;flex:1;padding:6px 10px;text-align:center;font-size:12px;cursor:pointer;" onclick="setVisibility(true)">🌐 <span id="lbl-vis-public">Public</span></div>
+        </div>
+      </div>
+      <p id="lbl-vis-hint" style="font-size:11px;color:var(--muted);margin-bottom:8px;font-weight:700;text-align:center;"></p>
     </div>
 
     <div class="card">

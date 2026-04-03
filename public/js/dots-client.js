@@ -318,9 +318,10 @@ function renderLobby(data) {
     document.getElementById('waiting-msg').style.display   = 'none';
     // Show round progress if mid-game (returning between rounds)
     var roundBadge = document.getElementById('dots-round-badge');
+    var totalRounds = (settings && settings.totalRounds) || 1;
+    var roundsAccum = data.totalRoundsAccum || 0;
+    var isBetweenRounds = roundsAccum > 0 && roundsAccum < totalRounds;
     if (roundBadge) {
-      var totalRounds = (settings && settings.totalRounds) || 1;
-      var roundsAccum = data.totalRoundsAccum || 0;
       if (totalRounds > 1) {
         roundBadge.style.display = 'block';
         roundBadge.textContent = (lang === 'pl' ? 'Runda ' : 'Round ') +
@@ -328,6 +329,17 @@ function renderLobby(data) {
       } else {
         roundBadge.style.display = 'none';
       }
+    }
+    // Between rounds: hide settings, show just "Start Next Round"
+    var settingsCard = document.getElementById('lobby-settings-card');
+    var startBtn = document.getElementById('lobby-start-btn');
+    if (isBetweenRounds) {
+      if (settingsCard) settingsCard.style.display = 'none';
+      if (startBtn) startBtn.textContent = lang === 'pl'
+        ? '▶ Następna runda' : lang === 'de' ? '▶ Nächste Runde' : '▶ Next Round';
+    } else {
+      if (settingsCard) settingsCard.style.display = 'block';
+      if (startBtn) startBtn.textContent = L.startBtn || '▶ Start Game';
     }
   } else {
     // Non-host: always sync settings from server (read-only)
@@ -699,6 +711,8 @@ function applyTranslations() {
     'lbl-players-title':'playersTitle','lbl-start-btn':    'startBtn',
     'lbl-leave-room':   'leaveRoom',   'lbl-share-code':   'shareCode',
     'lbl-copy-code':    'copyCode',    'lbl-how-to-play':  'howToPlay',
+    'lbl-nav-home':         'navHome',
+    'lbl-nav-all-games':    'navAllGames',
     'lbl-rule-1':       'rule1',       'lbl-rule-2':       'rule2',
     'lbl-rule-3':       'rule3',       'lbl-rule-4':       'rule4',
     'lbl-lobby-how-to-play':'howToPlay',

@@ -53,7 +53,8 @@ function emitBingoState(io, room) {
       name:      p.name,
       connected: p.connected,
       bingo:     p.bingo,
-      marked:    p.marked.filter((_, i) => true), // send full marked array
+      markedCount: p.marked ? p.marked.filter(Boolean).length : 0,
+      marked:    p.marked || [],
     })),
   };
   // Each player gets their own card — emit individually
@@ -70,9 +71,7 @@ function getBingoRooms() {
   return Object.values(bingoRooms);
 }
 
-function register(io) {
-
-  io.on('connection', socket => {
+function register(io, socket) {
 
     // ── Create room ─────────────────────────────────────
     socket.on('bingo_create', ({ name, lang }) => {
@@ -228,7 +227,6 @@ function register(io) {
       }
     });
 
-  });
 }
 
 // ════════════════════════════════════════════════════════

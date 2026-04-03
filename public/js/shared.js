@@ -174,6 +174,29 @@ function setVisibility(isPublic) {
   var pub  = document.getElementById('vis-public');
   if (priv) priv.classList.toggle('active', !_isPublic);
   if (pub)  pub.classList.toggle('active',   _isPublic);
+
+  // Show explanation hint
+  var hint = document.getElementById('lbl-vis-hint');
+  if (hint) {
+    var lang = (new URLSearchParams(window.location.search).get('lang') || 'pl');
+    var hints = {
+      pl: {
+        priv: '🔒 Prywatny — tylko osoby z Twoim kodem mogą dołączyć.',
+        pub:  '🌐 Publiczny — każdy może zobaczyć pokój na stronie /gry i dołączyć. Świetne do poznawania nowych graczy!',
+      },
+      en: {
+        priv: '🔒 Private — only people with your code can join.',
+        pub:  '🌐 Public — anyone can see your room on the /games page and join. Great way to meet new players!',
+      },
+      de: {
+        priv: '🔒 Privat — nur Personen mit deinem Code können beitreten.',
+        pub:  '🌐 Öffentlich — jeder kann deinen Raum auf der /games-Seite sehen. Toll um neue Spieler zu treffen!',
+      },
+    };
+    var t = hints[lang] || hints['pl'];
+    hint.textContent = _isPublic ? t.pub : t.priv;
+  }
+
   if (typeof updateSettings === 'function') updateSettings();
 }
 
@@ -220,27 +243,27 @@ function initVisibilityToggle() {
     '.gb-div{height:1px;background:var(--border);margin:4px 6px;}';
 
   var LABELS = {
-    pl: { home:'Strona główna', games:'Wszystkie gry', rules:'Zasady gier',
+    pl: { home:'Strona główna', games:'Wszystkie gry', rooms:'Aktywne pokoje', rules:'Zasady gier',
           cats:'Kategorie', words:'Słowa na literę',
           sg:'Gry', sr:'Zasady', sm:'Więcej',
           gpm:'Państwa-Miasta', gtaboo:'Zakazane Słowa',
           ghang:'Wisielec', gdots:'Kropki i Kreski', gtt:'Dwie Prawdy Jedno Kłamstwo' },
-    en: { home:'Home', games:'All Games', rules:'Game Rules',
+    en: { home:'Home', games:'All Games', rooms:'Live Rooms', rules:'Game Rules',
           cats:'Categories', words:'Words by Letter',
           sg:'Games', sr:'Rules', sm:'More',
           gpm:'Countries & Cities', gtaboo:'Forbidden Words',
           ghang:'Hangman', gdots:'Dots & Boxes', gtt:'2 Truths 1 Lie' },
-    de: { home:'Startseite', games:'Alle Spiele', rules:'Spielregeln',
+    de: { home:'Startseite', games:'Alle Spiele', rooms:'Aktive Räume', rules:'Spielregeln',
           cats:'Kategorien', words:'Wörter nach Buchstabe',
           sg:'Spiele', sr:'Regeln', sm:'Mehr',
           gpm:'Länder & Städte', gtaboo:'Verbotene Wörter',
           ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge' },
-    fr: { home:'Accueil', games:'Tous les jeux', rules:'Règles',
+    fr: { home:'Accueil', games:'Tous les jeux', rooms:'Salles actives', rules:'Règles',
           cats:'Catégories', words:'Mots par lettre',
           sg:'Jeux', sr:'Règles', sm:'Plus',
           gpm:'Pays & Villes', gtaboo:'Mots Interdits',
           ghang:'Pendu', gdots:'Points & Lignes', gtt:'2 Vérités 1 Mensonge' },
-    es: { home:'Inicio', games:'Todos los juegos', rules:'Reglas',
+    es: { home:'Inicio', games:'Todos los juegos', rooms:'Salas activas', rules:'Reglas',
           cats:'Categorías', words:'Palabras por letra',
           sg:'Juegos', sr:'Reglas', sm:'Más',
           gpm:'Países & Ciudades', gtaboo:'Palabras Prohibidas',
@@ -316,6 +339,7 @@ function initVisibilityToggle() {
       '<div class="gb-sec">' + t.sg + '</div>' +
       '<a href="/' + ql + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
       '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
+      '<a href="/rooms' + ql + '"><span class="gb-ico">🔴</span>' + (t.rooms||'Live Rooms') + '</a>' +
       '<a href="/' + ql + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
       '<a href="/taboo' + ql + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
       '<a href="/hangman' + ql + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
@@ -541,6 +565,7 @@ window._buildFooterLangBtns = function() {
             '<a href="/dots?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔵 ' + t.gdots + '</a>' +
             '<a href="/twotruth?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🤥 ' + t.gtt + '</a>' +
             '<a href="/games?lang=' + footerLang + '" style="color:var(--accent);font-size:13px;font-weight:700;text-decoration:none;">→ ' + t.games + '</a>' +
+            '<a href="/rooms?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔴 ' + (t.rooms||'Live Rooms') + '</a>' +
           '</div>' +
         '</div>' +
         '<div>' +
@@ -732,13 +757,13 @@ window._buildFooterLangBtns = function() {
     btn.textContent = t.btn;
     btn.title = t.title;
     btn.style.cssText = [
-      'position:fixed', 'bottom:20px', 'right:20px', 'z-index:8000',
-      'width:40px', 'height:40px', 'border-radius:50%',
-      'background:var(--surface)', 'border:1px solid var(--border)',
-      'color:var(--muted)', 'font-size:18px', 'cursor:pointer',
+      'position:fixed', 'bottom:80px', 'right:16px', 'z-index:8000',
+      'width:42px', 'height:42px', 'border-radius:50%',
+      'background:#1a1d2e', 'border:1px solid #2d3152',
+      'color:#64748b', 'font-size:18px', 'cursor:pointer',
       'display:flex', 'align-items:center', 'justify-content:center',
-      'transition:all .2s', 'box-shadow:0 2px 8px rgba(0,0,0,.3)',
-      'font-family:sans-serif',
+      'transition:all .2s', 'box-shadow:0 2px 8px rgba(0,0,0,.4)',
+      'font-family:sans-serif', 'line-height:1',
     ].join(';');
     btn.onmouseover = function() {
       btn.style.borderColor = 'var(--accent)';

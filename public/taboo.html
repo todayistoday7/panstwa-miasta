@@ -94,7 +94,7 @@
 
   <!-- TOP NAV -->
   <div id="top-nav" style="display:none;">
-    <button class="nav-home-btn" onclick="confirmGoHome()">🏠 Home</button>
+    <button class="nav-home-btn" onclick="confirmGoHome()">🏠 <span id="lbl-nav-home">Home</span></button>
     <div class="nav-room-code" id="nav-room-code"></div>
     <button class="nav-share-btn" id="nav-share-btn" onclick="copyRoomCode()" style="display:none;">📋 Copy Code</button>
   </div>
@@ -124,8 +124,8 @@
   <!-- ══ SCREEN: HOME ══ -->
   <div id="screen-home" class="screen active">
     <div style="display:flex;gap:10px;margin-bottom:16px;">
-      <a href="/" class="nav-home-btn" style="text-decoration:none;">🏠 Home</a>
-      <a href="/games" class="nav-home-btn" style="text-decoration:none;">🎮 All Games</a>
+      <a href="/" class="nav-home-btn" style="text-decoration:none;">🏠 <span id="lbl-nav-home">Home</span></a>
+      <a href="/games" class="nav-home-btn" style="text-decoration:none;">🎮 <span id="lbl-nav-all-games">All Games</span></a>
     </div>
     <div class="home-grid">
       <div class="card">
@@ -187,7 +187,7 @@
         <h3 id="lbl-settings">Settings</h3>
         <label class="field-label" id="lbl-rounds-title">Rounds</label>
         <select id="settings-rounds" class="field-select" onchange="updateSettings()">
-          <option value="3">3</option><option value="5" selected>5</option><option value="7">7</option><option value="10">10</option>
+          <option value="2">2</option><option value="4" selected>4</option><option value="6">6</option><option value="8">8</option><option value="10">10</option>
         </select>
         <label class="field-label" style="margin-top:14px;" id="lbl-timer-title">Time per turn</label>
         <select id="settings-timer" class="field-select" onchange="updateSettings()">

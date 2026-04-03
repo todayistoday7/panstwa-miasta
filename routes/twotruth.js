@@ -124,6 +124,24 @@ function register(io, socket) {
     const room = makeTTRoom(socket.id, settings || {});
     room.players.push({ id: socket.id, name: name || 'Host', connected: true });
     room.state.totalScores[socket.id] = 0;
+    // keepGroup — move all connected players from old room to new one
+    if (settings && settings.keepGroup) {
+      for (const [code, r] of Object.entries(ttRooms)) {
+        if (r.players.find(p => p.id === socket.id)) {
+          const oldPlayers = r.players.filter(p => p.connected && p.id !== socket.id);
+          if (r._lobbyTimer) clearTimeout(r._lobbyTimer);
+          lobby.remove(code);
+          io.to(code).emit('room_disbanded', { reason: 'rematch' });
+          delete ttRooms[code];
+          oldPlayers.forEach(p => {
+            room.players.push({ id: p.id, name: p.name, connected: false });
+            io.to(p.id).emit('tt_group_rematch', { code: room.code });
+          });
+          break;
+        }
+      }
+    }
+
     socket.join(room.code);
     socket.emit('tt_room_created', { code: room.code });
     lobby.announce('twotruth', room);
