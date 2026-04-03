@@ -7,7 +7,7 @@ const LANGS_BINGO = {
   pl: {
     name:            '🇵🇱 PL',
     gameTitle:       'Korporacyjne Bingo',
-    gameSubtitle:    'Gra na spotkania · 2–20 graczy',
+    gameSubtitle:    'Gra na spotkania · 2–50 graczy',
     yourName:        'Twoje imię',
     createRoom:      'Stwórz pokój',
     joinRoom:        'Dołącz do pokoju',
@@ -45,7 +45,7 @@ const LANGS_BINGO = {
   en: {
     name:            '🇬🇧 EN',
     gameTitle:       'Corporate Bingo',
-    gameSubtitle:    'Meeting game · 2–20 players',
+    gameSubtitle:    'Meeting game · 2–50 players',
     yourName:        'Your name',
     createRoom:      'Create Room',
     joinRoom:        'Join Room',
@@ -83,7 +83,7 @@ const LANGS_BINGO = {
   de: {
     name:            '🇩🇪 DE',
     gameTitle:       'Unternehmens-Bingo',
-    gameSubtitle:    'Meeting-Spiel · 2–20 Spieler',
+    gameSubtitle:    'Meeting-Spiel · 2–50 Spieler',
     yourName:        'Dein Name',
     createRoom:      'Raum erstellen',
     joinRoom:        'Raum beitreten',

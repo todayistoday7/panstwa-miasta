@@ -12,6 +12,7 @@ const GAME_INFO = {
   dots:     { name: 'Kropki i Kreski',icon: '🔵', slug: '/dots' },
   twotruth: { name: '2 Truths 1 Lie', icon: '🤥', slug: '/twotruth' },
   hangman:  { name: 'Hangman',         icon: '🪢', slug: '/hangman' },
+  bingo:    { name: 'Corporate Bingo',  icon: '🎯', slug: '/bingo' },
 };
 
 // In-memory registry: code → public room entry

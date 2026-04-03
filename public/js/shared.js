@@ -247,27 +247,27 @@ function initVisibilityToggle() {
           cats:'Kategorie', words:'Słowa na literę',
           sg:'Gry', sr:'Zasady', sm:'Więcej',
           gpm:'Państwa-Miasta', gtaboo:'Zakazane Słowa',
-          ghang:'Wisielec', gdots:'Kropki i Kreski', gtt:'Dwie Prawdy Jedno Kłamstwo' },
+          ghang:'Wisielec', gdots:'Kropki i Kreski', gtt:'Dwie Prawdy Jedno Kłamstwo', gbingo:'Korporacyjne Bingo' },
     en: { home:'Home', games:'All Games', rooms:'Live Rooms', bug:'🐛 Report a Bug', rules:'Game Rules',
           cats:'Categories', words:'Words by Letter',
           sg:'Games', sr:'Rules', sm:'More',
           gpm:'Countries & Cities', gtaboo:'Forbidden Words',
-          ghang:'Hangman', gdots:'Dots & Boxes', gtt:'2 Truths 1 Lie' },
+          ghang:'Hangman', gdots:'Dots & Boxes', gtt:'2 Truths 1 Lie', gbingo:'Corporate Bingo' },
     de: { home:'Startseite', games:'Alle Spiele', rooms:'Aktive Räume', bug:'🐛 Fehler melden', rules:'Spielregeln',
           cats:'Kategorien', words:'Wörter nach Buchstabe',
           sg:'Spiele', sr:'Regeln', sm:'Mehr',
           gpm:'Länder & Städte', gtaboo:'Verbotene Wörter',
-          ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge' },
+          ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge', gbingo:'Unternehmens-Bingo' },
     fr: { home:'Accueil', games:'Tous les jeux', rooms:'Salles actives', bug:'🐛 Signaler un bug', rules:'Règles',
           cats:'Catégories', words:'Mots par lettre',
           sg:'Jeux', sr:'Règles', sm:'Plus',
           gpm:'Pays & Villes', gtaboo:'Mots Interdits',
-          ghang:'Pendu', gdots:'Points & Lignes', gtt:'2 Vérités 1 Mensonge' },
+          ghang:'Pendu', gdots:'Points & Lignes', gtt:'2 Vérités 1 Mensonge', gbingo:'Bingo d\'entreprise' },
     es: { home:'Inicio', games:'Todos los juegos', rooms:'Salas activas', bug:'🐛 Reportar error', rules:'Reglas',
           cats:'Categorías', words:'Palabras por letra',
           sg:'Juegos', sr:'Reglas', sm:'Más',
           gpm:'Países & Ciudades', gtaboo:'Palabras Prohibidas',
-          ghang:'El Ahorcado', gdots:'Puntos & Líneas', gtt:'2 Verdades 1 Mentira' },
+          ghang:'El Ahorcado', gdots:'Puntos & Líneas', gtt:'2 Verdades 1 Mentira', gbingo:'Bingo Corporativo' },
   };
 
   window._gbLabels = LABELS;
@@ -347,6 +347,7 @@ function initVisibilityToggle() {
       '<a href="/hangman' + ql + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
       '<a href="/dots' + ql + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
       '<a href="/twotruth' + ql + '"><span class="gb-ico">🤥</span>' + t.gtt + '</a>' +
+      '<a href="/bingo' + ql + '"><span class="gb-ico">🎯</span>' + (t.gbingo||'Corporate Bingo') + '</a>' +
       '<div class="gb-div"></div>' +
       '<div class="gb-sec">' + t.sr + '</div>' +
       '<a href="' + ruleBase + '"><span class="gb-ico">📖</span>' + t.rules + '</a>' +
@@ -566,6 +567,7 @@ window._buildFooterLangBtns = function() {
             '<a href="/hangman?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🪢 ' + t.ghang + '</a>' +
             '<a href="/dots?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔵 ' + t.gdots + '</a>' +
             '<a href="/twotruth?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🤥 ' + t.gtt + '</a>' +
+            '<a href="/bingo?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎯 ' + (t.gbingo||'Corporate Bingo') + '</a>' +
             '<a href="/games?lang=' + footerLang + '" style="color:var(--accent);font-size:13px;font-weight:700;text-decoration:none;">→ ' + t.games + '</a>' +
             '<a href="/rooms?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔴 ' + (t.rooms||'Live Rooms') + '</a>' +
           '</div>' +
