@@ -647,3 +647,249 @@ window._buildFooterLangBtns = function() {
     injectFooter(); injectGDPR();
   }
 })();
+
+// ─── BUG REPORT BUTTON + MODAL ───────────────────────────────────
+(function() {
+  var GAME_NAMES = {
+    '/':          'Państwa-Miasta',
+    '/taboo':     'Forbidden Words',
+    '/dots':      'Dots & Boxes',
+    '/hangman':   'Hangman',
+    '/twotruth':  '2 Truths 1 Lie',
+    '/bingo':     'Corporate Bingo',
+  };
+
+  var LABELS = {
+    pl: {
+      btn:         '🐛',
+      title:       'Zgłoś błąd',
+      game:        'Gra',
+      desc:        'Co się wydarzyło?',
+      descHint:    'Opisz błąd jak najdokładniej...',
+      email:       'Twój email (opcjonalnie)',
+      emailHint:   'Jeśli chcesz otrzymać odpowiedź',
+      send:        'Wyślij zgłoszenie',
+      cancel:      'Anuluj',
+      sending:     'Wysyłanie...',
+      thanks:      '✓ Dziękujemy! Przyjrzeliśmy się temu.',
+      errorShort:  'Opisz błąd bardziej szczegółowo (min. 20 znaków).',
+      errorFail:   'Coś poszło nie tak. Spróbuj ponownie.',
+      errorLimit:  'Za dużo zgłoszeń. Spróbuj ponownie za godzinę.',
+    },
+    en: {
+      btn:         '🐛',
+      title:       'Report a Bug',
+      game:        'Game',
+      desc:        'What happened?',
+      descHint:    'Describe the bug as clearly as possible...',
+      email:       'Your email (optional)',
+      emailHint:   "If you'd like us to follow up",
+      send:        'Send Report',
+      cancel:      'Cancel',
+      sending:     'Sending...',
+      thanks:      "✓ Thanks! We'll look into it.",
+      errorShort:  'Please describe the bug in more detail (min 20 characters).',
+      errorFail:   'Something went wrong. Please try again.',
+      errorLimit:  'Too many reports. Please try again in an hour.',
+    },
+    de: {
+      btn:         '🐛',
+      title:       'Fehler melden',
+      game:        'Spiel',
+      desc:        'Was ist passiert?',
+      descHint:    'Beschreibe den Fehler so genau wie möglich...',
+      email:       'Deine E-Mail (optional)',
+      emailHint:   'Falls wir uns melden sollen',
+      send:        'Bericht senden',
+      cancel:      'Abbrechen',
+      sending:     'Senden...',
+      thanks:      '✓ Danke! Wir schauen uns das an.',
+      errorShort:  'Bitte beschreibe den Fehler genauer (min. 20 Zeichen).',
+      errorFail:   'Etwas ist schiefgelaufen. Bitte versuche es erneut.',
+      errorLimit:  'Zu viele Meldungen. Bitte versuche es in einer Stunde erneut.',
+    },
+  };
+
+  function getLang() {
+    var p = new URLSearchParams(window.location.search).get('lang');
+    return (p && LABELS[p]) ? p : 'pl';
+  }
+
+  function getGame() {
+    var path = window.location.pathname.replace(/\/+$/, '') || '/';
+    return GAME_NAMES[path] || 'Other';
+  }
+
+  function injectBugButton() {
+    if (document.getElementById('bug-report-btn')) return;
+
+    var lang = getLang();
+    var t = LABELS[lang] || LABELS['pl'];
+
+    // Floating button
+    var btn = document.createElement('button');
+    btn.id = 'bug-report-btn';
+    btn.textContent = t.btn;
+    btn.title = t.title;
+    btn.style.cssText = [
+      'position:fixed', 'bottom:20px', 'right:20px', 'z-index:8000',
+      'width:40px', 'height:40px', 'border-radius:50%',
+      'background:var(--surface)', 'border:1px solid var(--border)',
+      'color:var(--muted)', 'font-size:18px', 'cursor:pointer',
+      'display:flex', 'align-items:center', 'justify-content:center',
+      'transition:all .2s', 'box-shadow:0 2px 8px rgba(0,0,0,.3)',
+      'font-family:sans-serif',
+    ].join(';');
+    btn.onmouseover = function() {
+      btn.style.borderColor = 'var(--accent)';
+      btn.style.color = 'var(--accent)';
+      btn.style.transform = 'scale(1.1)';
+    };
+    btn.onmouseout = function() {
+      btn.style.borderColor = 'var(--border)';
+      btn.style.color = 'var(--muted)';
+      btn.style.transform = 'scale(1)';
+    };
+    btn.onclick = function() { openBugModal(); };
+    document.body.appendChild(btn);
+
+    // Modal overlay
+    var overlay = document.createElement('div');
+    overlay.id = 'bug-modal-overlay';
+    overlay.style.cssText = [
+      'position:fixed', 'inset:0', 'z-index:9000',
+      'background:rgba(0,0,0,.6)', 'display:none',
+      'align-items:center', 'justify-content:center', 'padding:16px',
+    ].join(';');
+    overlay.onclick = function(e) {
+      if (e.target === overlay) closeBugModal();
+    };
+
+    overlay.innerHTML =
+      '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;' +
+        'padding:24px;width:100%;max-width:420px;font-family:Nunito,sans-serif;">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">' +
+          '<h3 style="font-size:16px;font-weight:800;color:var(--text);" id="bug-modal-title">' + t.title + '</h3>' +
+          '<button onclick="closeBugModal()" style="background:none;border:none;color:var(--muted);' +
+            'font-size:20px;cursor:pointer;padding:0 4px;">×</button>' +
+        '</div>' +
+        // Honeypot — hidden from humans
+        '<input type="text" id="bug-honeypot" name="website" style="display:none;" tabindex="-1" autocomplete="off"/>' +
+        '<label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;' +
+          'letter-spacing:.5px;color:var(--muted);margin-bottom:6px;" id="bug-lbl-game">' + t.game + '</label>' +
+        '<select id="bug-game" style="width:100%;background:var(--bg);border:1px solid var(--border);' +
+          'color:var(--text);border-radius:8px;padding:8px 10px;font-size:13px;' +
+          'font-family:Nunito,sans-serif;font-weight:700;outline:none;margin-bottom:12px;">' +
+          '<option>Państwa-Miasta</option>' +
+          '<option>Forbidden Words</option>' +
+          '<option>Dots &amp; Boxes</option>' +
+          '<option>Hangman</option>' +
+          '<option>2 Truths 1 Lie</option>' +
+          '<option>Corporate Bingo</option>' +
+          '<option>Other</option>' +
+        '</select>' +
+        '<label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;' +
+          'letter-spacing:.5px;color:var(--muted);margin-bottom:6px;" id="bug-lbl-desc">' + t.desc + '</label>' +
+        '<textarea id="bug-desc" rows="4" placeholder="' + t.descHint + '" ' +
+          'style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);' +
+          'border-radius:8px;padding:8px 10px;font-size:13px;font-family:Nunito,sans-serif;' +
+          'font-weight:600;outline:none;resize:vertical;margin-bottom:12px;"></textarea>' +
+        '<label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;' +
+          'letter-spacing:.5px;color:var(--muted);margin-bottom:6px;" id="bug-lbl-email">' + t.email + '</label>' +
+        '<input type="email" id="bug-email" placeholder="' + t.emailHint + '" ' +
+          'style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);' +
+          'border-radius:8px;padding:8px 10px;font-size:13px;font-family:Nunito,sans-serif;' +
+          'font-weight:600;outline:none;margin-bottom:16px;"/>' +
+        '<div id="bug-error" style="display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);' +
+          'border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;color:#fca5a5;margin-bottom:12px;"></div>' +
+        '<div style="display:flex;gap:10px;">' +
+          '<button id="bug-submit-btn" onclick="submitBugReport()" ' +
+            'style="flex:1;background:linear-gradient(135deg,var(--accent),#ff8c55);color:#fff;border:none;' +
+            'border-radius:8px;padding:10px;font-size:13px;font-weight:800;cursor:pointer;' +
+            'font-family:Nunito,sans-serif;" id="bug-lbl-send">' + t.send + '</button>' +
+          '<button onclick="closeBugModal()" ' +
+            'style="background:var(--surface);border:1px solid var(--border);color:var(--muted);' +
+            'border-radius:8px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;' +
+            'font-family:Nunito,sans-serif;" id="bug-lbl-cancel">' + t.cancel + '</button>' +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(overlay);
+
+    // Pre-select current game
+    var sel = document.getElementById('bug-game');
+    if (sel) {
+      var game = getGame();
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].text === game) { sel.selectedIndex = i; break; }
+      }
+    }
+  }
+
+  window.openBugModal = function() {
+    var overlay = document.getElementById('bug-modal-overlay');
+    if (overlay) {
+      overlay.style.display = 'flex';
+      var desc = document.getElementById('bug-desc');
+      if (desc) { desc.value = ''; desc.focus(); }
+      var err = document.getElementById('bug-error');
+      if (err) err.style.display = 'none';
+      var btn = document.getElementById('bug-submit-btn');
+      var lang = getLang();
+      var t = LABELS[lang] || LABELS['pl'];
+      if (btn) btn.textContent = t.send;
+    }
+  };
+
+  window.closeBugModal = function() {
+    var overlay = document.getElementById('bug-modal-overlay');
+    if (overlay) overlay.style.display = 'none';
+  };
+
+  window.submitBugReport = function() {
+    var lang = getLang();
+    var t = LABELS[lang] || LABELS['pl'];
+    var desc  = (document.getElementById('bug-desc')  || {}).value || '';
+    var email = (document.getElementById('bug-email') || {}).value || '';
+    var game  = (document.getElementById('bug-game')  || {}).value || getGame();
+    var honey = (document.getElementById('bug-honeypot') || {}).value || '';
+    var btn   = document.getElementById('bug-submit-btn');
+    var err   = document.getElementById('bug-error');
+
+    if (desc.trim().length < 20) {
+      if (err) { err.textContent = t.errorShort; err.style.display = 'block'; }
+      return;
+    }
+    if (err) err.style.display = 'none';
+    if (btn) btn.textContent = t.sending;
+
+    fetch('/api/bug-report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ game: game, description: desc, email: email, website: honey }),
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.ok) {
+        if (btn) btn.textContent = t.thanks;
+        setTimeout(function() { window.closeBugModal(); }, 2000);
+      } else {
+        var msg = data.error || t.errorFail;
+        if (msg.indexOf('Too many') > -1 || msg.indexOf('Za dużo') > -1) msg = t.errorLimit;
+        if (err) { err.textContent = msg; err.style.display = 'block'; }
+        if (btn) btn.textContent = t.send;
+      }
+    })
+    .catch(function() {
+      if (err) { err.textContent = t.errorFail; err.style.display = 'block'; }
+      if (btn) btn.textContent = t.send;
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectBugButton);
+  } else {
+    injectBugButton();
+  }
+})();
+

@@ -76,6 +76,7 @@ function layout(title, body, activePage) {
     ['rooms',        '🎮 Rooms',        '/admin/rooms'],
     ['translations', '🌍 Translations',  '/admin/translations'],
     ['banner',       '📢 Banner',        '/admin/banner'],
+    ['bugs',         '🐛 Bug Reports',   '/admin/bugs'],
   ].map(([id, label, href]) =>
     `<a href="${href}" class="${activePage===id?'active':''}">${label}</a>`
   ).join('');
@@ -612,6 +613,92 @@ router.get('/translations/generate', requireAuth, (req, res) => {
   } catch (e) {
     res.redirect(`/admin/translations?error=${encodeURIComponent(e.message)}`);
   }
+});
+
+// ═══════════════════════════════════════════════════════
+// BUG REPORTS
+// ═══════════════════════════════════════════════════════
+const BUG_FILE = path.join(ROOT, 'data', 'bug-reports.json');
+
+function readBugs() {
+  try { return JSON.parse(fs.readFileSync(BUG_FILE, 'utf8')); }
+  catch(e) { return []; }
+}
+
+router.get('/bugs', requireAuth, (req, res) => {
+  const bugs    = readBugs();
+  const filter  = req.query.filter || 'open';
+  const saved   = req.query.saved;
+
+  const shown = filter === 'all' ? bugs
+    : filter === 'resolved' ? bugs.filter(b => b.resolved)
+    : bugs.filter(b => !b.resolved);
+
+  const openCount     = bugs.filter(b => !b.resolved).length;
+  const resolvedCount = bugs.filter(b => b.resolved).length;
+
+  const rows = shown.map(b => {
+    const date = new Date(b.timestamp).toLocaleString('en-GB', {
+      day:'2-digit', month:'short', year:'numeric',
+      hour:'2-digit', minute:'2-digit'
+    });
+    return `<tr class="${b.resolved ? 'resolved-row' : ''}">
+      <td><span class="tag">${escapeHtml(b.game)}</span></td>
+      <td style="max-width:320px;font-size:13px;">${escapeHtml(b.description)}</td>
+      <td style="font-size:12px;color:var(--muted);">${escapeHtml(b.email || '—')}</td>
+      <td style="font-size:11px;color:var(--muted);white-space:nowrap;">${date}</td>
+      <td>
+        ${!b.resolved ? `<button class="btn btn-sm btn-success" onclick="resolveReport('${b.id}')">✓ Resolve</button>` : '<span style="color:var(--muted);font-size:11px;">Resolved</span>'}
+        <button class="btn btn-sm btn-danger" onclick="deleteReport('${b.id}')" style="margin-left:4px;">🗑</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const body = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+      <h2>🐛 Bug Reports</h2>
+      <div style="display:flex;gap:8px;font-size:13px;">
+        <span style="color:var(--muted)">
+          <strong style="color:#fca5a5">${openCount}</strong> open &nbsp;·&nbsp;
+          <strong style="color:#86efac">${resolvedCount}</strong> resolved
+        </span>
+      </div>
+    </div>
+    ${saved ? '<div class="alert alert-success">✓ Done.</div>' : ''}
+    <div class="card" style="padding:12px 16px;margin-bottom:16px;">
+      <div style="display:flex;gap:8px;">
+        <a href="/admin/bugs?filter=open" class="btn btn-sm ${filter==='open'?'btn-primary':''}" style="text-decoration:none;">Open (${openCount})</a>
+        <a href="/admin/bugs?filter=resolved" class="btn btn-sm ${filter==='resolved'?'btn-primary':''}" style="text-decoration:none;">Resolved (${resolvedCount})</a>
+        <a href="/admin/bugs?filter=all" class="btn btn-sm ${filter==='all'?'btn-primary':''}" style="text-decoration:none;">All (${bugs.length})</a>
+      </div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      ${shown.length === 0
+        ? '<p style="text-align:center;color:var(--muted);padding:40px;">No bug reports here.</p>'
+        : `<div style="overflow-x:auto;"><table>
+            <thead><tr>
+              <th>Game</th><th>Description</th><th>Email</th><th>Date</th><th></th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+          </table></div>`
+      }
+    </div>
+    <style>
+      .resolved-row td { opacity: 0.5; }
+    </style>
+    <script>
+      function resolveReport(id) {
+        fetch('/api/bug-report/' + id + '/resolve', { method: 'PATCH' })
+          .then(() => location.reload());
+      }
+      function deleteReport(id) {
+        if (!confirm('Delete this report?')) return;
+        fetch('/api/bug-report/' + id, { method: 'DELETE' })
+          .then(() => location.reload());
+      }
+    </script>`;
+
+  res.send(layout('Bug Reports', body, 'bugs'));
 });
 
 // ─── Default redirect ─────────────────────────────────

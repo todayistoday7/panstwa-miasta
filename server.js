@@ -138,6 +138,86 @@ app.get('/api/banner', (req, res) => {
   }
 });
 
+
+// ─── BUG REPORT API ──────────────────────────────────────
+const BUG_FILE_PATH = require('path').join(__dirname, 'data', 'bug-reports.json');
+const bugRateLimit  = new Map(); // ip -> [timestamps]
+
+function readBugReports() {
+  try { return JSON.parse(require('fs').readFileSync(BUG_FILE_PATH, 'utf8')); }
+  catch(e) { return []; }
+}
+function saveBugReports(reports) {
+  try {
+    if (!require('fs').existsSync(require('path').join(__dirname, 'data'))) {
+      require('fs').mkdirSync(require('path').join(__dirname, 'data'), { recursive: true });
+    }
+    require('fs').writeFileSync(BUG_FILE_PATH, JSON.stringify(reports, null, 2), 'utf8');
+  } catch(e) {}
+}
+
+app.post('/api/bug-report', express.json(), (req, res) => {
+  const ip = req.ip || 'unknown';
+  const now = Date.now();
+
+  // Honeypot — bots fill this field, humans don't
+  if (req.body.website) { return res.json({ ok: true }); }
+
+  // Rate limit: max 3 per IP per hour
+  const times = (bugRateLimit.get(ip) || []).filter(t => now - t < 60 * 60 * 1000);
+  if (times.length >= 3) {
+    return res.status(429).json({ error: 'Too many reports. Please try again later.' });
+  }
+  times.push(now);
+  bugRateLimit.set(ip, times);
+
+  // Validate
+  const game = (req.body.game || '').slice(0, 50).trim();
+  const desc = (req.body.description || '').slice(0, 1000).trim();
+  const email = (req.body.email || '').slice(0, 100).trim();
+
+  if (desc.length < 20) {
+    return res.status(400).json({ error: 'Please describe the bug in more detail (min 20 characters).' });
+  }
+
+  // Save
+  const reports = readBugReports();
+  reports.unshift({
+    id:        Date.now(),
+    game:      game || 'Unknown',
+    description: desc,
+    email:     email || null,
+    timestamp: new Date().toISOString(),
+    resolved:  false,
+  });
+
+  // Keep max 500 reports
+  if (reports.length > 500) reports.splice(500);
+  saveBugReports(reports);
+
+  res.json({ ok: true });
+});
+
+app.delete('/api/bug-report/:id', (req, res) => {
+  // Only allow from admin session
+  const token = req.cookies && req.cookies.admin_token;
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+  const reports = readBugReports();
+  const filtered = reports.filter(r => String(r.id) !== String(req.params.id));
+  saveBugReports(filtered);
+  res.json({ ok: true });
+});
+
+app.patch('/api/bug-report/:id/resolve', (req, res) => {
+  const token = req.cookies && req.cookies.admin_token;
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+  const reports = readBugReports();
+  const report = reports.find(r => String(r.id) === String(req.params.id));
+  if (report) report.resolved = true;
+  saveBugReports(reports);
+  res.json({ ok: true });
+});
+
 app.get('/health', (req, res) => res.json({
   status: 'ok',
   pm_rooms:    pm.getRoomCount(),
