@@ -1,0 +1,396 @@
+'use strict';
+// ════════════════════════════════════════════════════════
+// CORPORATE BINGO — Server Route
+// 2-20 players, randomised 5x5 cards, any line wins
+// ════════════════════════════════════════════════════════
+
+const crypto = require('crypto');
+
+const bingoRooms = {};
+
+function makeCode() {
+  return crypto.randomBytes(3).toString('hex').toUpperCase();
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function makeCard(phrases) {
+  // Pick 24 random phrases + FREE centre = 25 squares
+  const picked = shuffle(phrases).slice(0, 24);
+  // Insert FREE in centre (index 12)
+  picked.splice(12, 0, '__FREE__');
+  return picked; // array of 25
+}
+
+function checkBingo(marked) {
+  // marked is array of 25 booleans, row-major order
+  const lines = [
+    // rows
+    [0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24],
+    // cols
+    [0,5,10,15,20],[1,6,11,16,21],[2,7,12,17,22],[3,8,13,18,23],[4,9,14,19,24],
+    // diagonals
+    [0,6,12,18,24],[4,8,12,16,20],
+  ];
+  return lines.some(line => line.every(i => marked[i]));
+}
+
+function emitBingoState(io, room) {
+  const state = {
+    code:     room.code,
+    phase:    room.phase,
+    hostId:   room.hostId,
+    lang:     room.lang,
+    players:  room.players.map(p => ({
+      id:        p.id,
+      name:      p.name,
+      connected: p.connected,
+      bingo:     p.bingo,
+      marked:    p.marked.filter((_, i) => true), // send full marked array
+    })),
+  };
+  // Each player gets their own card — emit individually
+  room.players.forEach(p => {
+    io.to(p.id).emit('bingo_state', {
+      ...state,
+      myCard:   p.card,
+      myMarked: p.marked,
+    });
+  });
+}
+
+function getBingoRooms() {
+  return Object.values(bingoRooms);
+}
+
+function register(io) {
+
+  io.on('connection', socket => {
+
+    // ── Create room ─────────────────────────────────────
+    socket.on('bingo_create', ({ name, lang }) => {
+      const trimmed = (name || '').trim();
+      if (!trimmed) { socket.emit('bingo_error', { msg: 'Please enter your name.' }); return; }
+
+      const code = makeCode();
+      const room = {
+        code,
+        hostId:  socket.id,
+        phase:   'lobby',
+        lang:    lang || 'pl',
+        players: [],
+        _timer:  null,
+      };
+
+      room.players.push({
+        id: socket.id, name: trimmed,
+        connected: true, bingo: false,
+        card: [], marked: Array(25).fill(false),
+      });
+
+      bingoRooms[code] = room;
+      socket.join(code);
+      socket.emit('bingo_created', { code });
+      emitBingoState(io, room);
+
+      // 24h expiry in lobby
+      room._timer = setTimeout(() => {
+        if (bingoRooms[code] && bingoRooms[code].phase === 'lobby') delete bingoRooms[code];
+      }, 24 * 60 * 60 * 1000);
+    });
+
+    // ── Join room ────────────────────────────────────────
+    socket.on('bingo_join', ({ name, code }) => {
+      const trimmed = (name || '').trim();
+      const room = bingoRooms[(code || '').toUpperCase().trim()];
+      if (!room) { socket.emit('bingo_error', { msg: 'Room not found.' }); return; }
+      if (room.players.length >= 20) { socket.emit('bingo_error', { msg: 'Room is full (max 20).' }); return; }
+      if (!trimmed) { socket.emit('bingo_error', { msg: 'Please enter your name.' }); return; }
+
+      // Rejoin
+      const existing = room.players.find(p => p.name.toLowerCase() === trimmed.toLowerCase());
+      if (existing) {
+        if (existing._disconnectTimer) { clearTimeout(existing._disconnectTimer); existing._disconnectTimer = null; }
+        existing.id = socket.id;
+        existing.connected = true;
+        socket.join(code);
+        socket.emit('bingo_joined', { code, isHost: socket.id === room.hostId });
+        emitBingoState(io, room);
+        return;
+      }
+
+      if (room.phase !== 'lobby') { socket.emit('bingo_error', { msg: 'Game already started.' }); return; }
+
+      room.players.push({
+        id: socket.id, name: trimmed,
+        connected: true, bingo: false,
+        card: [], marked: Array(25).fill(false),
+      });
+      socket.join(code);
+      socket.emit('bingo_joined', { code, isHost: false });
+      emitBingoState(io, room);
+    });
+
+    // ── Start game ───────────────────────────────────────
+    socket.on('bingo_start', ({ code }) => {
+      const room = bingoRooms[code];
+      if (!room || socket.id !== room.hostId) return;
+      if (room.players.filter(p => p.connected).length < 2) {
+        socket.emit('bingo_error', { msg: 'Need at least 2 players.' }); return;
+      }
+
+      const phrases = PHRASES[room.lang] || PHRASES['en'];
+      room.players.forEach(p => {
+        p.card   = makeCard(phrases);
+        p.marked = p.card.map(sq => sq === '__FREE__'); // FREE always pre-marked
+        p.bingo  = false;
+      });
+
+      room.phase = 'playing';
+      if (room._timer) { clearTimeout(room._timer); room._timer = null; }
+      emitBingoState(io, room);
+    });
+
+    // ── Mark a square ────────────────────────────────────
+    socket.on('bingo_mark', ({ code, index }) => {
+      const room = bingoRooms[code];
+      if (!room || room.phase !== 'playing') return;
+      const player = room.players.find(p => p.id === socket.id);
+      if (!player) return;
+      if (index < 0 || index > 24) return;
+      if (player.card[index] === '__FREE__') return; // can't unmark free
+
+      // Toggle
+      player.marked[index] = !player.marked[index];
+      emitBingoState(io, room);
+    });
+
+    // ── Call BINGO ───────────────────────────────────────
+    socket.on('bingo_call', ({ code }) => {
+      const room = bingoRooms[code];
+      if (!room || room.phase !== 'playing') return;
+      const player = room.players.find(p => p.id === socket.id);
+      if (!player) return;
+
+      if (checkBingo(player.marked)) {
+        player.bingo = true;
+        room.phase   = 'final';
+        emitBingoState(io, room);
+        // Clean up after 2 hours
+        setTimeout(() => { if (bingoRooms[code]) delete bingoRooms[code]; }, 2 * 60 * 60 * 1000);
+      } else {
+        // False bingo — notify caller only
+        socket.emit('bingo_false', {});
+      }
+    });
+
+    // ── Play again ───────────────────────────────────────
+    socket.on('bingo_restart', ({ code }) => {
+      const room = bingoRooms[code];
+      if (!room || socket.id !== room.hostId) return;
+      room.phase = 'lobby';
+      room.players.forEach(p => {
+        p.card   = [];
+        p.marked = Array(25).fill(false);
+        p.bingo  = false;
+      });
+      emitBingoState(io, room);
+    });
+
+    // ── Disconnect ───────────────────────────────────────
+    socket.on('disconnect', () => {
+      for (const [code, room] of Object.entries(bingoRooms)) {
+        const player = room.players.find(p => p.id === socket.id);
+        if (!player) continue;
+        player.connected = false;
+        player._disconnectTimer = setTimeout(() => {
+          if (!player.connected) {
+            room.players = room.players.filter(p => p.id !== socket.id);
+            if (room.players.length === 0) {
+              delete bingoRooms[code];
+            } else {
+              if (room.hostId === socket.id && room.players.length > 0) {
+                room.hostId = room.players.find(p => p.connected)?.id || room.players[0].id;
+              }
+              emitBingoState(io, room);
+            }
+          }
+        }, 45000);
+        emitBingoState(io, room);
+        break;
+      }
+    });
+
+  });
+}
+
+// ════════════════════════════════════════════════════════
+// PHRASES — 50 per language, naturally translated
+// ════════════════════════════════════════════════════════
+const PHRASES = {
+  en: [
+    'Can you hear me?',
+    "You're on mute",
+    "I'll share my screen",
+    "Let's take this offline",
+    'Circle back',
+    'Touch base',
+    'Move the needle',
+    'Low-hanging fruit',
+    'Deep dive',
+    'Bandwidth',
+    'Ping me',
+    'At the end of the day',
+    'Synergy',
+    'Going forward',
+    'Leverage',
+    'Scalable solution',
+    'Paradigm shift',
+    'Think outside the box',
+    "Let's align on this",
+    'Action items',
+    'Key takeaways',
+    'Boil the ocean',
+    'Quick win',
+    'Best practices',
+    'Value add',
+    'On my radar',
+    'Take it to the next level',
+    'Holistic approach',
+    'Streamline the process',
+    'Core competency',
+    'Game changer',
+    'Agile',
+    'Disruptive',
+    'Stakeholder',
+    'Deliverables',
+    'Ballpark figure',
+    'Run it up the flagpole',
+    'Peel back the onion',
+    'We need to be proactive',
+    'ROI',
+    'KPI',
+    'The ask',
+    'Cadence',
+    'Visibility',
+    'Runway',
+    'Ideate',
+    'Pain points',
+    'Ecosystem',
+    'Robust',
+    'On the same page',
+  ],
+  pl: [
+    'Słyszysz mnie?',
+    'Jesteś wyciszony',
+    'Udostępnię ekran',
+    'Porozmawiajmy o tym po spotkaniu',
+    'Wróćmy do tego',
+    'Skontaktujmy się',
+    'Ruszyć z miejsca',
+    'Najniżej wiszący owoc',
+    'Zagłębić się w temat',
+    'Zasoby',
+    'Odezwij się do mnie',
+    'Ostatecznie',
+    'Synergia',
+    'Idąc naprzód',
+    'Wykorzystać',
+    'Skalowalne rozwiązanie',
+    'Zmiana paradygmatu',
+    'Myśleć nieszablonowo',
+    'Uzgodnijmy to',
+    'Punkty do działania',
+    'Kluczowe wnioski',
+    'Nie komplikujmy',
+    'Szybka wygrana',
+    'Najlepsze praktyki',
+    'Wartość dodana',
+    'Mam to na oku',
+    'Przenieść na wyższy poziom',
+    'Podejście holistyczne',
+    'Usprawnić proces',
+    'Kluczowe kompetencje',
+    'Przełom',
+    'Zwinny',
+    'Przełomowy',
+    'Interesariusz',
+    'Wyniki do dostarczenia',
+    'Orientacyjna liczba',
+    'Sprawdźmy to u góry',
+    'Odkryć kolejną warstwę',
+    'Musimy być proaktywni',
+    'Zwrot z inwestycji',
+    'Wskaźnik KPI',
+    'Prośba',
+    'Rytm pracy',
+    'Widoczność',
+    'Runway projektu',
+    'Generować pomysły',
+    'Punkty bólu',
+    'Ekosystem',
+    'Solidny',
+    'Na tej samej stronie',
+  ],
+  de: [
+    'Können Sie mich hören?',
+    'Sie sind stummgeschaltet',
+    'Ich teile meinen Bildschirm',
+    'Lass uns das offline besprechen',
+    'Darauf zurückkommen',
+    'Kurz abstimmen',
+    'Etwas voranbringen',
+    'Tief hängende Früchte',
+    'Tief eintauchen',
+    'Kapazitäten',
+    'Schreib mir kurz',
+    'Am Ende des Tages',
+    'Synergie',
+    'Zukünftig',
+    'Nutzen',
+    'Skalierbare Lösung',
+    'Paradigmenwechsel',
+    'Über den Tellerrand denken',
+    'Lass uns das abstimmen',
+    'Maßnahmen',
+    'Wichtigste Erkenntnisse',
+    'Das Rad neu erfinden',
+    'Schneller Erfolg',
+    'Best Practices',
+    'Mehrwert',
+    'Auf meinem Radar',
+    'Auf das nächste Level bringen',
+    'Ganzheitlicher Ansatz',
+    'Prozess optimieren',
+    'Kernkompetenz',
+    'Spielveränderer',
+    'Agil',
+    'Disruptiv',
+    'Stakeholder',
+    'Ergebnisse',
+    'Ungefähre Zahl',
+    'Das nach oben eskalieren',
+    'Die Zwiebel schälen',
+    'Wir müssen proaktiv sein',
+    'ROI',
+    'KPI',
+    'Die Anfrage',
+    'Takt',
+    'Sichtbarkeit',
+    'Runway',
+    'Ideen entwickeln',
+    'Schmerzpunkte',
+    'Ökosystem',
+    'Robust',
+    'Auf derselben Seite sein',
+  ],
+};
+
+module.exports = { register, getBingoRooms };

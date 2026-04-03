@@ -16,6 +16,7 @@ const taboo = require('./routes/taboo');
 const dots       = require('./routes/dots');
 const twotruth   = require('./routes/twotruth');
 const hangman    = require('./routes/hangman');
+const bingo      = require('./routes/bingo');
 const lobbyHub   = require('./routes/lobby');
 const admin      = require('./routes/admin');
 
@@ -33,6 +34,7 @@ app.get('/taboo', (req, res) => res.sendFile(path.join(__dirname, 'public/taboo.
 app.get('/twotruth', (req, res) => res.sendFile(path.join(__dirname, 'public/twotruth.html')));
 app.get('/dots',        (req, res) => res.sendFile(path.join(__dirname, 'public/dots.html')));
 app.get('/hangman',     (req, res) => res.sendFile(path.join(__dirname, 'public/hangman.html')));
+app.get('/bingo',       (req, res) => res.sendFile(path.join(__dirname, 'public/bingo.html')));
 app.get('/games',       (req, res) => res.sendFile(path.join(__dirname, 'public/games.html')));
 app.get('/jak-grac/tabu',                      (req, res) => res.sendFile(path.join(__dirname, 'public/jak-grac/tabu.html')));
 app.get('/jak-grac/wisielec',                   (req, res) => res.sendFile(path.join(__dirname, 'public/jak-grac/wisielec.html')));
@@ -169,6 +171,7 @@ io.on('connection', (socket) => {
   dots.register(io, socket);
   twotruth.register(io, socket);
   hangman.register(io, socket);
+  bingo.register(io);
 });
 
 // ─── START ───────────────────────────────────────────────
