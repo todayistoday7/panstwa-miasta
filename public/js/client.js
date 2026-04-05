@@ -2,7 +2,8 @@
 // CLIENT STATE
 // ═══════════════════════════════════════════════════════
 const socket = io();
-let lang = 'pl';
+const _urlLangPM = new URLSearchParams(window.location.search).get('lang');
+let lang = (LANGS[_urlLangPM] ? _urlLangPM : 'pl');
 let L = LANGS[lang];
 let myId = null;
 let myName = '';
