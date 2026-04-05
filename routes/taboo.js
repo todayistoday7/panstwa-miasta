@@ -32,6 +32,8 @@ function makeTabooRoom(hostId, settings) {
       roundJustPlayed:    -1,
       teams:              { red: [], blue: [] },
       describerTeam:      'red',
+      redRefereeIndex:    0,
+      blueRefereeIndex:   0,
       turnDescriber:      null,
       turnReferee:        null,
       redDescriberIndex:  0,
@@ -80,7 +82,11 @@ function pickReferee(room, teamName) {
     const p = room.players.find(pl => pl.id === id);
     return p && p.connected !== false;
   });
-  return members.length ? members[0] : null;
+  if (!members.length) return null;
+  const key = teamName === 'red' ? 'redRefereeIndex' : 'blueRefereeIndex';
+  const idx = (room.state[key] || 0) % members.length;
+  room.state[key] = (room.state[key] || 0) + 1;
+  return members[idx];
 }
 
 function emitTabooState(io, room) {
@@ -213,6 +219,14 @@ function register(io, socket) {
     if (settings.isPublic !== undefined) { room.isPublic = settings.isPublic; room.settings.isPublic = settings.isPublic; }
     lobby.announce('taboo', room);
     emitTabooState(io, room);
+  });
+
+  socket.on('taboo_reset_words', ({ code }) => {
+    const room = getTabooRoom(code);
+    if (!room || room.state.phase !== 'playing') return;
+    if (socket.id !== room.state.turnDescriber) return;
+    room.state.usedWords = [];
+    // No need to emit state — client picks immediately after reset
   });
 
   socket.on('taboo_reshuffle', ({ code }) => {

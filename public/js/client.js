@@ -878,7 +878,7 @@ function applyTranslations() {
     'lbl-other-games-text':'otherGames',
     'lbl-rule-1':'rule1', 'lbl-rule-2':'rule2', 'lbl-rule-3':'rule3',
     'lbl-rule-4':'rule4', 'lbl-rule-5':'rule5',
-    'lbl-lobby-rules-title':'rulesTitle',
+    'lbl-lobby-rules-title':'lobbyRulesTitle',
     'lbl-lobby-rule-1':'rule1', 'lbl-lobby-rule-2':'rule2', 'lbl-lobby-rule-3':'rule3',
     'lbl-lobby-rule-4':'rule4', 'lbl-lobby-rule-5':'rule5',
   };

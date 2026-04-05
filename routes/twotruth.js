@@ -302,6 +302,14 @@ function register(io, socket) {
     if (room.state.phase === 'final') { socket.emit('tt_error', { msg: 'This game has ended.' }); return; }
     const existing = room.players.find(p => p.name === name);
     if (existing) {
+      // Migrate score from old socket.id to new socket.id
+      const oldId = existing.id;
+      if (oldId !== socket.id && room.state.totalScores[oldId] !== undefined) {
+        room.state.totalScores[socket.id] = room.state.totalScores[oldId];
+        delete room.state.totalScores[oldId];
+      } else if (room.state.totalScores[socket.id] === undefined) {
+        room.state.totalScores[socket.id] = 0;
+      }
       if (room.hostId === existing.id) room.hostId = socket.id;
       existing.id = socket.id; existing.connected = true;
     } else {

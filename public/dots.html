@@ -17,6 +17,7 @@
 <link rel="stylesheet" href="/css/style.css">
 <link rel="stylesheet" href="/css/dots.css">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/favicon.svg">
 <script async data-cfasync="false" src="https://www.googletagmanager.com/gtag/js?id=G-BJ79ZM6WPQ"></script>
 <script data-cfasync="false">
   window.dataLayer = window.dataLayer || [];
@@ -292,7 +293,9 @@
       <div id="dots-scoreboard" class="dots-scoreboard"></div>
       <div id="dots-turn-bar" class="dots-turn-bar"></div>
       <div class="dots-grid-wrap" style="position:relative;">
-        <svg id="dots-svg" class="dots-svg"></svg>
+        <div id="dots-svg-wrap" style="width:100%;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;">
+          <svg id="dots-svg" class="dots-svg" style="display:block;max-width:100%;height:auto;touch-action:none;"></svg>
+        </div>
         <!-- First-move hint — shown only on first ever turn, dismissed on first click -->
         <div id="first-move-hint" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
              background:rgba(0,0,0,0.82);border-radius:16px;padding:20px 24px;text-align:center;

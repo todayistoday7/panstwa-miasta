@@ -473,8 +473,12 @@ function renderFinal(data) {
 function pickNextWord() {
   const words     = TABOO_WORDS[lang] || TABOO_WORDS['en'];
   const used      = roomState ? (roomState.usedWords || []) : [];
-  const available = words.filter(w => !used.includes(w.word));
-  if (!available.length) { skipWord(); return; }
+  let available   = words.filter(w => !used.includes(w.word));
+  // Exhausted all words — request server to reset usedWords then pick from full pool
+  if (!available.length) {
+    socket.emit('taboo_reset_words', { code: roomCode });
+    available = words; // use full pool immediately for this pick
+  }
   const pick = available[Math.floor(Math.random() * available.length)];
   socket.emit('taboo_word_request', { code: roomCode, word: pick.word, forbidden: pick.forbidden });
 }

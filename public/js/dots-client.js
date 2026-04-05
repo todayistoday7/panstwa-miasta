@@ -105,8 +105,9 @@ let L = LANGS[lang];
 
 // ─── GRID RENDERING CONFIG ───────────────────────────────────────
 const DOT_R   = 6;     // dot radius px
-const GAP     = 64;    // px between dots
-const MARGIN  = 20;    // px margin around grid
+const MARGIN  = 16;    // px margin around grid
+// GAP is calculated dynamically in renderGrid to fit screen
+const BASE_GAP = 64;   // base gap — scales down on small screens
 const LINE_W  = 6;     // claimed line stroke width
 const HOVER_W = 4;     // hover line stroke width
 
@@ -397,6 +398,11 @@ function renderTurnBar(data) {
 function renderGrid(data) {
   const { grid, settings, players, currentPlayer } = data;
   const n    = settings.gridSize;
+  // Calculate GAP to fit within screen width
+  const wrap = document.getElementById('dots-svg-wrap') || document.getElementById('dots-svg');
+  const availableWidth = wrap ? (wrap.clientWidth || wrap.offsetWidth || 320) : 320;
+  const maxSize = Math.min(availableWidth, window.innerWidth - 32, 480);
+  const GAP = Math.floor(Math.min(BASE_GAP, (maxSize - MARGIN * 2) / n));
   const size = MARGIN * 2 + GAP * n;
   const svg  = document.getElementById('dots-svg');
   // My color for hover preview
@@ -405,6 +411,7 @@ function renderGrid(data) {
   svg.setAttribute('width',  size);
   svg.setAttribute('height', size);
   svg.setAttribute('viewBox', '0 0 ' + size + ' ' + size);
+  svg.style.maxWidth = '100%';
 
   // Build player colour lookup
   const colorOf = {};

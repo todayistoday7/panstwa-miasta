@@ -340,8 +340,6 @@ function initVisibilityToggle() {
       '<a href="/' + ql + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
       '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
       '<a href="/rooms' + ql + '"><span class="gb-ico">🔴</span>' + (t.rooms||'Live Rooms') + '</a>' +
-      '<div class="gb-div"></div>' +
-      '<a href="#" onclick="event.preventDefault();openBugModal();" style="cursor:pointer;"><span class="gb-ico">🐛</span>' + (t.bug||'Report a Bug') + '</a>' +
       '<a href="/' + ql + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
       '<a href="/taboo' + ql + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
       '<a href="/hangman' + ql + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
@@ -354,7 +352,9 @@ function initVisibilityToggle() {
       '<div class="gb-div"></div>' +
       '<div class="gb-sec">' + t.sm + '</div>' +
       '<a href="/kategorie"><span class="gb-ico">📋</span>' + t.cats + '</a>' +
-      '<a href="/slowa"><span class="gb-ico">🔤</span>' + t.words + '</a>';
+      '<a href="/slowa"><span class="gb-ico">🔤</span>' + t.words + '</a>' +
+      '<div class="gb-div"></div>' +
+      '<a href="#" onclick="event.preventDefault();openBugModal();" style="cursor:pointer;"><span class="gb-ico">🐛</span>' + (t.bug||'Report a Bug') + '</a>';
 
     // ── Wrap and insert ──────────────────────────────────────────
     var wrap = document.createElement('div');
