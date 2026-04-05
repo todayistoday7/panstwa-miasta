@@ -863,6 +863,13 @@ function applyTranslations() {
   }
   // Keep the hub link in sync with the current language
   const hubLink = document.getElementById('lbl-other-games');
+  // Update SEO rules link to correct language
+  const seoRulesLink = document.getElementById('lbl-seo-rules');
+  if (seoRulesLink) {
+    seoRulesLink.href = lang === 'pl' ? '/jak-grac' :
+                        lang === 'de' ? '/wie-man-spielt' :
+                        lang === 'sv' ? '/hur-man-spelar' : '/how-to-play';
+  }
   if (hubLink) hubLink.href = '/games?lang=' + lang;
   const calcEl = document.getElementById('lbl-calculating');
   if (calcEl && L.calculating) calcEl.textContent = L.calculating;
@@ -877,6 +884,10 @@ function applyTranslations() {
     'lbl-about-free':'aboutFree', 'lbl-about-free-desc':'aboutFreeDesc',
     'lbl-rules-title':'rulesTitle',
     'lbl-other-games-text':'otherGames',
+    'lbl-seo-other-text':  'otherGames',
+    'lbl-more-about':      'moreAbout',
+    'lbl-seo-rules-text':  'rulesLinkLabel',
+    'lbl-seo-cats':        'catsLabel',
     'lbl-rule-1':'rule1', 'lbl-rule-2':'rule2', 'lbl-rule-3':'rule3',
     'lbl-rule-4':'rule4', 'lbl-rule-5':'rule5',
     'lbl-lobby-rules-title':'lobbyRulesTitle',

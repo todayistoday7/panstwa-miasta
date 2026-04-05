@@ -68,6 +68,8 @@ const LANGS = {
     winner:         (n) => `🏆 ${n} wygrywa!`,
     draw:           'Remis! 🤝',
     pts:            'pkt',
+    navHome:        'Strona główna',
+    navAllGames:    'Wszystkie gry',
     playAgain:      '🔄 Zagraj jeszcze raz z tą grupą',
     goHome:         '🏠 Powrót',
     hostBadge:      'HOST',
@@ -91,6 +93,7 @@ const LANGS = {
     shareCode:      'Share this code with friends',
     copyCode:       'Copy Code',       shareRoom:     'Share Room',
     homeRejoinTip: 'If you accidentally leave mid-game, rejoin with the same name and room code.',
+    rejoinTip: 'If you accidentally leave, rejoin with the same name and room code.',
     createDisclaimer: 'Create a public or private room. Invite friends — you\'ll get a room code to share with other players.',
     waitingForHost: 'Waiting for host...',
     needPlayers:    'Need at least 3 players',
@@ -130,6 +133,8 @@ const LANGS = {
     winner:         (n) => `🏆 ${n} wins!`,
     draw:           "It's a draw! 🤝",
     pts:            'pts',
+    navHome:        'Home',
+    navAllGames:    'All Games',
     playAgain:      '🔄 Play Again With This Group',
     goHome:         '🏠 Home',
     hostBadge:      'HOST',
@@ -153,6 +158,7 @@ const LANGS = {
     shareCode:      'Teile diesen Code mit Freunden',
     copyCode:       'Code kopieren',    shareRoom:     'Raum teilen',
     homeRejoinTip:  'Falls du das Spiel verlässt, tritt mit demselben Namen und Code wieder bei.',
+    rejoinTip:      'Falls du das Spiel verlässt, tritt mit demselben Namen und Code wieder bei.',
     createDisclaimer: 'Erstelle einen öffentlichen oder privaten Raum. Lade Freunde ein — du erhältst einen Code zum Teilen.',
     waitingForHost: 'Warte auf den Host...',
     needPlayers:    'Mindestens 3 Spieler erforderlich',
@@ -217,6 +223,7 @@ const LANGS = {
     shareCode:      'Dela den här koden med vänner',
     copyCode:       'Kopiera kod',      shareRoom:     'Dela rum',
     homeRejoinTip:  'Om du lämnar spelet av misstag, gå tillbaka med samma namn och rumskod.',
+    rejoinTip:      'Om du lämnar spelet av misstag, gå tillbaka med samma namn och rumskod.',
     createDisclaimer: 'Skapa ett offentligt eller privat rum. Bjud in vänner — du får en kod att dela.',
     waitingForHost: 'Väntar på värden...',
     needPlayers:    'Minst 3 spelare krävs',
@@ -717,6 +724,7 @@ function setUiLang(code) {
     b.classList.toggle('active', b.textContent === LANGS[code].name));
   applyTranslations();
   history.replaceState(null, '', window.location.pathname + '?lang=' + code);
+  window.lang = lang;
   if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
   if (typeof window._refreshFooter  === 'function') window._refreshFooter();
 }
@@ -734,6 +742,8 @@ function applyTranslations() {
     'lbl-share-room':   'shareRoom',   'lbl-how-to-play':  'howToPlay',
     'lbl-nav-home':         'navHome',
     'lbl-nav-all-games':    'navAllGames',
+    'lbl-home-rejoin-tip': 'homeRejoinTip',
+    'lbl-rejoin-tip': 'rejoinTip',
     'lbl-rule-1':       'rule1',       'lbl-rule-2':       'rule2',
     'lbl-rule-3':       'rule3',       'lbl-rule-4':       'rule4',
     'lbl-lobby-how-to-play':'howToPlay',
@@ -757,5 +767,6 @@ function applyTranslations() {
 // ─── INIT ────────────────────────────────────────────────────────
 buildLangBar();
 applyTranslations();
+window.lang = lang;
 prefillJoinCode();
 initVisibilityToggle();

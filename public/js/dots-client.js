@@ -48,6 +48,8 @@ const LANGS = {
     winner:       (n) => `🏆 ${n} wygrywa!`,
     draw:         'Remis! 🤝',
     boxes:        'pól',
+    navHome:      'Strona główna',
+    navAllGames:  'Wszystkie gry',
     rematch:      '🔄 Zagraj jeszcze raz z tą grupą',
     newGame:      '🏠 Powrót',
     hostBadge:    'HOST',
@@ -90,6 +92,8 @@ const LANGS = {
     winner:       (n) => `🏆 ${n} wins!`,
     draw:         "It's a draw! 🤝",
     boxes:        'boxes',
+    navHome:      'Home',
+    navAllGames:  'All Games',
     rematch:      '🔄 Play Again With This Group',
     newGame:      '🏠 Home',
     hostBadge:    'HOST',
@@ -103,7 +107,7 @@ const LANGS = {
   de: {
     name: '🇩🇪 DE',
     gameTitle:    'PUNKTE & LINIEN',
-    subtitle:     'Online-Multiplayer · 2-4 Spieler',
+    subtitle:     'Online-Strategiespiel · 2-4 Spieler',
     createRoom:   'Raum erstellen',  joinRoom:    'Raum beitreten',
     yourName:     'Dein Name',       joinName:    'Dein Name',
     roomCode:     'Raumcode',        createBtn:   'Raum erstellen',
@@ -791,6 +795,7 @@ function setUiLang(code) {
   applyTranslations();
   if (roomState) applyState(roomState);
   history.replaceState(null, '', window.location.pathname + '?lang=' + code);
+  window.lang = lang;
   if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
   if (typeof window._refreshFooter  === 'function') window._refreshFooter();
 }
@@ -842,6 +847,7 @@ function svgEl(tag, attrs) {
 // ─── INIT ────────────────────────────────────────────────────────
 buildLangBar();
 applyTranslations();
+window.lang = lang;
 initVisibilityToggle();
 prefillJoinCode();
 

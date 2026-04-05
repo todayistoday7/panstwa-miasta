@@ -69,6 +69,7 @@ const LANGS_TABOO = {
     name: '🇬🇧 EN',
     gameTitle: 'FORBIDDEN WORDS',
     subtitle: 'Team party game · min. 4 players',
+    rejoinTip: 'If you accidentally leave, rejoin with the same name and room code.',
     createRoom: 'Create Room', joinRoom: 'Join Room',
     yourName: 'Your name', joinName: 'Your name', roomCode: 'Room code',
     createBtn: 'Create Room', joinBtn: 'Join Room',
@@ -116,6 +117,12 @@ const LANGS_TABOO = {
   },
   de: {
     name: '🇩🇪 DE',
+    gameTitle: 'VERBOTENE WÖRTER',
+    subtitle: 'Teamspiel für Parties · mind. 4 Spieler',
+    rejoinTip: 'Falls du den Raum verlässt, tritt mit demselben Namen und Code wieder bei.',
+    createRoom: 'Raum erstellen', joinRoom: 'Raum beitreten',
+    yourName: 'Dein Name', joinName: 'Dein Name',
+    roomCode: 'Raumcode', createBtn: '🎮 Raum erstellen', joinBtn: '🚪 Beitreten',
     settings: 'Einstellungen', roundsTitle: 'Runden', timerTitle: 'Zeit pro Runde', langTitle: 'Sprache',
     startBtn: '🎮 Spiel starten', leaveRoom: '🚪 Raum verlassen',
     shareCode: 'Teile diesen Code mit deinen Freunden', copyCode: 'Code kopieren',
@@ -161,6 +168,8 @@ const LANGS_TABOO = {
   },
   sv: {
     name: '🇸🇪 SV',
+    gameTitle: 'FÖRBJUDNA ORD',
+    subtitle: 'Lagspel för fester · min. 4 spelare',
     settings: 'Inställningar', roundsTitle: 'Rundor', timerTitle: 'Tid per runda', langTitle: 'Språk',
     startBtn: '🎮 Starta spelet', leaveRoom: '🚪 Lämna rummet',
     shareCode: 'Dela den här koden med dina vänner', copyCode: 'Kopiera kod',
@@ -687,6 +696,7 @@ function setUiLang(code) {
   if (roomState) applyState(roomState);
   _ga('language_switched',{game:'taboo',new_language:code});
   history.replaceState(null, '', window.location.pathname + '?lang=' + code);
+  window.lang = lang;
   if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
   if (typeof window._refreshFooter  === 'function') window._refreshFooter();
 }
@@ -716,6 +726,7 @@ function applyTranslations() {
     'lbl-lobby-rule-6':'rule6',
     'lbl-reshuffle':'reshuffle',
     'lbl-play-again':'playAgainGroup',
+    'lbl-rejoin-tip': 'rejoinTip',
   };
   for (const [id, key] of Object.entries(map)) {
     const el = document.getElementById(id);
@@ -761,5 +772,6 @@ function showToast(msg) {
 // ─── INIT ────────────────────────────────────────────────────────
 buildLangBar();
 applyTranslations();
+window.lang = lang;
 initVisibilityToggle();
 prefillJoinCode();

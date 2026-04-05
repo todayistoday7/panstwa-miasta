@@ -55,6 +55,7 @@ const LANGS_BINGO = {
     playersInRoom:   'Players in room',
     startBtn:        '▶ Start Game',
     shareRoom:       '📤 Share Room',
+    homeRejoinTip:   'If you accidentally leave, rejoin with the same name and room code.',
     waitingHost:     'Waiting for host to start the game...',
     needPlayers:     'Need at least 2 players',
     callBingo:       '🎉 BINGO!',
@@ -93,6 +94,7 @@ const LANGS_BINGO = {
     playersInRoom:   'Spieler im Raum',
     startBtn:        '▶ Spiel starten',
     shareRoom:       '📤 Raum teilen',
+    homeRejoinTip:   'Falls du den Raum verlässt, tritt mit demselben Namen und Code wieder bei.',
     waitingHost:     'Warte auf den Host...',
     needPlayers:     'Mindestens 2 Spieler erforderlich',
     callBingo:       '🎉 BINGO!',
@@ -427,6 +429,7 @@ function setUiLang(code) {
     }
   }
   history.replaceState(null, '', window.location.pathname + '?lang=' + code);
+  window.lang = lang;
   if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
   if (typeof window._refreshFooter  === 'function') window._refreshFooter();
   _ga('language_switched', { game: 'bingo', new_language: code });
@@ -470,6 +473,8 @@ function applyTranslations() {
     'lbl-language':       'language',
     'lbl-progress':       'progressLabel',
     'lbl-game-over':      'gameOver',
+
+    'lbl-home-rejoin-tip': 'homeRejoinTip',
   };
   for (const [id, key] of Object.entries(map)) {
     const el = document.getElementById(id);
@@ -531,5 +536,6 @@ function shareRoomBingo() {
 // ── Init ─────────────────────────────────────────────────
 buildLangBar();
 applyTranslations();
+window.lang = lang;
 prefillJoinCode();
 showScreen('screen-home');

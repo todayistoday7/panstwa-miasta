@@ -73,12 +73,15 @@ const LANGS = {
     draw:              'Remis! 🤝',
     wins:              'wygranych',
     guessersWon:       (n) => `🎉 ${n} zgadł!`,
+    navHome:           'Strona główna',
+    navAllGames:       'Wszystkie gry',
     playAgain:         '🔄 Zagraj jeszcze raz z tą grupą',
     goHome:            '🏠 Powrót',
     roomVis:           'Widoczność pokoju',
   },
   en: {
     name: '🇬🇧 EN',
+    rejoinTip:         'If you accidentally leave, rejoin with the same name and room code.',
     gameTitle:         'HANGMAN',
     subtitle:          'Word guessing game · 2-10 players',
     createRoom:        'Create Room',       joinRoom:       'Join Room',
@@ -134,12 +137,18 @@ const LANGS = {
     draw:              "It's a draw! 🤝",
     wins:              'wins',
     guessersWon:       (n) => `🎉 ${n} got it!`,
+    navHome:           'Home',
+    navAllGames:       'All Games',
     playAgain:         '🔄 Play Again With This Group',
     goHome:            '🏠 Home',
     roomVis:           'Room visibility',
   },
   de: {
     name: '🇩🇪 DE',
+    navHome:           'Startseite',
+    navAllGames:       'Alle Spiele',
+    homeRejoinTip:     'Falls du das Spiel versehentlich verlässt, tritt mit demselben Namen und Code wieder bei.',
+    rejoinTip:         'Falls du das Spiel versehentlich verlässt, tritt mit demselben Namen und Code wieder bei.',
     gameTitle:         'GALGENMÄNNCHEN',
     subtitle:          'Wortratespiel · 2-10 Spieler',
     createRoom:        'Raum erstellen',    joinRoom:       'Raum beitreten',
@@ -168,6 +177,10 @@ const LANGS = {
     leaveNo:           'Abbrechen',
     visPrivate:        'Privat',
     visPublic:         'Öffentlich',
+    navHome:           'Startseite',
+    navAllGames:       'Alle Spiele',
+    homeRejoinTip:     'Falls du das Spiel verlässt, tritt mit demselben Namen und Code wieder bei.',
+    rejoinTip:         'Falls du das Spiel verlässt, tritt mit demselben Namen und Code wieder bei.',
     roundOf:           (r, t) => `RUNDE ${r} VON ${t}`,
     youArePicker:      '🤫 DEINE RUNDE — WÄHLE EIN WORT',
     theirTurnPick:     (n) => `🤔 ${n} wählt ein Wort...`,
@@ -798,6 +811,7 @@ function setUiLang(code) {
   applyTranslations();
   if (roomState) applyState(roomState);
   history.replaceState(null, '', window.location.pathname + '?lang=' + code);
+  window.lang = lang;
   if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
   if (typeof window._refreshFooter  === 'function') window._refreshFooter();
 }
@@ -813,6 +827,8 @@ function applyTranslations() {
     'lbl-start-btn':        'startBtn',    'lbl-leave-room':       'leaveRoom',
     'lbl-share-code':       'shareCode',   'lbl-share-room':       'shareRoom',
     'lbl-how-to-play':      'howToPlay',
+    'lbl-home-rejoin-tip':  'homeRejoinTip',
+    'lbl-rejoin-tip':       'rejoinTip',
     'lbl-nav-home':         'navHome',
     'lbl-nav-all-games':    'navAllGames',
     'lbl-hint-step':        'hintStep',
@@ -833,6 +849,8 @@ function applyTranslations() {
     'lbl-play-again':       'playAgain',   'lbl-go-home':          'goHome',
     'lbl-room-visibility':  'roomVis',
     'lbl-rounds-label':     'roundsLabel',
+    'lbl-home-rejoin-tip':  'homeRejoinTip',
+    'lbl-rejoin-tip':       'rejoinTip',
   };
   for (const [id, key] of Object.entries(map)) {
     const el = document.getElementById(id);
@@ -851,5 +869,6 @@ function applyTranslations() {
 // ─── INIT ────────────────────────────────────────────────────────
 buildLangBar();
 applyTranslations();
+window.lang = lang;
 initVisibilityToggle();
 prefillJoinCode();

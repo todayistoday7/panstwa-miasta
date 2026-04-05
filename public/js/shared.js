@@ -517,6 +517,18 @@ window._buildFooterLangBtns = function() {
           hang: '/jak-grac/wisielec',
           dots: '/jak-grac/kropki-i-kreski',
           tt:   '/jak-grac/dwie-prawdy-jedno-klamstwo' }
+      : lp === 'de'
+      ? { pm:   '/wie-man-spielt',
+          tabu: '/wie-man-spielt/verbotene-woerter',
+          hang: '/wie-man-spielt/galgenmaennchen',
+          dots: '/wie-man-spielt/punkte-und-linien',
+          tt:   '/wie-man-spielt/zwei-wahrheiten-eine-luege' }
+      : lp === 'sv'
+      ? { pm:   '/hur-man-spelar',
+          tabu: '/hur-man-spelar/forbjudna-ord',
+          hang: '/hur-man-spelar/hanga-gubbe',
+          dots: '/hur-man-spelar/punkter-och-linjer',
+          tt:   '/hur-man-spelar/tva-sanningar-en-logn' }
       : { pm:   '/how-to-play',
           tabu: '/how-to-play/taboo',
           hang: '/how-to-play/hangman',
