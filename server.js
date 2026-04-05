@@ -48,6 +48,10 @@ app.get('/how-to-play/dots-and-boxes',(req, res) => res.sendFile(path.join(__dir
 app.get('/how-to-play/two-truths-one-lie', (req, res) => res.sendFile(path.join(__dirname, 'public/how-to-play/two-truths-one-lie.html')));
 app.get('/jak-grac',    (req, res) => res.sendFile(path.join(__dirname, 'public/jak-grac/index.html')));
 app.get('/how-to-play', (req, res) => res.sendFile(path.join(__dirname, 'public/how-to-play/index.html')));
+app.get('/wie-man-spielt', (req, res) => res.sendFile(path.join(__dirname, 'public/wie-man-spielt/index.html')));
+app.get('/wie-man-spielt/:game', (req, res) => res.sendFile(path.join(__dirname, 'public/wie-man-spielt/index.html')));
+app.get('/hur-man-spelar', (req, res) => res.sendFile(path.join(__dirname, 'public/hur-man-spelar/index.html')));
+app.get('/hur-man-spelar/:game', (req, res) => res.sendFile(path.join(__dirname, 'public/hur-man-spelar/index.html')));
 app.get('/kategorie',   (req, res) => res.sendFile(path.join(__dirname, 'public/kategorie/index.html')));
 app.get('/slowa',       (req, res) => res.sendFile(path.join(__dirname, 'public/slowa/index.html')));
 

@@ -1,111 +1,213 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://panstwamiastagra.com/</loc>
-    <lastmod>2026-03-19</lastmod>
+    <loc>https://panstwamiastagra.com/?lang=pl</loc>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/?lang=pl"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/?lang=sv"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/?lang=pl"/>
   </url>
   <url>
-    <loc>https://panstwamiastagra.com/games</loc>
-    <lastmod>2026-03-19</lastmod>
+    <loc>https://panstwamiastagra.com/games?lang=pl</loc>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/games?lang=pl"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/games?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/games?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/games?lang=sv"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/games?lang=pl"/>
   </url>
   <url>
-    <loc>https://panstwamiastagra.com/taboo</loc>
-    <lastmod>2026-03-19</lastmod>
+    <loc>https://panstwamiastagra.com/taboo?lang=pl</loc>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/taboo?lang=pl"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/taboo?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/taboo?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/taboo?lang=sv"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/taboo?lang=pl"/>
   </url>
   <url>
-    <loc>https://panstwamiastagra.com/dots</loc>
-    <lastmod>2026-03-24</lastmod>
+    <loc>https://panstwamiastagra.com/dots?lang=pl</loc>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/dots?lang=pl"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/dots?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/dots?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/dots?lang=sv"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/dots?lang=pl"/>
   </url>
   <url>
-    <loc>https://panstwamiastagra.com/twotruth</loc>
-    <lastmod>2026-03-25</lastmod>
+    <loc>https://panstwamiastagra.com/twotruth?lang=pl</loc>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/twotruth?lang=pl"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/twotruth?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/twotruth?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/twotruth?lang=sv"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/twotruth?lang=pl"/>
   </url>
   <url>
-    <loc>https://panstwamiastagra.com/hangman</loc>
-    <lastmod>2026-03-26</lastmod>
+    <loc>https://panstwamiastagra.com/hangman?lang=pl</loc>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/hangman?lang=pl"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/hangman?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/hangman?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/hangman?lang=sv"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/hangman?lang=pl"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/bingo?lang=pl</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/bingo?lang=pl"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/bingo?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/bingo?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/bingo?lang=sv"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/bingo?lang=pl"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/rooms?lang=pl</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/rooms?lang=pl"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/rooms?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/rooms?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/rooms?lang=sv"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/rooms?lang=pl"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/privacy?lang=pl</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/privacy?lang=pl"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/privacy?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/privacy?lang=pl"/>
   </url>
   <url>
     <loc>https://panstwamiastagra.com/jak-grac</loc>
-    <lastmod>2026-03-26</lastmod>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/how-to-play</loc>
-    <lastmod>2026-03-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/kategorie</loc>
-    <lastmod>2026-03-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/jak-grac"/>
   </url>
   <url>
     <loc>https://panstwamiastagra.com/jak-grac/tabu</loc>
-    <lastmod>2026-03-26</lastmod>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac/tabu"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/jak-grac/tabu"/>
   </url>
   <url>
     <loc>https://panstwamiastagra.com/jak-grac/wisielec</loc>
-    <lastmod>2026-03-26</lastmod>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac/wisielec"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/jak-grac/wisielec"/>
   </url>
   <url>
     <loc>https://panstwamiastagra.com/jak-grac/kropki-i-kreski</loc>
-    <lastmod>2026-03-26</lastmod>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac/kropki-i-kreski"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/jak-grac/kropki-i-kreski"/>
   </url>
   <url>
     <loc>https://panstwamiastagra.com/jak-grac/dwie-prawdy-jedno-klamstwo</loc>
-    <lastmod>2026-03-26</lastmod>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac/dwie-prawdy-jedno-klamstwo"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/jak-grac/dwie-prawdy-jedno-klamstwo"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/how-to-play</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play"/>
   </url>
   <url>
     <loc>https://panstwamiastagra.com/how-to-play/taboo</loc>
-    <lastmod>2026-03-26</lastmod>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play/taboo"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play/taboo"/>
   </url>
   <url>
     <loc>https://panstwamiastagra.com/how-to-play/hangman</loc>
-    <lastmod>2026-03-26</lastmod>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play/hangman"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play/hangman"/>
   </url>
   <url>
     <loc>https://panstwamiastagra.com/how-to-play/dots-and-boxes</loc>
-    <lastmod>2026-03-26</lastmod>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play/dots-and-boxes"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play/dots-and-boxes"/>
   </url>
   <url>
     <loc>https://panstwamiastagra.com/how-to-play/two-truths-one-lie</loc>
-    <lastmod>2026-03-26</lastmod>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play/two-truths-one-lie"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play/two-truths-one-lie"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/wie-man-spielt</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/wie-man-spielt"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/wie-man-spielt"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/hur-man-spelar</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/hur-man-spelar"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/hur-man-spelar"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/kategorie</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/kategorie"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/kategorie"/>
   </url>
   <url>
     <loc>https://panstwamiastagra.com/slowa</loc>
-    <lastmod>2026-03-26</lastmod>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/slowa"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/slowa"/>
   </url>
 </urlset>

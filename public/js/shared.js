@@ -287,7 +287,9 @@ function initVisibilityToggle() {
     var lang     = getLang();
     var t        = LABELS[lang] || LABELS['en'];
     var ql       = '?lang=' + lang;
-    var ruleBase = (lang === 'pl') ? '/jak-grac' : '/how-to-play';
+    var ruleBase = lang === 'pl' ? '/jak-grac' :
+                   lang === 'de' ? '/wie-man-spielt' :
+                   lang === 'sv' ? '/hur-man-spelar' : '/how-to-play';
 
     // ── Build topbar ─────────────────────────────────────────────
     var topbar = document.createElement('div');
@@ -506,7 +508,9 @@ window._buildFooterLangBtns = function() {
 
   function buildFooterHTML(footerLang) {
     var lp = (footerLang === 'pl') ? 'pl' : (footerLang === 'de') ? 'de' : (footerLang === 'sv') ? 'sv' : 'en';
-    var ruleBase   = lp === 'pl' ? '/jak-grac'   : '/how-to-play';
+    var ruleBase   = lp === 'pl' ? '/jak-grac' :
+                     lp === 'de' ? '/wie-man-spielt' :
+                     lp === 'sv' ? '/hur-man-spelar' : '/how-to-play';
     var rulesLinks = lp === 'pl'
       ? { pm:   '/jak-grac',
           tabu: '/jak-grac/tabu',
