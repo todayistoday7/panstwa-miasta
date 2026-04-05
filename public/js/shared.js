@@ -258,6 +258,12 @@ function initVisibilityToggle() {
           sg:'Spiele', sr:'Regeln', sm:'Mehr',
           gpm:'Länder & Städte', gtaboo:'Verbotene Wörter',
           ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge', gbingo:'Unternehmens-Bingo' },
+    sv: { home:'Startsida', games:'Alla spel', rooms:'Aktiva rum', bug:'🐛 Rapportera fel', rules:'Spelregler',
+          cats:'Kategorier', words:'Ord per bokstav',
+          sg:'Spel', sr:'Regler', sm:'Mer',
+          gpm:'Länder & Städer', gtaboo:'Förbjudna ord',
+          ghang:'Hänga gubbe', gdots:'Punkter & Linjer', gtt:'2 Sanningar 1 Lögn', gbingo:'Företagsbingo',
+          privacy:'Integritetspolicy' },
   };
 
   window._gbLabels = LABELS;

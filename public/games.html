@@ -191,6 +191,14 @@
       hangman:   { title: 'Galgenmännchen', desc: 'Klassisches Lern- und Ratespiel! Rate das geheime Wort Buchstabe für Buchstabe — Spaß und Bildung zugleich. 7 Fehler bedeutet Ende!', players: '2-10 Spieler', tag1: 'Lernspiel', age: 'ab 8 Jahren', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
       bingo:     { title: 'Unternehmens-Bingo', desc: 'Spiel während langweiliger Meetings! Markiere Unternehmensfloskeln wenn du sie hörst — wer zuerst eine Reihe voll hat, gewinnt. Perfekt für Büro-Meetings und Team-Events!', players: '2-50 Spieler', tag1: 'Teambuilding', age: 'ab 16 Jahren', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
     },
+    sv: {
+      pm:        { title: 'Länder & Städer', desc: 'Klassiskt sällskapsspel online! Fyll i länder, städer, djur och mer med en slumpmässig bokstav — snabbare än alla andra!', players: '2-12 spelare', tag1: 'Sällskapsspel', age: 'från 7 år', play: '🎮 Spela nu', coming: 'SNART' },
+      taboo:     { title: 'Förbjudna ord', desc: 'Lagspel! Beskriv ord utan de förbjudna — perfekt för fester, teambuilding och gruppevenemang. Min. 4 spelare.', players: '4-12 spelare', tag1: 'Teambuilding', age: 'från 11 år', play: '🎮 Spela nu', coming: 'SNART' },
+      twotruth:  { title: '2 Sanningar 1 Lögn', desc: 'Det ultimata isbrytarspelet! Säg två sanningar och en lögn om dig själv — perfekt för att lära känna nya vänner på fester och evenemang.', players: '3-20 spelare', tag1: 'Isbrytare', age: 'från 12 år', play: '🎮 Spela nu', coming: 'SNART' },
+      dots:      { title: 'Punkter & Linjer', desc: 'Klassiskt strategispel för hela familjen! Rita linjer mellan punkter och ta rutor. Enkla regler, oändlig kul.', players: '2-4 spelare', tag1: 'Familj', age: 'från 5 år', play: '🎮 Spela nu', coming: 'SNART' },
+      hangman:   { title: 'Hänga gubbe', desc: 'Klassiskt ordgissningsspel! Gissa det hemliga ordet bokstav för bokstav — roligt och lärorikt. 7 fel och det är slut!', players: '2-10 spelare', tag1: 'Pedagogiskt', age: 'från 8 år', play: '🎮 Spela nu', coming: 'SNART' },
+      bingo:     { title: 'Företagsbingo', desc: 'Spela under tråkiga möten! Markera företagsfraser när du hör dem — den som fyller en rad först vinner. Perfekt för kontorsmöten och teamevents!', players: '2-50 spelare', tag1: 'Teambuilding', age: 'från 16 år', play: '🎮 Spela nu', coming: 'SNART' },
+    },
   };
 
   var T = {
@@ -203,11 +211,15 @@
     de: { title: 'Kostenlose Online-Partyspiele',
           subtitle: 'Lade deine Freunde ein und erlebt gemeinsam grenzenlosen Spaß — oder tritt einem offenen Raum bei und lerne neue Leute kennen. Lache, miss dich mit anderen und entdecke ein Spielerlebnis, das begeistert. Jetzt starten.',
           back: '← Zurück zur Startseite' },
+    sv: { title: 'Gratis onlinesällskapsspel',
+          subtitle: 'Bjud in dina vänner och ha kul tillsammans — eller gå med i ett öppet rum och träffa nya spelare. Skratta, tävla och upplev något annat. Börja spela nu.',
+          back: '← Tillbaka till startsidan' },
   };
   var LANGS = [
     { code: 'pl', label: '🇵🇱 PL' },
     { code: 'en', label: '🇬🇧 EN' },
     { code: 'de', label: '🇩🇪 DE' },
+  { code: 'sv', label: '🇸🇪 SV' },
       ];
 
   var params = new URLSearchParams(window.location.search);
@@ -223,12 +235,12 @@
   function renderCards(l) {
     var g = GAMES[l] || GAMES['pl'];
     document.getElementById('games-grid').innerHTML =
-      card('/', '🌍', g.pm.title || 'Państwa-Miasta', g.pm.desc, g.pm.players, 'PL/EN/DE/FR/ES', g.pm.tag1, false, g.pm.play, l, g.pm.age) +
+      card('/', '🌍', g.pm.title || 'Państwa-Miasta', g.pm.desc, g.pm.players, 'PL/EN/DE/SV', g.pm.tag1, false, g.pm.play, l, g.pm.age) +
       card('/taboo', '🎭', g.taboo.title || 'Tabu', g.taboo.desc, g.taboo.players, 'PL/EN/DE/SV', g.taboo.tag1, false, g.taboo.play, l, g.taboo.age) +
-      card('/twotruth', '🤥', g.twotruth.title || '2 Truths 1 Lie', g.twotruth.desc, g.twotruth.players, 'PL/EN', g.twotruth.tag1, false, g.twotruth.play, l, g.twotruth.age) +
-      card('/dots', '🔵', g.dots.title || 'Dots & Boxes', g.dots.desc, g.dots.players, '', g.dots.tag1, false, g.dots.play, l, g.dots.age) +
-      card('/hangman', '🪢', g.hangman.title || 'Hangman', g.hangman.desc, g.hangman.players, 'PL/EN/DE', g.hangman.tag1, false, g.hangman.play, l, g.hangman.age) +
-      card('/bingo', '🎯', g.bingo ? g.bingo.title : 'Corporate Bingo', g.bingo ? g.bingo.desc : '', g.bingo ? g.bingo.players : '2-20', 'PL/EN/DE', g.bingo ? g.bingo.tag1 : 'Team building', false, g.bingo ? g.bingo.play : '🎮 Play now', l, g.bingo ? g.bingo.age : '16+');
+      card('/twotruth', '🤥', g.twotruth.title || '2 Truths 1 Lie', g.twotruth.desc, g.twotruth.players, 'PL/EN/DE/SV', g.twotruth.tag1, false, g.twotruth.play, l, g.twotruth.age) +
+      card('/dots', '🔵', g.dots.title || 'Dots & Boxes', g.dots.desc, g.dots.players, 'PL/EN/DE/SV', g.dots.tag1, false, g.dots.play, l, g.dots.age) +
+      card('/hangman', '🪢', g.hangman.title || 'Hangman', g.hangman.desc, g.hangman.players, 'PL/EN/DE/SV', g.hangman.tag1, false, g.hangman.play, l, g.hangman.age) +
+      card('/bingo', '🎯', g.bingo ? g.bingo.title : 'Corporate Bingo', g.bingo ? g.bingo.desc : '', g.bingo ? g.bingo.players : '2-50', 'PL/EN/DE/SV', g.bingo ? g.bingo.tag1 : 'Team building', false, g.bingo ? g.bingo.play : '🎮 Play now', l, g.bingo ? g.bingo.age : '16+');
   }
 
   function card(href, icon, title, desc, players, lang_tag, tag1, comingSoon, btnLabel, l, age) {
