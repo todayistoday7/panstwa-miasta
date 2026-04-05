@@ -825,6 +825,9 @@ function applyTranslations() {
     const el = document.getElementById(id);
     if (el && L[key] && typeof L[key] === 'string') el.textContent = L[key];
   }
+
+  document.querySelectorAll('.lbl-nav-home-dup').forEach(function(el) { if (L.navHome) el.textContent = L.navHome; });
+  document.querySelectorAll('.lbl-nav-all-games-dup').forEach(function(el) { if (L.navAllGames) el.textContent = L.navAllGames; });
 }
 
 // ─── SVG HELPER ──────────────────────────────────────────────────

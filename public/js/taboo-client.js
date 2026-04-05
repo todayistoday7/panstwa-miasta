@@ -203,6 +203,12 @@ const LANGS_TABOO = {
     draw: 'Oavgjort! 🤝',
     playAgainGroup: '🔄 Spela igen med samma grupp',
     shareRoom: 'Dela rum',
+    createRoom: 'Skapa rum', joinRoom: 'Gå med i rum',
+    yourName: 'Ditt namn', joinName: 'Ditt namn',
+    roomCode: 'Rumskod', createBtn: '🎮 Skapa rum', joinBtn: '🚪 Gå med',
+    rejoinTip: 'Om du lämnar av misstag, gå tillbaka med samma namn och rumskod.',
+    offlineBadge: 'offline',
+    visPrivate: 'Privat', visPublic: 'Offentlig',
   }
 };
 
@@ -709,11 +715,15 @@ function applyTranslations() {
     'lbl-lobby-rule-5':'rule5',
     'lbl-lobby-rule-6':'rule6',
     'lbl-reshuffle':'reshuffle',
+    'lbl-play-again':'playAgainGroup',
   };
   for (const [id, key] of Object.entries(map)) {
     const el = document.getElementById(id);
     if (el && L[key] && typeof L[key] === 'string') el.textContent = L[key];
   }
+
+  document.querySelectorAll('.lbl-nav-home-dup').forEach(function(el) { if (L.navHome) el.textContent = L.navHome; });
+  document.querySelectorAll('.lbl-nav-all-games-dup').forEach(function(el) { if (L.navAllGames) el.textContent = L.navAllGames; });
 }
 
 // ─── UTILS ───────────────────────────────────────────────────────

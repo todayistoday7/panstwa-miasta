@@ -153,15 +153,16 @@ function register(io, socket) {
     if (settings && settings.keepGroup) {
       for (const [code, r] of Object.entries(tabooRooms)) {
         if (r.players.find(p => p.id === socket.id)) {
-          const oldPlayers = r.players.filter(p => p.connected && p.id !== socket.id);
+          const oldPlayers = r.players.filter(p => p.id !== socket.id);
           if (r._lobbyTimer) clearTimeout(r._lobbyTimer);
           lobby.remove(code);
-          io.to(code).emit('room_disbanded', { reason: 'rematch' });
-          delete tabooRooms[code];
+          // Add all old players to new room before emitting rematch
           oldPlayers.forEach(p => {
             room.players.push({ id: p.id, name: p.name, connected: false });
-            io.to(p.id).emit('taboo_group_rematch', { code: room.code });
           });
+          // Broadcast rematch to everyone still in the old socket.io room
+          io.to(code).emit('taboo_group_rematch', { code: room.code });
+          delete tabooRooms[code];
           break;
         }
       }

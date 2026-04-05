@@ -6,7 +6,7 @@ window._gameSlug = 'hangman';
 
 const socket = io();
 const _urlLang = new URLSearchParams(window.location.search).get('lang');
-let lang      = (['pl','en','de'].includes(_urlLang) ? _urlLang : 'en');
+let lang      = (['pl','en','de','sv'].includes(_urlLang) ? _urlLang : 'pl');
 let myId      = null;
 var _settingsInitHang = false;
 let myName    = '';
@@ -261,6 +261,8 @@ const LANGS = {
     roomVis:           'Rumssynlighet',
     navHome:           'Startsida',
     navAllGames:       'Alla spel',
+    homeRejoinTip:     'Om du lämnar spelet av misstag, gå tillbaka med samma namn och rumskod.',
+    langTitle:         'Språk',
   },
 };
 let L = LANGS[lang];
@@ -841,6 +843,9 @@ function applyTranslations() {
   const vu = document.getElementById('lbl-vis-public');
   if (vp) vp.textContent = L.visPrivate;
   if (vu) vu.textContent = L.visPublic;
+
+  document.querySelectorAll('.lbl-nav-home-dup').forEach(function(el) { if (L.navHome) el.textContent = L.navHome; });
+  document.querySelectorAll('.lbl-nav-all-games-dup').forEach(function(el) { if (L.navAllGames) el.textContent = L.navAllGames; });
 }
 
 // ─── INIT ────────────────────────────────────────────────────────

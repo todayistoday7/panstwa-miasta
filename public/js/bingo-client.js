@@ -155,6 +155,13 @@ const LANGS_BINGO = {
     markedCount:     (n) => `${n} markerade`,
     progressLabel:   'Spelarframsteg',
     gameOver:        'Spelet är slut!',
+    navHome:         'Startsida',
+    navAllGames:     'Alla spel',
+    playersInRoom:   'Spelare i rummet',
+    waitingHost:     'Väntar på att värden startar spelet...',
+    youWon:          '🎉 Du fick BINGO! Du vinner!',
+    falseBingo:      '❌ Inte riktigt Bingo än! Kontrollera ditt kort.',
+    winnerMsg:       (n) => `🏆 ${n} fick BINGO!`,
   },
 };
 
@@ -470,6 +477,9 @@ function applyTranslations() {
   }
   // Page title
   document.title = L.gameTitle + ' — panstwamiastagra.com';
+
+  document.querySelectorAll('.lbl-nav-home-dup').forEach(function(el) { if (L.navHome) el.textContent = L.navHome; });
+  document.querySelectorAll('.lbl-nav-all-games-dup').forEach(function(el) { if (L.navAllGames) el.textContent = L.navAllGames; });
 }
 
 // ── Helpers ──────────────────────────────────────────────
@@ -514,7 +524,7 @@ function prefillJoinCode() {
 function shareRoomBingo() {
   const url = 'https://panstwamiastagra.com/bingo?join=' + roomCode + '&lang=' + lang;
   navigator.clipboard.writeText(url).then(() => {
-    showToast(lang === 'pl' ? '🔗 Link skopiowany!' : lang === 'de' ? '🔗 Link kopiert!' : '🔗 Link copied!');
+    showToast(lang === 'pl' ? '🔗 Link skopiowany!' : lang === 'de' ? '🔗 Link kopiert!' : lang === 'sv' ? '🔗 Länk kopierad!' : '🔗 Link copied!');
   });
 }
 

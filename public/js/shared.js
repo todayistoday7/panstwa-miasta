@@ -505,7 +505,7 @@ window._buildFooterLangBtns = function() {
   }
 
   function buildFooterHTML(footerLang) {
-    var lp = (footerLang === 'pl') ? 'pl' : (footerLang === 'de') ? 'de' : 'en';
+    var lp = (footerLang === 'pl') ? 'pl' : (footerLang === 'de') ? 'de' : (footerLang === 'sv') ? 'sv' : 'en';
     var ruleBase   = lp === 'pl' ? '/jak-grac'   : '/how-to-play';
     var rulesLinks = lp === 'pl'
       ? { pm:   '/jak-grac',
@@ -525,31 +525,49 @@ window._buildFooterLangBtns = function() {
             privacy:'Prywatność',
             gpm:'Państwa-Miasta', gtaboo:'Zakazane Słowa',
             ghang:'Wisielec', gdots:'Kropki i Kreski', gtt:'Dwie Prawdy Jedno Kłamstwo',
+            gbingo:'Korporacyjne Bingo', rooms:'Aktywne pokoje',
             howto_pm:'Jak grać — Państwa-Miasta',
             howto_tabu:'Jak grać — Zakazane Słowa',
             howto_hang:'Jak grać — Wisielec',
             howto_dots:'Jak grać — Kropki i Kreski',
-            howto_tt:'Jak grać — Dwie Prawdy' },
+            howto_tt:'Jak grać — Dwie Prawdy',
+            words:'Słowa na literę', bug:'🐛 Zgłoś błąd' },
       en: { games:'Games', rules:'Rules', about:'About',
             cats:'Categories', tagline:'Free online multiplayer games for friends and family',
             privacy:'Privacy',
             gpm:'Countries & Cities', gtaboo:'Forbidden Words',
             ghang:'Hangman', gdots:'Dots & Boxes', gtt:'2 Truths 1 Lie',
+            gbingo:'Corporate Bingo', rooms:'Live Rooms',
             howto_pm:'How to play — Countries & Cities',
             howto_tabu:'How to play — Forbidden Words',
             howto_hang:'How to play — Hangman',
             howto_dots:'How to play — Dots & Boxes',
-            howto_tt:'How to play — 2 Truths 1 Lie' },
+            howto_tt:'How to play — 2 Truths 1 Lie',
+            words:'Words by letter', bug:'🐛 Report a Bug' },
       de: { games:'Spiele', rules:'Regeln', about:'Über',
             cats:'Kategorien', tagline:'Kostenlose Multiplayer-Spiele online',
             privacy:'Datenschutz',
             gpm:'Länder & Städte', gtaboo:'Verbotene Wörter',
             ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge',
+            gbingo:'Unternehmens-Bingo', rooms:'Aktive Räume',
             howto_pm:'Spielregeln — Länder & Städte',
             howto_tabu:'Spielregeln — Verbotene Wörter',
             howto_hang:'Spielregeln — Galgenmännchen',
             howto_dots:'Spielregeln — Punkte & Linien',
-            howto_tt:'Spielregeln — 2 Wahrheiten 1 Lüge' },
+            howto_tt:'Spielregeln — 2 Wahrheiten 1 Lüge',
+            words:'Wörter nach Buchstabe', bug:'🐛 Fehler melden' },
+      sv: { games:'Spel', rules:'Regler', about:'Om',
+            cats:'Kategorier', tagline:'Gratis multiplayer-spel online för vänner och familj',
+            privacy:'Integritetspolicy',
+            gpm:'Länder & Städer', gtaboo:'Förbjudna ord',
+            ghang:'Hänga gubbe', gdots:'Punkter & Linjer', gtt:'2 Sanningar 1 Lögn',
+            gbingo:'Företagsbingo', rooms:'Aktiva rum',
+            howto_pm:'Spelregler — Länder & Städer',
+            howto_tabu:'Spelregler — Förbjudna ord',
+            howto_hang:'Spelregler — Hänga gubbe',
+            howto_dots:'Spelregler — Punkter & Linjer',
+            howto_tt:'Spelregler — 2 Sanningar 1 Lögn',
+            words:'Ord per bokstav', bug:'🐛 Rapportera fel' },
     };
     var t = L[lp] || L['en'];
 
@@ -582,7 +600,7 @@ window._buildFooterLangBtns = function() {
           '<div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;">' + t.about + '</div>' +
           '<div style="display:flex;flex-direction:column;gap:6px;">' +
             '<a href="/kategorie" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">📋 ' + t.cats + '</a>' +
-            '<a href="/slowa" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔤 Słowa na literę</a>' +
+            '<a href="/slowa" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔤 ' + (t.words||'Słowa na literę') + '</a>' +
             '<a href="/privacy" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔒 ' + t.privacy + '</a>' +
             '<a href="#" onclick="event.preventDefault();if(typeof openBugModal===\'function\')openBugModal();" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;">' + (t.bug||'🐛 Report a Bug') + '</a>' +
           '</div>' +
