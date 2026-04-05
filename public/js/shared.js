@@ -258,16 +258,6 @@ function initVisibilityToggle() {
           sg:'Spiele', sr:'Regeln', sm:'Mehr',
           gpm:'Länder & Städte', gtaboo:'Verbotene Wörter',
           ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge', gbingo:'Unternehmens-Bingo' },
-    fr: { home:'Accueil', games:'Tous les jeux', rooms:'Salles actives', bug:'🐛 Signaler un bug', rules:'Règles',
-          cats:'Catégories', words:'Mots par lettre',
-          sg:'Jeux', sr:'Règles', sm:'Plus',
-          gpm:'Pays & Villes', gtaboo:'Mots Interdits',
-          ghang:'Pendu', gdots:'Points & Lignes', gtt:'2 Vérités 1 Mensonge', gbingo:'Bingo d\'entreprise' },
-    es: { home:'Inicio', games:'Todos los juegos', rooms:'Salas activas', bug:'🐛 Reportar error', rules:'Reglas',
-          cats:'Categorías', words:'Palabras por letra',
-          sg:'Juegos', sr:'Reglas', sm:'Más',
-          gpm:'Países & Ciudades', gtaboo:'Palabras Prohibidas',
-          ghang:'El Ahorcado', gdots:'Puntos & Líneas', gtt:'2 Verdades 1 Mentira', gbingo:'Bingo Corporativo' },
   };
 
   window._gbLabels = LABELS;

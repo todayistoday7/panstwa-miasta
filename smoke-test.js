@@ -368,7 +368,7 @@ async function testGamePageTranslations(browser) {
   for (const path of gamePaths) {
     for (const ch of checks) {
       // Only test EN and PL on all pages, DE only on pages that support it
-      if (ch.flag === '🇩🇪' && ['/taboo', '/twotruth'].includes(path)) continue;
+      if (ch.flag === '🇩🇪' && ['/twotruth', '/dots'].includes(path)) continue;
 
       const { page, ctx } = await openPage(browser, BASE + path + '?lang=pl');
       await page.waitForLoadState('networkidle');
