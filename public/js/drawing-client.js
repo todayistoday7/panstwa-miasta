@@ -222,7 +222,7 @@ socket.on('drawing_created', ({ code }) => {
   sessionStorage.setItem('drawing_code', code);
   sessionStorage.setItem('drawing_name', myName);
   document.getElementById('room-code-display').textContent = code;
-  document.getElementById('lobby-code-display').textContent = code;
+  const _lcd = document.getElementById('lobby-code-display'); if (_lcd) _lcd.textContent = code;
   document.getElementById('nav-room-code').textContent = code;
   showScreen('screen-lobby');
 });
@@ -232,7 +232,7 @@ socket.on('drawing_joined', ({ code, isHost:h }) => {
   sessionStorage.setItem('drawing_code', code);
   sessionStorage.setItem('drawing_name', myName);
   document.getElementById('room-code-display').textContent = code;
-  document.getElementById('lobby-code-display').textContent = code;
+  const _lcd = document.getElementById('lobby-code-display'); if (_lcd) _lcd.textContent = code;
   document.getElementById('nav-room-code').textContent = code;
   showScreen('screen-lobby');
 });
@@ -258,11 +258,28 @@ socket.on('drawing_error', ({ msg }) => {
 // ── State handler ─────────────────────────────────────────────────
 function applyState(data) {
   isHost = myId === data.hostId;
+  const screenMap = {
+    lobby:   'screen-lobby',
+    playing: 'screen-playing',
+    reveal:  'screen-reveal',
+    final:   'screen-final',
+  };
+  const targetScreen = screenMap[data.phase];
+  if (!targetScreen) return;
+  // Only call showScreen if we're not already on this screen
+  // This prevents the canvas from collapsing to zero on every state update
+  const current = document.querySelector('.screen.active');
+  if (!current || current.id !== targetScreen) {
+    showScreen(targetScreen);
+    // Reset task tracking when screen changes
+    _currentTask = null;
+    _currentStep = -1;
+  }
   switch (data.phase) {
-    case 'lobby':   showScreen('screen-lobby');   renderLobby(data);   break;
-    case 'playing': showScreen('screen-playing'); renderPlaying(data); break;
-    case 'reveal':  showScreen('screen-reveal');  renderReveal(data);  break;
-    case 'final':   showScreen('screen-final');   renderFinal(data);   break;
+    case 'lobby':   renderLobby(data);   break;
+    case 'playing': renderPlaying(data); break;
+    case 'reveal':  renderReveal(data);  break;
+    case 'final':   renderFinal(data);   break;
   }
 }
 
@@ -310,35 +327,54 @@ function renderLobby(data) {
 }
 
 // ── Playing ───────────────────────────────────────────────────────
+// Track what the player is currently doing so we don't re-render unnecessarily
+let _currentTask = null;
+let _currentStep = -1;
+
 function renderPlaying(data) {
   const { step, totalSteps, myTask, hasSubmitted, submittedCount, totalPlayers,
           wordToDraw, imageToDraw, stepDeadline } = data;
+
+  // Always update timer and submitted count — these are safe
+  startTimer(stepDeadline);
+  const countEl = document.getElementById('submitted-count');
+  if (countEl) countEl.textContent = submittedCount + '/' + totalPlayers;
 
   // Step label
   const stepEl = document.getElementById('play-step-label');
   if (stepEl) {
     const n = step + 1;
     const t = totalSteps;
-    if (myTask === 'word')  stepEl.textContent = L.stepWrite(n,t);
+    if (myTask === 'word')       stepEl.textContent = L.stepWrite(n,t);
     else if (myTask === 'draw')  stepEl.textContent = L.stepDraw(n,t);
-    else stepEl.textContent = L.stepGuess(n,t);
+    else                         stepEl.textContent = L.stepGuess(n,t);
   }
 
-  // Timer
-  startTimer(stepDeadline);
-
+  // If player just submitted — show waiting screen
   if (hasSubmitted) {
-    // Show waiting
-    hideAllTasks();
-    document.getElementById('task-waiting').style.display = 'block';
-    document.getElementById('submitted-count').textContent = `${submittedCount}/${totalPlayers}`;
-    document.getElementById('lbl-waiting-others').textContent = L.waitingOthers;
-    document.getElementById('lbl-waiting-desc').textContent = L.waitingDesc;
+    if (_currentTask !== 'waiting') {
+      _currentTask = 'waiting';
+      hideAllTasks();
+      document.getElementById('task-waiting').style.display = 'block';
+      document.getElementById('lbl-waiting-others').textContent = L.waitingOthers;
+      document.getElementById('lbl-waiting-desc').textContent = L.waitingDesc;
+    }
+    // Just update count, nothing else
     return;
   }
 
-  // Show task
+  // If same task and same step — DO NOT re-render, just update count
+  // This prevents canvas wipe when other players submit
+  if (_currentTask === myTask && _currentStep === step) {
+    return;
+  }
+
+  // New task or new step — full render
+  _currentTask = myTask;
+  _currentStep = step;
+
   hideAllTasks();
+
   if (myTask === 'word') {
     document.getElementById('task-write-word').style.display = 'block';
     document.getElementById('lbl-write-title').textContent = L.writeTitle;
@@ -346,14 +382,11 @@ function renderPlaying(data) {
     document.getElementById('lbl-submit-word-btn').textContent = L.submitWord;
     document.getElementById('word-input').value = '';
     document.getElementById('lbl-submit-word-btn').disabled = true;
+
   } else if (myTask === 'draw') {
-    // Only reset canvas if this is a NEW drawing step, not a state refresh
+    _canvasSnapshot = null;
     const _cv = document.getElementById('drawing-canvas');
-    const stepChanged = !_cv || _cv._drawingStep !== step;
-    if (stepChanged) {
-      _canvasSnapshot = null;
-      if (_cv) { _cv._drawingReady = false; _cv._drawingStep = step; }
-    }
+    if (_cv) { _cv._drawingReady = false; _cv._drawingStep = step; }
     document.getElementById('task-draw').style.display = 'block';
     document.getElementById('lbl-draw-title').textContent = L.drawTitle;
     document.getElementById('lbl-draw-hint').textContent = L.drawHint;
@@ -362,6 +395,7 @@ function renderPlaying(data) {
     document.getElementById('lbl-erase').textContent = L.erase;
     document.getElementById('lbl-clear').textContent = L.clear;
     initCanvasIfNeeded();
+
   } else {
     document.getElementById('task-guess').style.display = 'block';
     document.getElementById('lbl-guess-title').textContent = L.guessTitle;
