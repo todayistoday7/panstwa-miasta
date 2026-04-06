@@ -387,6 +387,7 @@ function renderPlaying(data) {
     document.getElementById('lbl-submit-word-btn').disabled = true;
 
   } else if (myTask === 'draw') {
+    console.log('[DRAW BRANCH] New draw task - step=' + step + ' resetting canvas');
     _canvasSnapshot = null;
     const _cv = document.getElementById('drawing-canvas');
     if (_cv) { _cv._drawingReady = false; _cv._drawingStep = step; }
@@ -503,9 +504,13 @@ function initCanvasIfNeeded() { initCanvas(); }
 
 let _canvasSnapshot = null;
 function saveCanvasState() {
-  if (canvas && ctx) _canvasSnapshot = canvas.toDataURL('image/jpeg', 0.7);
+  if (canvas && ctx) {
+    _canvasSnapshot = canvas.toDataURL('image/jpeg', 0.7);
+    console.log('[CANVAS] Snapshot saved, size=' + _canvasSnapshot.length);
+  }
 }
 function restoreCanvasState() {
+  console.log('[CANVAS] restoreCanvasState called, snapshot=' + (!!_canvasSnapshot));
   if (!canvas || !ctx) return;
   if (!_canvasSnapshot) {
     ctx.fillStyle = '#ffffff';
