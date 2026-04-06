@@ -243,22 +243,22 @@ function initVisibilityToggle() {
     '.gb-div{height:1px;background:var(--border);margin:4px 6px;}';
 
   var LABELS = {
-    pl: { home:'Strona główna', games:'Wszystkie gry', rooms:'Aktywne pokoje', bug:'🐛 Zgłoś błąd', rules:'Zasady gier',
+    pl: { home:'Strona główna', games:'Wszystkie gry', rooms:'Aktywne pokoje', privacy:'Prywatność', bug:'🐛 Zgłoś błąd', rules:'Zasady gier',
           cats:'Kategorie', howto_drawing:'Jak grać — Szkicuj i Zgaduj', home:'Strona główna', words:'Słowa na literę',
           sg:'Gry', sr:'Zasady', sm:'Więcej',
           gpm:'Państwa-Miasta', gtaboo:'Zakazane Słowa',
           ghang:'Wisielec', gdots:'Kropki i Kreski', gtt:'Dwie Prawdy Jedno Kłamstwo', gbingo:'Korporacyjne Bingo', gdrawing:'Szkicuj i Zgaduj' },
-    en: { home:'Home', games:'All Games', rooms:'Live Rooms', bug:'🐛 Report a Bug', rules:'Game Rules',
+    en: { home:'Home', games:'All Games', rooms:'Live Rooms', privacy:'Privacy', bug:'🐛 Report a Bug', rules:'Game Rules',
           cats:'Categories', words:'Words by Letter',
           sg:'Games', sr:'Rules', sm:'More',
           gpm:'Countries & Cities', gtaboo:'Forbidden Words',
           ghang:'Hangman', gdots:'Dots & Boxes', gtt:'2 Truths 1 Lie', gbingo:'Corporate Bingo', gdrawing:'Sketch & Guess' },
-    de: { home:'Startseite', games:'Alle Spiele', rooms:'Aktive Räume', bug:'🐛 Fehler melden', rules:'Spielregeln',
+    de: { home:'Startseite', games:'Alle Spiele', rooms:'Aktive Räume', privacy:'Datenschutz', bug:'🐛 Fehler melden', rules:'Spielregeln',
           cats:'Kategorien', howto_drawing:'Spielregeln — Zeichnen & Raten', home:'Startseite', words:'Wörter nach Buchstabe',
           sg:'Spiele', sr:'Regeln', sm:'Mehr',
           gpm:'Länder & Städte', gtaboo:'Verbotene Wörter',
           ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge', gbingo:'Unternehmens-Bingo', gdrawing:'Zeichnen & Raten' },
-    sv: { home:'Startsida', games:'Alla spel', rooms:'Aktiva rum', bug:'🐛 Rapportera fel', rules:'Spelregler',
+    sv: { home:'Startsida', games:'Alla spel', rooms:'Aktiva rum', privacy:'Integritetspolicy', bug:'🐛 Rapportera fel', rules:'Spelregler',
           cats:'Kategorier', howto_drawing:'Spelregler — Skissa & Gissa', home:'Startsida', words:'Ord per bokstav',
           sg:'Spel', sr:'Regler', sm:'Mer',
           gpm:'Länder & Städer', gtaboo:'Förbjudna ord',
@@ -337,21 +337,20 @@ function initVisibilityToggle() {
       '<div class="gb-sec">' + t.sg + '</div>' +
       '<a href="/' + ql + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
       '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
-      '<a href="/rooms' + ql + '"><span class="gb-ico">🔴</span>' + (t.rooms||'Live Rooms') + '</a>' +
+      '<div class="gb-div"></div>' +
       '<a href="/' + ql + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
       '<a href="/taboo' + ql + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
       '<a href="/hangman' + ql + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
       '<a href="/dots' + ql + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
       '<a href="/twotruth' + ql + '"><span class="gb-ico">🤥</span>' + t.gtt + '</a>' +
       '<a href="/bingo' + ql + '"><span class="gb-ico">🎯</span>' + (t.gbingo||'Corporate Bingo') + '</a>' +
+      '<a href="/drawing' + ql + '"><span class="gb-ico">🎨</span>' + (t.gdrawing||'Sketch & Guess') + '</a>' +
+      '<a href="/rooms' + ql + '"><span class="gb-ico">🔴</span>' + (t.rooms||'Live Rooms') + '</a>' +
       '<div class="gb-div"></div>' +
       '<div class="gb-sec">' + t.sr + '</div>' +
       '<a href="' + ruleBase + '"><span class="gb-ico">📖</span>' + t.rules + '</a>' +
       '<div class="gb-div"></div>' +
-      '<div class="gb-sec">' + t.sm + '</div>' +
-      '<a href="/kategorie"><span class="gb-ico">📋</span>' + t.cats + '</a>' +
-      '<a href="/slowa"><span class="gb-ico">🔤</span>' + t.words + '</a>' +
-      '<div class="gb-div"></div>' +
+      '<a href="/privacy' + ql + '"><span class="gb-ico">🔒</span>' + t.privacy + '</a>' +
       '<a href="#" onclick="event.preventDefault();openBugModal();" style="cursor:pointer;"><span class="gb-ico">🐛</span>' + (t.bug||'Report a Bug') + '</a>';
 
     // ── Wrap and insert ──────────────────────────────────────────
