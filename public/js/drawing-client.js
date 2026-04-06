@@ -253,6 +253,14 @@ socket.on('drawing_error', ({ msg }) => {
   showError(msg, 'join');
 });
 
+socket.on('drawing_rematch', ({ code }) => {
+  roomCode = code;
+  sessionStorage.setItem('drawing_code', code);
+  sessionStorage.setItem('drawing_name', myName);
+  socket.emit('drawing_join', { name: myName, code: code });
+  showToast(L.rematchJoining || '🔄 Host started a new game — joining automatically!', 4000);
+});
+
 // Rejoin handled in connect handler above
 
 // ── State handler ─────────────────────────────────────────────────
@@ -269,7 +277,6 @@ function applyState(data) {
   const targetScreen = screenMap[data.phase];
   if (!targetScreen) return;
   const screenChanged = _currentScreen !== targetScreen;
-  console.log('[applyState] phase=' + data.phase + ' screen=' + targetScreen + ' changed=' + screenChanged + ' _currentScreen=' + _currentScreen);
   if (screenChanged) {
     _currentScreen = targetScreen;
     showScreen(targetScreen);
@@ -365,14 +372,11 @@ function renderPlaying(data) {
   }
 
   // If same task and same step — DO NOT re-render, just update count
-  console.log('[renderPlaying] myTask=' + myTask + ' step=' + step + ' _currentTask=' + _currentTask + ' _currentStep=' + _currentStep + ' match=' + (_currentTask === myTask && _currentStep === step));
   if (_currentTask === myTask && _currentStep === step) {
-    console.log('[renderPlaying] GUARD HIT - returning early');
     return;
   }
 
   // New task or new step — full render
-  console.log('[renderPlaying] FULL RENDER');
   _currentTask = myTask;
   _currentStep = step;
 
@@ -387,7 +391,6 @@ function renderPlaying(data) {
     document.getElementById('lbl-submit-word-btn').disabled = true;
 
   } else if (myTask === 'draw') {
-    console.log('[DRAW BRANCH] New draw task - step=' + step + ' resetting canvas');
     _canvasSnapshot = null;
     const _cv = document.getElementById('drawing-canvas');
     if (_cv) { _cv._drawingReady = false; _cv._drawingStep = step; }
@@ -440,7 +443,10 @@ function startTimer(deadline) {
     if (progress) progress.style.strokeDashoffset = circumference * (1 - pct);
     if (numEl) numEl.textContent = Math.ceil(remaining);
     if (circle) circle.classList.toggle('urgent', remaining < 10);
-    if (remaining <= 0) clearInterval(timerInterval);
+    if (remaining <= 0) {
+      clearInterval(timerInterval);
+      autoSubmitOnTimeout();
+    }
   }
   tick();
   timerInterval = setInterval(tick, 500);
@@ -506,11 +512,9 @@ let _canvasSnapshot = null;
 function saveCanvasState() {
   if (canvas && ctx) {
     _canvasSnapshot = canvas.toDataURL('image/jpeg', 0.7);
-    console.log('[CANVAS] Snapshot saved, size=' + _canvasSnapshot.length);
   }
 }
 function restoreCanvasState() {
-  console.log('[CANVAS] restoreCanvasState called, snapshot=' + (!!_canvasSnapshot));
   if (!canvas || !ctx) return;
   if (!_canvasSnapshot) {
     ctx.fillStyle = '#ffffff';
@@ -556,6 +560,29 @@ function doDraw(e) {
 }
 
 function stopDraw() { drawing = false; ctx && ctx.beginPath(); }
+
+function autoSubmitOnTimeout() {
+  if (!roomState || roomState.phase !== 'playing') return;
+  // Don't auto-submit if already submitted
+  const submitBtn = document.getElementById('lbl-submit-draw-btn');
+  const wordBtn   = document.getElementById('lbl-submit-word-btn');
+  const guessBtn  = document.getElementById('lbl-submit-guess-btn');
+  const myTask = roomState.myTask;
+  if (roomState.hasSubmitted) return;
+  if (myTask === 'draw' && canvas && ctx) {
+    // Submit whatever is on the canvas
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+    socket.emit('drawing_submit', { code: roomCode, content: dataUrl });
+  } else if (myTask === 'word') {
+    const v = document.getElementById('word-input');
+    const val = v ? v.value.trim() : '';
+    if (val) socket.emit('drawing_submit', { code: roomCode, content: val });
+  } else if (myTask === 'guess') {
+    const v = document.getElementById('guess-input');
+    const val = v ? v.value.trim() : '';
+    if (val) socket.emit('drawing_submit', { code: roomCode, content: val });
+  }
+}
 
 function setColor(col, btn) {
   brushColor = col;
@@ -631,13 +658,19 @@ function renderReveal(data) {
   if (hostBtn) hostBtn.style.display = isHost ? 'block' : 'none';
   if (endBtn)  endBtn.textContent = L.endReveal;
 
-  // Navigation dots
+  // Navigation — player name buttons (much easier to tap than dots)
   const nav = document.getElementById('reveal-nav');
   if (nav && revealChainOrder.length > 1) {
-    nav.innerHTML = revealChainOrder.map((id,i) =>
-      `<div class="chain-dot${i===0?' active':''}" id="dot-${i}" onclick="switchRevealChain(${i})"></div>`
-    ).join('');
+    nav.innerHTML = revealChainOrder.map((id,i) => {
+      const p = (data.players || []).find(pl => pl.id === id);
+      const name = p ? p.name : ('Chain ' + (i+1));
+      return `<button class="btn${i===0?' btn-primary':' btn-secondary'}" id="dot-${i}"
+        onclick="switchRevealChain(${i})"
+        style="flex:1;min-width:80px;font-size:13px;padding:8px 10px;">${name}</button>`;
+    }).join('');
     nav.style.display = 'flex';
+    nav.style.flexWrap = 'wrap';
+    nav.style.gap = '8px';
   } else if (nav) {
     nav.innerHTML = '';
     nav.style.display = 'none';
@@ -648,9 +681,11 @@ function renderReveal(data) {
 function switchRevealChain(idx) {
   currentRevealIdx = idx;
   renderRevealChain(window._revealData);
-  document.querySelectorAll('#reveal-nav .chain-dot').forEach((d,i) =>
-    d.classList.toggle('active', i === idx)
-  );
+  // Update button styles
+  document.querySelectorAll('#reveal-nav button').forEach((btn, i) => {
+    btn.classList.toggle('btn-primary', i === idx);
+    btn.classList.toggle('btn-secondary', i !== idx);
+  });
   // Scroll chain content to top
   const wrap = document.getElementById('reveal-chains');
   if (wrap) wrap.scrollTop = 0;

@@ -291,15 +291,27 @@ function register(io, socket) {
   socket.on('drawing_restart', ({ code }) => {
     const room = getRoom(code);
     if (!room || socket.id !== room.hostId) return;
-    room.state.phase       = 'lobby';
-    room.state.step        = 0;
-    room.state.totalSteps  = 0;
-    room.state.chains      = {};
-    room.state.assignments = {};
-    room.state.submissions = {};
-    room.state.stepDeadline= 0;
+    // Create a new room and move all players into it
+    const newRoom = makeRoom(socket.id, room.settings);
+    // Add all connected players to new room
+    const allPlayers = room.players.filter(p => p.id !== socket.id);
+    newRoom.players.push({ id: socket.id, name: room.players.find(p=>p.id===socket.id)?.name || 'Host', connected: true });
+    allPlayers.forEach(p => {
+      newRoom.players.push({ id: p.id, name: p.name, connected: false });
+    });
+    // Clean up old room
     if (room.state.timer) clearTimeout(room.state.timer);
-    emitState(io, room);
+    lobby.remove(code);
+    delete drawingRooms[code];
+    // Notify all players to rejoin new room
+    socket.join(newRoom.code);
+    socket.emit('drawing_joined', { code: newRoom.code, isHost: true });
+    emitState(io, newRoom);
+    // Send rematch event to all other players
+    allPlayers.forEach(p => {
+      io.to(p.id).emit('drawing_rematch', { code: newRoom.code });
+    });
+    lobby.announce('drawing', newRoom);
   });
 
   // ── Settings update ──────────────────────────────────
