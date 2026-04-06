@@ -347,7 +347,13 @@ function renderPlaying(data) {
     document.getElementById('word-input').value = '';
     document.getElementById('lbl-submit-word-btn').disabled = true;
   } else if (myTask === 'draw') {
-    _canvasSnapshot = null;
+    // Only reset canvas if this is a NEW drawing step, not a state refresh
+    const _cv = document.getElementById('drawing-canvas');
+    const stepChanged = !_cv || _cv._drawingStep !== step;
+    if (stepChanged) {
+      _canvasSnapshot = null;
+      if (_cv) { _cv._drawingReady = false; _cv._drawingStep = step; }
+    }
     document.getElementById('task-draw').style.display = 'block';
     document.getElementById('lbl-draw-title').textContent = L.drawTitle;
     document.getElementById('lbl-draw-hint').textContent = L.drawHint;
