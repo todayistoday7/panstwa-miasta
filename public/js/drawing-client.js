@@ -268,11 +268,11 @@ function applyState(data) {
   };
   const targetScreen = screenMap[data.phase];
   if (!targetScreen) return;
-  // Track screen ourselves - don't rely on DOM query which can be unreliable
-  if (_currentScreen !== targetScreen) {
+  const screenChanged = _currentScreen !== targetScreen;
+  console.log('[applyState] phase=' + data.phase + ' screen=' + targetScreen + ' changed=' + screenChanged + ' _currentScreen=' + _currentScreen);
+  if (screenChanged) {
     _currentScreen = targetScreen;
     showScreen(targetScreen);
-    // Reset task tracking when screen actually changes
     _currentTask = null;
     _currentStep = -1;
   }
@@ -365,12 +365,14 @@ function renderPlaying(data) {
   }
 
   // If same task and same step — DO NOT re-render, just update count
-  // This prevents canvas wipe when other players submit
+  console.log('[renderPlaying] myTask=' + myTask + ' step=' + step + ' _currentTask=' + _currentTask + ' _currentStep=' + _currentStep + ' match=' + (_currentTask === myTask && _currentStep === step));
   if (_currentTask === myTask && _currentStep === step) {
+    console.log('[renderPlaying] GUARD HIT - returning early');
     return;
   }
 
   // New task or new step — full render
+  console.log('[renderPlaying] FULL RENDER');
   _currentTask = myTask;
   _currentStep = step;
 
