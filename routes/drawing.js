@@ -333,12 +333,19 @@ function register(io, socket) {
       if (!p) continue;
       p.connected = false;
       if (p._disconnectTimer) clearTimeout(p._disconnectTimer);
+      // Grace period: longer in lobby (host may be sharing link via another app)
+      // shorter during gameplay to keep chains moving
+      const gracePeriod = room.state.phase === 'lobby' ? 300000 : 45000; // 5min lobby, 45s game
       p._disconnectTimer = setTimeout(() => {
         if (!p.connected) {
           room.players = room.players.filter(pl => pl.id !== socket.id);
           if (room.players.length === 0) {
-            if (room.state.timer) clearTimeout(room.state.timer);
-            delete drawingRooms[code];
+            // In lobby: don't delete immediately, the 24hr _lobbyTimer will clean up
+            // In game: clean up now
+            if (room.state.phase !== 'lobby') {
+              if (room.state.timer) clearTimeout(room.state.timer);
+              delete drawingRooms[code];
+            }
           } else {
             if (room.hostId === socket.id) {
               const next = room.players.find(pl => pl.connected);
@@ -347,7 +354,7 @@ function register(io, socket) {
             emitState(io, room);
           }
         }
-      }, 45000);
+      }, gracePeriod);
       emitState(io, room);
       break;
     }
