@@ -11,7 +11,7 @@ const LANGS = {
     joinDisclaimer:'Masz kod od znajomego lub z listy otwartych pokoi? Wpisz go tutaj i graj razem!',
     yourName:'Twoje imię', roomCode:'Kod pokoju',
     createBtn:'🎮 Stwórz pokój', joinBtn:'🚪 Dołącz',
-    shareCode:'Udostępnij kod znajomym', copyCode:'📋 Kopiuj kod',
+    shareCode:'Udostępnij kod znajomym', copyCode:'📤 Udostępnij pokój',
     playersTitle:'Gracze', settings:'Ustawienia',
     drawTime:'Czas rysowania', writeTime:'Czas pisania / zgadywania',
     startBtn:'▶ Rozpocznij grę', leaveRoom:'🚪 Wyjdź',
@@ -58,7 +58,7 @@ const LANGS = {
     joinDisclaimer:'Have a code from a friend or from the Live Rooms page? Enter it here and join the game!',
     yourName:'Your name', roomCode:'Room code',
     createBtn:'🎮 Create Room', joinBtn:'🚪 Join',
-    shareCode:'Share this code with friends', copyCode:'📋 Copy code',
+    shareCode:'Share this code with friends', copyCode:'📤 Share Room',
     playersTitle:'Players', settings:'Settings',
     drawTime:'Drawing time', writeTime:'Writing / guessing time',
     startBtn:'▶ Start Game', leaveRoom:'🚪 Leave',
@@ -105,7 +105,7 @@ const LANGS = {
     joinDisclaimer:'Hast du einen Code von einem Freund oder von der Seite mit offenen Räumen? Gib ihn hier ein und spiel mit!',
     yourName:'Dein Name', roomCode:'Raumcode',
     createBtn:'🎮 Raum erstellen', joinBtn:'🚪 Beitreten',
-    shareCode:'Teile diesen Code mit Freunden', copyCode:'📋 Code kopieren',
+    shareCode:'Teile diesen Code mit Freunden', copyCode:'📤 Raum teilen',
     playersTitle:'Spieler', settings:'Einstellungen',
     drawTime:'Zeichenzeit', writeTime:'Schreib- / Ratezeit',
     startBtn:'▶ Spiel starten', leaveRoom:'🚪 Verlassen',
@@ -152,7 +152,7 @@ const LANGS = {
     joinDisclaimer:'Har du en kod från en vän eller från sidan med aktiva rum? Skriv in den här och gå med i spelet!',
     yourName:'Ditt namn', roomCode:'Rumskod',
     createBtn:'🎮 Skapa rum', joinBtn:'🚪 Gå med',
-    shareCode:'Dela koden med vänner', copyCode:'📋 Kopiera kod',
+    shareCode:'Dela koden med vänner', copyCode:'📤 Dela rummet',
     playersTitle:'Spelare', settings:'Inställningar',
     drawTime:'Rittid', writeTime:'Skriv- / gissingstid',
     startBtn:'▶ Starta spelet', leaveRoom:'🚪 Lämna',
@@ -347,6 +347,7 @@ function renderPlaying(data) {
     document.getElementById('word-input').value = '';
     document.getElementById('lbl-submit-word-btn').disabled = true;
   } else if (myTask === 'draw') {
+    _canvasSnapshot = null;
     document.getElementById('task-draw').style.display = 'block';
     document.getElementById('lbl-draw-title').textContent = L.drawTitle;
     document.getElementById('lbl-draw-hint').textContent = L.drawHint;
@@ -354,7 +355,7 @@ function renderPlaying(data) {
     document.getElementById('word-to-draw').textContent = wordToDraw || '???';
     document.getElementById('lbl-erase').textContent = L.erase;
     document.getElementById('lbl-clear').textContent = L.clear;
-    initCanvas();
+    initCanvasIfNeeded();
   } else {
     document.getElementById('task-guess').style.display = 'block';
     document.getElementById('lbl-guess-title').textContent = L.guessTitle;
@@ -408,8 +409,12 @@ const COLORS_PALETTE = ['#000000','#ef4444','#f97316','#eab308','#22c55e','#3b82
 function initCanvas() {
   canvas = document.getElementById('drawing-canvas');
   if (!canvas) return;
+  // Detach old listeners by cloning
+  const fresh = canvas.cloneNode(false);
+  canvas.parentNode.replaceChild(fresh, canvas);
+  canvas = fresh;
+
   ctx = canvas.getContext('2d');
-  // Size canvas to container
   const wrap = document.getElementById('canvas-wrap');
   const w = wrap.clientWidth || 320;
   const h = Math.min(Math.round(w * 0.65), 320);
@@ -421,8 +426,9 @@ function initCanvas() {
   ctx.strokeStyle = brushColor;
   ctx.lineWidth   = brushSize;
   ctx.lineCap = ctx.lineJoin = 'round';
+  _canvasSnapshot = null;
 
-  // Build color palette
+  // Rebuild color palette
   const palette = document.getElementById('color-palette');
   if (palette) {
     palette.innerHTML = COLORS_PALETTE.map(col =>
@@ -431,17 +437,45 @@ function initCanvas() {
     ).join('');
   }
 
-  // Mouse events
+  // Save snapshot after every stroke ends
+  function saveAndStop() { stopDraw(); saveCanvasState(); }
+
   canvas.addEventListener('mousedown', startDraw);
   canvas.addEventListener('mousemove', doDraw);
-  canvas.addEventListener('mouseup', stopDraw);
-  canvas.addEventListener('mouseleave', stopDraw);
-
-  // Touch events
+  canvas.addEventListener('mouseup',   saveAndStop);
+  canvas.addEventListener('mouseleave',saveAndStop);
   canvas.addEventListener('touchstart',  (e)=>{ e.preventDefault(); startDraw(e.touches[0]); }, {passive:false});
   canvas.addEventListener('touchmove',   (e)=>{ e.preventDefault(); doDraw(e.touches[0]); },   {passive:false});
-  canvas.addEventListener('touchend',    (e)=>{ e.preventDefault(); stopDraw(); },              {passive:false});
-  canvas.addEventListener('touchcancel', (e)=>{ e.preventDefault(); stopDraw(); },              {passive:false});
+  canvas.addEventListener('touchend',    (e)=>{ e.preventDefault(); saveAndStop(); },           {passive:false});
+  canvas.addEventListener('touchcancel', (e)=>{ e.preventDefault(); saveAndStop(); },           {passive:false});
+
+  // Restore on visibility change (tab switch)
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') restoreCanvasState();
+  });
+}
+
+// Keep alias so any other calls work
+function initCanvasIfNeeded() { initCanvas(); }
+
+let _canvasSnapshot = null;
+function saveCanvasState() {
+  if (canvas && ctx) _canvasSnapshot = canvas.toDataURL('image/jpeg', 0.7);
+}
+function restoreCanvasState() {
+  if (!canvas || !ctx) return;
+  if (!_canvasSnapshot) {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    return;
+  }
+  const img = new Image();
+  img.onload = () => {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  };
+  img.src = _canvasSnapshot;
 }
 
 function getPos(e) {
@@ -551,14 +585,14 @@ function renderReveal(data) {
 
   // Navigation dots
   const nav = document.getElementById('reveal-nav');
-  if (nav) {
-    nav.innerHTML = revealChainOrder.map((id,i) =>
-      `<div class="chain-dot${i===0?' active':''}" onclick="showRevealChain(${i},${JSON.stringify(data)})"></div>`
-    ).join('');
-    // rebuild dots with proper data ref
+  if (nav && revealChainOrder.length > 1) {
     nav.innerHTML = revealChainOrder.map((id,i) =>
       `<div class="chain-dot${i===0?' active':''}" id="dot-${i}" onclick="switchRevealChain(${i})"></div>`
     ).join('');
+    nav.style.display = 'flex';
+  } else if (nav) {
+    nav.innerHTML = '';
+    nav.style.display = 'none';
   }
   window._revealData = data;
 }
@@ -566,9 +600,12 @@ function renderReveal(data) {
 function switchRevealChain(idx) {
   currentRevealIdx = idx;
   renderRevealChain(window._revealData);
-  document.querySelectorAll('.chain-dot').forEach((d,i) =>
+  document.querySelectorAll('#reveal-nav .chain-dot').forEach((d,i) =>
     d.classList.toggle('active', i === idx)
   );
+  // Scroll chain content to top
+  const wrap = document.getElementById('reveal-chains');
+  if (wrap) wrap.scrollTop = 0;
 }
 
 function renderRevealChain(data) {
@@ -615,15 +652,19 @@ function renderFinal(data) {
   grid.innerHTML = (data.chainOrder || Object.keys(chains)).map(chainId => {
     const chain = chains[chainId] || [];
     const originPlayer = (data.players || []).find(p => p.id === chainId);
-    const last = chain[chain.length - 1];
     const orig = chain[0];
+    // Find last guess (text) entry
+    const lastGuess = [...chain].reverse().find(e => e.type === 'guess');
+    // Find last draw entry
+    const lastDraw = [...chain].reverse().find(e => e.type === 'draw');
     return `<div class="final-card">
       <h3>🔗 ${originPlayer ? originPlayer.name : '?'}</h3>
       <div style="font-size:11px;color:var(--muted);font-weight:700;margin-bottom:4px;">${L.chainWord}:</div>
       <div style="font-size:18px;font-weight:900;color:var(--accent);margin-bottom:8px;">${orig ? orig.content : '?'}</div>
-      ${last && last.type === 'guess' ? `
+      ${lastDraw && lastDraw.content ? `<img class="chain-img" src="${lastDraw.content}" alt="drawing" style="max-width:100%;border-radius:8px;margin-bottom:8px;"/>` : ''}
+      ${lastGuess ? `
         <div style="font-size:11px;color:var(--muted);font-weight:700;margin-bottom:4px;">${L.chainGuess}:</div>
-        <div style="font-size:16px;font-weight:900;color:var(--accent2);">${last.content || '?'}</div>
+        <div style="font-size:16px;font-weight:900;color:var(--accent2);">${lastGuess.content || '?'}</div>
       ` : ''}
     </div>`;
   }).join('');
