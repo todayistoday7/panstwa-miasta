@@ -600,6 +600,13 @@ const socket = io({ transports:['websocket','polling'] });
 socket.on('connect', () => {
   myId = socket.id;
   window.lang = lang;
+  // Try rejoin if we have a saved session
+  const sc = sessionStorage.getItem('drawing_code');
+  const sn = sessionStorage.getItem('drawing_name');
+  if (sc && sn && !roomCode) {
+    myName = sn;
+    socket.emit('drawing_join', { name: sn, code: sc });
+  }
 });
 
 socket.on('drawing_created', ({ code }) => {
@@ -638,16 +645,7 @@ socket.on('drawing_error', ({ msg }) => {
   showError(msg, 'join');
 });
 
-// Try rejoin on connect
-socket.on('connect', () => {
-  myId = socket.id;
-  const sc = sessionStorage.getItem('drawing_code');
-  const sn = sessionStorage.getItem('drawing_name');
-  if (sc && sn && !roomCode) {
-    myName = sn;
-    socket.emit('drawing_join', { name: sn, code: sc });
-  }
-});
+// Rejoin handled in connect handler above
 
 // ── State handler ─────────────────────────────────────────────────
 function applyState(data) {
@@ -1051,9 +1049,14 @@ function showScreen(id) {
 }
 
 function createRoom() {
-  const name = document.getElementById('host-name').value.trim();
-  if (!name) { showError(L.yourName + '?', 'create'); return; }
+  console.log('[drawing] createRoom called');
+  const nameEl = document.getElementById('host-name');
+  console.log('[drawing] nameEl:', nameEl, 'value:', nameEl ? nameEl.value : 'N/A');
+  const name = nameEl ? nameEl.value.trim() : '';
+  console.log('[drawing] name:', name, 'L:', typeof L, 'socket.connected:', socket.connected);
+  if (!name) { showError((L && L.yourName ? L.yourName : 'Name') + '?', 'create'); return; }
   myName = name;
+  console.log('[drawing] emitting drawing_create');
   socket.emit('drawing_create', { name, settings: { lang, isPublic: _isPublic } });
 }
 
