@@ -273,11 +273,12 @@ function register(io, socket) {
     const room = getDotsRoom(code);
     if (!room || socket.id !== room.hostId) return;
     const n = room.settings.gridSize;
-    // Reset back to lobby so host can adjust settings before next game
     room.state.phase         = 'lobby';
     room.state.grid          = makeGrid(n);
     room.state.claimedBoxes  = 0;
     room.state.currentPlayer = null;
+    room.state.roundsPlayed  = 0;
+    room.state.totalRoundsAccum = 0;
     room.players.forEach(p => p.score = 0);
     emitDotsState(io, room);
   });

@@ -840,6 +840,7 @@ function applyTranslations() {
   const map = {
     'game-title':'gameTitle','game-subtitle':'gameSubtitle',
     'lbl-create-room':'createRoom','lbl-create-disclaimer':'createDisclaimer','lbl-join-room':'joinRoom',
+    'lbl-join-disclaimer':'joinDisclaimer',
     'lbl-your-name':'yourName','lbl-join-name':'joinName','lbl-room-code':'roomCode',
     'lbl-create-btn':'createBtn','lbl-join-btn':'joinBtn',
     'lbl-players-in-room':'playersInRoom','lbl-settings':'settings',
@@ -854,7 +855,7 @@ function applyTranslations() {
     'lbl-play-again-group':'playAgainGroup',
     'lbl-share-btn':'shareBtnLabel','lbl-share-game':'shareGameBtn','nav-share-btn':'shareInviteBtn',
     'lbl-home-rejoin-tip':'homeRejoinTip',
-    'lbl-nav-home':'navHome','lbl-leave-room':'leaveRoom',
+    'lbl-nav-home':'navHome','lbl-nav-all-games':'navAllGames','lbl-leave-room':'leaveRoom',
     'lbl-other-games':'otherGames',
   };
   for (const [id, key] of Object.entries(map)) {

@@ -2,6 +2,7 @@ const LANGS = {
   pl: {
     name:'🇵🇱 PL', gameTitle:'Państwa-Miasta Online', gameSubtitle:'Gra wieloosobowa · 2–12 graczy',
     createRoom:'Stwórz pokój', createDisclaimer:'Stwórz pokój otwarty lub prywatny. Zaproś znajomych — otrzymasz kod pokoju, który przekażesz innym graczom.', joinRoom:'Dołącz do pokoju',
+    joinDisclaimer: 'Masz kod od znajomego lub z listy otwartych pokoi? Wpisz go tutaj i graj razem!',
     yourName:'Twoje imię', joinName:'Twoje imię', roomCode:'Kod pokoju',
     createBtn:'🎮 Stwórz pokój', joinBtn:'🚪 Dołącz',
     playersInRoom:'Gracze w pokoju', settings:'Ustawienia',
@@ -44,6 +45,7 @@ const LANGS = {
   en: {
     name:'🇬🇧 EN', gameTitle:'Countries & Cities Online', gameSubtitle:'Real-time multiplayer · 2–12 players',
     createRoom:'Create Room', createDisclaimer:'Create a public or private room. Invite friends — you\'ll get a room code to share with other players.', joinRoom:'Join Room',
+    joinDisclaimer: 'Have a code from a friend or from the Live Rooms page? Enter it here and join the game!',
     yourName:'Your name', joinName:'Your name', roomCode:'Room code',
     createBtn:'🎮 Create Room', joinBtn:'🚪 Join Room',
     playersInRoom:'Players in room', settings:'Settings',
@@ -86,6 +88,7 @@ const LANGS = {
   de: {
     name:'🇩🇪 DE', gameTitle:'Länder & Städte Online', gameSubtitle:'Echtzeit-Multiplayer · 2–12 Spieler',
     createRoom:'Raum erstellen', createDisclaimer:'Erstelle einen öffentlichen oder privaten Raum. Lade Freunde ein — du bekommst einen Code zum Teilen.', joinRoom:'Raum beitreten',
+    joinDisclaimer: 'Hast du einen Code von einem Freund oder von der Seite mit offenen Räumen? Gib ihn hier ein und spiel mit!',
     yourName:'Dein Name', joinName:'Dein Name', roomCode:'Raumcode',
     createBtn:'🎮 Raum erstellen', joinBtn:'🚪 Beitreten',
     playersInRoom:'Spieler im Raum', settings:'Einstellungen',
@@ -137,6 +140,7 @@ const LANGS = {
   sv: {
     name:'🇸🇪 SV', gameTitle:'Länder & Städer Online', gameSubtitle:'Multiplayer online · 2–12 spelare',
     createRoom:'Skapa rum', createDisclaimer:'Skapa ett offentligt eller privat rum. Bjud in vänner — du får en rumskod att dela.',
+    joinDisclaimer: 'Har du en kod från en vän eller från sidan med aktiva rum? Skriv in den här och gå med i spelet!',
     joinRoom:'Gå med i rum',
     yourName:'Ditt namn', joinName:'Ditt namn', roomCode:'Rumskod',
     createBtn:'🎮 Skapa rum', joinBtn:'Gå med',

@@ -34,6 +34,7 @@ const LANGS = {
     homeRejoinTip:'Jeśli przypadkowo opuścisz grę, wróć z tym samym imieniem i kodem pokoju.',
     copyCode:     'Skopiuj kod',
     createDisclaimer: 'Stwórz pokój otwarty lub prywatny. Zaproś znajomych — otrzymasz kod pokoju, który przekażesz innym graczom.',
+    joinDisclaimer: 'Masz kod od znajomego lub z listy otwartych pokoi? Wpisz go tutaj i graj razem!',
     waitingForHost: 'Czekam na hosta...',
     needPlayers:  'Potrzeba minimum 2 graczy',
     roundsLabel:  'Rundy',
@@ -78,6 +79,7 @@ const LANGS = {
     homeRejoinTip:'If you accidentally leave mid-game, rejoin with the same name and room code.',
     copyCode:     'Copy Code',
     createDisclaimer: 'Create a public or private room. Invite friends — you\'ll get a room code to share with other players.',
+    joinDisclaimer: 'Have a code from a friend or from the Live Rooms page? Enter it here and join the game!',
     waitingForHost: 'Waiting for host...',
     needPlayers:  'Need at least 2 players',
     roundsLabel:  'Rounds',
@@ -122,6 +124,7 @@ const LANGS = {
     homeRejoinTip:'Falls du das Spiel verlässt, tritt mit demselben Namen und Code wieder bei.',
     copyCode:     'Code kopieren',
     createDisclaimer: 'Erstelle einen öffentlichen oder privaten Raum. Lade Freunde ein — du erhältst einen Code zum Teilen.',
+    joinDisclaimer: 'Hast du einen Code von einem Freund oder von der Seite mit offenen Räumen? Gib ihn hier ein und spiel mit!',
     waitingForHost: 'Warte auf den Host...',
     needPlayers:  'Mindestens 2 Spieler erforderlich',
     roundsLabel:  'Runden',
@@ -166,6 +169,7 @@ const LANGS = {
     homeRejoinTip:'Om du lämnar spelet av misstag, gå tillbaka med samma namn och rumskod.',
     copyCode:     'Kopiera kod',
     createDisclaimer: 'Skapa ett offentligt eller privat rum. Bjud in vänner — du får en kod att dela.',
+    joinDisclaimer: 'Har du en kod från en vän eller från sidan med aktiva rum? Skriv in den här och gå med i spelet!',
     waitingForHost: 'Väntar på värden...',
     needPlayers:  'Minst 2 spelare krävs',
     roundsLabel:  'Rundor',
@@ -733,8 +737,10 @@ function renderFinal(data) {
 
   const rematchBtn = document.getElementById('lbl-rematch');
   if (rematchBtn) {
-    rematchBtn.style.display = myId === hostId ? 'inline-flex' : 'none';
-    rematchBtn.textContent   = L.rematch;
+    rematchBtn.style.display = 'inline-flex';
+    rematchBtn.style.opacity = myId === hostId ? '1' : '0.5';
+    rematchBtn.title = myId === hostId ? '' : (L.waitingForHost || 'Waiting for host...');
+    rematchBtn.textContent = L.rematch;
   }
   document.getElementById('lbl-new-game').textContent = L.newGame;
 }
@@ -804,6 +810,7 @@ function applyTranslations() {
   const map = {
     'game-title':       'gameTitle',   'game-subtitle':    'subtitle',
     'lbl-create-room':  'createRoom',  'lbl-create-disclaimer': 'createDisclaimer',  'lbl-join-room':    'joinRoom',
+    'lbl-join-disclaimer':'joinDisclaimer',
     'lbl-your-name':    'yourName',    'lbl-join-name':    'joinName',
     'lbl-room-code':    'roomCode',    'lbl-create-btn':   'createBtn',
     'lbl-join-btn':     'joinBtn',     'lbl-settings':     'settings',
