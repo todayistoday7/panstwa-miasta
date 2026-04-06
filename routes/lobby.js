@@ -13,6 +13,7 @@ const GAME_INFO = {
   twotruth: { name: '2 Truths 1 Lie', icon: '🤥', slug: '/twotruth' },
   hangman:  { name: 'Hangman',         icon: '🪢', slug: '/hangman' },
   bingo:    { name: 'Corporate Bingo',  icon: '🎯', slug: '/bingo' },
+  drawing:  { name: 'Sketch & Guess',    icon: '🎨', slug: '/drawing' },
 };
 
 // In-memory registry: code → public room entry

@@ -244,25 +244,25 @@ function initVisibilityToggle() {
 
   var LABELS = {
     pl: { home:'Strona główna', games:'Wszystkie gry', rooms:'Aktywne pokoje', bug:'🐛 Zgłoś błąd', rules:'Zasady gier',
-          cats:'Kategorie', words:'Słowa na literę',
+          cats:'Kategorie', howto_drawing:'Jak grać — Szkicuj i Zgaduj', home:'Strona główna', words:'Słowa na literę',
           sg:'Gry', sr:'Zasady', sm:'Więcej',
           gpm:'Państwa-Miasta', gtaboo:'Zakazane Słowa',
-          ghang:'Wisielec', gdots:'Kropki i Kreski', gtt:'Dwie Prawdy Jedno Kłamstwo', gbingo:'Korporacyjne Bingo' },
+          ghang:'Wisielec', gdots:'Kropki i Kreski', gtt:'Dwie Prawdy Jedno Kłamstwo', gbingo:'Korporacyjne Bingo', gdrawing:'Szkicuj i Zgaduj' },
     en: { home:'Home', games:'All Games', rooms:'Live Rooms', bug:'🐛 Report a Bug', rules:'Game Rules',
           cats:'Categories', words:'Words by Letter',
           sg:'Games', sr:'Rules', sm:'More',
           gpm:'Countries & Cities', gtaboo:'Forbidden Words',
-          ghang:'Hangman', gdots:'Dots & Boxes', gtt:'2 Truths 1 Lie', gbingo:'Corporate Bingo' },
+          ghang:'Hangman', gdots:'Dots & Boxes', gtt:'2 Truths 1 Lie', gbingo:'Corporate Bingo', gdrawing:'Sketch & Guess' },
     de: { home:'Startseite', games:'Alle Spiele', rooms:'Aktive Räume', bug:'🐛 Fehler melden', rules:'Spielregeln',
-          cats:'Kategorien', words:'Wörter nach Buchstabe',
+          cats:'Kategorien', howto_drawing:'Spielregeln — Zeichnen & Raten', home:'Startseite', words:'Wörter nach Buchstabe',
           sg:'Spiele', sr:'Regeln', sm:'Mehr',
           gpm:'Länder & Städte', gtaboo:'Verbotene Wörter',
-          ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge', gbingo:'Unternehmens-Bingo' },
+          ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge', gbingo:'Unternehmens-Bingo', gdrawing:'Zeichnen & Raten' },
     sv: { home:'Startsida', games:'Alla spel', rooms:'Aktiva rum', bug:'🐛 Rapportera fel', rules:'Spelregler',
-          cats:'Kategorier', words:'Ord per bokstav',
+          cats:'Kategorier', howto_drawing:'Spelregler — Skissa & Gissa', home:'Startsida', words:'Ord per bokstav',
           sg:'Spel', sr:'Regler', sm:'Mer',
           gpm:'Länder & Städer', gtaboo:'Förbjudna ord',
-          ghang:'Hänga gubbe', gdots:'Punkter & Linjer', gtt:'2 Sanningar 1 Lögn', gbingo:'Företagsbingo',
+          ghang:'Hänga gubbe', gdots:'Punkter & Linjer', gtt:'2 Sanningar 1 Lögn', gbingo:'Företagsbingo', gdrawing:'Skissa & Gissa',
           privacy:'Integritetspolicy' },
   };
 
@@ -516,24 +516,28 @@ window._buildFooterLangBtns = function() {
           tabu: '/jak-grac/tabu',
           hang: '/jak-grac/wisielec',
           dots: '/jak-grac/kropki-i-kreski',
-          tt:   '/jak-grac/dwie-prawdy-jedno-klamstwo' }
+          tt:   '/jak-grac/dwie-prawdy-jedno-klamstwo',
+          drawing: '/jak-grac/szkicuj-i-zgaduj' }
       : lp === 'de'
       ? { pm:   '/wie-man-spielt',
           tabu: '/wie-man-spielt/verbotene-woerter',
           hang: '/wie-man-spielt/galgenmaennchen',
           dots: '/wie-man-spielt/punkte-und-linien',
-          tt:   '/wie-man-spielt/zwei-wahrheiten-eine-luege' }
+          tt:   '/wie-man-spielt/zwei-wahrheiten-eine-luege',
+          drawing: '/wie-man-spielt/zeichnen-und-raten' }
       : lp === 'sv'
       ? { pm:   '/hur-man-spelar',
           tabu: '/hur-man-spelar/forbjudna-ord',
           hang: '/hur-man-spelar/hanga-gubbe',
           dots: '/hur-man-spelar/punkter-och-linjer',
-          tt:   '/hur-man-spelar/tva-sanningar-en-logn' }
+          tt:   '/hur-man-spelar/tva-sanningar-en-logn',
+          drawing: '/hur-man-spelar/skissa-och-gissa' }
       : { pm:   '/how-to-play',
           tabu: '/how-to-play/taboo',
           hang: '/how-to-play/hangman',
           dots: '/how-to-play/dots-and-boxes',
-          tt:   '/how-to-play/two-truths-one-lie' };
+          tt:   '/how-to-play/two-truths-one-lie',
+          drawing: '/how-to-play/sketch-and-guess' };
 
     var L = {
       pl: { games:'Gry', rules:'Zasady gry', about:'O grze',
@@ -541,7 +545,8 @@ window._buildFooterLangBtns = function() {
             privacy:'Prywatność',
             gpm:'Państwa-Miasta', gtaboo:'Zakazane Słowa',
             ghang:'Wisielec', gdots:'Kropki i Kreski', gtt:'Dwie Prawdy Jedno Kłamstwo',
-            gbingo:'Korporacyjne Bingo', rooms:'Aktywne pokoje',
+            gbingo:'Korporacyjne Bingo',
+            gdrawing:'Szkicuj i Zgaduj', rooms:'Aktywne pokoje',
             howto_pm:'Jak grać — Państwa-Miasta',
             howto_tabu:'Jak grać — Zakazane Słowa',
             howto_hang:'Jak grać — Wisielec',
@@ -553,19 +558,21 @@ window._buildFooterLangBtns = function() {
             privacy:'Privacy',
             gpm:'Countries & Cities', gtaboo:'Forbidden Words',
             ghang:'Hangman', gdots:'Dots & Boxes', gtt:'2 Truths 1 Lie',
-            gbingo:'Corporate Bingo', rooms:'Live Rooms',
+            gbingo:'Corporate Bingo',
+            gdrawing:'Sketch & Guess', rooms:'Live Rooms',
             howto_pm:'How to play — Countries & Cities',
             howto_tabu:'How to play — Forbidden Words',
             howto_hang:'How to play — Hangman',
             howto_dots:'How to play — Dots & Boxes',
             howto_tt:'How to play — 2 Truths 1 Lie',
-            words:'Words by letter', bug:'🐛 Report a Bug' },
+            howto_drawing:'How to play — Sketch & Guess', home:'Home', words:'Words by letter', bug:'🐛 Report a Bug' },
       de: { games:'Spiele', rules:'Regeln', about:'Über',
             cats:'Kategorien', tagline:'Kostenlose Multiplayer-Spiele online',
             privacy:'Datenschutz',
             gpm:'Länder & Städte', gtaboo:'Verbotene Wörter',
             ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge',
-            gbingo:'Unternehmens-Bingo', rooms:'Aktive Räume',
+            gbingo:'Unternehmens-Bingo',
+            gdrawing:'Zeichnen & Raten', rooms:'Aktive Räume',
             howto_pm:'Spielregeln — Länder & Städte',
             howto_tabu:'Spielregeln — Verbotene Wörter',
             howto_hang:'Spielregeln — Galgenmännchen',
@@ -577,7 +584,8 @@ window._buildFooterLangBtns = function() {
             privacy:'Integritetspolicy',
             gpm:'Länder & Städer', gtaboo:'Förbjudna ord',
             ghang:'Hänga gubbe', gdots:'Punkter & Linjer', gtt:'2 Sanningar 1 Lögn',
-            gbingo:'Företagsbingo', rooms:'Aktiva rum',
+            gbingo:'Företagsbingo',
+            gdrawing:'Skissa & Gissa', rooms:'Aktiva rum',
             howto_pm:'Spelregler — Länder & Städer',
             howto_tabu:'Spelregler — Förbjudna ord',
             howto_hang:'Spelregler — Hänga gubbe',
@@ -598,6 +606,7 @@ window._buildFooterLangBtns = function() {
             '<a href="/dots?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔵 ' + t.gdots + '</a>' +
             '<a href="/twotruth?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🤥 ' + t.gtt + '</a>' +
             '<a href="/bingo?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎯 ' + (t.gbingo||'Corporate Bingo') + '</a>' +
+            '<a href="/drawing?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎨 ' + (t.gdrawing||'Sketch & Guess') + '</a>' +
             '<a href="/games?lang=' + footerLang + '" style="color:var(--accent);font-size:13px;font-weight:700;text-decoration:none;">→ ' + t.games + '</a>' +
             '<a href="/rooms?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔴 ' + (t.rooms||'Live Rooms') + '</a>' +
           '</div>' +
@@ -610,13 +619,13 @@ window._buildFooterLangBtns = function() {
             '<a href="' + rulesLinks.hang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_hang + '</a>' +
             '<a href="' + rulesLinks.dots + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_dots + '</a>' +
             '<a href="' + rulesLinks.tt   + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_tt   + '</a>' +
+            '<a href="' + rulesLinks.drawing + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + (t.howto_drawing||'How to play — Sketch & Guess') + '</a>' +
           '</div>' +
         '</div>' +
         '<div>' +
           '<div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;">' + t.about + '</div>' +
           '<div style="display:flex;flex-direction:column;gap:6px;">' +
-            '<a href="/kategorie" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">📋 ' + t.cats + '</a>' +
-            '<a href="/slowa" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔤 ' + (t.words||'Słowa na literę') + '</a>' +
+            '<a href="/?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🏠 ' + (t.home||'Home') + '</a>' +
             '<a href="/privacy" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔒 ' + t.privacy + '</a>' +
             '<a href="#" onclick="event.preventDefault();if(typeof openBugModal===\'function\')openBugModal();" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;">' + (t.bug||'🐛 Report a Bug') + '</a>' +
           '</div>' +
@@ -717,6 +726,7 @@ window._buildFooterLangBtns = function() {
     '/hangman':   'Hangman',
     '/twotruth':  '2 Truths 1 Lie',
     '/bingo':     'Corporate Bingo',
+    '/drawing':   'Sketch & Guess',
   };
 
   var LABELS = {

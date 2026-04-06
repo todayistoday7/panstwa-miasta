@@ -5,11 +5,15 @@ window._gameSlug = 'drawing';
 const LANGS = {
   pl: {
     name:'🇵🇱 PL',
-    gameTitle:'TELEFON RYSUNKOWY', gameSubtitle:'Gra rysunkowa · 3-10 graczy',
+    gameTitle:'SZKICUJ I ZGADUJ', gameSubtitle:'Gra rysunkowa · 3-10 graczy',
     createRoom:'Stwórz pokój', joinRoom:'Dołącz do pokoju',
     createDisclaimer:'Stwórz publiczny lub prywatny pokój. Zaproś znajomych — otrzymasz kod pokoju do przekazania innym graczom.',
     joinDisclaimer:'Masz kod od znajomego lub z listy otwartych pokoi? Wpisz go tutaj i graj razem!',
     yourName:'Twoje imię', roomCode:'Kod pokoju',
+    visHint:'Prywatny — tylko zaproszeni. Publiczny — widoczny na liście pokoi.',
+    wordPlaceholder:'np. słoń, pizza, czarna dziura...',
+    guessPlaceholder:'Twoja odpowiedź...',
+    noPoints:'🎉 Bez punktów — czysta zabawa i śmiech!',
     createBtn:'🎮 Stwórz pokój', joinBtn:'🚪 Dołącz',
     shareCode:'Udostępnij kod znajomym', copyCode:'📤 Udostępnij pokój',
     playersTitle:'Gracze', settings:'Ustawienia',
@@ -52,11 +56,15 @@ const LANGS = {
   },
   en: {
     name:'🇬🇧 EN',
-    gameTitle:'DRAWING TELEPHONE', gameSubtitle:'Drawing party game · 3-10 players',
+    gameTitle:'SKETCH & GUESS', gameSubtitle:'Drawing party game · 3-10 players',
     createRoom:'Create Room', joinRoom:'Join Room',
     createDisclaimer:"Create a public or private room. Invite friends — you'll get a room code to share with other players.",
     joinDisclaimer:'Have a code from a friend or from the Live Rooms page? Enter it here and join the game!',
     yourName:'Your name', roomCode:'Room code',
+    visHint:'Private — invite only. Public — visible on the rooms list.',
+    wordPlaceholder:'e.g. elephant, pizza, black hole...',
+    guessPlaceholder:'Your answer...',
+    noPoints:'🎉 No points — pure fun and laughs!',
     createBtn:'🎮 Create Room', joinBtn:'🚪 Join',
     shareCode:'Share this code with friends', copyCode:'📤 Share Room',
     playersTitle:'Players', settings:'Settings',
@@ -99,11 +107,15 @@ const LANGS = {
   },
   de: {
     name:'🇩🇪 DE',
-    gameTitle:'ZEICHEN-TELEFON', gameSubtitle:'Zeichenspiel für Parties · 3-10 Spieler',
+    gameTitle:'ZEICHNEN & RATEN', gameSubtitle:'Zeichenspiel für Parties · 3-10 Spieler',
     createRoom:'Raum erstellen', joinRoom:'Raum beitreten',
     createDisclaimer:'Erstelle einen öffentlichen oder privaten Raum. Lade Freunde ein — du erhältst einen Code zum Teilen.',
     joinDisclaimer:'Hast du einen Code von einem Freund oder von der Seite mit offenen Räumen? Gib ihn hier ein und spiel mit!',
     yourName:'Dein Name', roomCode:'Raumcode',
+    visHint:'Privat — nur Eingeladene. Öffentlich — auf der Raumliste sichtbar.',
+    wordPlaceholder:'z.B. Elefant, Pizza, schwarzes Loch...',
+    guessPlaceholder:'Deine Antwort...',
+    noPoints:'🎉 Keine Punkte — reiner Spaß und Lachen!',
     createBtn:'🎮 Raum erstellen', joinBtn:'🚪 Beitreten',
     shareCode:'Teile diesen Code mit Freunden', copyCode:'📤 Raum teilen',
     playersTitle:'Spieler', settings:'Einstellungen',
@@ -146,11 +158,15 @@ const LANGS = {
   },
   sv: {
     name:'🇸🇪 SV',
-    gameTitle:'RITA TELEFON', gameSubtitle:'Ritspel · 3-10 spelare',
+    gameTitle:'SKISSA & GISSA', gameSubtitle:'Ritspel · 3-10 spelare',
     createRoom:'Skapa rum', joinRoom:'Gå med i rum',
     createDisclaimer:'Skapa ett offentligt eller privat rum. Bjud in vänner — du får en rumskod att dela.',
     joinDisclaimer:'Har du en kod från en vän eller från sidan med aktiva rum? Skriv in den här och gå med i spelet!',
     yourName:'Ditt namn', roomCode:'Rumskod',
+    visHint:'Privat — endast inbjudna. Offentligt — synligt på rumslistan.',
+    wordPlaceholder:'t.ex. elefant, pizza, svart hål...',
+    guessPlaceholder:'Ditt svar...',
+    noPoints:'🎉 Inga poäng — ren kul och skratt!',
     createBtn:'🎮 Skapa rum', joinBtn:'🚪 Gå med',
     shareCode:'Dela koden med vänner', copyCode:'📤 Dela rummet',
     playersTitle:'Spelare', settings:'Inställningar',
@@ -915,11 +931,24 @@ function applyTranslations() {
     'lbl-final-desc':       'finalDesc',
     'lbl-play-again':       'playAgain',
     'lbl-go-home':          'goHome',
+    'lbl-vis-hint':         'visHint',
+    'lbl-no-points':        'noPoints',
   };
   for (const [id, key] of Object.entries(map)) {
     const el = document.getElementById(id);
     if (el && L[key] && typeof L[key] === 'string') el.textContent = L[key];
   }
+  // Set input placeholders dynamically
+  const hostNameEl = document.getElementById('host-name');
+  if (hostNameEl && L.yourName) hostNameEl.placeholder = L.yourName;
+  const joinNameEl = document.getElementById('join-name');
+  if (joinNameEl && L.yourName) joinNameEl.placeholder = L.yourName;
+  const joinCodeEl = document.getElementById('join-code');
+  if (joinCodeEl && L.roomCode) joinCodeEl.placeholder = L.roomCode;
+  const wordInputEl = document.getElementById('word-input');
+  if (wordInputEl && L.wordPlaceholder) wordInputEl.placeholder = L.wordPlaceholder;
+  const guessInputEl = document.getElementById('guess-input');
+  if (guessInputEl && L.guessPlaceholder) guessInputEl.placeholder = L.guessPlaceholder;
   // Dup elements
   document.querySelectorAll('.lbl-nav-home-dup').forEach(el => { if (L.navHome) el.textContent = L.navHome; });
 }
