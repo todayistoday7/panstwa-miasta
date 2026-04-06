@@ -375,7 +375,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Nunito
 </div>
 
 <!-- ══ CONFIRM LEAVE MODAL ══ -->
-<div id="confirm-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;">
+<div id="confirm-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;padding:16px;">
   <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:340px;width:100%;text-align:center;">
     <h2 style="color:var(--accent2);font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:8px;" id="lbl-confirm-title">Opuścić grę?</h2>
     <p style="color:var(--muted);font-size:13px;font-weight:700;margin-bottom:20px;" id="lbl-confirm-msg">Gra jest w toku. Na pewno chcesz wyjść?</p>
@@ -628,7 +628,14 @@ socket.on('drawing_state', (data) => {
 });
 
 socket.on('drawing_error', ({ msg }) => {
-  showError(msg);
+  // Clear stale session if room not found
+  if (msg.includes('not found') || msg.includes('expired')) {
+    sessionStorage.removeItem('drawing_code');
+    sessionStorage.removeItem('drawing_name');
+    roomCode = ''; roomState = null;
+    showScreen('screen-home');
+  }
+  showError(msg, 'join');
 });
 
 // Try rejoin on connect
@@ -1069,6 +1076,8 @@ function copyRoomCode() {
 }
 
 function confirmGoHome() {
+  // No room active - go home silently, don't clear name
+  if (!roomCode) return;
   if (roomState && roomState.phase !== 'lobby') {
     document.getElementById('confirm-modal').style.display = 'flex';
     document.getElementById('lbl-confirm-title').textContent = L.confirmTitle;
