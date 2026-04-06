@@ -17,6 +17,7 @@ const dots       = require('./routes/dots');
 const twotruth   = require('./routes/twotruth');
 const hangman    = require('./routes/hangman');
 const bingo      = require('./routes/bingo');
+const drawing    = require('./routes/drawing');
 const lobbyHub   = require('./routes/lobby');
 const admin      = require('./routes/admin');
 
