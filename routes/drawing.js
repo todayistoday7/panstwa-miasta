@@ -208,6 +208,8 @@ function register(io, socket) {
     const existing = room.players.find(p => p.name.toLowerCase() === trimmed.toLowerCase());
     if (existing) {
       if (existing._disconnectTimer) { clearTimeout(existing._disconnectTimer); existing._disconnectTimer = null; }
+      // If this player was the host, update hostId to their new socket
+      if (room.hostId === existing.id) room.hostId = socket.id;
       existing.id = socket.id; existing.connected = true;
       socket.join(room.code);
       socket.emit('drawing_joined', { code: room.code, isHost: socket.id === room.hostId });

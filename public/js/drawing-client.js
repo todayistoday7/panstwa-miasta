@@ -256,6 +256,8 @@ socket.on('drawing_error', ({ msg }) => {
 // Rejoin handled in connect handler above
 
 // ── State handler ─────────────────────────────────────────────────
+let _currentScreen = null;
+
 function applyState(data) {
   isHost = myId === data.hostId;
   const screenMap = {
@@ -266,12 +268,11 @@ function applyState(data) {
   };
   const targetScreen = screenMap[data.phase];
   if (!targetScreen) return;
-  // Only call showScreen if we're not already on this screen
-  // This prevents the canvas from collapsing to zero on every state update
-  const current = document.querySelector('.screen.active');
-  if (!current || current.id !== targetScreen) {
+  // Track screen ourselves - don't rely on DOM query which can be unreliable
+  if (_currentScreen !== targetScreen) {
+    _currentScreen = targetScreen;
     showScreen(targetScreen);
-    // Reset task tracking when screen changes
+    // Reset task tracking when screen actually changes
     _currentTask = null;
     _currentStep = -1;
   }
