@@ -456,27 +456,31 @@
     var el = document.getElementById('hub-rules-grid');
     var titleEl = document.getElementById('hub-rules-title');
     if (!el) return;
-    var ruleBase = currentLang === 'pl' ? '/jak-grac' : '/how-to-play';
     var titles = {
-      pl: { label: 'Zasady gier', pm: 'Państwa-Miasta', tabu: 'Zakazane Słowa', hang: 'Wisielec', dots: 'Kropki i Kreski', tt: 'Dwie Prawdy' },
-      en: { label: 'Game Rules', pm: 'Countries & Cities', tabu: 'Forbidden Words', hang: 'Hangman', dots: 'Dots & Boxes', tt: '2 Truths 1 Lie' },
-      de: { label: 'Spielregeln', pm: 'Länder & Städte', tabu: 'Verbotene Wörter', hang: 'Galgenmännchen', dots: 'Punkte & Linien', tt: '2 Wahrheiten 1 Lüge' },
-      sv: { label: 'Spelregler', pm: 'Länder & Städer', tabu: 'Förbjudna ord', hang: 'Hänga gubbe', dots: 'Punkter & Linjer', tt: '2 Sanningar 1 Lögn' },
+      pl: { label: 'Zasady gier', pm: 'Państwa-Miasta', tabu: 'Zakazane Słowa', hang: 'Wisielec', dots: 'Kropki i Kreski', tt: 'Dwie Prawdy', bingo: 'Korporacyjne Bingo', drawing: 'Szkicuj i Zgaduj' },
+      en: { label: 'Game Rules', pm: 'Countries & Cities', tabu: 'Forbidden Words', hang: 'Hangman', dots: 'Dots & Boxes', tt: '2 Truths 1 Lie', bingo: 'Corporate Bingo', drawing: 'Sketch & Guess' },
+      de: { label: 'Spielregeln', pm: 'Länder & Städte', tabu: 'Verbotene Wörter', hang: 'Galgenmännchen', dots: 'Punkte & Linien', tt: '2 Wahrheiten 1 Lüge', bingo: 'Unternehmens-Bingo', drawing: 'Zeichnen & Raten' },
+      sv: { label: 'Spelregler', pm: 'Länder & Städer', tabu: 'Förbjudna ord', hang: 'Hänga gubbe', dots: 'Punkter & Linjer', tt: '2 Sanningar 1 Lögn', bingo: 'Företagsbingo', drawing: 'Skissa & Gissa' },
     };
     var t = titles[currentLang] || titles['en'];
     if (titleEl) titleEl.textContent = t.label;
-    var plBase = '/jak-grac'; var enBase = '/how-to-play';
+    var bases = {
+      pl: { pm:'/jak-grac', tabu:'/jak-grac/tabu', hang:'/jak-grac/wisielec', dots:'/jak-grac/kropki-i-kreski', tt:'/jak-grac/dwie-prawdy-jedno-klamstwo', drawing:'/jak-grac/szkicuj-i-zgaduj' },
+      en: { pm:'/how-to-play', tabu:'/how-to-play/taboo', hang:'/how-to-play/hangman', dots:'/how-to-play/dots-and-boxes', tt:'/how-to-play/two-truths-one-lie', drawing:'/how-to-play/sketch-and-guess' },
+      de: { pm:'/wie-man-spielt', tabu:'/wie-man-spielt/verbotene-woerter', hang:'/wie-man-spielt/galgenmaennchen', dots:'/wie-man-spielt/punkte-und-linien', tt:'/wie-man-spielt/zwei-wahrheiten-eine-luege', drawing:'/wie-man-spielt/zeichnen-und-raten' },
+      sv: { pm:'/hur-man-spelar', tabu:'/hur-man-spelar/forbjudna-ord', hang:'/hur-man-spelar/hanga-gubbe', dots:'/hur-man-spelar/punkter-och-linjer', tt:'/hur-man-spelar/tva-sanningar-en-logn', drawing:'/hur-man-spelar/skissa-och-gissa' },
+    };
+    var b = bases[currentLang] || bases['en'];
     var games = [
-      { icon: '🌍', name: t.pm,   pl: plBase,                              en: enBase },
-      { icon: '🎭', name: t.tabu, pl: plBase + '/tabu',                    en: enBase + '/taboo' },
-      { icon: '🪢', name: t.hang, pl: plBase + '/wisielec',                en: enBase + '/hangman' },
-      { icon: '🔵', name: t.dots, pl: plBase + '/kropki-i-kreski',         en: enBase + '/dots-and-boxes' },
-      { icon: '🤥', name: t.tt,   pl: plBase + '/dwie-prawdy-jedno-klamstwo', en: enBase + '/two-truths-one-lie' },
+      { icon: '🌍', name: t.pm,      href: b.pm },
+      { icon: '🎭', name: t.tabu,    href: b.tabu },
+      { icon: '🪢', name: t.hang,    href: b.hang },
+      { icon: '🔵', name: t.dots,    href: b.dots },
+      { icon: '🤥', name: t.tt,      href: b.tt },
+      { icon: '🎨', name: t.drawing, href: b.drawing },
     ];
-    var ll = currentLang === 'pl' ? 'pl' : 'en';
     el.innerHTML = games.map(function(g) {
-      var href = ll === 'pl' ? g.pl : g.en;
-      return '<a href="' + href + '" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;text-decoration:none;display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;font-weight:700;transition:border-color 0.2s;">' +
+      return '<a href="' + g.href + '" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;text-decoration:none;display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;font-weight:700;transition:border-color 0.2s;">' +
         '<span style="font-size:20px;">' + g.icon + '</span>' +
         '<span style="color:var(--text);">📖 ' + g.name + '</span>' +
         '</a>';
