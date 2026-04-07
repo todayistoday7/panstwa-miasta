@@ -693,7 +693,7 @@ function renderGrid(data) {
       svg.appendChild(svgEl('circle', {
         cx: MARGIN + c * GAP, cy: MARGIN + r * GAP,
         r: DOT_R,
-        fill: 'var(--text)',
+        fill: 'var(--muted)',
       }));
     }
   }
