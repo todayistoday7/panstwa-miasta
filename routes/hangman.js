@@ -8,6 +8,7 @@
 'use strict';
 
 const lobby = require('./lobby');
+const { isBotName, isHoneypot } = require('./botfilter');
 
 const hangmanRooms = {};
 
@@ -134,6 +135,7 @@ function register(io, socket) {
 
   socket.on('hang_create', ({ name, settings }) => {
     const room = makeHangRoom(socket.id, settings || {});
+    if (isBotName(name)) { socket.emit('hangman_error', { msg: 'Invalid name.' }); return; }
     room.players.push({ id: socket.id, name: name || 'Host', connected: true });
     room.state.scores[socket.id] = 0;
     socket.join(room.code);

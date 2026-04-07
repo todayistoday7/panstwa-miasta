@@ -6,6 +6,7 @@
 // ════════════════════════════════════════════════════════
 'use strict';
 const lobby = require('./lobby');
+const { isBotName, isHoneypot } = require('./botfilter');
 
 const drawingRooms = {};
 
@@ -186,6 +187,7 @@ function register(io, socket) {
   socket.on('drawing_create', ({ name, settings }) => {
     const trimmed = (name || '').trim();
     if (!trimmed) { socket.emit('drawing_error', { msg: 'Enter your name.' }); return; }
+    if (isBotName(trimmed)) { socket.emit('drawing_error', { msg: 'Invalid name.' }); return; }
     const room = makeRoom(socket.id, settings || {});
     room.players.push({ id: socket.id, name: trimmed, connected: true });
     socket.join(room.code);
@@ -204,6 +206,7 @@ function register(io, socket) {
     const room = getRoom((code || '').toUpperCase().trim());
     if (!room)    { socket.emit('drawing_error', { msg: 'Room not found.' }); return; }
     if (!trimmed) { socket.emit('drawing_error', { msg: 'Enter your name.' }); return; }
+    if (isBotName(trimmed)) { socket.emit('drawing_error', { msg: 'Invalid name.' }); return; }
 
     const existing = room.players.find(p => p.name.toLowerCase() === trimmed.toLowerCase());
     if (existing) {

@@ -3,6 +3,7 @@
 // ════════════════════════════════════════════════════════
 'use strict';
 const lobby = require('./lobby');
+const { isBotName, isHoneypot } = require('./botfilter');
 
 const rooms   = {};
 const ALPHABET = 'ABCDEFGHIJKLMNOPRSTUWZ'.split('');
@@ -198,6 +199,7 @@ function register(io, socket) {
   socket.on('create_room', ({ name, settings }) => {
     const trimmedName = (name || '').trim();
     if (!trimmedName) { socket.emit('error', { msg: 'Please enter your name before creating a room.' }); return; }
+    if (isBotName(trimmedName)) { socket.emit('error', { msg: 'Invalid name.' }); return; }
 
     // Find old room if keepGroup — bring all connected players along
     let oldPlayers = [];

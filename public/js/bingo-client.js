@@ -383,6 +383,8 @@ function createRoom() {
   const name = document.getElementById('host-name').value.trim();
   if (!name) return;
   myName = name;
+  const _hp = document.getElementById('hp-website');
+  if (_hp && _hp.value) return;
   socket.emit('bingo_create', { name, lang });
 }
 

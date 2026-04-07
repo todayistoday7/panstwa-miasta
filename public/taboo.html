@@ -134,6 +134,8 @@
         <p id="lbl-create-disclaimer" style="color:var(--muted);font-size:12px;font-weight:600;line-height:1.5;margin:6px 0 10px;"></p>
         <label class="field-label" id="lbl-your-name">Your name</label>
         <input type="text" id="host-name" class="field-input" placeholder="Enter your name" maxlength="20" oninput="clearHomeError()"/>
+        <input type="text" id="hp-website" name="website" style="display:none;position:absolute;left:-9999px;" tabindex="-1" autocomplete="off"/>
+
         <div class="btn-row" style="margin-top:16px;">
           <button class="btn" onclick="createRoom()">🎮 <span id="lbl-create-btn">Create Room</span></button>
         </div>

@@ -676,6 +676,8 @@ function createRoom() {
   const name = document.getElementById('host-name').value.trim();
   if (!name) { showError(lang === 'pl' ? 'Wpisz swoje imię!' : 'Enter your name!'); return; }
   myName = name;
+  const _hp = document.getElementById('hp-website');
+  if (_hp && _hp.value) return;
   socket.emit('tt_create', { name, settings: { lang, isPublic: getIsPublic() } });
 }
 

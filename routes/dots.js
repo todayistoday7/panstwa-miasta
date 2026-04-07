@@ -3,6 +3,7 @@
 // ════════════════════════════════════════════════════════
 'use strict';
 const lobby = require('./lobby');
+const { isBotName, isHoneypot } = require('./botfilter');
 
 const dotsRooms = {};
 
@@ -132,6 +133,7 @@ function register(io, socket) {
   socket.on('dots_create', ({ name, settings }) => {
     const room = makeDotsRoom(socket.id, settings || {});
     const color = PLAYER_COLORS[0];
+    if (isBotName(name)) { socket.emit('dots_error', { msg: 'Invalid name.' }); return; }
     room.players.push({ id: socket.id, name: name || 'Host', color, connected: true, score: 0 });
     socket.join(room.code);
     socket.emit('dots_room_created', { code: room.code });

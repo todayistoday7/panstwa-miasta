@@ -133,7 +133,6 @@
     <a href="/" id="games-home-link" style="font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--muted);text-decoration:none;border:1px solid var(--border);border-radius:8px;padding:7px 14px;text-transform:uppercase;letter-spacing:1px;transition:all 0.2s;">🏠 <span id="nav-home-label">Strona główna</span></a>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
       <a href="/jak-grac" id="games-rules-link" style="font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--muted);text-decoration:none;border:1px solid var(--border);border-radius:8px;padding:7px 14px;text-transform:uppercase;letter-spacing:1px;transition:all 0.2s;">📖 <span id="nav-rules-label">Zasady gier</span></a>
-      <a href="/kategorie" style="font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--muted);text-decoration:none;border:1px solid var(--border);border-radius:8px;padding:7px 14px;text-transform:uppercase;letter-spacing:1px;transition:all 0.2s;">📋 <span id="nav-cats-label">Kategorie</span></a>
     </div>
   </div>
 
@@ -243,7 +242,7 @@
       card('/twotruth', '🤥', g.twotruth.title || '2 Truths 1 Lie', g.twotruth.desc, g.twotruth.players, 'PL/EN/DE/SV', g.twotruth.tag1, false, g.twotruth.play, l, g.twotruth.age) +
       card('/dots', '🔵', g.dots.title || 'Dots & Boxes', g.dots.desc, g.dots.players, 'PL/EN/DE/SV', g.dots.tag1, false, g.dots.play, l, g.dots.age) +
       card('/hangman', '🪢', g.hangman.title || 'Hangman', g.hangman.desc, g.hangman.players, 'PL/EN/DE/SV', g.hangman.tag1, false, g.hangman.play, l, g.hangman.age) +
-      card('/bingo', '🎯', g.bingo ? g.bingo.title : 'Corporate Bingo', g.bingo ? g.bingo.desc : '', g.bingo ? g.bingo.players : '2-50', 'PL/EN/DE/SV', g.bingo ? g.bingo.tag1 : 'Team building', false, g.bingo ? g.bingo.play : '🎮 Play now', l, g.bingo ? g.bingo.age : '16+');
+      card('/bingo', '🎯', g.bingo ? g.bingo.title : 'Corporate Bingo', g.bingo ? g.bingo.desc : '', g.bingo ? g.bingo.players : '2-50', 'PL/EN/DE/SV', g.bingo ? g.bingo.tag1 : 'Team building', false, g.bingo ? g.bingo.play : '🎮 Play now', l, g.bingo ? g.bingo.age : '16+') +
       card('/drawing', '🎨', g.drawing ? g.drawing.title : 'Sketch & Guess', g.drawing ? g.drawing.desc : '', g.drawing ? g.drawing.players : '4-10', 'PL/EN/DE/SV', g.drawing ? g.drawing.tag1 : 'Ice breaker', false, g.drawing ? g.drawing.play : '🎮 Play now', l, g.drawing ? g.drawing.age : '8+');
   }
 
@@ -293,12 +292,12 @@
     var nl = navLabels[l] || navLabels['pl'];
     var homeEl  = document.getElementById('nav-home-label');
     var rulesEl = document.getElementById('nav-rules-label');
-    var catsEl  = document.getElementById('nav-cats-label');
+
     var homeLink  = document.getElementById('games-home-link');
     var rulesLink = document.getElementById('games-rules-link');
     if (homeEl)   homeEl.textContent  = nl.home;
     if (rulesEl)  rulesEl.textContent = nl.rules;
-    if (catsEl)   catsEl.textContent  = nl.cats;
+
     if (homeLink) homeLink.href = '/?lang=' + l;
     if (rulesLink) rulesLink.href = nl.rulesHref;
     renderCards(l);

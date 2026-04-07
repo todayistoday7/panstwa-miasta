@@ -77,6 +77,7 @@ function register(io, socket) {
     socket.on('bingo_create', ({ name, lang }) => {
       const trimmed = (name || '').trim();
       if (!trimmed) { socket.emit('bingo_error', { msg: 'Please enter your name.' }); return; }
+      if (isBotName(trimmed)) { socket.emit('bingo_error', { msg: 'Invalid name.' }); return; }
 
       const code = makeCode();
       const room = {
@@ -112,6 +113,7 @@ function register(io, socket) {
       if (!room) { socket.emit('bingo_error', { msg: 'Room not found.' }); return; }
       if (room.players.length >= 50) { socket.emit('bingo_error', { msg: 'Room is full (max 50).' }); return; }
       if (!trimmed) { socket.emit('bingo_error', { msg: 'Please enter your name.' }); return; }
+      if (isBotName(trimmed)) { socket.emit('bingo_error', { msg: 'Invalid name.' }); return; }
 
       // Rejoin
       const existing = room.players.find(p => p.name.toLowerCase() === trimmed.toLowerCase());
@@ -404,3 +406,4 @@ const PHRASES = {
 };
 
 module.exports = { register, getBingoRooms };
+const { isBotName, isHoneypot } = require('./botfilter');

@@ -3,6 +3,7 @@
 // ════════════════════════════════════════════════════════
 'use strict';
 const lobby = require('./lobby');
+const { isBotName, isHoneypot } = require('./botfilter');
 
 const tabooRooms = {};
 
@@ -148,6 +149,7 @@ function register(io, socket) {
 
   socket.on('taboo_create', ({ name, settings }) => {
     const room = makeTabooRoom(socket.id, settings || {});
+    if (isBotName(name)) { socket.emit('taboo_error', { msg: 'Invalid name.' }); return; }
     room.players.push({ id: socket.id, name: name || 'Host', connected: true });
     // keepGroup — move all connected players from old room to new one
     if (settings && settings.keepGroup) {

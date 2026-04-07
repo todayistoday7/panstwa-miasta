@@ -741,6 +741,8 @@ function createRoom() {
   const name = document.getElementById('host-name').value.trim();
   if (!name) { showError('Enter your name!'); return; }
   myName = name; isHost = true;
+  const _hp = document.getElementById('hp-website');
+  if (_hp && _hp.value) return;
   socket.emit('create_room', { name, settings: { totalRounds: 5, categories: L.cats.slice(0,8), lang, isPublic: getIsPublic() } });
 }
 

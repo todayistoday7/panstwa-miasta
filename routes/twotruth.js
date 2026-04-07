@@ -6,6 +6,7 @@
 // ════════════════════════════════════════════════════════
 'use strict';
 const lobby = require('./lobby');
+const { isBotName, isHoneypot } = require('./botfilter');
 
 const ttRooms = {};
 
@@ -122,6 +123,7 @@ function register(io, socket) {
 
   socket.on('tt_create', ({ name, settings }) => {
     const room = makeTTRoom(socket.id, settings || {});
+    if (isBotName(name)) { socket.emit('tt_error', { msg: 'Invalid name.' }); return; }
     room.players.push({ id: socket.id, name: name || 'Host', connected: true });
     room.state.totalScores[socket.id] = 0;
     // keepGroup — move all connected players from old room to new one

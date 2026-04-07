@@ -800,6 +800,8 @@ function createRoom() {
   const name = document.getElementById('host-name').value.trim();
   if (!name) { showError(L.yourName + '?', 'create'); return; }
   myName = name;
+  const _hp = document.getElementById('hp-website');
+  if (_hp && _hp.value) return;
   socket.emit('drawing_create', { name, settings: { lang, isPublic: _isPublic } });
 }
 
