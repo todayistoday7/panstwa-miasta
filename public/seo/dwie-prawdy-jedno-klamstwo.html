@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dwie Prawdy Jedno Kłamstwo Online — Darmowa Gra Imprezowa | panstwamiastagra.com</title>
+<meta name="description" content="Zagraj w Dwie Prawdy Jedno Kłamstwo online za darmo! Idealna gra integracyjna dla 3-20 graczy. Bez rejestracji — stwórz pokój i zaproś znajomych.">
+<meta property="og:title" content="Dwie Prawdy Jedno Kłamstwo Online — Darmowa Gra Imprezowa | panstwamiastagra.com">
+<meta property="og:description" content="Zagraj w Dwie Prawdy Jedno Kłamstwo online za darmo! Idealna gra integracyjna dla 3-20 graczy. Bez rejestracji — stwórz pokój i zaproś znajomych.">
+<meta property="og:url" content="https://panstwamiastagra.com/dwie-prawdy-jedno-klamstwo">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://panstwamiastagra.com/dwie-prawdy-jedno-klamstwo">
+<link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/dwie-prawdy-jedno-klamstwo">
+<link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/two-truths-one-lie">
+<link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zwei-wahrheiten-eine-luege">
+<link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/tva-sanningar-en-logn">
+<link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/two-truths-one-lie">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/favicon.svg">
+<script async data-cfasync="false" src="https://www.googletagmanager.com/gtag/js?id=G-BJ79ZM6WPQ"></script>
+<script data-cfasync="false">window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BJ79ZM6WPQ');</script>
+<script>window._forceLang = 'pl';</script>
+</head>
+<body>
+
+<!-- CONFIRM LEAVE MODAL -->
+<div id="confirm-modal" class="modal-overlay" style="display:none;">
+  <div class="modal" style="max-width:360px;text-align:center;">
+    <h2 id="confirm-title" style="color:var(--accent2);">Leave?</h2>
+    <p id="confirm-msg" style="margin:12px 0 20px;">Are you sure?</p>
+    <div class="btn-row" style="margin-top:0;">
+      <button class="btn red-btn" onclick="doGoHome()" id="confirm-yes">Yes, leave</button>
+      <button class="btn secondary" onclick="closeConfirm()" id="confirm-no">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="lang-bar" id="lang-bar"></div>
+
+  <div id="top-nav" style="display:none;">
+    <button class="nav-home-btn" onclick="confirmGoHome()">🏠 <span id="lbl-nav-home">Home</span></button>
+    <div class="nav-room-code" id="nav-room-code"></div>
+    <button class="nav-share-btn" id="nav-share-btn" onclick="copyRoomCode()" style="display:none;">📋 Copy Code</button>
+  </div>
+
+  <header>
+    <div class="logo-wrap">
+      <div class="logo-globe">
+        <svg viewBox="0 0 80 80" width="52" height="52" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="40" cy="40" r="34" fill="none" stroke="#ff6b35" stroke-width="2.5"/>
+          <text x="40" y="30" text-anchor="middle" fill="#06d6a0" font-size="14" font-weight="900" font-family="Nunito">✓</text>
+          <text x="40" y="46" text-anchor="middle" fill="#06d6a0" font-size="14" font-weight="900" font-family="Nunito">✓</text>
+          <text x="40" y="62" text-anchor="middle" fill="#ef476f" font-size="14" font-weight="900" font-family="Nunito">✗</text>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <h1 id="game-title">2 TRUTHS 1 LIE</h1>
+        <p id="game-subtitle">Party icebreaker · 3-20 players</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ HOME ══ -->
+  <div id="screen-home" class="screen active">
+    <div style="display:flex;gap:10px;margin-bottom:16px;">
+      <a href="/" class="nav-home-btn" style="text-decoration:none;">🏠 <span class="lbl-nav-home-dup">Home</span></a>
+      <a href="/games" class="nav-home-btn" style="text-decoration:none;">🎮 <span id="lbl-nav-all-games">All Games</span></a>
+    </div>
+    <div class="home-grid">
+      <div class="card">
+        <h3 id="lbl-create-room">Create Room</h3>
+        <p id="lbl-create-disclaimer" style="color:var(--muted);font-size:12px;font-weight:600;line-height:1.5;margin:6px 0 10px;"></p>
+        <label class="field-label" id="lbl-your-name">Your name</label>
+        <input type="text" id="host-name" class="field-input" maxlength="20" oninput="clearHomeError()"/>
+        <input type="text" id="hp-website" name="website" style="display:none;position:absolute;left:-9999px;" tabindex="-1" autocomplete="off"/>
+
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn" onclick="createRoom()">🎮 <span id="lbl-create-btn">Create Room</span></button>
+        </div>
+      </div>
+      <div class="card">
+        <h3 id="lbl-join-room">Join Room</h3>
+        <p id="lbl-join-disclaimer" style="font-size:12px;color:var(--muted);font-weight:700;margin-top:4px;margin-bottom:8px;line-height:1.5;"></p>
+        <label class="field-label" id="lbl-join-name">Your name</label>
+        <input type="text" id="join-name" class="field-input" maxlength="20" oninput="clearHomeError()"/>
+        <label class="field-label" style="margin-top:12px;" id="lbl-room-code">Room code</label>
+        <input type="text" id="join-code" class="field-input code-input" maxlength="5"
+          oninput="this.value=this.value.toUpperCase()"/>
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn green" onclick="joinRoom()">🚪 <span id="lbl-join-btn">Join Room</span></button>
+        </div>
+      </div>
+    </div>
+    <div id="home-error" class="error-box" style="display:none;margin-top:12px;"></div>
+    <div style="margin-top:14px;padding:10px 14px;background:rgba(6,214,160,0.07);border:1px solid rgba(6,214,160,0.25);border-radius:10px;font-size:12px;font-weight:700;color:var(--muted);text-align:center;">💡 <span id="lbl-home-rejoin-tip">Jeśli przypadkowo opuścisz grę, wróć z tym samym imieniem i kodem pokoju.</span></div>
+    <div class="rules-section" style="margin-top:24px;">
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--accent2);text-align:center;margin-bottom:16px;" id="lbl-how-to-play">How to play</h2>
+      <div class="rules-steps">
+        <div class="rule-step"><div class="step-num">1</div><p id="lbl-rule-1">Create a room — 3 to 20 players</p></div>
+        <div class="rule-step"><div class="step-num">2</div><p id="lbl-rule-2">Each round one player writes 3 statements about themselves</p></div>
+        <div class="rule-step"><div class="step-num">3</div><p id="lbl-rule-3">2 are true, 1 is a lie — you choose which!</p></div>
+        <div class="rule-step"><div class="step-num">4</div><p id="lbl-rule-4">Everyone votes which statement they think is the lie</p></div>
+        <div class="rule-step"><div class="step-num">5</div><p id="lbl-rule-5">Correct guess = 1pt · Each person you fool = 1pt for you</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ LOBBY ══ -->
+  <div id="screen-lobby" class="screen">
+    <div class="lobby-header">
+      <div>
+        <div class="room-code-display" id="room-code-display"></div>
+        <p class="room-code-hint" id="lbl-share-code">Share this code with friends</p>
+        <button class="btn share-btn" onclick="shareRoom('twotruth')">📤 <span id="lbl-share-room">Share Room</span></button>
+      </div>
+    </div>
+    <div class="lobby-grid">
+      <div class="card">
+        <h3 id="lbl-players-title">Players</h3>
+        <div id="lobby-players"></div>
+        <div id="player-warning" class="error-box" style="display:none;margin-top:10px;"></div>
+        <div id="rejoin-tip" style="margin-top:12px;padding:10px 14px;background:rgba(6,214,160,0.07);border:1px solid rgba(6,214,160,0.25);border-radius:10px;font-size:12px;font-weight:700;color:var(--muted);display:none;">💡 <span id="lbl-rejoin-tip">If you accidentally leave, rejoin with the same name and this code.</span></div>
+      </div>
+      <div class="card">
+        <h3 id="lbl-settings">Settings</h3>
+        <label class="field-label" id="lbl-lang-title">Language</label>
+        <div class="lang-pills" id="lobby-lang-pills"></div>
+        <label class="field-label" style="margin-top:14px;" id="lbl-room-visibility">Room visibility</label>
+        <div class="visibility-toggle" id="visibility-toggle">
+          <div class="vis-option" id="vis-private" style="border-radius:8px 0 0 8px;" onclick="setVisibility(false)">🔒 <span id="lbl-vis-private">Private</span></div>
+          <div class="vis-option" id="vis-public"  style="border-radius:0 8px 8px 0;" onclick="setVisibility(true)">🌐 <span id="lbl-vis-public">Public</span></div>
+        </div>
+        <p id="lbl-vis-hint" style="font-size:11px;color:var(--muted);margin-top:6px;font-weight:700;"></p>
+      </div>
+    </div>
+    <div class="btn-row" id="lobby-btn-row">
+      <button class="btn" onclick="startGame()" id="lbl-start-btn">🎮 Start Game</button>
+      <button class="btn secondary" onclick="confirmGoHome()" id="lbl-leave-room">🚪 Leave Room</button>
+    </div>
+
+    <!-- Rules in lobby — same content as home screen, translated automatically -->
+    <div class="rules-section" style="margin-top:24px;">
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent2);text-align:center;margin-bottom:12px;" id="lbl-lobby-how-to-play">How to play</h2>
+      <div class="rules-steps">
+          <div class="rule-step"><div class="step-num">1</div><p id="lbl-lobby-rule-1"></p></div>
+          <div class="rule-step"><div class="step-num">2</div><p id="lbl-lobby-rule-2"></p></div>
+          <div class="rule-step"><div class="step-num">3</div><p id="lbl-lobby-rule-3"></p></div>
+          <div class="rule-step"><div class="step-num">4</div><p id="lbl-lobby-rule-4"></p></div>
+          <div class="rule-step"><div class="step-num">5</div><p id="lbl-lobby-rule-5"></p></div>
+      </div>
+    </div>
+    <p class="waiting-msg" id="waiting-msg" style="display:none;"></p>
+  </div>
+
+  <!-- ══ WRITING ══ -->
+  <div id="screen-writing" class="screen">
+    <div id="writing-banner" class="tt-active-banner"></div>
+    <div id="writing-area" style="max-width:560px;margin:0 auto;"></div>
+  </div>
+
+  <!-- ══ VOTING ══ -->
+  <div id="screen-voting" class="screen">
+    <div id="voting-banner" class="tt-active-banner"></div>
+    <p id="voting-instruction" style="text-align:center;color:var(--muted);font-size:14px;font-weight:700;margin-bottom:16px;"></p>
+    <div id="voting-statements" style="max-width:560px;margin:0 auto;"></div>
+    <div id="voting-pips" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:16px;"></div>
+    <div id="host-reveal-wrap" style="text-align:center;margin-top:16px;display:none;">
+      <button class="btn" onclick="forceReveal()" id="lbl-reveal-btn">👁 Reveal</button>
+    </div>
+  </div>
+
+  <!-- ══ REVEAL ══ -->
+  <div id="screen-reveal" class="screen">
+    <div id="reveal-banner" class="tt-active-banner"></div>
+    <div id="reveal-statements" style="max-width:560px;margin:0 auto;margin-bottom:20px;"></div>
+    <div id="reveal-scores" style="max-width:560px;margin:0 auto;margin-bottom:20px;"></div>
+    <div class="btn-row">
+      <button class="btn" onclick="nextRound()" id="lbl-next-btn" style="display:none;"></button>
+      <p class="waiting-msg" id="reveal-waiting" style="display:none;"></p>
+    </div>
+  </div>
+
+  <!-- ══ FINAL ══ -->
+  <div id="screen-final" class="screen">
+    <div style="text-align:center;padding-top:28px;">
+      <div style="font-size:52px;">🏆</div>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:50px;letter-spacing:2px;color:var(--accent2);" id="lbl-game-over">Game Over!</h2>
+    </div>
+    <div id="final-results" style="max-width:560px;margin:24px auto;"></div>
+    <div class="btn-row" style="flex-direction:column;align-items:center;gap:12px;">
+      <button class="btn" style="font-size:17px;padding:15px 32px;width:100%;max-width:400px;" onclick="playAgainGroup()" id="lbl-play-again-group">🔄 <span id="lbl-play-again">Play Again With This Group</span></button>
+      <button class="btn secondary" onclick="confirmGoHome()" id="lbl-go-home">🏠 <span class="lbl-nav-home-dup">Home</span></button>
+    </div>
+  </div>
+
+</div>
+
+
+  <!-- SEO INTRO — injected above game screens via JS -->
+  <div id="seo-intro" style="padding:8px 0 0;">
+    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,6vw,46px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 10px;">Dwie Prawdy Jedno Kłamstwo Online</h1>
+    <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;"><strong style="color:var(--text);">Dwie Prawdy Jedno Kłamstwo</strong> to kultowa gra imprezowa i integracyjna, którą teraz możesz zagrać online z przyjaciółmi, rodziną lub zespołem — za darmo, bez rejestracji, z dowolnego urządzenia.</p>
+    <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;">Każdy gracz pisze trzy zdania o sobie — dwa prawdziwe i jedno kłamstwo. Reszta grupy głosuje, które to kłamstwo. Im sprytniejsze kłamstwo, tym trudniej zgadnąć! Świetna gra dla <strong style="color:var(--text);">3-20 graczy</strong>.</p>
+    <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;">Działa doskonale jako <strong style="color:var(--text);">gra integracyjna dla nowych zespołów</strong> i świetnie sprawdza się przy pracy zdalnej — poznajcie się nawzajem niezależnie od tego, w jakim kraju jesteście. Każda runda to nowe zaskoczenia i śmiech.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;"><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">🤥 3-20 graczy</span><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">👶 Od 12 lat</span><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">🆓 Za darmo</span><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">📱 Działa na telefonie</span><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">🌍 Idealna na team building</span></div>
+  </div>
+
+<script>
+  // Move SEO intro above the game screens
+  (function() {
+    var intro = document.getElementById('seo-intro');
+    var container = document.querySelector('.container');
+    if (intro && container) container.insertBefore(intro, container.firstChild);
+  })();
+</script>
+
+<!-- SEO BOTTOM CONTENT -->
+<div style="max-width:780px;margin:0 auto;padding:32px 16px 16px;border-top:1px solid var(--border);margin-top:16px;">
+  <h2 style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent2);margin-bottom:12px;">Jak grać w Dwie Prawdy Jedno Kłamstwo?</h2>
+  <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;">Każdy gracz kolejno wpisuje <strong style="color:var(--text);">dwa prawdziwe zdania i jedno kłamstwo</strong> o sobie. Gdy wszystkie zdania są gotowe, reszta grupy głosuje — które zdanie to kłamstwo? Po głosowaniu autor ujawnia prawdę. Gra toczy się przez tyle rund ile jest graczy.</p>
+  <h2 style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent2);margin-bottom:12px;">Dla kogo jest ta gra?</h2>
+  <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;">Idealna na imprezy, spotkania integracyjne, wieczory ze znajomymi i team building online. Nie wymaga żadnej wiedzy specjalistycznej — tylko odrobina kreatywności i szczerości.</p>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;padding-top:16px;border-top:1px solid var(--border);">
+    <a href="/two-truths-one-lie" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🇬🇧 Two Truths One Lie</a><a href="/zwei-wahrheiten-eine-luege" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🇩🇪 2 Wahrheiten 1 Lüge</a><a href="/tva-sanningar-en-logn" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🇸🇪 2 Sanningar 1 Lögn</a><a href="/jak-grac/dwie-prawdy-jedno-klamstwo" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">📖 Zasady gry</a><a href="/gry" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🎮 Wszystkie gry</a>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/shared.js"></script>
+<script src="/js/twotruth-client.js"></script>
+</body>
+</html>

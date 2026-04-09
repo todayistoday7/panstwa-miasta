@@ -5,7 +5,9 @@
 
 const socket = io();
 const _urlLang = new URLSearchParams(window.location.search).get('lang');
-let lang      = (['pl','en'].includes(_urlLang) ? _urlLang : 'en');
+let lang      = (window._forceLang && ['pl','en','de','sv'].includes(window._forceLang))
+               ? window._forceLang
+               : (['pl','en','de','sv'].includes(_urlLang) ? _urlLang : 'pl');
 let myId      = null;
 var _settingsInitTT = false;
 let myName    = '';

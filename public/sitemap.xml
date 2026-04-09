@@ -337,4 +337,50 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/spiele"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/games"/>
   </url>
+
+  <!-- Two Truths One Lie SEO landing pages -->
+  <url>
+    <loc>https://panstwamiastagra.com/dwie-prawdy-jedno-klamstwo</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/dwie-prawdy-jedno-klamstwo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/two-truths-one-lie"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zwei-wahrheiten-eine-luege"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/tva-sanningar-en-logn"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/two-truths-one-lie"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/two-truths-one-lie</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/two-truths-one-lie"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/dwie-prawdy-jedno-klamstwo"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zwei-wahrheiten-eine-luege"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/tva-sanningar-en-logn"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/two-truths-one-lie"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/zwei-wahrheiten-eine-luege</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zwei-wahrheiten-eine-luege"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/dwie-prawdy-jedno-klamstwo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/two-truths-one-lie"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/tva-sanningar-en-logn"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/two-truths-one-lie"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/tva-sanningar-en-logn</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/tva-sanningar-en-logn"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/dwie-prawdy-jedno-klamstwo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/two-truths-one-lie"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zwei-wahrheiten-eine-luege"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/two-truths-one-lie"/>
+  </url>
 </urlset>

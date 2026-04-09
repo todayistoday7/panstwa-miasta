@@ -39,6 +39,19 @@ app.get('/bingo',       (req, res) => res.sendFile(path.join(__dirname, 'public/
 // DRAWING TELEPHONE — hidden until ready to launch
 app.get('/drawing',     (req, res) => res.sendFile(path.join(__dirname, 'public/drawing.html')));
 
+// ── SEO Landing Pages — Two Truths One Lie ──────────────────────
+app.get('/dwie-prawdy-jedno-klamstwo',  (req, res) => res.sendFile(path.join(__dirname, 'public/seo/dwie-prawdy-jedno-klamstwo.html')));
+app.get('/two-truths-one-lie',          (req, res) => res.sendFile(path.join(__dirname, 'public/seo/two-truths-one-lie.html')));
+app.get('/zwei-wahrheiten-eine-luege',  (req, res) => res.sendFile(path.join(__dirname, 'public/seo/zwei-wahrheiten-eine-luege.html')));
+app.get('/tva-sanningar-en-logn',       (req, res) => res.sendFile(path.join(__dirname, 'public/seo/tva-sanningar-en-logn.html')));
+
+// Legacy redirect
+app.get('/twotruth', (req, res) => {
+  const lang = req.query.lang || 'en';
+  const map = { pl:'/dwie-prawdy-jedno-klamstwo', de:'/zwei-wahrheiten-eine-luege', sv:'/tva-sanningar-en-logn' };
+  res.redirect(301, map[lang] || '/two-truths-one-lie');
+});
+
 // ── SEO Landing Pages — Dots & Boxes ─────────────────────────────
 app.get('/kropki-i-kreski-online',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/kropki-i-kreski-online.html')));
 app.get('/dots-and-boxes-online',    (req, res) => res.sendFile(path.join(__dirname, 'public/seo/dots-and-boxes-online.html')));

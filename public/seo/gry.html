@@ -117,10 +117,10 @@
   .game-tag.icebreaker { background:rgba(255,107,53,0.1); border-color:rgba(255,107,53,0.35); color:var(--accent); }
   .game-tag.integration { background:rgba(255,209,102,0.1); border-color:rgba(255,209,102,0.35); color:var(--accent2); }
 </style>
-<link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/games?lang=pl">
-<link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/games?lang=en">
-<link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/games?lang=de">
-<link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/games?lang=sv">
+<link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/gry">
+<link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/games">
+<link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/spiele">
+<link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/spel">
 <link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/games">
 <link rel="canonical" href="https://panstwamiastagra.com/games">
 <meta property="og:title" content="Darmowe Gry Integracyjne Online — panstwamiastagra.com">
@@ -309,7 +309,7 @@
     if (homeLink) homeLink.href = '/?lang=' + l;
     if (rulesLink) rulesLink.href = nl.rulesHref;
     renderCards(l);
-    history.replaceState(null, '', '/games?lang=' + l);
+    history.replaceState(null, '', '/gry?lang=' + l);
     if (window.hubRerenderRooms) window.hubRerenderRooms();
     if (typeof buildRulesGrid === 'function') buildRulesGrid(l);
   }

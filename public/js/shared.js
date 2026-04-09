@@ -89,7 +89,9 @@ function shareRoom(gameSlug, titleText) {
   // On SEO pages use the current page path instead of the generic slug
   var currentPath = window.location.pathname;
   var seoSlugs = ['/kropki-i-kreski-online','/dots-and-boxes-online',
-                  '/punkte-und-linien-online','/punkter-och-linjer-online'];
+                  '/punkte-und-linien-online','/punkter-och-linjer-online',
+                  '/dwie-prawdy-jedno-klamstwo','/two-truths-one-lie',
+                  '/zwei-wahrheiten-eine-luege','/tva-sanningar-en-logn'];
   var usePath = seoSlugs.indexOf(currentPath) >= 0
     ? currentPath
     : (gameSlug ? '/' + gameSlug : '/');
@@ -354,7 +356,7 @@ function initVisibilityToggle() {
       '<a href="/taboo' + ql + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
       '<a href="/hangman' + ql + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
       '<a href="' + (lang==='pl'?'/kropki-i-kreski-online':lang==='de'?'/punkte-und-linien-online':lang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
-      '<a href="/twotruth' + ql + '"><span class="gb-ico">🤥</span>' + t.gtt + '</a>' +
+      '<a href="' + (lang==='pl'?'/dwie-prawdy-jedno-klamstwo':lang==='de'?'/zwei-wahrheiten-eine-luege':lang==='sv'?'/tva-sanningar-en-logn':'/two-truths-one-lie') + '"><span class="gb-ico">🤥</span>' + t.gtt + '</a>' +
       '<a href="/bingo' + ql + '"><span class="gb-ico">🎯</span>' + (t.gbingo||'Corporate Bingo') + '</a>' +
       '<a href="/drawing' + ql + '"><span class="gb-ico">🎨</span>' + (t.gdrawing||'Sketch & Guess') + '</a>' +
       '<a href="/rooms' + ql + '"><span class="gb-ico">🔴</span>' + (t.rooms||'Live Rooms') + '</a>' +
@@ -475,7 +477,7 @@ window._rebuildBurger = function(newLang) {
     '<a href="/taboo' + ql + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
     '<a href="/hangman' + ql + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
     '<a href="' + (lang==='pl'?'/kropki-i-kreski-online':lang==='de'?'/punkte-und-linien-online':lang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
-    '<a href="/twotruth' + ql + '"><span class="gb-ico">🤥</span>' + t.gtt + '</a>' +
+    '<a href="' + (lang==='pl'?'/dwie-prawdy-jedno-klamstwo':lang==='de'?'/zwei-wahrheiten-eine-luege':lang==='sv'?'/tva-sanningar-en-logn':'/two-truths-one-lie') + '"><span class="gb-ico">🤥</span>' + t.gtt + '</a>' +
     '<div class="gb-div"></div>' +
     '<div class="gb-sec">' + t.sr + '</div>' +
     '<a href="' + ruleBase + '"><span class="gb-ico">📖</span>' + t.rules + '</a>' +
@@ -616,7 +618,7 @@ window._buildFooterLangBtns = function() {
             '<a href="/taboo?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎭 ' + t.gtaboo + '</a>' +
             '<a href="/hangman?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🪢 ' + t.ghang + '</a>' +
             '<a href="' + (footerLang==='pl'?'/kropki-i-kreski-online':footerLang==='de'?'/punkte-und-linien-online':footerLang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔵 ' + t.gdots + '</a>' +
-            '<a href="/twotruth?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🤥 ' + t.gtt + '</a>' +
+            '<a href="' + (footerLang==='pl'?'/dwie-prawdy-jedno-klamstwo':footerLang==='de'?'/zwei-wahrheiten-eine-luege':footerLang==='sv'?'/tva-sanningar-en-logn':'/two-truths-one-lie') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🤥 ' + t.gtt + '</a>' +
             '<a href="/bingo?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎯 ' + (t.gbingo||'Corporate Bingo') + '</a>' +
             '<a href="/drawing?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎨 ' + (t.gdrawing||'Sketch & Guess') + '</a>' +
             '<a href="/games?lang=' + footerLang + '" style="color:var(--accent);font-size:13px;font-weight:700;text-decoration:none;">→ ' + t.games + '</a>' +
