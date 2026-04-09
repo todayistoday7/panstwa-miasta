@@ -341,7 +341,7 @@ function initVisibilityToggle() {
       '<a href="/' + ql + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
       '<a href="/taboo' + ql + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
       '<a href="/hangman' + ql + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
-      '<a href="/dots' + ql + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
+      '<a href="' + (lang==='pl'?'/kropki-i-kreski-online':lang==='de'?'/punkte-und-linien-online':lang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
       '<a href="/twotruth' + ql + '"><span class="gb-ico">🤥</span>' + t.gtt + '</a>' +
       '<a href="/bingo' + ql + '"><span class="gb-ico">🎯</span>' + (t.gbingo||'Corporate Bingo') + '</a>' +
       '<a href="/drawing' + ql + '"><span class="gb-ico">🎨</span>' + (t.gdrawing||'Sketch & Guess') + '</a>' +
@@ -462,7 +462,7 @@ window._rebuildBurger = function(newLang) {
     '<a href="/' + ql + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
     '<a href="/taboo' + ql + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
     '<a href="/hangman' + ql + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
-    '<a href="/dots' + ql + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
+    '<a href="' + (lang==='pl'?'/kropki-i-kreski-online':lang==='de'?'/punkte-und-linien-online':lang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
     '<a href="/twotruth' + ql + '"><span class="gb-ico">🤥</span>' + t.gtt + '</a>' +
     '<div class="gb-div"></div>' +
     '<div class="gb-sec">' + t.sr + '</div>' +
@@ -603,7 +603,7 @@ window._buildFooterLangBtns = function() {
             '<a href="/?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🌍 ' + t.gpm + '</a>' +
             '<a href="/taboo?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎭 ' + t.gtaboo + '</a>' +
             '<a href="/hangman?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🪢 ' + t.ghang + '</a>' +
-            '<a href="/dots?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔵 ' + t.gdots + '</a>' +
+            '<a href="' + (footerLang==='pl'?'/kropki-i-kreski-online':footerLang==='de'?'/punkte-und-linien-online':footerLang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔵 ' + t.gdots + '</a>' +
             '<a href="/twotruth?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🤥 ' + t.gtt + '</a>' +
             '<a href="/bingo?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎯 ' + (t.gbingo||'Corporate Bingo') + '</a>' +
             '<a href="/drawing?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎨 ' + (t.gdrawing||'Sketch & Guess') + '</a>' +
