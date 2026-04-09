@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gry Online Za Darmo — Game Hub | panstwamiastagra.com</title>
-<meta name="description" content="Darmowe gry integracyjne i zabawy integracyjne online — Państwa Miasta, Zakazane Słowa, Wisielec i więcej. Fun ice breaker games free to play with friends, family and teams. Bez rejestracji.">
+<title>Darmowe Gry Online Multiplayer — Gry Integracyjne | panstwamiastagra.com</title>
+<title style="display:none">Gry Online Za Darmo — Game Hub | panstwamiastagra.com</title>
+<meta name="description" content="Najlepsze darmowe gry online multiplayer po polsku. Państwa-Miasta, Wisielec, Zakazane Słowa i więcej. Zagraj z przyjaciółmi bez rejestracji!">
+<meta name="description-orig" content="Darmowe gry integracyjne i zabawy integracyjne online — Państwa Miasta, Zakazane Słowa, Wisielec i więcej. Fun ice breaker games free to play with friends, family and teams. Bez rejestracji.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
@@ -125,6 +127,12 @@
 <meta property="og:description" content="Darmowe gry integracyjne i zabawy online — Państwa Miasta, Zakazane Słowa, Wisielec i więcej. Fun ice breaker games free for friends, family and teams.">
 <meta property="og:url" content="https://panstwamiastagra.com/games">
 <meta property="og:type" content="website">
+<link rel="canonical" href="https://panstwamiastagra.com/gry">
+<link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/gry">
+<link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/games">
+<link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/spiele">
+<link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/spel">
+<link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/games">
 </head>
 <body>
 <div class="container">
@@ -225,7 +233,7 @@
       ];
 
   var params = new URLSearchParams(window.location.search);
-  var lang = params.get('lang');
+  var lang = params.get('lang') || window._forceLang || 'pl';
   if (!lang) {
     // Fall back to browser language if no param (e.g. direct navigation)
     var browserLang = (navigator.language || '').toLowerCase().slice(0, 2);
@@ -322,6 +330,7 @@
   applyLang(lang);
 })();
 </script>
+<script>window._forceLang = "pl";</script>
 <script src="/socket.io/socket.io.js"></script>
 <script>
 (function() {
@@ -492,5 +501,6 @@
 })();
 </script>
 <script src="/js/shared.js"></script>
+<script>window._forceLang = "pl";</script>
 </body>
 </html>

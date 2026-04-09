@@ -38,6 +38,24 @@ app.get('/hangman',     (req, res) => res.sendFile(path.join(__dirname, 'public/
 app.get('/bingo',       (req, res) => res.sendFile(path.join(__dirname, 'public/bingo.html')));
 // DRAWING TELEPHONE — hidden until ready to launch
 app.get('/drawing',     (req, res) => res.sendFile(path.join(__dirname, 'public/drawing.html')));
+
+// ── SEO Landing Pages — Dots & Boxes ─────────────────────────────
+app.get('/kropki-i-kreski-online',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/kropki-i-kreski-online.html')));
+app.get('/dots-and-boxes-online',    (req, res) => res.sendFile(path.join(__dirname, 'public/seo/dots-and-boxes-online.html')));
+app.get('/punkte-und-linien-online', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/punkte-und-linien-online.html')));
+app.get('/punkter-och-linjer-online',(req, res) => res.sendFile(path.join(__dirname, 'public/seo/punkter-och-linjer-online.html')));
+
+// ── SEO Games Hub Pages ───────────────────────────────────────────
+app.get('/gry',    (req, res) => res.sendFile(path.join(__dirname, 'public/seo/gry.html')));
+app.get('/spiele', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/spiele.html')));
+app.get('/spel',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/spel.html')));
+
+// ── Legacy redirects → new SEO slugs ─────────────────────────────
+app.get('/dots', (req, res) => {
+  const lang = req.query.lang || 'en';
+  const map = { pl:'/kropki-i-kreski-online', de:'/punkte-und-linien-online', sv:'/punkter-och-linjer-online' };
+  res.redirect(301, map[lang] || '/dots-and-boxes-online');
+});
 app.get('/rooms',       (req, res) => res.sendFile(path.join(__dirname, 'public/rooms.html')));
 app.get('/privacy',     (req, res) => res.sendFile(path.join(__dirname, 'public/privacy.html')));
 app.get('/games',       (req, res) => res.sendFile(path.join(__dirname, 'public/games.html')));
