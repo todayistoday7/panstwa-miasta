@@ -24,6 +24,111 @@
 <script async data-cfasync="false" src="https://www.googletagmanager.com/gtag/js?id=G-BJ79ZM6WPQ"></script>
 <script data-cfasync="false">window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BJ79ZM6WPQ');</script>
 <script>window._forceLang = 'en';</script>
+<style>
+  .tt-statement-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .tt-statement-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .tt-statement-card.selected { border-color: var(--accent); background: rgba(255,107,53,0.08); }
+  .tt-statement-card.correct  { border-color: var(--green);  background: rgba(6,214,160,0.08); }
+  .tt-statement-card.wrong    { border-color: var(--red);    background: rgba(239,71,111,0.08); }
+  .tt-statement-card.lie-revealed { border-color: var(--accent2); background: rgba(255,209,102,0.1); }
+  .tt-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 28px;
+    text-align: center;
+  }
+  .tt-statement-text { font-size: 15px; font-weight: 700; line-height: 1.5; flex: 1; }
+  .tt-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
+  .tt-writing-input {
+    width: 100%;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .tt-writing-input:focus { border-color: var(--accent); }
+  .tt-writing-input.lie-input { border-color: rgba(255,107,53,0.5); background: rgba(255,107,53,0.04); }
+  .tt-player-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    background: var(--surface);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .tt-vote-pip { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
+  .tt-vote-pip.done { background: var(--green); }
+  .tt-score-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--surface);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    border: 1px solid var(--border);
+  }
+  .tt-score-pts {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 2px;
+    color: var(--accent);
+  }
+  .tt-active-banner {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    text-align: center;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--accent2);
+    background: rgba(255,209,102,0.08);
+    color: var(--accent2);
+    margin-bottom: 16px;
+  }
+  .tt-lie-selector { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+  .tt-lie-btn {
+    flex: 1;
+    min-width: 80px;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    color: var(--muted);
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .tt-lie-btn.selected { border-color: var(--accent2); color: var(--accent2); background: rgba(255,209,102,0.1); }
+</style>
 </head>
 <body>
 
