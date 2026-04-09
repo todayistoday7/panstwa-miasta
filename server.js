@@ -39,6 +39,19 @@ app.get('/bingo',       (req, res) => res.sendFile(path.join(__dirname, 'public/
 // DRAWING TELEPHONE — hidden until ready to launch
 app.get('/drawing',     (req, res) => res.sendFile(path.join(__dirname, 'public/drawing.html')));
 
+// ── SEO Landing Pages — Hangman ─────────────────────────────────
+app.get('/wisielec',                (req, res) => res.sendFile(path.join(__dirname, 'public/seo/wisielec.html')));
+app.get('/hangman-online',          (req, res) => res.sendFile(path.join(__dirname, 'public/seo/hangman-online.html')));
+app.get('/galgenmaennchen-online',  (req, res) => res.sendFile(path.join(__dirname, 'public/seo/galgenmaennchen-online.html')));
+app.get('/hanga-gubbe-online',      (req, res) => res.sendFile(path.join(__dirname, 'public/seo/hanga-gubbe-online.html')));
+
+// Legacy redirect
+app.get('/hangman', (req, res) => {
+  const lang = req.query.lang || 'en';
+  const map = { pl:'/wisielec', de:'/galgenmaennchen-online', sv:'/hanga-gubbe-online' };
+  res.redirect(301, map[lang] || '/hangman-online');
+});
+
 // ── SEO Landing Pages — Two Truths One Lie ──────────────────────
 app.get('/dwie-prawdy-jedno-klamstwo',  (req, res) => res.sendFile(path.join(__dirname, 'public/seo/dwie-prawdy-jedno-klamstwo.html')));
 app.get('/two-truths-one-lie',          (req, res) => res.sendFile(path.join(__dirname, 'public/seo/two-truths-one-lie.html')));
