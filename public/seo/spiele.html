@@ -312,6 +312,10 @@
     history.replaceState(null, '', '/spiele?lang=' + l);
     if (window.hubRerenderRooms) window.hubRerenderRooms();
     if (typeof buildRulesGrid === 'function') buildRulesGrid(l);
+    // Update burger menu and footer language
+    window._forceLang = l;
+    if (typeof window._rebuildBurger === 'function') window._rebuildBurger(l);
+    if (typeof window._refreshFooter  === 'function') window._refreshFooter();
   }
 
   // Build lang bar
