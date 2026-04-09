@@ -84,9 +84,16 @@ function copyRoomCode() {
 function shareRoom(gameSlug, titleText) {
   if (typeof roomCode === 'undefined' || !roomCode) return;
   var currentLang = (typeof lang !== 'undefined' && lang) ||
-    (new URLSearchParams(window.location.search).get('lang')) || 'pl';
-  const path = gameSlug ? '/' + gameSlug : '/';
-  const url  = 'https://panstwamiastagra.com' + path + '?join=' + roomCode + '&lang=' + currentLang;
+    (new URLSearchParams(window.location.search).get('lang')) ||
+    window._forceLang || 'pl';
+  // On SEO pages use the current page path instead of the generic slug
+  var currentPath = window.location.pathname;
+  var seoSlugs = ['/kropki-i-kreski-online','/dots-and-boxes-online',
+                  '/punkte-und-linien-online','/punkter-och-linjer-online'];
+  var usePath = seoSlugs.indexOf(currentPath) >= 0
+    ? currentPath
+    : (gameSlug ? '/' + gameSlug : '/');
+  const url  = 'https://panstwamiastagra.com' + usePath + '?join=' + roomCode + '&lang=' + currentLang;
   var copiedLabels = {pl:'🔗 Link skopiowany!', en:'🔗 Link copied!', de:'🔗 Link kopiert!'};
   var toastMsg = copiedLabels[currentLang] || copiedLabels['en'];
   _copyText(url);
@@ -178,7 +185,7 @@ function setVisibility(isPublic) {
   // Show explanation hint
   var hint = document.getElementById('lbl-vis-hint');
   if (hint) {
-    var lang = (new URLSearchParams(window.location.search).get('lang') || 'pl');
+    var lang = (new URLSearchParams(window.location.search).get('lang')) || window._forceLang || 'pl';
     var hints = {
       pl: {
         priv: '🔒 Prywatny — tylko osoby z Twoim kodem mogą dołączyć.',
@@ -190,7 +197,11 @@ function setVisibility(isPublic) {
       },
       de: {
         priv: '🔒 Privat — nur Personen mit deinem Code können beitreten.',
-        pub:  '🌐 Öffentlich — jeder kann deinen Raum auf der /games-Seite sehen. Toll um neue Spieler zu treffen!',
+        pub:  '🌐 Öffentlich — jeder kann deinen Raum auf der /spiele-Seite sehen. Toll um neue Spieler zu treffen!',
+      },
+      sv: {
+        priv: '🔒 Privat — bara personer med din kod kan gå med.',
+        pub:  '🌐 Offentligt — alla kan se ditt rum på /spel-sidan och gå med. Bra sätt att möta nya spelare!',
       },
     };
     var t = hints[lang] || hints['pl'];
@@ -270,6 +281,7 @@ function initVisibilityToggle() {
 
   function getLang() {
     return (new URLSearchParams(window.location.search).get('lang')) ||
+           (window._forceLang) ||
            (navigator.language || '').slice(0, 2) || 'pl';
   }
 
@@ -781,7 +793,7 @@ window._buildFooterLangBtns = function() {
   };
 
   function getLang() {
-    var p = new URLSearchParams(window.location.search).get('lang');
+    var p = new URLSearchParams(window.location.search).get('lang') || window._forceLang;
     return (p && LABELS[p]) ? p : 'pl';
   }
 

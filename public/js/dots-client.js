@@ -51,6 +51,8 @@ const LANGS = {
     winner:       (n) => `🏆 ${n} wygrywa!`,
     draw:         'Remis! 🤝',
     boxes:        'pól',
+    playerWord:   'graczy',
+    roundWord:    'rund',
     navHome:      'Strona główna',
     navAllGames:  'Wszystkie gry',
     rematch:      '🔄 Zagraj jeszcze raz z tą grupą',
@@ -96,6 +98,8 @@ const LANGS = {
     winner:       (n) => `🏆 ${n} wins!`,
     draw:         "It's a draw! 🤝",
     boxes:        'boxes',
+    playerWord:   'players',
+    roundWord:    'rounds',
     navHome:      'Home',
     navAllGames:  'All Games',
     rematch:      '🔄 Play Again With This Group',
@@ -141,6 +145,8 @@ const LANGS = {
     winner:       (n) => `🏆 ${n} gewinnt!`,
     draw:         'Unentschieden! 🤝',
     boxes:        'Felder',
+    playerWord:   'Spieler',
+    roundWord:    'Runden',
     rematch:      '🔄 Nochmal mit dieser Gruppe',
     newGame:      '🏠 Startseite',
     hostBadge:    'HOST',
@@ -186,6 +192,8 @@ const LANGS = {
     winner:       (n) => `🏆 ${n} vinner!`,
     draw:         'Oavgjort! 🤝',
     boxes:        'rutor',
+    playerWord:   'spelare',
+    roundWord:    'rundor',
     rematch:      '🔄 Spela igen med samma grupp',
     newGame:      '🏠 Hem',
     hostBadge:    'VÄRD',
@@ -342,7 +350,23 @@ socket.on('dots_room_joined', ({ code }) => {
 });
 
 socket.on('dots_error',  ({ msg })  => { showError(msg); });
-socket.on('dots_state',  (data)     => { roomState = data; applyState(data); });
+socket.on('dots_state', (data) => {
+  // If we have no roomCode but our name is in this room (e.g. host did rematch after we went home)
+  // auto-rejoin so our socket ID gets registered and we can make moves
+  if (!roomCode && myName && data.players) {
+    const me = data.players.find(p => p.name === myName);
+    if (me) {
+      // Emit rejoin to re-register our socket ID in the room
+      const code = data.players[0] ? sessionStorage.getItem('dots_code') : null;
+      if (code) {
+        socket.emit('dots_rejoin', { code, name: myName });
+        return; // wait for dots_room_joined which will trigger new state
+      }
+    }
+  }
+  roomState = data;
+  applyState(data);
+});
 socket.on('dots_move_made', (move)  => { applyMove(move); });
 
 // ─── STATE HANDLER ───────────────────────────────────────────────
@@ -844,6 +868,31 @@ function applyTranslations() {
 
   document.querySelectorAll('.lbl-nav-home-dup').forEach(function(el) { if (L.navHome) el.textContent = L.navHome; });
   document.querySelectorAll('.lbl-nav-all-games-dup').forEach(function(el) { if (L.navAllGames) el.textContent = L.navAllGames; });
+
+  // Translate settings dropdowns
+  const bx = L.boxes || 'boxes';
+  const pl = L.playerWord || 'players';
+  const rd = L.roundWord  || 'rounds';
+
+  const gridSel = document.getElementById('settings-grid');
+  if (gridSel) {
+    const sizes = [[3,9],[4,16],[5,25],[6,36]];
+    sizes.forEach(([n, b], i) => {
+      if (gridSel.options[i]) gridSel.options[i].text = n + '×' + n + ' (' + b + ' ' + bx + ')';
+    });
+  }
+  const maxSel = document.getElementById('settings-maxplayers');
+  if (maxSel) {
+    [2,3,4].forEach((n, i) => {
+      if (maxSel.options[i]) maxSel.options[i].text = n + ' ' + pl;
+    });
+  }
+  const rndSel = document.getElementById('settings-rounds');
+  if (rndSel) {
+    [1,2,3,5].forEach((n, i) => {
+      if (rndSel.options[i]) rndSel.options[i].text = n + ' ' + rd;
+    });
+  }
 }
 
 // ─── SVG HELPER ──────────────────────────────────────────────────
