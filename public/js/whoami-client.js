@@ -236,7 +236,15 @@ const LANGS = {
 let L = LANGS[lang] || LANGS['pl'];
 
 // ── Socket events ─────────────────────────────────────────────────
-socket.on('connect', () => { myId = socket.id; });
+socket.on('connect', () => {
+  const prevId = myId;
+  myId = socket.id;
+  if (prevId && prevId !== socket.id) {
+    const sc = sessionStorage.getItem('whoami_code');
+    const sn = sessionStorage.getItem('whoami_name');
+    if (sc && sn) { myName = sn; socket.emit('whoami_rejoin', { code: sc, name: sn }); }
+  }
+});
 
 socket.on('whoami_created', ({ code }) => {
   roomCode = code; isHost = true;
@@ -733,16 +741,7 @@ function showError(msg) {
   }
 })();
 
-// Rejoin on reconnect
-socket.on('connect', () => {
-  myId = socket.id;
-  const sc = sessionStorage.getItem('whoami_code');
-  const sn = sessionStorage.getItem('whoami_name');
-  if (sc && sn && !roomCode) {
-    myName = sn;
-    socket.emit('whoami_rejoin', { code: sc, name: sn });
-  }
-});
+// Rejoin handled in connect handler above
 
 // ── Init ──────────────────────────────────────────────────────────
 buildLangBar();
