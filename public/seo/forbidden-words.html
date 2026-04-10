@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Forbidden Words Online — Free Team Party Game | panstwamiastagra.com</title>
 <meta name="description" content="Play Forbidden Words online free! Team party game for 4-12 players. Describe words without using the forbidden ones. No signup needed.">
 <meta property="og:title" content="Forbidden Words Online — Free Team Party Game | panstwamiastagra.com">
@@ -252,7 +252,6 @@
       <button class="btn" style="font-size:17px;padding:15px 32px;width:100%;max-width:400px;" onclick="playAgainGroup()" id="lbl-play-again-group">🔄 <span id="lbl-play-again">Play Again With This Group</span></button>
       <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
         <button class="btn secondary" onclick="goHome()">🏠 <span id="lbl-new-game">New Game</span></button>
-        <button class="btn share-btn" onclick="shareResults()">📤 <span id="lbl-share">Share Results</span></button>
       </div>
     </div>
   </div>
@@ -269,9 +268,9 @@
   </div>
 <script>
   (function() {
+    // SEO intro sits below the game — no injection needed, stays in natural position
     var intro = document.getElementById('seo-intro');
-    var container = document.querySelector('.container');
-    if (intro && container) container.insertBefore(intro, container.firstChild);
+    if (intro) intro.style.display = 'block';
   })();
 </script>
 <div style="max-width:780px;margin:0 auto;padding:32px 16px 16px;border-top:1px solid var(--border);margin-top:16px;">

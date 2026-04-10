@@ -821,8 +821,13 @@ function startGame() {
 }
 
 function copyRoomCode() {
-  const fullUrl = `${location.origin}/drawing?join=${roomCode}&lang=${lang}`;
-  navigator.clipboard.writeText(fullUrl).then(() => showToast('🔗 Link skopiowany!'));
+  // Use shared.js shareRoom — respects SEO slug for current page
+  if (typeof shareRoom === 'function') {
+    shareRoom('drawing');
+  } else {
+    const fullUrl = `${location.origin}/drawing?join=${roomCode}&lang=${lang}`;
+    navigator.clipboard.writeText(fullUrl).then(() => showToast('🔗 Link skopiowany!'));
+  }
 }
 
 function confirmGoHome() {

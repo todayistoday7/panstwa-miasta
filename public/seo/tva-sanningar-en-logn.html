@@ -2,7 +2,7 @@
 <html lang="sv">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>2 Sanningar 1 Lögn Online — Gratis Isbrytarspel | panstwamiastagra.com</title>
 <meta name="description" content="Spela 2 Sanningar 1 Lögn online gratis! Perfekt isbrytarspel för 3-20 spelare. Ingen registrering — skapa ett rum och bjud in vänner.">
 <meta property="og:title" content="2 Sanningar 1 Lögn Online — Gratis Isbrytarspel | panstwamiastagra.com">
@@ -318,9 +318,9 @@
 <script>
   // Move SEO intro above the game screens
   (function() {
+    // SEO intro sits below the game — no injection needed
     var intro = document.getElementById('seo-intro');
-    var container = document.querySelector('.container');
-    if (intro && container) container.insertBefore(intro, container.firstChild);
+    if (intro) intro.style.display = 'block';
   })();
 </script>
 

@@ -538,10 +538,15 @@ function prefillJoinCode() {
 
 // ── Nav share ─────────────────────────────────────────────
 function shareRoomBingo() {
-  const url = 'https://panstwamiastagra.com/bingo?join=' + roomCode + '&lang=' + lang;
-  navigator.clipboard.writeText(url).then(() => {
-    showToast(lang === 'pl' ? '🔗 Link skopiowany!' : lang === 'de' ? '🔗 Link kopiert!' : lang === 'sv' ? '🔗 Länk kopierad!' : '🔗 Link copied!');
-  });
+  // Use shared.js shareRoom — respects SEO slug for current page
+  if (typeof shareRoom === 'function') {
+    shareRoom('bingo');
+  } else {
+    const url = 'https://panstwamiastagra.com/bingo?join=' + roomCode + '&lang=' + lang;
+    navigator.clipboard.writeText(url).then(() => {
+      showToast(lang === 'pl' ? '🔗 Link skopiowany!' : lang === 'de' ? '🔗 Link kopiert!' : lang === 'sv' ? '🔗 Länk kopierad!' : '🔗 Link copied!');
+    });
+  }
 }
 
 // ── Init ─────────────────────────────────────────────────

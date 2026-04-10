@@ -40,7 +40,7 @@ const TABOO_WORDS = {
     { word: 'DESZCZ', forbidden: ['mokry','parasol','chmury','woda','pogoda'] },
     { word: 'SZPITAL', forbidden: ['lekarz','choroba','operacja','pielęgniarka','leczenie'] },
     { word: 'RESTAURACJA', forbidden: ['jeść','menu','kelner','jedzenie','lokal'] },
-    { word: 'AIRPORT', forbidden: ['samolot','lotnisko','lot','podróż','terminal'] },
+    { word: 'LOTNISKO', forbidden: ['samolot','odlot','lot','podróż','terminal'] },
     { word: 'PREZENT', forbidden: ['urodziny','niespodzianka','pakować','dawać','świąteczny'] },
     { word: 'ŚNIADANIE', forbidden: ['rano','jedzenie','posiłek','mleko','jajka'] },
     { word: 'KOLACJA', forbidden: ['wieczór','jedzenie','posiłek','rodzina','stół'] },

@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Dwie Prawdy Jedno Kłamstwo Online — Darmowa Gra Imprezowa | panstwamiastagra.com</title>
 <meta name="description" content="Zagraj w Dwie Prawdy Jedno Kłamstwo online za darmo! Idealna gra integracyjna dla 3-20 graczy. Bez rejestracji — stwórz pokój i zaproś znajomych.">
 <meta property="og:title" content="Dwie Prawdy Jedno Kłamstwo Online — Darmowa Gra Imprezowa | panstwamiastagra.com">
@@ -318,9 +318,9 @@
 <script>
   // Move SEO intro above the game screens
   (function() {
+    // SEO intro sits below the game — no injection needed
     var intro = document.getElementById('seo-intro');
-    var container = document.querySelector('.container');
-    if (intro && container) container.insertBefore(intro, container.firstChild);
+    if (intro) intro.style.display = 'block';
   })();
 </script>
 

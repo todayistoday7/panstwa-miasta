@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Two Truths One Lie Online — Free Ice Breaker Game | panstwamiastagra.com</title>
 <meta name="description" content="Play Two Truths One Lie online free! Perfect ice breaker for 3-20 players. No signup needed — create a room and invite friends in seconds.">
 <meta property="og:title" content="Two Truths One Lie Online — Free Ice Breaker Game | panstwamiastagra.com">
@@ -318,9 +318,9 @@
 <script>
   // Move SEO intro above the game screens
   (function() {
+    // SEO intro sits below the game — no injection needed
     var intro = document.getElementById('seo-intro');
-    var container = document.querySelector('.container');
-    if (intro && container) container.insertBefore(intro, container.firstChild);
+    if (intro) intro.style.display = 'block';
   })();
 </script>
 

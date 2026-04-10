@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Korporacyjne Bingo Online — Darmowa Gra na Spotkania | panstwamiastagra.com</title>
 <meta name="description" content="Zagraj w Korporacyjne Bingo online za darmo! Idealna gra na nudne zebrania dla 2-50 graczy. Oznaczaj korporacyjne frazesy i wygrywaj. Bez rejestracji.">
 <meta property="og:title" content="Korporacyjne Bingo Online — Darmowa Gra na Spotkania | panstwamiastagra.com">
@@ -601,9 +601,9 @@
   </div>
 <script>
   (function() {
+    // SEO intro sits below the game — no injection needed, stays in natural position
     var intro = document.getElementById('seo-intro');
-    var container = document.querySelector('.container');
-    if (intro && container) container.insertBefore(intro, container.firstChild);
+    if (intro) intro.style.display = 'block';
   })();
 </script>
 <div style="max-width:780px;margin:0 auto;padding:32px 16px 16px;border-top:1px solid var(--border);margin-top:16px;">
