@@ -137,15 +137,26 @@ function startStep(io, room) {
 
   if (state.timer) clearTimeout(state.timer);
   state.timer = setTimeout(() => {
-    // Auto-advance: fill missing submissions with placeholder
+    // Auto-advance: fill missing submissions
     connected.forEach(p => {
       if (!state.submissions[p.id]) {
         const myType = state.step === 0 ? 'word' : (state.step % 2 === 1 ? 'draw' : 'guess');
-        state.submissions[p.id] = myType === 'draw' ? null : '???';
+        if (myType === 'draw') {
+          // Emit force-submit signal to player — client sends current canvas
+          io.to(p.id).emit('draw_force_submit');
+          // Give 2s for client to respond, then use empty canvas
+          setTimeout(() => {
+            if (!state.submissions[p.id]) {
+              state.submissions[p.id] = 'data:image/png;base64,'; // empty
+            }
+          }, 2000);
+        } else {
+          state.submissions[p.id] = '???';
+        }
       }
     });
-    advanceStep(io, room);
-  }, duration * 1000 + 2000); // +2s grace
+    setTimeout(() => advanceStep(io, room), 2500);
+  }, duration * 1000 + 1000); // +1s grace
 
   emitState(io, room);
 }

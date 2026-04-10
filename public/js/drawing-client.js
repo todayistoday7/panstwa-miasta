@@ -11,6 +11,8 @@ const LANGS = {
     joinDisclaimer:'Masz kod od znajomego lub z listy otwartych pokoi? Wpisz go tutaj i graj razem!',
     yourName:'Twoje imię', roomCode:'Kod pokoju',
     visHint:'Prywatny — tylko zaproszeni. Publiczny — widoczny na liście pokoi.',
+    visHintPrivate:'🔒 Prywatny — tylko zaproszeni',
+    visHintPublic:'🌐 Publiczny — widoczny na liście pokoi',
     wordPlaceholder:'np. słoń, pizza, czarna dziura...',
     guessPlaceholder:'Twoja odpowiedź...',
     noPoints:'🎉 Bez punktów — czysta zabawa i śmiech!',
@@ -62,6 +64,8 @@ const LANGS = {
     joinDisclaimer:'Have a code from a friend or from the Live Rooms page? Enter it here and join the game!',
     yourName:'Your name', roomCode:'Room code',
     visHint:'Private — invite only. Public — visible on the rooms list.',
+    visHintPrivate:'🔒 Private — invite only',
+    visHintPublic:'🌐 Public — visible on the rooms list',
     wordPlaceholder:'e.g. elephant, pizza, black hole...',
     guessPlaceholder:'Your answer...',
     noPoints:'🎉 No points — pure fun and laughs!',
@@ -113,6 +117,8 @@ const LANGS = {
     joinDisclaimer:'Hast du einen Code von einem Freund oder von der Seite mit offenen Räumen? Gib ihn hier ein und spiel mit!',
     yourName:'Dein Name', roomCode:'Raumcode',
     visHint:'Privat — nur Eingeladene. Öffentlich — auf der Raumliste sichtbar.',
+    visHintPrivate:'🔒 Privat — nur Eingeladene',
+    visHintPublic:'🌐 Öffentlich — auf der Raumliste sichtbar',
     wordPlaceholder:'z.B. Elefant, Pizza, schwarzes Loch...',
     guessPlaceholder:'Deine Antwort...',
     noPoints:'🎉 Keine Punkte — reiner Spaß und Lachen!',
@@ -164,6 +170,8 @@ const LANGS = {
     joinDisclaimer:'Har du en kod från en vän eller från sidan med aktiva rum? Skriv in den här och gå med i spelet!',
     yourName:'Ditt namn', roomCode:'Rumskod',
     visHint:'Privat — endast inbjudna. Offentligt — synligt på rumslistan.',
+    visHintPrivate:'🔒 Privat — endast inbjudna',
+    visHintPublic:'🌐 Offentligt — synligt på rumslistan',
     wordPlaceholder:'t.ex. elefant, pizza, svart hål...',
     guessPlaceholder:'Ditt svar...',
     noPoints:'🎉 Inga poäng — ren kul och skratt!',
@@ -650,6 +658,11 @@ function submitGuess() {
   socket.emit('drawing_submit', { code: roomCode, content: v });
 }
 
+// Force submit when timer expires on server
+socket.on('draw_force_submit', () => {
+  submitDrawing();
+});
+
 function submitDrawing() {
   if (!canvas) return;
   // Compress to JPEG for smaller payload
@@ -881,7 +894,14 @@ function setVisibility(pub) {
   _isPublic = pub;
   document.getElementById('vis-private').classList.toggle('active', !pub);
   document.getElementById('vis-public').classList.toggle('active',  pub);
-  if (typeof setVisibility === 'function' && window._refreshFooter) window._refreshFooter();
+  // Update hint text to reflect active state
+  const hintEl = document.getElementById('lbl-vis-hint');
+  if (hintEl && L) {
+    hintEl.textContent = pub
+      ? (L.visHintPublic  || L.visHint || '')
+      : (L.visHintPrivate || L.visHint || '');
+  }
+  if (typeof window._refreshFooter === 'function') window._refreshFooter();
 }
 
 // ── Language ──────────────────────────────────────────────────────
@@ -917,6 +937,7 @@ function applyTranslations() {
     'lbl-create-btn':       'createBtn',
     'lbl-join-btn':         'joinBtn',
     'lbl-share-code':       'shareCode',
+    'lbl-share-room':       'copyCode',
     'lbl-copy-code':        'copyCode',
     'lbl-players-title':    'playersTitle',
     'lbl-settings':         'settings',
