@@ -301,7 +301,12 @@
     if (homeLink) homeLink.href = '/?lang=' + l;
     if (rulesLink) rulesLink.href = nl.rulesHref;
     renderCards(l);
-    history.replaceState(null, '', '/games?lang=' + l);
+    var _hubUrls = {pl:'/gry', en:'/games', de:'/spiele', sv:'/spel'};
+    if (_hubUrls[l] && window.location.pathname !== _hubUrls[l]) {
+      window.location.href = _hubUrls[l];
+      return;
+    }
+    history.replaceState(null, '', _hubUrls[l] + '?lang=' + l);
     if (window.hubRerenderRooms) window.hubRerenderRooms();
     if (typeof buildRulesGrid === 'function') buildRulesGrid(l);
   }

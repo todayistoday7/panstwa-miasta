@@ -490,7 +490,7 @@
 
         <!-- Step 1: Choose word -->
         <div style="margin-bottom:18px;">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--accent);margin-bottom:10px;text-align:center;">Step 1 — <span id="lbl-pick-instruction">Choose a word</span></div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--accent);margin-bottom:10px;text-align:center;"><span id="lbl-step1">Step 1</span> — <span id="lbl-pick-instruction">Choose a word</span></div>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;">
             <input type="text" id="word-input" class="hang-word-input" maxlength="24"
               placeholder="TYPE YOUR WORD" oninput="this.value=this.value.toUpperCase()"
@@ -503,7 +503,7 @@
         <!-- Step 2: Hint (optional) -->
         <div style="margin-bottom:18px;">
           <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--accent2);margin-bottom:10px;text-align:center;">
-            Step 2 — <span id="lbl-hint-step">Add a hint</span>
+            <span id="lbl-step2">Step 2</span> — <span id="lbl-hint-step">Add a hint</span>
             <span style="font-size:11px;color:var(--muted);font-family:Nunito,sans-serif;font-weight:700;letter-spacing:0;"> (optional)</span>
           </div>
           <input type="text" id="hint-input" class="field-input" maxlength="30"
@@ -513,7 +513,7 @@
 
         <!-- Step 3: Start -->
         <div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--green);margin-bottom:10px;text-align:center;">Step 3 — Start</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--green);margin-bottom:10px;text-align:center;"><span id="lbl-step3">Step 3</span> — <span id="lbl-step3-label">Start</span></div>
           <button class="btn" onclick="submitWord()" id="lbl-confirm-word" style="width:100%;">✓ <span id="lbl-submit-label">Set Word &amp; Start Round</span></button>
         </div>
 
