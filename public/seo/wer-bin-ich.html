@@ -437,5 +437,35 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/shared.js"></script>
 <script src="/js/whoami-client.js"></script>
+<script>
+// Override setUiLang on SEO pages — navigate to language-specific URL
+// instead of translating in place (keeps URL consistent with language)
+window._seoLangUrls = {'pl':'/kim-jestem', 'en':'/who-am-i', 'de':'/wer-bin-ich', 'sv':'/vem-ar-jag'};
+(function() {{
+  var _origSetUiLang = null;
+  function _seoSetUiLang(code) {{
+    var url = window._seoLangUrls[code];
+    if (url) {{
+      window.location.href = url;
+    }} else if (_origSetUiLang) {{
+      _origSetUiLang(code);
+    }}
+  }}
+  // Wait for game client to define setUiLang, then override it
+  var _attempts = 0;
+  function _tryOverride() {{
+    if (typeof setUiLang === 'function' && setUiLang !== _seoSetUiLang) {{
+      _origSetUiLang = setUiLang;
+      setUiLang = _seoSetUiLang;
+      window.setUiLang = _seoSetUiLang;
+      // Rebuild lang bar so buttons use new setUiLang
+      if (typeof buildLangBar === 'function') buildLangBar();
+    }} else if (_attempts++ < 20) {{
+      setTimeout(_tryOverride, 100);
+    }}
+  }}
+  _tryOverride();
+}})();
+</script>
 </body>
 </html>

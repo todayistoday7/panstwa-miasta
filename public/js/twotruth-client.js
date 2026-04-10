@@ -763,6 +763,7 @@ function applyTranslations() {
     'lbl-lobby-rule-5':'rule5',
     'lbl-rule-5':       'rule5',       'lbl-game-over':    'gameOver',
     'lbl-go-home':      'goHome',
+    'lbl-play-again':   'playAgain',
   };
   for (const [id, key] of Object.entries(map)) {
     const el = document.getElementById(id);

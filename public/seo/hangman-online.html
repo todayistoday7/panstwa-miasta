@@ -391,7 +391,7 @@
         <div class="lang-pills" id="lobby-lang-pills"></div>
         <label class="field-label" id="lbl-rounds-label">Rounds</label>
         <select id="settings-rounds" class="field-select" onchange="updateSettings()">
-          <option value="0">One round per player (default)</option>
+          <option value="0" id="lbl-rounds-default">One round per player (default)</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -580,5 +580,35 @@
 <script src="/js/shared.js"></script>
 <script src="/js/hangman-words.js"></script>
 <script src="/js/hangman-client.js"></script>
+<script>
+// Override setUiLang on SEO pages — navigate to language-specific URL
+// instead of translating in place (keeps URL consistent with language)
+window._seoLangUrls = {'pl':'/wisielec', 'en':'/hangman-online', 'de':'/galgenmaennchen-online', 'sv':'/hanga-gubbe-online'};
+(function() {{
+  var _origSetUiLang = null;
+  function _seoSetUiLang(code) {{
+    var url = window._seoLangUrls[code];
+    if (url) {{
+      window.location.href = url;
+    }} else if (_origSetUiLang) {{
+      _origSetUiLang(code);
+    }}
+  }}
+  // Wait for game client to define setUiLang, then override it
+  var _attempts = 0;
+  function _tryOverride() {{
+    if (typeof setUiLang === 'function' && setUiLang !== _seoSetUiLang) {{
+      _origSetUiLang = setUiLang;
+      setUiLang = _seoSetUiLang;
+      window.setUiLang = _seoSetUiLang;
+      // Rebuild lang bar so buttons use new setUiLang
+      if (typeof buildLangBar === 'function') buildLangBar();
+    }} else if (_attempts++ < 20) {{
+      setTimeout(_tryOverride, 100);
+    }}
+  }}
+  _tryOverride();
+}})();
+</script>
 </body>
 </html>

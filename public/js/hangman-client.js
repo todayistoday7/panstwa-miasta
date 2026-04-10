@@ -6,7 +6,9 @@ window._gameSlug = 'hangman';
 
 const socket = io();
 const _urlLang = new URLSearchParams(window.location.search).get('lang');
-let lang      = (['pl','en','de','sv'].includes(_urlLang) ? _urlLang : 'pl');
+let lang      = (window._forceLang && ['pl','en','de','sv'].includes(window._forceLang))
+               ? window._forceLang
+               : (['pl','en','de','sv'].includes(_urlLang) ? _urlLang : 'pl');
 let myId      = null;
 var _settingsInitHang = false;
 let myName    = '';
@@ -29,6 +31,9 @@ const LANGS = {
     shareCode:         'Udostępnij kod znajomym',
     shareRoom:         'Udostępnij pokój',
     homeRejoinTip: 'Jeśli przypadkowo opuścisz grę, wróć z tym samym imieniem i kodem pokoju.',
+    rejoinTip:     'Jeśli przypadkowo opuścisz grę, wróć z tym samym imieniem i kodem pokoju.',
+    roundsLabel:   'Rundy',
+    roundsDefault: 'Jedna tura na gracza (domyślnie)',
     waitingForHost:    'Czekam na hosta...',
     needPlayers:       'Potrzeba min. 2 graczy',
     howToPlay:         'Zasady gry',
@@ -94,6 +99,8 @@ const LANGS = {
     shareCode:         'Share this code with friends',
     shareRoom:         'Share Room',
     homeRejoinTip: 'If you accidentally leave mid-game, rejoin with the same name and room code.',
+    roundsLabel:   'Rounds',
+    roundsDefault: 'One round per player (default)',
     waitingForHost:    'Waiting for host...',
     needPlayers:       'Need at least 2 players',
     howToPlay:         'How to play',
@@ -150,6 +157,8 @@ const LANGS = {
     navHome:           'Startseite',
     navAllGames:       'Alle Spiele',
     homeRejoinTip:     'Falls du das Spiel versehentlich verlässt, tritt mit demselben Namen und Code wieder bei.',
+    roundsLabel:       'Runden',
+    roundsDefault:     'Eine Runde pro Spieler (Standard)',
     rejoinTip:         'Falls du das Spiel versehentlich verlässt, tritt mit demselben Namen und Code wieder bei.',
     gameTitle:         'GALGENMÄNNCHEN',
     subtitle:          'Wortratespiel · 2-10 Spieler',
@@ -279,6 +288,8 @@ const LANGS = {
     navHome:           'Startsida',
     navAllGames:       'Alla spel',
     homeRejoinTip:     'Om du lämnar spelet av misstag, gå tillbaka med samma namn och rumskod.',
+    roundsLabel:       'Omgångar',
+    roundsDefault:     'En omgång per spelare (standard)',
     langTitle:         'Språk',
   },
 };
@@ -856,6 +867,7 @@ function applyTranslations() {
     'lbl-play-again':       'playAgain',   'lbl-go-home':          'goHome',
     'lbl-room-visibility':  'roomVis',
     'lbl-rounds-label':     'roundsLabel',
+    'lbl-rounds-default':   'roundsDefault',
     'lbl-home-rejoin-tip':  'homeRejoinTip',
     'lbl-rejoin-tip':       'rejoinTip',
   };
