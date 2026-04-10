@@ -18,6 +18,7 @@ const twotruth   = require('./routes/twotruth');
 const hangman    = require('./routes/hangman');
 const bingo      = require('./routes/bingo');
 const drawing    = require('./routes/drawing');
+const whoami     = require('./routes/whoami');
 const lobbyHub   = require('./routes/lobby');
 const admin      = require('./routes/admin');
 
@@ -38,6 +39,13 @@ app.get('/hangman',     (req, res) => res.sendFile(path.join(__dirname, 'public/
 app.get('/bingo',       (req, res) => res.sendFile(path.join(__dirname, 'public/bingo.html')));
 // DRAWING TELEPHONE — hidden until ready to launch
 app.get('/drawing',     (req, res) => res.sendFile(path.join(__dirname, 'public/drawing.html')));
+
+// ── Who Am I — SEO pages (not linked in nav yet) ────────────────
+app.get('/kim-jestem', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/kim-jestem.html')));
+app.get('/who-am-i',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/who-am-i.html')));
+app.get('/wer-bin-ich',(req, res) => res.sendFile(path.join(__dirname, 'public/seo/wer-bin-ich.html')));
+app.get('/vem-ar-jag', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/vem-ar-jag.html')));
+app.get('/whoami',     (req, res) => res.redirect(301, '/who-am-i'));
 
 // ── SEO Landing Pages — Forbidden Words ─────────────────────────
 app.get('/zakazane-slowa',    (req, res) => res.sendFile(path.join(__dirname, 'public/seo/zakazane-slowa.html')));
@@ -349,6 +357,7 @@ io.on('connection', (socket) => {
   hangman.register(io, socket);
   bingo.register(io, socket);
   drawing.register(io, socket);
+  whoami.register(io, socket);
 });
 
 // ─── START ───────────────────────────────────────────────

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wer bin ich? Online — Kostenloses Partyspiel | panstwamiastagra.com</title>
+<meta name="description" content="Wer bin ich? online spielen — kostenlos! Errate deine geheime Person durch Ja/Nein-Fragen. Partyspiel für 2-16 Spieler, perfekt für Treffen und Teambuilding.">
+<meta property="og:title" content="Wer bin ich? Online — Kostenloses Partyspiel | panstwamiastagra.com">
+<meta property="og:description" content="Wer bin ich? online spielen — kostenlos! Errate deine geheime Person durch Ja/Nein-Fragen. Partyspiel für 2-16 Spieler, perfekt für Treffen und Teambuilding.">
+<meta property="og:url" content="https://panstwamiastagra.com/wer-bin-ich">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://panstwamiastagra.com/wer-bin-ich">
+<link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/wer-bin-ich">
+<link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/kim-jestem">
+<link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/who-am-i">
+<link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/vem-ar-jag">
+<link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/who-am-i">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<style>
+  /* ── WHO AM I SPECIFIC ── */
+  .wa-mode-toggle { display:flex; gap:10px; margin-bottom:16px; }
+  .wa-mode-btn {
+    flex:1; padding:12px; border-radius:12px; border:2px solid var(--border);
+    background:var(--surface); color:var(--muted); font-family:'Nunito',sans-serif;
+    font-size:13px; font-weight:800; cursor:pointer; text-align:center;
+    transition:all 0.2s;
+  }
+  .wa-mode-btn.active { border-color:var(--accent); color:var(--accent); background:rgba(255,107,53,0.07); }
+  .wa-cat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:8px; margin-bottom:12px; }
+  .wa-cat-btn {
+    padding:10px 8px; border-radius:10px; border:2px solid var(--border);
+    background:var(--surface); color:var(--muted); font-family:'Nunito',sans-serif;
+    font-size:12px; font-weight:800; cursor:pointer; text-align:center;
+    transition:all 0.2s; user-select:none;
+  }
+  .wa-cat-btn.active { border-color:var(--accent2); color:var(--accent2); background:rgba(255,209,102,0.08); }
+  .wa-cat-btn.mixed.active { border-color:var(--accent); color:var(--accent); background:rgba(255,107,53,0.07); }
+  .wa-diff-row { display:flex; gap:8px; margin-bottom:12px; }
+  .wa-diff-btn {
+    flex:1; padding:8px; border-radius:10px; border:2px solid var(--border);
+    background:var(--surface); color:var(--muted); font-family:'Nunito',sans-serif;
+    font-size:12px; font-weight:800; cursor:pointer; text-align:center; transition:all 0.2s;
+  }
+  .wa-diff-btn.active { border-color:var(--green); color:var(--green); background:rgba(6,214,160,0.07); }
+
+  /* Character card */
+  .wa-char-card {
+    background:var(--card); border:2px solid var(--accent2); border-radius:18px;
+    padding:20px; text-align:center; margin:16px 0;
+  }
+  .wa-char-img {
+    width:120px; height:120px; border-radius:50%; object-fit:cover;
+    border:3px solid var(--accent2); margin:0 auto 12px; display:block;
+    background:var(--surface);
+  }
+  .wa-char-img-placeholder {
+    width:120px; height:120px; border-radius:50%;
+    border:3px solid var(--accent2); margin:0 auto 12px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:48px; background:var(--surface);
+  }
+  .wa-char-name {
+    font-family:'Bebas Neue',sans-serif; font-size:clamp(24px,6vw,40px);
+    letter-spacing:3px; color:var(--accent2); line-height:1.1;
+  }
+  .wa-char-cat { font-size:12px; font-weight:700; color:var(--muted); margin-top:4px; letter-spacing:1px; text-transform:uppercase; }
+
+  /* Active player mystery card */
+  .wa-mystery-card {
+    background:var(--card); border:2px dashed var(--border); border-radius:18px;
+    padding:32px 20px; text-align:center; margin:16px 0;
+  }
+  .wa-mystery-icon { font-size:56px; margin-bottom:8px; }
+  .wa-mystery-text { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:3px; color:var(--muted); }
+
+  /* Timer bar */
+  .wa-timer-wrap { margin:12px 0; }
+  .wa-timer-bar-bg { background:var(--surface); border-radius:8px; height:8px; overflow:hidden; }
+  .wa-timer-bar { height:8px; border-radius:8px; background:var(--accent); transition:width 0.5s linear; }
+  .wa-timer-text { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px; color:var(--accent2); text-align:center; margin-top:4px; }
+
+  /* Hints panel */
+  .wa-hints { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px; margin:12px 0; }
+  .wa-hints-title { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:10px; }
+  .wa-hint-item { font-size:13px; font-weight:700; color:var(--muted); padding:5px 0; border-bottom:1px solid var(--border); cursor:pointer; transition:color 0.15s; }
+  .wa-hint-item:last-child { border-bottom:none; }
+  .wa-hint-item:hover { color:var(--accent); }
+  .wa-hint-item.used { color:var(--border); text-decoration:line-through; }
+
+  /* Chat */
+  .wa-chat { max-height:220px; overflow-y:auto; margin:12px 0; display:flex; flex-direction:column; gap:6px; }
+  .wa-msg { font-size:13px; font-weight:700; padding:8px 12px; border-radius:10px; }
+  .wa-msg.question { background:rgba(255,107,53,0.08); border:1px solid rgba(255,107,53,0.2); color:var(--text); }
+  .wa-msg.answer { background:rgba(6,214,160,0.08); border:1px solid rgba(6,214,160,0.2); color:var(--green); text-align:center; }
+  .wa-msg.system { background:var(--surface); border:1px solid var(--border); color:var(--muted); text-align:center; font-style:italic; }
+  .wa-msg.wrong { background:rgba(239,71,111,0.08); border:1px solid rgba(239,71,111,0.2); color:var(--red); text-align:center; }
+
+  /* Vote buttons */
+  .wa-vote-row { display:flex; gap:8px; margin:10px 0; }
+  .wa-vote-btn {
+    flex:1; padding:10px 6px; border-radius:10px; border:2px solid var(--border);
+    background:var(--surface); font-family:'Nunito',sans-serif; font-size:13px;
+    font-weight:800; cursor:pointer; transition:all 0.2s; color:var(--muted);
+  }
+  .wa-vote-btn:hover { transform:translateY(-1px); }
+  .wa-vote-btn.yes  { border-color:var(--green);  color:var(--green); }
+  .wa-vote-btn.no   { border-color:var(--red);    color:var(--red); }
+  .wa-vote-btn.maybe{ border-color:var(--accent2);color:var(--accent2); }
+  .wa-vote-btn.voted { opacity:0.5; cursor:default; }
+
+  /* Question input */
+  .wa-q-wrap { display:flex; gap:8px; margin:10px 0; }
+  .wa-q-input {
+    flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    color:var(--text); font-family:'Nunito',sans-serif; font-size:14px; font-weight:700;
+    padding:10px 14px; outline:none;
+  }
+  .wa-q-input:focus { border-color:var(--accent); }
+
+  /* Guess input */
+  .wa-guess-wrap { display:flex; flex-direction:column; gap:8px; margin:12px 0; }
+  .wa-guess-input {
+    width:100%; background:var(--surface); border:2px solid var(--accent);
+    border-radius:10px; color:var(--text); font-family:'Bebas Neue',sans-serif;
+    font-size:20px; letter-spacing:2px; padding:10px 14px; outline:none;
+    text-transform:uppercase;
+  }
+
+  /* Scoreboard */
+  .wa-scores { display:flex; flex-direction:column; gap:6px; margin:12px 0; }
+  .wa-score-row {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 14px; background:var(--surface); border-radius:10px;
+    border:1px solid var(--border);
+  }
+  .wa-score-row.active-turn { border-color:var(--accent2); background:rgba(255,209,102,0.06); }
+  .wa-score-row.winner { border-color:var(--accent2); background:rgba(255,209,102,0.08); }
+  .wa-score-pts { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--accent); letter-spacing:1px; }
+
+  /* Turn banner */
+  .wa-turn-banner {
+    font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:3px;
+    text-align:center; padding:10px 20px; border-radius:10px; margin:10px 0;
+    border:1px solid var(--accent2); background:rgba(255,209,102,0.07); color:var(--accent2);
+  }
+  .wa-q-count { font-size:12px; font-weight:700; color:var(--muted); text-align:center; margin:4px 0; }
+
+  /* Result banner */
+  .wa-result-banner {
+    font-family:'Bebas Neue',sans-serif; font-size:clamp(18px,5vw,28px);
+    letter-spacing:3px; text-align:center; padding:14px 20px; border-radius:12px; margin:12px 0;
+  }
+  .wa-result-banner.correct { background:rgba(6,214,160,0.1); border:1px solid var(--green); color:var(--green); }
+  .wa-result-banner.wrong   { background:rgba(239,71,111,0.1); border:1px solid var(--red);   color:var(--red); }
+  .wa-result-banner.timeout { background:rgba(167,169,190,0.1); border:1px solid var(--muted); color:var(--muted); }
+
+  @keyframes bounce { 0%{transform:translateY(0)} 100%{transform:translateY(-6px)} }
+  .wa-bounce { animation:bounce 0.6s ease-in-out infinite alternate; }
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/favicon.svg">
+<script async data-cfasync="false" src="https://www.googletagmanager.com/gtag/js?id=G-BJ79ZM6WPQ"></script>
+<script data-cfasync="false">window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BJ79ZM6WPQ');</script>
+<script>window._forceLang = 'de';</script>
+</head>
+<body>
+
+<!-- CONFIRM LEAVE MODAL -->
+<div id="confirm-modal" class="modal-overlay" style="display:none;">
+  <div class="modal" style="max-width:360px;text-align:center;">
+    <h2 id="confirm-title" style="color:var(--accent2);">Leave?</h2>
+    <p id="confirm-msg" style="margin:12px 0 20px;">Are you sure?</p>
+    <div class="btn-row" style="margin-top:0;">
+      <button class="btn red-btn" onclick="doGoHome()" id="confirm-yes">Yes, leave</button>
+      <button class="btn secondary" onclick="closeConfirm()" id="confirm-no">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="lang-bar" id="lang-bar"></div>
+
+  <!-- ══ SCREEN: HOME ══ -->
+  <div id="screen-home" class="screen active">
+    <div style="display:flex;gap:10px;margin-bottom:16px;">
+      <a href="/" class="nav-home-btn" style="text-decoration:none;">🏠 <span class="lbl-nav-home-dup">Home</span></a>
+      <a href="/games" class="nav-home-btn" style="text-decoration:none;">🎮 <span id="lbl-nav-all-games">All Games</span></a>
+    </div>
+
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:52px;">🕵️</div>
+      <h1 id="game-title" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,8vw,56px);letter-spacing:3px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:4px 0;">KIM JESTEM?</h1>
+      <p id="game-subtitle" style="color:var(--muted);font-size:14px;font-weight:700;letter-spacing:1px;">Gra towarzyska · 2-16 graczy</p>
+    </div>
+
+    <div class="home-grid">
+      <div class="card">
+        <h3 id="lbl-create-room">Stwórz pokój</h3>
+        <p id="lbl-create-disclaimer" style="color:var(--muted);font-size:12px;font-weight:600;line-height:1.5;margin:6px 0 10px;"></p>
+        <label class="field-label" id="lbl-your-name">Twoje imię</label>
+        <input type="text" id="host-name" class="field-input" maxlength="20" oninput="clearHomeError()"/>
+        <input type="text" id="hp-website" name="website" style="display:none;position:absolute;left:-9999px;" tabindex="-1" autocomplete="off"/>
+
+        <!-- Mode selector -->
+        <label class="field-label" style="margin-top:14px;" id="lbl-mode">Tryb gry</label>
+        <div class="wa-mode-toggle">
+          <div class="wa-mode-btn active" id="mode-voice" onclick="setMode('voice')">🎤 <span id="lbl-mode-voice">Głosowy</span><br><small style="font-weight:600;font-size:11px;" id="lbl-mode-voice-desc">Spotkacie się / zadzwonicie</small></div>
+          <div class="wa-mode-btn" id="mode-chat" onclick="setMode('chat')">💬 <span id="lbl-mode-chat">Czat</span><br><small style="font-weight:600;font-size:11px;" id="lbl-mode-chat-desc">Wszystko w aplikacji</small></div>
+        </div>
+
+        <!-- Categories -->
+        <label class="field-label" id="lbl-categories">Kategorie</label>
+        <div class="wa-cat-grid" id="cat-grid">
+          <div class="wa-cat-btn" data-cat="sports" onclick="toggleCat('sports')">⚽ <span id="lbl-cat-sports">Sport</span></div>
+          <div class="wa-cat-btn" data-cat="music" onclick="toggleCat('music')">🎵 <span id="lbl-cat-music">Muzyka</span></div>
+          <div class="wa-cat-btn" data-cat="film" onclick="toggleCat('film')">🎬 <span id="lbl-cat-film">Film & TV</span></div>
+          <div class="wa-cat-btn" data-cat="history" onclick="toggleCat('history')">📚 <span id="lbl-cat-history">Historia</span></div>
+          <div class="wa-cat-btn" data-cat="animals" onclick="toggleCat('animals')">🐘 <span id="lbl-cat-animals">Zwierzęta</span></div>
+          <div class="wa-cat-btn" data-cat="kids" onclick="toggleCat('kids')">👶 <span id="lbl-cat-kids">Dla dzieci</span></div>
+          <div class="wa-cat-btn mixed" data-cat="mixed" onclick="toggleCat('mixed')">🌍 <span id="lbl-cat-mixed">Wszystkie</span></div>
+        </div>
+
+        <!-- Difficulty -->
+        <label class="field-label" id="lbl-difficulty">Poziom trudności</label>
+        <div class="wa-diff-row">
+          <div class="wa-diff-btn active" data-diff="easy" onclick="setDiff('easy')">🌟 <span id="lbl-diff-easy">Łatwy</span></div>
+          <div class="wa-diff-btn" data-diff="medium" onclick="setDiff('medium')">🎭 <span id="lbl-diff-medium">Średni</span></div>
+          <div class="wa-diff-btn" data-diff="hard" onclick="setDiff('hard')">🔥 <span id="lbl-diff-hard">Trudny</span></div>
+        </div>
+
+        <!-- Turns & Timer -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;">
+          <div>
+            <label class="field-label" id="lbl-turns-each">Tury na gracza</label>
+            <select id="host-turns" class="field-select">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label" id="lbl-timer">Timer</label>
+            <select id="host-timer" class="field-select">
+              <option value="60">1 min</option>
+              <option value="120" selected>2 min</option>
+              <option value="180">3 min</option>
+              <option value="0" id="lbl-no-timer">Bez limitu</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Hints toggle -->
+        <div style="display:flex;align-items:center;gap:10px;margin-top:14px;">
+          <input type="checkbox" id="host-hints" checked style="width:16px;height:16px;accent-color:var(--accent);">
+          <label for="host-hints" style="font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;" id="lbl-hints-toggle">Pokaż podpowiedzi pytań</label>
+        </div>
+
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn" onclick="createRoom()">🎮 <span id="lbl-create-btn">Stwórz pokój</span></button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 id="lbl-join-room">Dołącz do pokoju</h3>
+        <p id="lbl-join-disclaimer" style="font-size:12px;color:var(--muted);font-weight:700;margin-top:4px;margin-bottom:8px;line-height:1.5;"></p>
+        <label class="field-label" id="lbl-join-name">Twoje imię</label>
+        <input type="text" id="join-name" class="field-input" maxlength="20" oninput="clearHomeError()"/>
+        <label class="field-label" style="margin-top:12px;" id="lbl-room-code">Kod pokoju</label>
+        <input type="text" id="join-code" class="field-input code-input" maxlength="5" oninput="this.value=this.value.toUpperCase()"/>
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn green" onclick="joinRoom()">🚪 <span id="lbl-join-btn">Dołącz</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div id="home-error" class="error-box" style="display:none;margin-top:12px;"></div>
+
+    <!-- Rules -->
+    <div class="rules-section" style="margin-top:24px;">
+      <h2 id="lbl-how-to-play" style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--accent2);text-align:center;margin-bottom:16px;">Jak grać?</h2>
+      <div class="rules-steps">
+        <div class="rule-step"><div class="step-num">1</div><p id="lbl-rule-1">Stwórz pokój i zaproś znajomych kodem</p></div>
+        <div class="rule-step"><div class="step-num">2</div><p id="lbl-rule-2">Każdy gracz dostaje tajną postać — ale jej nie widzi!</p></div>
+        <div class="rule-step"><div class="step-num">3</div><p id="lbl-rule-3">Zadawaj pytania by odgadnąć kim jesteś</p></div>
+        <div class="rule-step"><div class="step-num">4</div><p id="lbl-rule-4">Odgadnięcie postaci = 1 punkt. Poddanie się = 0</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN: LOBBY ══ -->
+  <div id="screen-lobby" class="screen">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div>
+        <div class="room-code-display" id="room-code-display"></div>
+        <p class="room-code-hint" id="lbl-share-code">Udostępnij kod znajomym</p>
+        <button class="btn share-btn" onclick="shareRoom('who-am-i')" style="margin-top:6px;">📤 <span id="lbl-share-room">Udostępnij pokój</span></button>
+      </div>
+    </div>
+
+    <div class="lobby-grid">
+      <div class="card">
+        <h3 id="lbl-players-title">Gracze</h3>
+        <div id="lobby-players"></div>
+      </div>
+      <div class="card" id="lobby-settings-card">
+        <h3 id="lbl-settings">Ustawienia</h3>
+        <div id="lobby-mode-display" style="margin-bottom:10px;font-size:13px;font-weight:700;color:var(--muted);"></div>
+        <div id="lobby-cats-display" style="margin-bottom:10px;font-size:13px;font-weight:700;color:var(--muted);"></div>
+        <div id="lobby-diff-display" style="margin-bottom:10px;font-size:13px;font-weight:700;color:var(--muted);"></div>
+        <div id="lobby-timer-display" style="font-size:13px;font-weight:700;color:var(--muted);"></div>
+      </div>
+    </div>
+
+    <div class="btn-row" id="lobby-btn-row">
+      <button class="btn" onclick="startGame()" id="lobby-start-btn">🎮 <span id="lbl-start-btn">Rozpocznij grę</span></button>
+      <button class="btn secondary" onclick="confirmGoHome()" id="lbl-leave-room">🚪 Wyjdź</button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN: PLAYING ══ -->
+  <div id="screen-playing" class="screen">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+      <button class="nav-home-btn" onclick="confirmGoHome()">🏠 <span class="lbl-nav-home-dup">Home</span></button>
+      <div id="wa-score-mini" style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--muted);"></div>
+    </div>
+
+    <div id="wa-turn-banner" class="wa-turn-banner"></div>
+    <div id="wa-timer-wrap" class="wa-timer-wrap" style="display:none;">
+      <div class="wa-timer-bar-bg"><div id="wa-timer-bar" class="wa-timer-bar" style="width:100%;"></div></div>
+      <div id="wa-timer-text" class="wa-timer-text">2:00</div>
+    </div>
+
+    <!-- Character card (visible to non-active players) -->
+    <div id="wa-char-card" class="wa-char-card" style="display:none;">
+      <div id="wa-char-img-wrap">
+        <div class="wa-char-img-placeholder" id="wa-char-placeholder">🕵️</div>
+        <img id="wa-char-img" class="wa-char-img" style="display:none;" alt="character"/>
+      </div>
+      <div id="wa-char-name" class="wa-char-name"></div>
+      <div id="wa-char-cat" class="wa-char-cat"></div>
+    </div>
+
+    <!-- Mystery card (active player) -->
+    <div id="wa-mystery-card" class="wa-mystery-card" style="display:none;">
+      <div class="wa-mystery-icon wa-bounce">❓</div>
+      <div class="wa-mystery-text" id="wa-mystery-text">KIM JESTEM?</div>
+    </div>
+
+    <!-- Question hints (active player, togglable) -->
+    <div id="wa-hints" class="wa-hints" style="display:none;">
+      <div class="wa-hints-title" id="lbl-hints-title">💡 Sugerowane pytania</div>
+      <div id="wa-hints-list"></div>
+    </div>
+
+    <!-- Chat (chat mode) -->
+    <div id="wa-chat-wrap" style="display:none;">
+      <div id="wa-q-count" class="wa-q-count"></div>
+      <div id="wa-chat" class="wa-chat"></div>
+
+      <!-- Question input (active player, chat mode) -->
+      <div id="wa-q-input-wrap" class="wa-q-wrap" style="display:none;">
+        <input type="text" id="wa-q-input" class="wa-q-input" maxlength="120" placeholder="Zadaj pytanie..."/>
+        <button class="btn" onclick="sendQuestion()" style="padding:10px 16px;">➤</button>
+      </div>
+
+      <!-- Vote buttons (non-active players, chat mode) -->
+      <div id="wa-vote-wrap" class="wa-vote-row" style="display:none;">
+        <button class="wa-vote-btn yes" onclick="sendVote('yes')">✅ TAK</button>
+        <button class="wa-vote-btn no"  onclick="sendVote('no')">❌ NIE</button>
+        <button class="wa-vote-btn maybe" onclick="sendVote('maybe')">🤷 MOŻE</button>
+      </div>
+    </div>
+
+    <!-- Guess section (active player) -->
+    <div id="wa-guess-wrap" class="wa-guess-wrap" style="display:none;">
+      <label class="field-label" id="lbl-guess-label">Zgaduję że jestem...</label>
+      <input type="text" id="wa-guess-input" class="wa-guess-input" placeholder="WPISZ POSTAĆ..." maxlength="60"
+             onkeydown="if(event.key==='Enter')submitGuess()"/>
+      <button class="btn" onclick="submitGuess()">✅ <span id="lbl-guess-btn">Zgaduję!</span></button>
+      <button class="btn secondary" onclick="surrender()" id="lbl-surrender-btn">🏳️ Poddaję się</button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN: TURN RESULT ══ -->
+  <div id="screen-turn-result" class="screen">
+    <div id="wa-result-banner" class="wa-result-banner correct"></div>
+    <div id="wa-char-revealed" class="wa-char-card" style="margin:16px 0;"></div>
+    <div id="wa-scores" class="wa-scores"></div>
+    <div class="btn-row" style="margin-top:16px;">
+      <button class="btn" id="next-turn-btn" onclick="nextTurn()" style="display:none;">➤ <span id="lbl-next-turn">Następna tura</span></button>
+      <button class="btn secondary" onclick="confirmGoHome()">🏠 <span class="lbl-nav-home-dup">Home</span></button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN: FINAL ══ -->
+  <div id="screen-final" class="screen">
+    <div style="text-align:center;padding-top:20px;">
+      <div style="font-size:52px;">🏆</div>
+      <h2 id="lbl-game-over" style="font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:2px;color:var(--accent2);">Koniec gry!</h2>
+    </div>
+    <div id="final-scores" class="wa-scores" style="margin:20px 0;"></div>
+    <div class="btn-row">
+      <button class="btn" onclick="rematch()" id="lbl-play-again">🔄 Zagraj ponownie</button>
+      <button class="btn secondary" onclick="confirmGoHome()">🏠 <span class="lbl-nav-home-dup">Home</span></button>
+    </div>
+  </div>
+
+</div>
+
+
+  <div id="seo-intro" style="padding:8px 0 0;">
+    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,6vw,46px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 10px;">Wer bin ich? Online</h1>
+    <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;"><strong style="color:var(--text);">Wer bin ich?</strong> ist ein klassisches Partyspiel bei dem jeder Spieler eine geheime Person bekommt — aber sie selbst nicht sehen kann! Stelle Fragen um herauszufinden wer du bist.</p>
+    <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;">Wähle aus Personen aus Sport, Musik, Film & TV, Geschichte, Tierwelt und Kinderkategorien. <strong style="color:var(--text);">2-16 Spieler</strong>, kostenlos, ohne Registrierung.</p>
+    <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;">Perfekt für <strong style="color:var(--text);">Treffen, Partys und Teambuilding</strong>. Sprachmodus für gemeinsames Spielen. Chat-Modus für ein vollständig eigenständiges App-Erlebnis.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;"><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">🕵️ 2-16 Spieler</span><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">👶 Ab 8 Jahren</span><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">🆓 Kostenlos</span><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">🎤 Sprachmodus</span><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">💬 Chat-Modus</span></div>
+  </div>
+<script>
+  (function() {
+    var intro = document.getElementById('seo-intro');
+    var container = document.querySelector('.container');
+    if (intro && container) container.insertBefore(intro, container.firstChild);
+  })();
+</script>
+<div style="max-width:780px;margin:0 auto;padding:32px 16px 16px;border-top:1px solid var(--border);margin-top:16px;">
+  <h2 style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent2);margin-bottom:12px;">Wie spielt man Wer bin ich?</h2>
+  <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;">Jeder Spieler bekommt eine geheime Person die alle anderen sehen können — aber er selbst nicht. Stelle Ja/Nein-Fragen um sie einzugrenzen. Rate wer du bist bevor der Timer abläuft!</p>
+  <h2 style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent2);margin-bottom:12px;">Zwei Spielmodi</h2>
+  <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;">Sprachmodus — perfekt wenn ihr zusammen seid oder per Video-Anruf spielt. Chat-Modus — vollständig in der App, toll für öffentliche Räume mit Fremden.</p>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;padding-top:16px;border-top:1px solid var(--border);">
+    <a href="/kim-jestem" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🇵🇱 Kim Jestem?</a><a href="/who-am-i" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🇬🇧 Who Am I?</a><a href="/vem-ar-jag" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🇸🇪 Vem är jag?</a><a href="/spiele" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🎮 Alle Spiele</a>
+  </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/shared.js"></script>
+<script src="/js/whoami-client.js"></script>
+</body>
+</html>

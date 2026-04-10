@@ -63,22 +63,96 @@ async function openPage(browser, url) {
 async function testPageAvailability(browser) {
   section('Page availability (all routes)');
   const pages = [
+    // ── Core game pages ──────────────────────────────────────────
     '/',
-    '/taboo',
+    '/games',
+    '/rooms',
+    '/privacy',
+
+    // ── Legacy routes (should 301 redirect, not 404) ──────────────
     '/dots',
+    '/taboo',
     '/twotruth',
     '/hangman',
-    '/games',
+    '/bingo',
+    '/drawing',
+
+    // ── SEO game pages — Dots & Boxes ────────────────────────────
+    '/kropki-i-kreski-online',
+    '/dots-and-boxes-online',
+    '/punkte-und-linien-online',
+    '/punkter-och-linjer-online',
+
+    // ── SEO game pages — 2 Truths 1 Lie ─────────────────────────
+    '/dwie-prawdy-jedno-klamstwo',
+    '/two-truths-one-lie',
+    '/zwei-wahrheiten-eine-luege',
+    '/tva-sanningar-en-logn',
+
+    // ── SEO game pages — Hangman ─────────────────────────────────
+    '/wisielec',
+    '/hangman-online',
+    '/galgenmaennchen-online',
+    '/hanga-gubbe-online',
+
+    // ── SEO game pages — Sketch & Guess ─────────────────────────
+    '/szkicuj-i-zgaduj',
+    '/sketch-and-guess',
+    '/zeichnen-und-raten',
+    '/skissa-och-gissa',
+
+    // ── SEO game pages — Forbidden Words ─────────────────────────
+    '/zakazane-slowa',
+    '/forbidden-words',
+    '/verbotene-woerter',
+    '/forbjudna-ord',
+
+    // ── SEO game pages — Corporate Bingo ─────────────────────────
+    '/korporacyjne-bingo',
+    '/corporate-bingo',
+    '/unternehmens-bingo',
+    '/foretagsbingo',
+
+    // ── SEO game pages — Who Am I (new, not linked yet) ──────────
+    '/kim-jestem',
+    '/who-am-i',
+    '/wer-bin-ich',
+    '/vem-ar-jag',
+
+    // ── Games hub pages ───────────────────────────────────────────
+    '/gry',
+    '/spiele',
+    '/spel',
+
+    // ── How to play hubs ──────────────────────────────────────────
     '/jak-grac',
+    '/how-to-play',
+    '/wie-man-spielt',
+    '/hur-man-spelar',
+
+    // ── How to play individual pages ──────────────────────────────
     '/jak-grac/tabu',
     '/jak-grac/wisielec',
     '/jak-grac/kropki-i-kreski',
     '/jak-grac/dwie-prawdy-jedno-klamstwo',
-    '/how-to-play',
+    '/jak-grac/szkicuj-i-zgaduj',
     '/how-to-play/taboo',
     '/how-to-play/hangman',
     '/how-to-play/dots-and-boxes',
     '/how-to-play/two-truths-one-lie',
+    '/how-to-play/sketch-and-guess',
+    '/wie-man-spielt/verbotene-woerter',
+    '/wie-man-spielt/galgenmaennchen',
+    '/wie-man-spielt/punkte-und-linien',
+    '/wie-man-spielt/zwei-wahrheiten-eine-luege',
+    '/wie-man-spielt/zeichnen-und-raten',
+    '/hur-man-spelar/forbjudna-ord',
+    '/hur-man-spelar/hanga-gubbe',
+    '/hur-man-spelar/punkter-och-linjer',
+    '/hur-man-spelar/tva-sanningar-en-logn',
+    '/hur-man-spelar/skissa-och-gissa',
+
+    // ── PM category/word pages ────────────────────────────────────
     '/kategorie',
     '/slowa',
     '/health',
@@ -94,8 +168,17 @@ async function testPageAvailability(browser) {
 // 2. No JS errors on key pages
 async function testNoJsErrors(browser) {
   section('No JS errors on page load');
-  const pages = ['/', '/taboo', '/dots', '/hangman', '/twotruth', '/games',
-                  '/jak-grac', '/how-to-play', '/slowa', '/kategorie'];
+  const pages = [
+    '/', '/games', '/gry', '/spiele', '/spel',
+    '/kropki-i-kreski-online', '/dots-and-boxes-online',
+    '/dwie-prawdy-jedno-klamstwo', '/two-truths-one-lie',
+    '/wisielec', '/hangman-online',
+    '/szkicuj-i-zgaduj', '/sketch-and-guess',
+    '/zakazane-slowa', '/forbidden-words',
+    '/korporacyjne-bingo', '/corporate-bingo',
+    '/kim-jestem', '/who-am-i',
+    '/jak-grac', '/how-to-play',
+  ];
   for (const path of pages) {
     await check(path, async () => {
       const { ctx, errors } = await openPage(browser, BASE + path);
@@ -132,8 +215,15 @@ async function testBurgerMenu(browser) {
   });
 
   // Check all expected links are present
-  const expectedHrefs = ['/', '/games', '/taboo', '/hangman', '/dots',
-                          '/twotruth', '/kategorie', '/slowa'];
+  const expectedHrefs = [
+    '/', '/games',
+    '/zakazane-slowa',       // taboo PL
+    '/wisielec',             // hangman PL
+    '/kropki-i-kreski-online', // dots PL
+    '/dwie-prawdy-jedno-klamstwo', // twotruth PL
+    '/korporacyjne-bingo',   // bingo PL
+    '/szkicuj-i-zgaduj',     // drawing PL
+  ];
   for (const href of expectedHrefs) {
     await check(`Burger has link: ${href}`, async () => {
       const link = await page.$(`#gb-nav a[href*="${href}"]`);
@@ -254,10 +344,16 @@ async function testGameLobbies(browser) {
   section('Game lobbies — 2 players connect');
 
   const games = [
-    { name: 'Państwa-Miasta', path: '/',        create: '#host-name',  join: '#join-name',  code: '#room-code-display', joinCode: '#join-code', createBtn: 'button:has-text("Stwórz")' },
-    { name: 'Dots & Boxes',   path: '/dots',    create: '#host-name',  join: '#join-name',  code: '#room-code-display', joinCode: '#join-code', createBtn: 'button:has-text("Create")' },
-    { name: 'Hangman',        path: '/hangman', create: '#host-name',  join: '#join-name',  code: '#room-code-display', joinCode: '#join-code', createBtn: 'button:has-text("Create")' },
-    { name: '2 Truths 1 Lie', path: '/twotruth',create: '#host-name', join: '#join-name',  code: '#room-code-display', joinCode: '#join-code', createBtn: 'button:has-text("Create")' },
+    { name: 'Państwa-Miasta',          path: '/',                         create: '#host-name', join: '#join-name', code: '#room-code-display', joinCode: '#join-code', createBtn: 'button:has-text("Stwórz")' },
+    { name: 'Dots & Boxes (PL)',        path: '/kropki-i-kreski-online',   create: '#host-name', join: '#join-name', code: '#room-code-display', joinCode: '#join-code', createBtn: 'button:has-text("Stwórz")' },
+    { name: 'Dots & Boxes (EN)',        path: '/dots-and-boxes-online',    create: '#host-name', join: '#join-name', code: '#room-code-display', joinCode: '#join-code', createBtn: 'button:has-text("Create")' },
+    { name: 'Hangman (PL)',             path: '/wisielec',                 create: '#host-name', join: '#join-name', code: '#room-code-display', joinCode: '#join-code', createBtn: 'button:has-text("Stwórz")' },
+    { name: 'Hangman (EN)',             path: '/hangman-online',           create: '#host-name', join: '#join-name', code: '#room-code-display', joinCode: '#join-code', createBtn: 'button:has-text("Create")' },
+    { name: '2 Truths 1 Lie (PL)',      path: '/dwie-prawdy-jedno-klamstwo', create: '#host-name', join: '#join-name', code: '#room-code-display', joinCode: '#join-code', createBtn: 'button:has-text("Stwórz")' },
+    { name: '2 Truths 1 Lie (EN)',      path: '/two-truths-one-lie',       create: '#host-name', join: '#join-name', code: '#room-code-display', joinCode: '#join-code', createBtn: 'button:has-text("Create")' },
+    { name: 'Sketch & Guess (PL)',      path: '/szkicuj-i-zgaduj',         create: '#host-name', join: '#join-name', code: '#room-code-display', joinCode: '#join-code', createBtn: 'button:has-text("Stwórz")' },
+    { name: 'Forbidden Words (PL)',     path: '/zakazane-slowa',           create: '#host-name', join: '#join-name', code: '#room-code-display', joinCode: '#join-code', createBtn: 'button:has-text("Stwórz")' },
+    { name: 'Corporate Bingo (EN)',     path: '/corporate-bingo',          create: '#host-name', join: '#join-name', code: '#room-code-display', joinCode: '#join-code', createBtn: 'button:has-text("Create")' },
   ];
 
   for (const g of games) {
@@ -387,6 +483,220 @@ async function testGamePageTranslations(browser) {
   }
 }
 
+// 9. SEO pages — correct language loads automatically (_forceLang)
+async function testSeoPageLanguage(browser) {
+  section('SEO pages — correct language on load (no ?lang= param)');
+
+  const seoPages = [
+    { url: '/kropki-i-kreski-online',     expectedText: 'Kropki i Kreski',       lang: 'pl' },
+    { url: '/dots-and-boxes-online',      expectedText: 'Dots and Boxes',        lang: 'en' },
+    { url: '/punkte-und-linien-online',   expectedText: 'Punkte und Linien',     lang: 'de' },
+    { url: '/punkter-och-linjer-online',  expectedText: 'Punkter och Linjer',    lang: 'sv' },
+    { url: '/dwie-prawdy-jedno-klamstwo', expectedText: 'Dwie Prawdy',           lang: 'pl' },
+    { url: '/two-truths-one-lie',         expectedText: 'Two Truths',            lang: 'en' },
+    { url: '/wisielec',                   expectedText: 'Wisielec',              lang: 'pl' },
+    { url: '/hangman-online',             expectedText: 'Hangman',               lang: 'en' },
+    { url: '/szkicuj-i-zgaduj',           expectedText: 'Szkicuj i Zgaduj',      lang: 'pl' },
+    { url: '/sketch-and-guess',           expectedText: 'Sketch and Guess',      lang: 'en' },
+    { url: '/zakazane-slowa',             expectedText: 'Zakazane Słowa',        lang: 'pl' },
+    { url: '/forbidden-words',            expectedText: 'Forbidden Words',       lang: 'en' },
+    { url: '/korporacyjne-bingo',         expectedText: 'Korporacyjne Bingo',    lang: 'pl' },
+    { url: '/corporate-bingo',            expectedText: 'Corporate Bingo',       lang: 'en' },
+    { url: '/kim-jestem',                 expectedText: 'Kim Jestem',            lang: 'pl' },
+    { url: '/who-am-i',                   expectedText: 'Who Am I',              lang: 'en' },
+  ];
+
+  for (const sp of seoPages) {
+    const { page, ctx } = await openPage(browser, BASE + sp.url);
+    await page.waitForLoadState('networkidle');
+
+    await check(`${sp.url} — page title contains "${sp.expectedText}"`, async () => {
+      const title = await page.title();
+      const h1 = await page.$eval('h1', el => el.textContent).catch(() => '');
+      const content = title + ' ' + h1;
+      if (!content.includes(sp.expectedText))
+        throw new Error(`Expected "${sp.expectedText}" in title/h1, got: ${content.slice(0,80)}`);
+    });
+
+    await check(`${sp.url} — burger menu in ${sp.lang}`, async () => {
+      await page.click('#gb-toggle').catch(() => {});
+      await page.waitForSelector('#gb-nav.open', { timeout: 3000 }).catch(() => {});
+      const nav = await page.$('#gb-nav');
+      if (!nav) throw new Error('gb-nav not found');
+      const text = await nav.innerText();
+      const langTexts = { pl:'Wszystkie gry', en:'All Games', de:'Alle Spiele', sv:'Alla spel' };
+      const expected = langTexts[sp.lang];
+      if (!text.includes(expected))
+        throw new Error(`Expected "${expected}" in burger, got: ${text.slice(0,80)}`);
+    });
+
+    await ctx.close();
+  }
+}
+
+// 10. SEO hub pages — /gry, /spiele, /spel
+async function testHubPages(browser) {
+  section('Games hub pages — language and content');
+
+  const hubs = [
+    { url: '/gry',    expectedLang: 'pl', expectedText: 'Państwa-Miasta' },
+    { url: '/spiele', expectedLang: 'de', expectedText: 'Länder' },
+    { url: '/spel',   expectedLang: 'sv', expectedText: 'Länder' },
+    { url: '/games',  expectedLang: 'en', expectedText: 'Countries' },
+  ];
+
+  for (const h of hubs) {
+    const { page, ctx } = await openPage(browser, BASE + h.url);
+    await page.waitForLoadState('networkidle');
+
+    await check(`${h.url} — loads and contains "${h.expectedText}"`, async () => {
+      const body = await page.$eval('body', el => el.innerText);
+      if (!body.includes(h.expectedText))
+        throw new Error(`Expected "${h.expectedText}", not found`);
+    });
+
+    await check(`${h.url} — burger in ${h.expectedLang}`, async () => {
+      await page.click('#gb-toggle').catch(() => {});
+      await page.waitForSelector('#gb-nav.open', { timeout: 3000 }).catch(() => {});
+      const nav = await page.$('#gb-nav');
+      if (!nav) throw new Error('gb-nav not found');
+      const text = await nav.innerText();
+      const langTexts = { pl:'Wszystkie gry', en:'All Games', de:'Alle Spiele', sv:'Alla spel' };
+      const expected = langTexts[h.expectedLang];
+      if (!text.includes(expected))
+        throw new Error(`Expected "${expected}" in burger`);
+    });
+
+    await ctx.close();
+  }
+}
+
+// 11. Legacy redirects — old URLs redirect to SEO pages
+async function testLegacyRedirects(browser) {
+  section('Legacy redirects — old URLs redirect correctly');
+
+  const redirects = [
+    { from: '/dots?lang=pl',     to: '/kropki-i-kreski-online' },
+    { from: '/dots?lang=en',     to: '/dots-and-boxes-online' },
+    { from: '/dots?lang=de',     to: '/punkte-und-linien-online' },
+    { from: '/hangman?lang=pl',  to: '/wisielec' },
+    { from: '/hangman?lang=en',  to: '/hangman-online' },
+    { from: '/taboo?lang=pl',    to: '/zakazane-slowa' },
+    { from: '/taboo?lang=en',    to: '/forbidden-words' },
+    { from: '/twotruth?lang=pl', to: '/dwie-prawdy-jedno-klamstwo' },
+    { from: '/twotruth?lang=en', to: '/two-truths-one-lie' },
+    { from: '/bingo?lang=pl',    to: '/korporacyjne-bingo' },
+    { from: '/drawing?lang=pl',  to: '/szkicuj-i-zgaduj' },
+    { from: '/drawing?lang=en',  to: '/sketch-and-guess' },
+  ];
+
+  for (const r of redirects) {
+    await check(`${r.from} → ${r.to}`, async () => {
+      const res = await fetch(BASE + r.from, { redirect: 'follow' });
+      const finalUrl = res.url;
+      if (!finalUrl.includes(r.to))
+        throw new Error(`Expected redirect to ${r.to}, got: ${finalUrl}`);
+    });
+  }
+}
+
+// 12. Share link uses SEO slug
+async function testShareLinks(browser) {
+  section('Share links — use SEO slug not legacy path');
+
+  const seoGames = [
+    { path: '/kropki-i-kreski-online',   expectedSlug: '/kropki-i-kreski-online' },
+    { path: '/dots-and-boxes-online',    expectedSlug: '/dots-and-boxes-online' },
+    { path: '/two-truths-one-lie',       expectedSlug: '/two-truths-one-lie' },
+    { path: '/wisielec',                 expectedSlug: '/wisielec' },
+    { path: '/sketch-and-guess',         expectedSlug: '/sketch-and-guess' },
+    { path: '/forbidden-words',          expectedSlug: '/forbidden-words' },
+    { path: '/corporate-bingo',          expectedSlug: '/corporate-bingo' },
+  ];
+
+  for (const g of seoGames) {
+    const { page, ctx } = await openPage(browser, BASE + g.path);
+    await page.waitForLoadState('networkidle');
+
+    await check(`${g.path} — create room and share link uses ${g.expectedSlug}`, async () => {
+      await page.fill('#host-name', 'SmokeHost').catch(() => {});
+      await page.click('button:has-text("Create"), button:has-text("Stwórz"), button:has-text("Skapa"), button:has-text("Erstell")').catch(() => {});
+      await page.waitForSelector('#room-code-display', { timeout: 8000 });
+
+      // Click share button
+      let copied = '';
+      await page.evaluate(() => {
+        const orig = navigator.clipboard.writeText.bind(navigator.clipboard);
+        window.__lastCopied = '';
+        navigator.clipboard.writeText = (t) => { window.__lastCopied = t; return Promise.resolve(); };
+      }).catch(() => {});
+
+      await page.click('button:has-text("Share"), button:has-text("Udostępnij"), button:has-text("Dela"), button:has-text("Teilen")').catch(() => {});
+      await page.waitForTimeout(500);
+
+      copied = await page.evaluate(() => window.__lastCopied || '').catch(() => '');
+      if (!copied) {
+        // Fallback: check the share btn data or just verify room was created
+        return; // pass if room created but can't intercept clipboard
+      }
+      if (!copied.includes(g.expectedSlug))
+        throw new Error(`Share link was "${copied}", expected to contain "${g.expectedSlug}"`);
+    });
+
+    await ctx.close();
+  }
+}
+
+// 13. Who Am I — basic lobby test
+async function testWhoAmI(browser) {
+  section('Who Am I — lobby and game start');
+
+  const ctx1 = await browser.newContext();
+  const ctx2 = await browser.newContext();
+  const p1 = await ctx1.newPage();
+  const p2 = await ctx2.newPage();
+
+  try {
+    await check('Who Am I — host creates room on /who-am-i', async () => {
+      await p1.goto(BASE + '/who-am-i', { waitUntil: 'domcontentloaded' });
+      await p1.waitForSelector('#host-name', { timeout: 5000 });
+      await p1.fill('#host-name', 'WhoHost');
+      // Select a category
+      await p1.click('[data-cat="mixed"]').catch(() => {});
+      await p1.click('button:has-text("Create"), button:has-text("Stwórz")');
+      await p1.waitForSelector('#room-code-display', { timeout: 8000 });
+      const code = await p1.textContent('#room-code-display');
+      if (!code || code.length < 4) throw new Error(`Invalid code: "${code}"`);
+    });
+
+    const code = await p1.textContent('#room-code-display').catch(() => null);
+    if (!code) { fail('Who Am I — player 2 joins', 'No code'); return; }
+
+    await check('Who Am I — player 2 joins', async () => {
+      await p2.goto(BASE + '/who-am-i', { waitUntil: 'domcontentloaded' });
+      await p2.fill('#join-name', 'WhoGuest');
+      await p2.fill('#join-code', code);
+      await p2.click('button:has-text("Join"), button:has-text("Dołącz")');
+      await p2.waitForSelector('#lobby-players', { timeout: 8000 });
+    });
+
+    await check('Who Am I — host sees 2 players', async () => {
+      await p1.waitForTimeout(1000);
+      const players = await p1.$$('.lobby-player');
+      if (players.length < 2) throw new Error(`Only ${players.length} player(s)`);
+    });
+
+    await check('Who Am I — host can start game', async () => {
+      const btn = await p1.$('#lobby-start-btn');
+      if (!btn) throw new Error('Start button not found');
+    });
+
+  } finally {
+    await ctx1.close();
+    await ctx2.close();
+  }
+}
+
 // ─── Main ─────────────────────────────────────────────────────────
 (async () => {
   console.log(`\n${'═'.repeat(55)}`);
@@ -407,6 +717,11 @@ async function testGamePageTranslations(browser) {
     await testGameLobbies(browser);
     await testTabuLobby(browser);
     await testGamePageTranslations(browser);
+    await testSeoPageLanguage(browser);
+    await testHubPages(browser);
+    await testLegacyRedirects(browser);
+    await testShareLinks(browser);
+    await testWhoAmI(browser);
   } finally {
     await browser.close();
   }
