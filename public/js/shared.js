@@ -99,7 +99,9 @@ function shareRoom(gameSlug, titleText) {
                   '/zakazane-slowa','/forbidden-words',
                   '/verbotene-woerter','/forbjudna-ord',
                   '/korporacyjne-bingo','/corporate-bingo',
-                  '/unternehmens-bingo','/foretagsbingo'];
+                  '/unternehmens-bingo','/foretagsbingo',
+                  '/kim-jestem','/who-am-i',
+                  '/wer-bin-ich','/vem-ar-jag'];
   var usePath = seoSlugs.indexOf(currentPath) >= 0
     ? currentPath
     : (gameSlug ? '/' + gameSlug : '/');

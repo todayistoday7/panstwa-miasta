@@ -356,41 +356,45 @@
       <div id="wa-hints-list"></div>
     </div>
 
-    <!-- Chat (chat mode) -->
+    <!-- Chat (chat mode) — framed, labelled, sticky input -->
     <div id="wa-chat-wrap" style="display:none;">
       <div id="wa-q-count" class="wa-q-count"></div>
-      <div id="wa-chat" class="wa-chat"></div>
-
-      <!-- Question input (active player, chat mode) -->
-      <div id="wa-q-input-wrap" class="wa-q-wrap" style="display:none;">
-        <input type="text" id="wa-q-input" class="wa-q-input" maxlength="120" placeholder="Zadaj pytanie..."/>
-        <button class="btn" onclick="sendQuestion()" style="padding:10px 16px;">➤</button>
+      <div class="wa-chat-frame">
+        <div class="wa-chat-label" id="lbl-chat-title">💬 Questions & Answers</div>
+        <div id="wa-chat" class="wa-chat"></div>
+        <!-- Helper questions — active player, chat mode only -->
+        <div id="wa-helper-area" style="display:none;padding:8px 10px 0;border-top:1px solid var(--border);">
+          <div class="wa-helper-label" id="lbl-helper-title">💡 Quick questions</div>
+          <div id="wa-helper-btns" class="wa-helper-grid"></div>
+        </div>
+        <!-- Question input sticky at bottom — active player only -->
+        <div id="wa-q-input-wrap" class="wa-q-sticky" style="display:none;">
+          <div class="wa-q-wrap">
+            <input type="text" id="wa-q-input" class="wa-q-input" maxlength="120" placeholder="Ask a question..."/>
+            <button class="btn" onclick="sendQuestion()" style="padding:10px 16px;">➤</button>
+          </div>
+        </div>
       </div>
-
-      <!-- Vote buttons (non-active players, chat mode) -->
-      <div id="wa-vote-wrap" class="wa-vote-row" style="display:none;">
-        <button class="wa-vote-btn yes" onclick="sendVote('yes')">✅ TAK</button>
-        <button class="wa-vote-btn no"  onclick="sendVote('no')">❌ NIE</button>
-        <button class="wa-vote-btn maybe" onclick="sendVote('maybe')">🤷 MOŻE</button>
-      </div>
+      <!-- Hidden legacy vote row — replaced by inline per-question buttons -->
+      <div id="wa-vote-wrap" style="display:none;"></div>
     </div>
 
-    <!-- Guess section: voice mode = buttons only, chat mode = text input -->
+    <!-- Guess section: voice mode = button, chat mode = text input -->
     <div id="wa-guess-wrap" class="wa-guess-wrap" style="display:none;">
-      <!-- Voice mode: just buttons, no typing -->
+      <!-- Voice mode: just "I got it" button -->
       <div id="wa-voice-guess" style="display:none;">
         <p style="font-size:13px;font-weight:700;color:var(--muted);text-align:center;margin-bottom:10px;" id="lbl-guess-label">Zgaduję że jestem...</p>
         <button class="btn" onclick="voiceCorrect()" style="width:100%;margin-bottom:8px;">✅ <span id="lbl-i-got-it">Zgadłem!</span></button>
-        <button class="btn secondary" onclick="surrender()" style="width:100%;">🏳️ <span id="lbl-surrender-btn">Poddaję się</span></button>
       </div>
       <!-- Chat mode: text input -->
       <div id="wa-chat-guess" style="display:none;">
         <label class="field-label" id="lbl-guess-label-chat">Zgaduję że jestem...</label>
         <input type="text" id="wa-guess-input" class="wa-guess-input" placeholder="WPISZ POSTAĆ..." maxlength="60"
                onkeydown="if(event.key==='Enter')submitGuess()"/>
-        <button class="btn" onclick="submitGuess()">✅ <span id="lbl-guess-btn">Zgaduję!</span></button>
-        <button class="btn secondary" onclick="surrender()" style="width:100%;">🏳️ <span id="lbl-surrender-btn2">Poddaję się</span></button>
+        <button class="btn" onclick="submitGuess()" style="width:100%;margin-bottom:8px;">✅ <span id="lbl-guess-btn">Zgaduję!</span></button>
       </div>
+      <!-- Surrender always visible in both modes -->
+      <button class="btn secondary" onclick="surrender()" style="width:100%;margin-top:4px;">🏳️ <span id="lbl-surrender-btn">Poddaję się</span></button>
     </div>
   </div>
 

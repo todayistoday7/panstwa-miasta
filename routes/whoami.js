@@ -319,43 +319,39 @@ function register(io, socket) {
     if (!msg) return;
 
     room.state.questionCount++;
-    room.state.chat.push({ type:'question', from: activePlayer.name, text: msg, ts: Date.now() });
+    // Each question gets a unique ID so votes attach to the right question
+    const qId = Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+    room.state.chat.push({
+      type: 'question', qId, from: activePlayer.name, text: msg,
+      votes: {}, // { playerName: 'yes'|'no'|'maybe' }
+      ts: Date.now()
+    });
     emitState(io, room);
   });
 
-  // ANSWER — Yes/No/Maybe (chat mode)
-  socket.on('whoami_answer', ({ code, answer }) => {
+  // ANSWER — Yes/No/Maybe per question ID (chat mode)
+  socket.on('whoami_answer', ({ code, answer, qId }) => {
     const room = whoamiRooms[code];
     if (!room || room.state.phase !== 'playing') return;
     if (room.mode !== 'chat') return;
     const activePlayer = room.players[room.state.currentIdx];
-    if (!activePlayer || activePlayer.id === socket.id) return; // active player can't answer
+    if (!activePlayer || activePlayer.id === socket.id) return;
     if (!['yes','no','maybe'].includes(answer)) return;
 
-    // Count votes
-    const lastQ = [...room.state.chat].reverse().find(m => m.type === 'question');
-    if (!lastQ || lastQ.answered) return;
-
-    if (!lastQ.votes) lastQ.votes = {};
     const voter = room.players.find(p => p.id === socket.id);
     if (!voter) return;
-    lastQ.votes[voter.name] = answer;
 
-    // Check if all non-active connected players have voted
-    const voters = room.players.filter(p => p.connected && p.id !== activePlayer.id);
-    if (Object.keys(lastQ.votes).length >= voters.length) {
-      // Tally majority
-      const counts = { yes:0, no:0, maybe:0 };
-      Object.values(lastQ.votes).forEach(v => counts[v]++);
-      const majority = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0][0];
-      lastQ.answered = true;
-      lastQ.majority = majority;
-      room.state.chat.push({
-        type: 'answer',
-        text: majority === 'yes' ? '✅ YES' : majority === 'no' ? '❌ NO' : '🤷 MAYBE',
-        ts: Date.now(),
-      });
-    }
+    // Find the specific question by qId, or fall back to last unanswered
+    const targetQ = qId
+      ? room.state.chat.find(m => m.type === 'question' && m.qId === qId)
+      : [...room.state.chat].reverse().find(m => m.type === 'question');
+
+    if (!targetQ) return;
+    if (!targetQ.votes) targetQ.votes = {};
+
+    // Allow changing vote — just overwrite
+    targetQ.votes[voter.name] = answer;
+
     emitState(io, room);
   });
 

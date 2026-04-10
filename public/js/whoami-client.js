@@ -21,6 +21,60 @@ let _timerInt  = null;
 let _votedThisTurn = false;
 window._gameSlug = 'who-am-i';
 
+
+// ── Pre-arranged helper questions per category ───────────────────
+const HELPER_QUESTIONS = {
+  pl: {
+    sports:   ['Czy jestem mężczyzną?','Czy jestem żyjącym sportowcem?','Czy jestem z Europy?','Czy gram w drużynie?','Czy używam piłki?','Czy wygrałem/am mistrzostwo świata?','Czy jestem z XXI wieku?','Czy jestem bokserem/wrestlerem?'],
+    music:    ['Czy jestem mężczyzną?','Czy jestem żyjącym artystą?','Czy jestem solistą/ką?','Czy jestem z XX wieku?','Czy grasz/gram muzykę rockową?','Czy wygrałem/am Grammy?','Czy jestem raperem/ką?','Czy jestem z lat 80-tych lub wcześniej?'],
+    film:     ['Czy jestem postacią fikcyjną?','Czy jestem bohaterem czy złoczyńcą?','Czy jestem z serialu (nie z filmu)?','Czy jestem animowany/a?','Czy mam nadludzkie moce?','Czy jestem z Marvel lub DC?','Czy jestem z lat 90-tych lub wcześniej?','Czy jestem z komedii?'],
+    history:  ['Czy jestem mężczyzną?','Czy żyłem/am przed 1900 rokiem?','Czy jestem przywódcą politycznym?','Czy jestem naukowcem?','Czy jestem z Europy?','Czy jestem artystą/ką?','Czy jestem z XX wieku?','Czy zmieniłem/am bieg historii?'],
+    animals:  ['Czy mam 4 nogi?','Czy żyję w wodzie?','Czy jestem drapieżnikiem?','Czy mieszkam w Afryce?','Czy mogę latać?','Czy jestem większy/a od psa?','Czy jestem ssakiem?','Czy jestem na liście zagrożonych gatunków?','Czy żyję w stadzie?','Czy jestem nocnym zwierzęciem?'],
+    cartoons: ['Czy jestem postacią z bajki dla dzieci?','Czy jestem zwierzęciem?','Czy jestem z Disneya?','Czy jestem superbohaterem?','Czy jestem z gry komputerowej?','Czy jestem nadal produkowany/a?','Czy jestem z lat 90-tych lub wcześniej?','Czy jestem ludzką postacią?'],
+    mixed:    ['Czy jestem prawdziwą osobą?','Czy żyję/żyłem nadal?','Czy jestem mężczyzną?','Czy jestem ze świata rozrywki?','Czy jestem ze sportu?','Czy jestem postacią fikcyjną?','Czy jestem znany/a na całym świecie?','Czy jestem z XX wieku lub później?'],
+  },
+  en: {
+    sports:   ['Am I male?','Am I still active?','Am I from Europe?','Do I play in a team?','Do I use a ball?','Have I won a world championship?','Am I from the 21st century?','Am I a boxer or wrestler?'],
+    music:    ['Am I male?','Am I still alive?','Am I a solo artist?','Am I from the 20th century?','Do I play rock music?','Have I won a Grammy?','Am I a rapper?','Am I from the 80s or earlier?'],
+    film:     ['Am I a fictional character?','Am I a hero or villain?','Am I from a TV show (not movie)?','Am I animated?','Do I have superpowers?','Am I from Marvel or DC?','Am I from the 90s or earlier?','Am I from a comedy?'],
+    history:  ['Am I male?','Did I live before 1900?','Am I a political leader?','Am I a scientist?','Am I from Europe?','Am I an artist?','Am I from the 20th century?','Did I change the course of history?'],
+    animals:  ['Do I have 4 legs?','Do I live in water?','Am I a predator?','Do I live in Africa?','Can I fly?','Am I bigger than a dog?','Am I a mammal?','Am I endangered?','Do I live in groups?','Am I nocturnal?'],
+    cartoons: ['Am I from a children\'s cartoon?','Am I an animal?','Am I a Disney character?','Am I a superhero?','Am I from a video game?','Am I still being made?','Am I from the 90s or earlier?','Am I a human character?'],
+    mixed:    ['Am I a real person?','Am I still alive?','Am I male?','Am I from entertainment?','Am I a sports person?','Am I fictional?','Am I internationally famous?','Am I from the 20th century or later?'],
+  },
+  de: {
+    sports:   ['Bin ich männlich?','Bin ich noch aktiv?','Komme ich aus Europa?','Spiele ich in einem Team?','Benutze ich einen Ball?','Habe ich eine Weltmeisterschaft gewonnen?','Bin ich aus dem 21. Jahrhundert?','Bin ich Boxer oder Wrestler?'],
+    music:    ['Bin ich männlich?','Lebe ich noch?','Bin ich Solist/in?','Komme ich aus dem 20. Jahrhundert?','Spiele ich Rockmusik?','Habe ich einen Grammy gewonnen?','Bin ich Rapper/in?','Bin ich aus den 80ern oder früher?'],
+    film:     ['Bin ich eine fiktive Figur?','Bin ich Held oder Bösewicht?','Komme ich aus einer Serie?','Bin ich animiert?','Habe ich Superkräfte?','Komme ich von Marvel oder DC?','Bin ich aus den 90ern oder früher?','Komme ich aus einer Komödie?'],
+    history:  ['Bin ich männlich?','Lebte ich vor 1900?','Bin ich ein politischer Führer?','Bin ich Wissenschaftler/in?','Komme ich aus Europa?','Bin ich Künstler/in?','Bin ich aus dem 20. Jahrhundert?','Habe ich den Lauf der Geschichte verändert?'],
+    animals:  ['Habe ich 4 Beine?','Lebe ich im Wasser?','Bin ich ein Raubtier?','Lebe ich in Afrika?','Kann ich fliegen?','Bin ich größer als ein Hund?','Bin ich ein Säugetier?','Bin ich vom Aussterben bedroht?','Lebe ich in Gruppen?','Bin ich nachtaktiv?'],
+    cartoons: ['Komme ich aus einem Kinderfilm?','Bin ich ein Tier?','Bin ich eine Disney-Figur?','Bin ich ein Superheld?','Komme ich aus einem Videospiel?','Werde ich noch produziert?','Bin ich aus den 90ern oder früher?','Bin ich eine menschliche Figur?'],
+    mixed:    ['Bin ich eine echte Person?','Lebe ich noch?','Bin ich männlich?','Komme ich aus der Unterhaltung?','Bin ich Sportler/in?','Bin ich fiktiv?','Bin ich international bekannt?','Bin ich aus dem 20. Jahrhundert oder später?'],
+  },
+  sv: {
+    sports:   ['Är jag man?','Är jag fortfarande aktiv?','Kommer jag från Europa?','Spelar jag i ett lag?','Använder jag en boll?','Har jag vunnit ett VM?','Är jag från 2000-talet?','Är jag boxare eller brottare?'],
+    music:    ['Är jag man?','Lever jag fortfarande?','Är jag soloartist?','Är jag från 1900-talet?','Spelar jag rockmusik?','Har jag vunnit en Grammy?','Är jag rappare?','Är jag från 80-talet eller tidigare?'],
+    film:     ['Är jag en fiktiv karaktär?','Är jag hjälte eller skurk?','Är jag från en TV-serie?','Är jag animerad?','Har jag superkrafter?','Är jag från Marvel eller DC?','Är jag från 90-talet eller tidigare?','Är jag från en komedi?'],
+    history:  ['Är jag man?','Levde jag före 1900?','Är jag en politisk ledare?','Är jag vetenskapsman?','Kommer jag från Europa?','Är jag konstnär?','Är jag från 1900-talet?','Förändrade jag historiens gång?'],
+    animals:  ['Har jag 4 ben?','Lever jag i vatten?','Är jag ett rovdjur?','Lever jag i Afrika?','Kan jag flyga?','Är jag större än en hund?','Är jag ett däggdjur?','Är jag utrotningshotad?','Lever jag i flock?','Är jag nattaktiv?'],
+    cartoons: ['Är jag från en tecknad barnfilm?','Är jag ett djur?','Är jag en Disney-karaktär?','Är jag en superhjälte?','Är jag från ett videospel?','Produceras jag fortfarande?','Är jag från 90-talet eller tidigare?','Är jag en mänsklig karaktär?'],
+    mixed:    ['Är jag en riktig person?','Lever jag fortfarande?','Är jag man?','Kommer jag från underhållning?','Är jag idrottare?','Är jag fiktiv?','Är jag internationellt känd?','Är jag från 1900-talet eller senare?'],
+  },
+};
+
+function getHelperQuestions(categories, difficulty) {
+  const qs = HELPER_QUESTIONS[lang] || HELPER_QUESTIONS['en'];
+  if (!categories || categories.length === 0) return qs.mixed;
+  if (categories.includes('mixed')) return qs.mixed;
+  if (categories.length === 1) return qs[categories[0]] || qs.mixed;
+  // Multiple categories — combine unique questions
+  const combined = [];
+  categories.forEach(cat => {
+    (qs[cat] || []).forEach(q => { if (!combined.includes(q)) combined.push(q); });
+  });
+  return combined.slice(0, 10);
+}
+
 // ── Translations ──────────────────────────────────────────────────
 const LANGS = {
   pl: {
@@ -43,6 +97,9 @@ const LANGS = {
     catHistory:'📚 Historia', catAnimals:'🐘 Zwierzęta', catKids:'🧸 Bajki & Postacie',
     catMixed:'🌍 Wszystkie',
     catLabel:'Kategoria:',
+    chatTitle:'💬 Pytania i Odpowiedzi',
+    helperTitle:'💡 Szybkie pytania',
+    qPlaceholder:'Zadaj pytanie...',
     turnsEach:'Tury na gracza', timer:'Timer', noTimer:'Bez limitu',
     hintsToggle:'Pokaż podpowiedzi pytań',
     howToPlay:'Jak grać?',
@@ -96,6 +153,9 @@ const LANGS = {
     catHistory:'📚 History', catAnimals:'🐘 Animals', catKids:'🧸 Cartoons & Stories',
     catMixed:'🌍 Mixed',
     catLabel:'Category:',
+    chatTitle:'💬 Questions & Answers',
+    helperTitle:'💡 Quick questions',
+    qPlaceholder:'Ask a question...',
     turnsEach:'Turns per player', timer:'Timer', noTimer:'No limit',
     hintsToggle:'Show question hints',
     howToPlay:'How to play?',
@@ -149,6 +209,9 @@ const LANGS = {
     catHistory:'📚 Geschichte', catAnimals:'🐘 Tiere', catKids:'🧸 Cartoons & Figuren',
     catMixed:'🌍 Alle',
     catLabel:'Kategorie:',
+    chatTitle:'💬 Fragen & Antworten',
+    helperTitle:'💡 Schnellfragen',
+    qPlaceholder:'Frage stellen...',
     turnsEach:'Züge pro Spieler', timer:'Timer', noTimer:'Kein Limit',
     hintsToggle:'Fragenhinweise anzeigen',
     howToPlay:'Wie spielt man?',
@@ -202,6 +265,9 @@ const LANGS = {
     catHistory:'📚 Historia', catAnimals:'🐘 Djur', catKids:'🧸 Tecknat & Berättelser',
     catMixed:'🌍 Alla',
     catLabel:'Kategori:',
+    chatTitle:'💬 Frågor & Svar',
+    helperTitle:'💡 Snabbfrågor',
+    qPlaceholder:'Ställ en fråga...',
     turnsEach:'Omgångar per spelare', timer:'Timer', noTimer:'Ingen gräns',
     hintsToggle:'Visa frågotips',
     howToPlay:'Hur spelar man?',
@@ -252,6 +318,7 @@ socket.on('connect', () => {
 
 socket.on('whoami_created', ({ code }) => {
   roomCode = code; isHost = true;
+  window._whoamiMyName = myName;
   sessionStorage.setItem('whoami_code', code);
   sessionStorage.setItem('whoami_name', myName);
   document.getElementById('room-code-display').textContent = code;
@@ -260,6 +327,7 @@ socket.on('whoami_created', ({ code }) => {
 
 socket.on('whoami_joined', ({ code }) => {
   roomCode = code;
+  window._whoamiMyName = myName;
   sessionStorage.setItem('whoami_code', code);
   sessionStorage.setItem('whoami_name', myName);
   document.getElementById('room-code-display').textContent = code;
@@ -367,6 +435,15 @@ function renderPlaying(data) {
     catDisplay.style.display = data.activeChar ? '' : 'none';
   }
 
+  // Render helper questions for chat mode
+  const helperArea = document.getElementById('wa-helper-area');
+  if (isActive && data.mode === 'chat') {
+    if (helperArea) helperArea.style.display = '';
+    renderChatHelpers(data);
+  } else {
+    if (helperArea) helperArea.style.display = 'none';
+  }
+
   // Chat (both modes show it, but input/votes only in chat mode)
   if (chatWrap) {
     chatWrap.style.display = '';
@@ -404,13 +481,31 @@ function renderCharCard(charName, wikiSlug) {
 }
 
 function renderHints(data) {
+  // Voice mode: show suggested questions as hints
   const list = document.getElementById('wa-hints-list');
   const titleEl = document.getElementById('lbl-hints-title');
   if (titleEl) titleEl.textContent = L.hintsTitle;
   if (!list) return;
-  list.innerHTML = L.hints.map((h, i) =>
+  const hints = data.settings ? getHelperQuestions(data.settings.categories, data.settings.difficulty) : L.hints;
+  list.innerHTML = hints.map((h, i) =>
     `<div class="wa-hint-item" id="hint-${i}" onclick="markHintUsed(${i})">${h}</div>`
   ).join('');
+}
+
+function renderChatHelpers(data) {
+  // Chat mode: show clickable helper questions that post to chat instantly
+  const wrap = document.getElementById('wa-helper-btns');
+  if (!wrap) return;
+  const questions = data.settings ? getHelperQuestions(data.settings.categories, data.settings.difficulty) : [];
+  if (!questions.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = '';
+  wrap.innerHTML = questions.map(q =>
+    `<button class="wa-helper-btn" onclick="sendHelperQuestion(${JSON.stringify(q)})">${q}</button>`
+  ).join('');
+}
+
+function sendHelperQuestion(text) {
+  socket.emit('whoami_question', { code: roomCode, text });
 }
 
 function markHintUsed(i) {
@@ -421,34 +516,73 @@ function markHintUsed(i) {
 function renderChat(data, isActive) {
   const chatEl   = document.getElementById('wa-chat');
   const qInput   = document.getElementById('wa-q-input-wrap');
-  const voteWrap = document.getElementById('wa-vote-wrap');
   const qCount   = document.getElementById('wa-q-count');
+
+  // Hide old vote row — replaced by per-question inline votes
+  const oldVoteWrap = document.getElementById('wa-vote-wrap');
+  if (oldVoteWrap) oldVoteWrap.style.display = 'none';
 
   if (qCount) qCount.textContent = data.mode === 'chat' ? L.qCount + ' ' + (data.questionCount || 0) : '';
 
-  if (chatEl) {
+  if (chatEl && data.mode === 'chat') {
+    const myName = window._whoamiMyName || '';
+    const activePlayer = data.players[data.currentIdx];
+    const activeId = activePlayer ? activePlayer.id : null;
+    const nonActivePlayers = data.players.filter(p => p.connected && p.id !== activeId);
+    const totalVoters = nonActivePlayers.length;
+
     chatEl.innerHTML = (data.chat || []).map(m => {
-      if (m.type === 'question') return `<div class="wa-msg question"><strong>${m.from}:</strong> ${m.text}</div>`;
-      if (m.type === 'answer')   return `<div class="wa-msg answer">${m.text}</div>`;
-      if (m.type === 'system')   return `<div class="wa-msg system">${m.text}</div>`;
+      if (m.type === 'system') return `<div class="wa-msg system">${m.text}</div>`;
+
+      if (m.type === 'question') {
+        const votes = m.votes || {};
+        const yesVoters   = Object.entries(votes).filter(([,v]) => v === 'yes').map(([n]) => n);
+        const noVoters    = Object.entries(votes).filter(([,v]) => v === 'no').map(([n]) => n);
+        const maybeVoters = Object.entries(votes).filter(([,v]) => v === 'maybe').map(([n]) => n);
+        const totalVoted  = Object.keys(votes).length;
+        const myVote      = votes[myName];
+
+        // Compact emoji pill display
+        let votePills = '';
+        if (yesVoters.length)   votePills += `<span class="wa-vote-pill yes" title="${yesVoters.join(', ')}">✅ ${yesVoters.length}</span>`;
+        if (noVoters.length)    votePills += `<span class="wa-vote-pill no"  title="${noVoters.join(', ')}">❌ ${noVoters.length}</span>`;
+        if (maybeVoters.length) votePills += `<span class="wa-vote-pill maybe" title="${maybeVoters.join(', ')}">🤷 ${maybeVoters.length}</span>`;
+        const waiting = totalVoted < totalVoters ? `<span class="wa-vote-waiting">${totalVoted}/${totalVoters}</span>` : '';
+
+        // Answer buttons for non-active players — shown per question, can change vote
+        let answerBtns = '';
+        if (!isActive && data.phase === 'playing') {
+          const yA = myVote === 'yes'   ? ' voted' : '';
+          const nA = myVote === 'no'    ? ' voted' : '';
+          const mA = myVote === 'maybe' ? ' voted' : '';
+          answerBtns = `<div class="wa-inline-votes">
+            <button class="wa-inline-btn yes${yA}"  onclick="sendVoteForQ('yes','${m.qId}')">✅</button>
+            <button class="wa-inline-btn no${nA}"   onclick="sendVoteForQ('no','${m.qId}')">❌</button>
+            <button class="wa-inline-btn maybe${mA}" onclick="sendVoteForQ('maybe','${m.qId}')">🤷</button>
+          </div>`;
+        }
+
+        return `<div class="wa-msg question" data-qid="${m.qId}">
+          <div class="wa-q-header"><strong>${m.from}:</strong> ${m.text}</div>
+          <div class="wa-q-footer">${votePills}${waiting}${answerBtns}</div>
+        </div>`;
+      }
       return '';
     }).join('');
+
+    // Auto-scroll to bottom
     chatEl.scrollTop = chatEl.scrollHeight;
   }
 
   if (data.mode === 'chat') {
-    // Check if last message was a question waiting for answer
-    const msgs = data.chat || [];
-    const lastQ = [...msgs].reverse().find(m => m.type === 'question');
-    const waitingForAnswer = lastQ && !lastQ.answered;
-
-    if (qInput)   qInput.style.display   = isActive ? '' : 'none';
-    if (voteWrap) voteWrap.style.display  = (!isActive && waitingForAnswer) ? '' : 'none';
+    if (qInput) qInput.style.display = isActive ? '' : 'none';
   } else {
-    if (qInput)   qInput.style.display   = 'none';
-    if (voteWrap) voteWrap.style.display  = 'none';
+    if (qInput) qInput.style.display = 'none';
   }
 }
+
+// Store my name for vote rendering
+window._whoamiMyName = '';
 
 function renderTimer(timerEnd, timerSecs) {
   const wrap = document.getElementById('wa-timer-wrap');
@@ -620,10 +754,13 @@ function sendQuestion() {
 }
 
 function sendVote(answer) {
-  if (_votedThisTurn) return;
-  _votedThisTurn = true;
-  socket.emit('whoami_answer', { code: roomCode, answer });
-  document.querySelectorAll('.wa-vote-btn').forEach(b => b.classList.add('voted'));
+  // Legacy — kept for safety, now uses sendVoteForQ
+  socket.emit('whoami_answer', { code: roomCode, answer, qId: null });
+}
+
+function sendVoteForQ(answer, qId) {
+  // Vote for a specific question — can change vote, no blocking
+  socket.emit('whoami_answer', { code: roomCode, answer, qId });
 }
 
 function submitGuess() {
@@ -719,6 +856,8 @@ function applyTranslations() {
   set('lbl-rule-3',         'rule3');
   set('lbl-rule-4',         'rule4');
   set('lbl-guess-label',    'guessLabel');
+  set('lbl-chat-title',     'chatTitle');
+  set('lbl-helper-title',   'helperTitle');
   set('lbl-guess-btn',      'guessBtn');
   set('lbl-i-got-it',       'iGotIt');
   set('lbl-surrender-btn',  'surrenderBtn');
