@@ -219,7 +219,7 @@
           <div class="wa-cat-btn" data-cat="film" onclick="toggleCat('film')">🎬 <span id="lbl-cat-film">Film & TV</span></div>
           <div class="wa-cat-btn" data-cat="history" onclick="toggleCat('history')">📚 <span id="lbl-cat-history">Historia</span></div>
           <div class="wa-cat-btn" data-cat="animals" onclick="toggleCat('animals')">🐘 <span id="lbl-cat-animals">Zwierzęta</span></div>
-          <div class="wa-cat-btn" data-cat="kids" onclick="toggleCat('kids')">👶 <span id="lbl-cat-kids">Dla dzieci</span></div>
+          <div class="wa-cat-btn" data-cat="kids" onclick="toggleCat('kids')">🧸 <span id="lbl-cat-kids">Bajki & Postacie</span></div>
           <div class="wa-cat-btn mixed" data-cat="mixed" onclick="toggleCat('mixed')">🌍 <span id="lbl-cat-mixed">Wszystkie</span></div>
         </div>
 
@@ -328,6 +328,7 @@
     </div>
 
     <div id="wa-turn-banner" class="wa-turn-banner"></div>
+    <div id="wa-cat-display" style="text-align:center;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:4px;display:none;"></div>
     <div id="wa-timer-wrap" class="wa-timer-wrap" style="display:none;">
       <div class="wa-timer-bar-bg"><div id="wa-timer-bar" class="wa-timer-bar" style="width:100%;"></div></div>
       <div id="wa-timer-text" class="wa-timer-text">2:00</div>
@@ -374,13 +375,22 @@
       </div>
     </div>
 
-    <!-- Guess section (active player) -->
+    <!-- Guess section: voice mode = buttons only, chat mode = text input -->
     <div id="wa-guess-wrap" class="wa-guess-wrap" style="display:none;">
-      <label class="field-label" id="lbl-guess-label">Zgaduję że jestem...</label>
-      <input type="text" id="wa-guess-input" class="wa-guess-input" placeholder="WPISZ POSTAĆ..." maxlength="60"
-             onkeydown="if(event.key==='Enter')submitGuess()"/>
-      <button class="btn" onclick="submitGuess()">✅ <span id="lbl-guess-btn">Zgaduję!</span></button>
-      <button class="btn secondary" onclick="surrender()" id="lbl-surrender-btn">🏳️ Poddaję się</button>
+      <!-- Voice mode: just buttons, no typing -->
+      <div id="wa-voice-guess" style="display:none;">
+        <p style="font-size:13px;font-weight:700;color:var(--muted);text-align:center;margin-bottom:10px;" id="lbl-guess-label">Zgaduję że jestem...</p>
+        <button class="btn" onclick="voiceCorrect()" style="width:100%;margin-bottom:8px;">✅ <span id="lbl-i-got-it">Zgadłem!</span></button>
+        <button class="btn secondary" onclick="surrender()" style="width:100%;">🏳️ <span id="lbl-surrender-btn">Poddaję się</span></button>
+      </div>
+      <!-- Chat mode: text input -->
+      <div id="wa-chat-guess" style="display:none;">
+        <label class="field-label" id="lbl-guess-label-chat">Zgaduję że jestem...</label>
+        <input type="text" id="wa-guess-input" class="wa-guess-input" placeholder="WPISZ POSTAĆ..." maxlength="60"
+               onkeydown="if(event.key==='Enter')submitGuess()"/>
+        <button class="btn" onclick="submitGuess()">✅ <span id="lbl-guess-btn">Zgaduję!</span></button>
+        <button class="btn secondary" onclick="surrender()" style="width:100%;">🏳️ <span id="lbl-surrender-btn2">Poddaję się</span></button>
+      </div>
     </div>
   </div>
 
@@ -410,30 +420,6 @@
 
 </div>
 
-
-  <div id="seo-intro" style="padding:8px 0 0;">
-    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,6vw,46px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 10px;">Vem är jag? Online</h1>
-    <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;"><strong style="color:var(--text);">Vem är jag?</strong> är ett klassiskt sällskapsspel där varje spelare får en hemlig person — men kan inte se den själv! Ställ frågor för att lista ut vem du är.</p>
-    <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;">Välj från personer inom sport, musik, film & TV, historia, djurvärlden och barnkategorier. <strong style="color:var(--text);">2-16 spelare</strong>, gratis, ingen registrering.</p>
-    <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;">Perfekt för <strong style="color:var(--text);">träffar, fester och teambuilding</strong>. Röstläge för att spela tillsammans i person eller på ett samtal. Chattläge för en helt fristående appupplevelse.</p>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;"><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">🕵️ 2-16 spelare</span><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">👶 Från 8 år</span><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">🆓 Gratis</span><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">🎤 Röstläge</span><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">💬 Chattläge</span></div>
-  </div>
-<script>
-  (function() {
-    // SEO intro sits below the game — no injection needed, stays in natural position
-    var intro = document.getElementById('seo-intro');
-    if (intro) intro.style.display = 'block';
-  })();
-</script>
-<div style="max-width:780px;margin:0 auto;padding:32px 16px 16px;border-top:1px solid var(--border);margin-top:16px;">
-  <h2 style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent2);margin-bottom:12px;">Hur spelar man Vem är jag?</h2>
-  <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;">Varje spelare får en hemlig person som alla andra kan se — men inte de själva. Ställ ja/nej-frågor för att smalna av det. Gissa vem du är innan timern tar slut!</p>
-  <h2 style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent2);margin-bottom:12px;">Två spellägen</h2>
-  <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;">Röstläge — perfekt när ni är tillsammans eller spelar via videosamtal. Chattläge — helt fristående i appen, bra för offentliga rum med okända spelare.</p>
-  <div style="display:flex;gap:12px;flex-wrap:wrap;padding-top:16px;border-top:1px solid var(--border);">
-    <a href="/kim-jestem" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🇵🇱 Kim Jestem?</a><a href="/who-am-i" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🇬🇧 Who Am I?</a><a href="/wer-bin-ich" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🇩🇪 Wer bin ich?</a><a href="/spel" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🎮 Alla spel</a>
-  </div>
-</div>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/shared.js"></script>
 <script src="/js/whoami-client.js"></script>

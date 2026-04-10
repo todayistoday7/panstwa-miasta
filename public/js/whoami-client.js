@@ -36,12 +36,13 @@ const LANGS = {
     playersTitle:'Gracze', settings:'Ustawienia',
     startBtn:'🎮 Rozpocznij grę', leaveRoom:'🚪 Wyjdź',
     mode:'Tryb gry', modeVoice:'🎤 Głosowy', modeChat:'💬 Czat',
-    modeVoiceDesc:'Spotkacie się / zadzwonicie', modeChatDesc:'Wszystko w aplikacji',
+    modeVoiceDesc:'Na żywo lub przez telefon (Zoom, Teams, FaceTime)', modeChatDesc:'Wszystko w aplikacji',
     categories:'Kategorie', difficulty:'Poziom trudności',
     diffEasy:'🌟 Łatwy', diffMedium:'🎭 Średni', diffHard:'🔥 Trudny',
     catSports:'⚽ Sport', catMusic:'🎵 Muzyka', catFilm:'🎬 Film & TV',
-    catHistory:'📚 Historia', catAnimals:'🐘 Zwierzęta', catKids:'👶 Dla dzieci',
+    catHistory:'📚 Historia', catAnimals:'🐘 Zwierzęta', catKids:'🧸 Bajki & Postacie',
     catMixed:'🌍 Wszystkie',
+    catLabel:'Kategoria:',
     turnsEach:'Tury na gracza', timer:'Timer', noTimer:'Bez limitu',
     hintsToggle:'Pokaż podpowiedzi pytań',
     howToPlay:'Jak grać?',
@@ -59,7 +60,7 @@ const LANGS = {
     ],
     itsTurn:'Tura:', mysteryText:'KIM JESTEM?',
     guessLabel:'Zgaduję że jestem...', guessPlaceholder:'WPISZ POSTAĆ...',
-    guessBtn:'Zgaduję!', surrenderBtn:'🏳️ Poddaję się',
+    guessBtn:'Zgaduję!', surrenderBtn:'🏳️ Poddaję się', iGotIt:'Zgadłem / Zgadłam!',
     voteYes:'✅ TAK', voteNo:'❌ NIE', voteMaybe:'🤷 MOŻE',
     qPlaceholder:'Zadaj pytanie...',
     qCount:'Liczba pytań:', nextTurn:'Następna tura',
@@ -88,12 +89,13 @@ const LANGS = {
     playersTitle:'Players', settings:'Settings',
     startBtn:'🎮 Start Game', leaveRoom:'🚪 Leave',
     mode:'Game Mode', modeVoice:'🎤 Voice', modeChat:'💬 Chat',
-    modeVoiceDesc:'Meet up / call each other', modeChatDesc:'Everything in the app',
+    modeVoiceDesc:'In person or on a call (Zoom, Teams, FaceTime)', modeChatDesc:'Everything in the app',
     categories:'Categories', difficulty:'Difficulty',
     diffEasy:'🌟 Easy', diffMedium:'🎭 Medium', diffHard:'🔥 Hard',
     catSports:'⚽ Sports', catMusic:'🎵 Music', catFilm:'🎬 Film & TV',
-    catHistory:'📚 History', catAnimals:'🐘 Animals', catKids:'👶 Kids',
+    catHistory:'📚 History', catAnimals:'🐘 Animals', catKids:'🧸 Cartoons & Stories',
     catMixed:'🌍 Mixed',
+    catLabel:'Category:',
     turnsEach:'Turns per player', timer:'Timer', noTimer:'No limit',
     hintsToggle:'Show question hints',
     howToPlay:'How to play?',
@@ -111,7 +113,7 @@ const LANGS = {
     ],
     itsTurn:'Turn:', mysteryText:'WHO AM I?',
     guessLabel:'I think I am...', guessPlaceholder:'TYPE CHARACTER...',
-    guessBtn:'Guess!', surrenderBtn:'🏳️ Surrender',
+    guessBtn:'Guess!', surrenderBtn:'🏳️ Surrender', iGotIt:'I guessed it!',
     voteYes:'✅ YES', voteNo:'❌ NO', voteMaybe:'🤷 MAYBE',
     qPlaceholder:'Ask a question...',
     qCount:'Questions asked:', nextTurn:'Next Turn',
@@ -140,12 +142,13 @@ const LANGS = {
     playersTitle:'Spieler', settings:'Einstellungen',
     startBtn:'🎮 Spiel starten', leaveRoom:'🚪 Verlassen',
     mode:'Spielmodus', modeVoice:'🎤 Sprache', modeChat:'💬 Chat',
-    modeVoiceDesc:'Trefft euch / ruft an', modeChatDesc:'Alles in der App',
+    modeVoiceDesc:'In Person oder per Anruf (Zoom, Teams, FaceTime)', modeChatDesc:'Alles in der App',
     categories:'Kategorien', difficulty:'Schwierigkeit',
     diffEasy:'🌟 Leicht', diffMedium:'🎭 Mittel', diffHard:'🔥 Schwer',
     catSports:'⚽ Sport', catMusic:'🎵 Musik', catFilm:'🎬 Film & TV',
-    catHistory:'📚 Geschichte', catAnimals:'🐘 Tiere', catKids:'👶 Kinder',
+    catHistory:'📚 Geschichte', catAnimals:'🐘 Tiere', catKids:'🧸 Cartoons & Figuren',
     catMixed:'🌍 Alle',
+    catLabel:'Kategorie:',
     turnsEach:'Züge pro Spieler', timer:'Timer', noTimer:'Kein Limit',
     hintsToggle:'Fragenhinweise anzeigen',
     howToPlay:'Wie spielt man?',
@@ -163,7 +166,7 @@ const LANGS = {
     ],
     itsTurn:'Zug:', mysteryText:'WER BIN ICH?',
     guessLabel:'Ich glaube ich bin...', guessPlaceholder:'FIGUR EINGEBEN...',
-    guessBtn:'Raten!', surrenderBtn:'🏳️ Aufgeben',
+    guessBtn:'Raten!', surrenderBtn:'🏳️ Aufgeben', iGotIt:'Ich hab\'s erraten!',
     voteYes:'✅ JA', voteNo:'❌ NEIN', voteMaybe:'🤷 VIELLEICHT',
     qPlaceholder:'Frage stellen...',
     qCount:'Gestellte Fragen:', nextTurn:'Nächste Runde',
@@ -192,12 +195,13 @@ const LANGS = {
     playersTitle:'Spelare', settings:'Inställningar',
     startBtn:'🎮 Starta spelet', leaveRoom:'🚪 Lämna',
     mode:'Spelläge', modeVoice:'🎤 Röst', modeChat:'💬 Chatt',
-    modeVoiceDesc:'Träffas / ring varandra', modeChatDesc:'Allt i appen',
+    modeVoiceDesc:'Träffas eller ring varandra (Zoom, Teams, FaceTime)', modeChatDesc:'Allt i appen',
     categories:'Kategorier', difficulty:'Svårighetsgrad',
     diffEasy:'🌟 Lätt', diffMedium:'🎭 Medel', diffHard:'🔥 Svår',
     catSports:'⚽ Sport', catMusic:'🎵 Musik', catFilm:'🎬 Film & TV',
-    catHistory:'📚 Historia', catAnimals:'🐘 Djur', catKids:'👶 Barn',
+    catHistory:'📚 Historia', catAnimals:'🐘 Djur', catKids:'🧸 Tecknat & Berättelser',
     catMixed:'🌍 Alla',
+    catLabel:'Kategori:',
     turnsEach:'Omgångar per spelare', timer:'Timer', noTimer:'Ingen gräns',
     hintsToggle:'Visa frågotips',
     howToPlay:'Hur spelar man?',
@@ -215,7 +219,7 @@ const LANGS = {
     ],
     itsTurn:'Tur:', mysteryText:'VEM ÄR JAG?',
     guessLabel:'Jag tror att jag är...', guessPlaceholder:'SKRIV KARAKTÄR...',
-    guessBtn:'Gissa!', surrenderBtn:'🏳️ Ge upp',
+    guessBtn:'Gissa!', surrenderBtn:'🏳️ Ge upp', iGotIt:'Jag gissade rätt!',
     voteYes:'✅ JA', voteNo:'❌ NEJ', voteMaybe:'🤷 KANSKE',
     qPlaceholder:'Ställ en fråga...',
     qCount:'Ställda frågor:', nextTurn:'Nästa omgång',
@@ -334,7 +338,13 @@ function renderPlaying(data) {
     if (charCard)    charCard.style.display    = 'none';
     if (mysteryCard) { mysteryCard.style.display = ''; document.getElementById('wa-mystery-text').textContent = L.mysteryText; }
     if (hintsWrap && data.settings.hintsOn) { hintsWrap.style.display = ''; renderHints(data); }
-    if (guessWrap)   guessWrap.style.display   = '';
+    if (guessWrap) {
+      guessWrap.style.display = '';
+      const voiceGuess = document.getElementById('wa-voice-guess');
+      const chatGuess  = document.getElementById('wa-chat-guess');
+      if (voiceGuess) voiceGuess.style.display = (data.mode === 'voice') ? '' : 'none';
+      if (chatGuess)  chatGuess.style.display  = (data.mode === 'chat')  ? '' : 'none';
+    }
   } else {
     if (mysteryCard) mysteryCard.style.display  = 'none';
     if (hintsWrap)   hintsWrap.style.display    = 'none';
@@ -343,6 +353,18 @@ function renderPlaying(data) {
       charCard.style.display = '';
       renderCharCard(data.activeChar, data.wikiSlug);
     }
+  }
+
+  // FIX 8: Show category label during gameplay
+  const catDisplay = document.getElementById('wa-cat-display');
+  if (catDisplay) {
+    const cats = (data.settings.categories || []);
+    const getCatLabel = cat => L['cat' + cat.charAt(0).toUpperCase() + cat.slice(1)] || cat;
+    const catName = cats.includes('mixed') ? L.catMixed :
+                    cats.length === 1 ? getCatLabel(cats[0]) :
+                    cats.map(getCatLabel).join(' · ');
+    catDisplay.textContent = (L.catLabel || 'Category:') + ' ' + catName;
+    catDisplay.style.display = data.activeChar ? '' : 'none';
   }
 
   // Chat (both modes show it, but input/votes only in chat mode)
@@ -612,6 +634,11 @@ function submitGuess() {
   if (inp) inp.value = '';
 }
 
+function voiceCorrect() {
+  // Voice mode: player self-reports correct guess
+  socket.emit('whoami_voice_correct', { code: roomCode });
+}
+
 function surrender() {
   socket.emit('whoami_surrender', { code: roomCode });
 }
@@ -693,6 +720,7 @@ function applyTranslations() {
   set('lbl-rule-4',         'rule4');
   set('lbl-guess-label',    'guessLabel');
   set('lbl-guess-btn',      'guessBtn');
+  set('lbl-i-got-it',       'iGotIt');
   set('lbl-surrender-btn',  'surrenderBtn');
   set('lbl-next-turn',      'nextTurn');
   set('lbl-game-over',      'gameOver');

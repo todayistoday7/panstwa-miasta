@@ -10,56 +10,86 @@ const CHARACTERS = {
   sports: {
     easy:   ['Messi', 'Cristiano Ronaldo', 'Serena Williams', 'Usain Bolt', 'Muhammad Ali',
              'Michael Jordan', 'LeBron James', 'Roger Federer', 'Tiger Woods', 'Pelé',
-             'Lewis Hamilton', 'Simone Biles', 'Rafael Nadal', 'Mike Tyson', 'Neymar'],
-    medium: ['Zinedine Zidane', 'Ayrton Senna', 'Magic Johnson', 'Wayne Gretzky',
-             'Martina Navratilova', 'Carl Lewis', 'Lance Armstrong', 'Floyd Mayweather',
-             'Ronaldinho', 'Roberto Carlos', 'Thierry Henry', 'Novak Djokovic'],
+             'Lewis Hamilton', 'Simone Biles', 'Rafael Nadal', 'Mike Tyson', 'Neymar',
+             'Kylian Mbappé', 'Virat Kohli', 'Naomi Osaka', 'Conor McGregor', 'Floyd Mayweather',
+             'Wayne Gretzky', 'Tom Brady', 'Lionel Messi', 'Ronaldinho', 'Zinedine Zidane'],
+    medium: ['Ayrton Senna', 'Magic Johnson', 'Martina Navratilova', 'Carl Lewis',
+             'Roberto Carlos', 'Thierry Henry', 'Novak Djokovic', 'Manny Pacquiao',
+             'Lance Armstrong', 'Diego Maradona', 'Yao Ming', 'Shaquille ONeal',
+             'Valentino Rossi', 'Sebastian Vettel', 'Ronda Rousey', 'Jon Jones'],
     hard:   ['Johan Cruyff', 'Lev Yashin', 'Fanny Blankers-Koen', 'Dick Fosbury',
-             'Garrincha', 'Sonja Henie', 'Paavo Nurmi', 'Jesse Owens', 'Mia Hamm'],
+             'Garrincha', 'Sonja Henie', 'Paavo Nurmi', 'Jesse Owens', 'Mia Hamm',
+             'Haile Gebrselassie', 'Nadia Comaneci', 'Bob Beamon', 'Jim Thorpe'],
   },
   music: {
     easy:   ['Michael Jackson', 'Madonna', 'Elvis Presley', 'Beyoncé', 'Freddie Mercury',
              'David Bowie', 'Taylor Swift', 'Eminem', 'Rihanna', 'Lady Gaga',
-             'Ed Sheeran', 'Adele', 'Justin Bieber', 'Bob Dylan', 'The Beatles'],
+             'Ed Sheeran', 'Adele', 'Justin Bieber', 'Bob Dylan', 'The Beatles',
+             'Billie Eilish', 'Drake', 'Ariana Grande', 'Bruno Mars', 'Justin Timberlake',
+             'Katy Perry', 'Coldplay', 'U2', 'Metallica', 'ABBA'],
     medium: ['Kurt Cobain', 'Amy Winehouse', 'Bob Marley', 'Jimi Hendrix', 'Frank Sinatra',
-             'Jim Morrison', 'Janis Joplin', 'Bruce Springsteen', 'Prince', 'Whitney Houston'],
+             'Jim Morrison', 'Janis Joplin', 'Bruce Springsteen', 'Prince', 'Whitney Houston',
+             'Tupac Shakur', 'Notorious BIG', 'Johnny Cash', 'Eric Clapton', 'Led Zeppelin',
+             'Pink Floyd', 'Nirvana', 'The Rolling Stones', 'Elton John', 'David Guetta'],
     hard:   ['John Coltrane', 'Édith Piaf', 'Charles Mingus', 'Klaus Nomi', 'Chet Baker',
-             'Thelonious Monk', 'Nina Simone', 'Billie Holiday', 'Miles Davis'],
+             'Thelonious Monk', 'Nina Simone', 'Billie Holiday', 'Miles Davis',
+             'Igor Stravinsky', 'Sergei Rachmaninoff', 'Scott Joplin', 'Woody Guthrie'],
   },
   film: {
     easy:   ['James Bond', 'Harry Potter', 'Shrek', 'Batman', 'Darth Vader',
-             'Homer Simpson', 'Elsa', 'SpongeBob SquarePants', 'Superman', 'Spider-Man',
-             'Iron Man', 'Hermione Granger', 'Sherlock Holmes', 'Indiana Jones', 'Winnie the Pooh'],
-    medium: ['Walter White', 'Tony Soprano', 'Forrest Gump', 'Hannibal Lecter', 'The Joker',
-             'Daenerys Targaryen', 'Tyrion Lannister', 'Jack Sparrow', 'Gollum', 'Gandalf'],
-    hard:   ['Alex DeLarge', 'HAL 9000', 'Amélie Poulain', 'Holden Caulfield',
-             'Travis Bickle', 'Citizen Kane', 'Holly Golightly', 'Atticus Finch'],
+             'Homer Simpson', 'Superman', 'Spider-Man', 'Iron Man', 'Hermione Granger',
+             'Sherlock Holmes', 'Indiana Jones', 'Jack Sparrow', 'The Joker', 'Gandalf',
+             'Gollum', 'Forrest Gump', 'Tony Stark', 'Captain America', 'Black Panther',
+             'Wonder Woman', 'Deadpool', 'Thanos', 'Venom', 'Thor'],
+    medium: ['Walter White', 'Tony Soprano', 'Hannibal Lecter',
+             'Daenerys Targaryen', 'Tyrion Lannister', 'Don Corleone', 'Scarface',
+             'Norman Bates', 'Patrick Bateman', 'Keyser Söze', 'Ellen Ripley',
+             'Clarice Starling', 'Frank Underwood', 'Don Draper', 'Dexter Morgan'],
+    hard:   ['Alex DeLarge', 'HAL 9000', 'Amélie Poulain', 'Travis Bickle',
+             'Holly Golightly', 'Atticus Finch', 'Charles Foster Kane', 'Antoine Doinel',
+             'Zelig', 'The Dude', 'Verbal Kint', 'Nurse Ratched'],
   },
   history: {
     easy:   ['Napoleon Bonaparte', 'Cleopatra', 'Albert Einstein', 'Leonardo da Vinci',
              'Abraham Lincoln', 'Marie Curie', 'Julius Caesar', 'Christopher Columbus',
-             'Mahatma Gandhi', 'Nelson Mandela', 'Winston Churchill', 'Adolf Hitler'],
-    medium: ['Nikola Tesla', 'Genghis Khan', 'Catherine the Great', 'Galileo Galilei',
+             'Mahatma Gandhi', 'Nelson Mandela', 'Winston Churchill', 'Adolf Hitler',
+             'Martin Luther King', 'Charles Darwin', 'Isaac Newton', 'Galileo Galilei',
+             'William Shakespeare', 'Mozart', 'Beethoven', 'Michelangelo'],
+    medium: ['Nikola Tesla', 'Genghis Khan', 'Catherine the Great',
              'Nicolaus Copernicus', 'Marco Polo', 'Alexander the Great', 'Joan of Arc',
-             'Charles Darwin', 'Isaac Newton', 'Sigmund Freud', 'Karl Marx'],
+             'Sigmund Freud', 'Karl Marx', 'Charles Dickens', 'Vincent van Gogh',
+             'Pablo Picasso', 'Frida Kahlo', 'Thomas Edison', 'Benjamin Franklin'],
     hard:   ['Hypatia', 'Ibn Battuta', 'Suleiman the Magnificent', 'Avicenna',
-             'Gottfried Leibniz', 'Zenobia', 'Saladin', 'Tamberlaine', 'Ashoka'],
+             'Gottfried Leibniz', 'Zenobia', 'Saladin', 'Ashoka', 'Tamerlane',
+             'Hatshepsut', 'Hannibal Barca', 'Vercingetorix', 'Boudicca'],
   },
   animals: {
     easy:   ['Elephant', 'Lion', 'Penguin', 'Giraffe', 'Dolphin', 'Eagle', 'Shark',
              'Cheetah', 'Gorilla', 'Flamingo', 'Panda', 'Kangaroo', 'Crocodile',
-             'Octopus', 'Polar Bear', 'Tiger', 'Zebra', 'Peacock', 'Koala', 'Wolf'],
-    medium: ['Platypus', 'Axolotl', 'Manta Ray', 'Snow Leopard', 'Komodo Dragon',
+             'Octopus', 'Polar Bear', 'Tiger', 'Zebra', 'Peacock', 'Koala', 'Wolf',
+             'Rhinoceros', 'Hippopotamus', 'Chimpanzee', 'Parrot', 'Toucan',
+             'Jaguar', 'Leopard', 'Grizzly Bear', 'Moose', 'Bison',
+             'Orca', 'Manta Ray', 'Sea Turtle', 'Clownfish', 'Jellyfish'],
+    medium: ['Platypus', 'Axolotl', 'Snow Leopard', 'Komodo Dragon',
              'Narwhal', 'Capybara', 'Pangolin', 'Tapir', 'Quokka', 'Mandrill',
-             'Wolverine', 'Binturong', 'Kinkajou', 'Serval'],
+             'Wolverine', 'Binturong', 'Serval', 'Meerkat', 'Wombat',
+             'Armadillo', 'Sloth', 'Anteater', 'Echidna', 'Cassowary',
+             'Gharial', 'Sun Bear', 'Clouded Leopard', 'Proboscis Monkey', 'Fennec Fox'],
     hard:   ['Okapi', 'Shoebill', 'Blobfish', 'Aye-aye', 'Fossa', 'Saiga Antelope',
-             'Tardigrade', 'Irrawaddy Dolphin', 'Kakapo', 'Tarsier', 'Dugong'],
+             'Irrawaddy Dolphin', 'Kakapo', 'Tarsier', 'Dugong', 'Kinkajou',
+             'Gerenuk', 'Patagonian Mara', 'Lowland Streaked Tenrec', 'Babirusa'],
   },
-  kids: {
-    easy:   ['Mickey Mouse', 'SpongeBob SquarePants', 'Pikachu', 'Simba', 'Elsa',
-             'Shrek', 'Peppa Pig', 'Buzz Lightyear', 'Nemo', 'Dumbo', 'Winnie the Pooh',
-             'Cinderella', 'Snow White', 'Bambi', 'Woody', 'Olaf', 'Moana',
-             'Puss in Boots', 'Stitch', 'Totoro'],
+  cartoons: {
+    easy:   ['Mickey Mouse', 'Pikachu', 'Simba', 'Shrek', 'Peppa Pig',
+             'Buzz Lightyear', 'Nemo', 'Dumbo', 'Winnie the Pooh', 'Cinderella',
+             'Snow White', 'Bambi', 'Woody', 'Olaf', 'Moana', 'Puss in Boots',
+             'Stitch', 'Totoro', 'Kung Fu Panda', 'Madagascar Lion',
+             'Dory', 'Wall-E', 'Ratatouille Rat', 'Lightning McQueen', 'Minion',
+             'Gru', 'Donkey from Shrek', 'Puss in Boots', 'Aladdin', 'Mulan',
+             'Rapunzel', 'Merida', 'Ariel', 'Belle', 'Jasmine',
+             'Scooby-Doo', 'Tom Cat', 'Jerry Mouse', 'Bugs Bunny', 'Daffy Duck',
+             'Tweety', 'Sylvester', 'Porky Pig', 'Yogi Bear', 'Fred Flintstone',
+             'Barney Rubble', 'George Jetson', 'Popeye', 'Asterix', 'Tintin'],
   },
 };
 
@@ -87,13 +117,13 @@ function makeCode() {
 function getCharacters(categories, difficulty) {
   let pool = [];
   const cats = categories.includes('mixed')
-    ? ['sports', 'music', 'film', 'history', 'animals', 'kids']
-    : categories;
+    ? ['sports', 'music', 'film', 'history', 'animals', 'cartoons']
+    : categories.map(c => c === 'kids' ? 'cartoons' : c);
 
   cats.forEach(cat => {
     const catData = CHARACTERS[cat];
     if (!catData) return;
-    if (cat === 'kids') {
+    if (cat === 'cartoons' || cat === 'kids') {
       pool = pool.concat(catData.easy || []);
     } else {
       const levels = difficulty === 'easy'   ? ['easy'] :
@@ -102,7 +132,14 @@ function getCharacters(categories, difficulty) {
       levels.forEach(lvl => { if (catData[lvl]) pool = pool.concat(catData[lvl]); });
     }
   });
-  return [...new Set(pool)]; // deduplicate
+  // Deduplicate by name (case-insensitive) — prevents same char from multiple categories
+  const seen = new Set();
+  return pool.filter(c => {
+    const key = c.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 function pickCharacter(pool, usedInSession) {
@@ -158,9 +195,9 @@ function emitState(io, room) {
       })),
       currentIdx:    room.state.currentIdx,
       activePlayerId: activePId,
-      // Active player sees no character, others see it
-      activeChar:    isActive ? null : room.state.activeChar,
-      wikiSlug:      isActive ? null : room.state.wikiSlug,
+      // Active player sees no character during playing; everyone sees it on turn_result
+      activeChar:    (isActive && room.state.phase === 'playing') ? null : room.state.activeChar,
+      wikiSlug:      (isActive && room.state.phase === 'playing') ? null : room.state.wikiSlug,
       questionCount: room.state.questionCount,
       chat:          room.state.chat,
       timerEnd:      room.state.timerEnd,
@@ -322,6 +359,19 @@ function register(io, socket) {
     emitState(io, room);
   });
 
+  // VOICE CORRECT — active player self-reports correct guess (voice mode)
+  socket.on('whoami_voice_correct', ({ code }) => {
+    const room = whoamiRooms[code];
+    if (!room || room.state.phase !== 'playing') return;
+    const activePlayer = room.players[room.state.currentIdx];
+    if (!activePlayer || activePlayer.id !== socket.id) return;
+    activePlayer.score++;
+    if (room._turnTimer) clearTimeout(room._turnTimer);
+    room.state.phase = 'turn_result';
+    room.state.chat.push({ type:'system', text:`✅ ${activePlayer.name} guessed correctly! It was ${room.state.activeChar}!`, ts: Date.now() });
+    emitState(io, room);
+  });
+
   // GUESS — active player guesses their character
   socket.on('whoami_guess', ({ code, guess }) => {
     const room = whoamiRooms[code];
@@ -414,16 +464,23 @@ function register(io, socket) {
       const room = whoamiRooms[code];
       const p = room.players.find(p => p.id === socket.id);
       if (!p) continue;
-      p.connected = false;
-      if (socket.id === room.hostId) {
-        const next = room.players.find(pl => pl.connected && pl.id !== socket.id);
-        if (next) room.hostId = next.id;
-      }
-      emitState(io, room);
-      const allGone = room.players.every(pl => !pl.connected);
-      if (allGone) {
-        setTimeout(() => { if (whoamiRooms[code]) delete whoamiRooms[code]; }, 60 * 60 * 1000);
-      }
+      // Grace period — wait 90s before marking disconnected
+      // Allows mobile users switching apps to rejoin without losing their spot
+      const disconnectedId = socket.id;
+      setTimeout(() => {
+        const stillSame = p.id === disconnectedId; // hasn't rejoined with new socket
+        if (!stillSame) return; // rejoined already
+        p.connected = false;
+        if (disconnectedId === room.hostId) {
+          const next = room.players.find(pl => pl.connected && pl.id !== disconnectedId);
+          if (next) room.hostId = next.id;
+        }
+        emitState(io, room);
+        const allGone = room.players.every(pl => !pl.connected);
+        if (allGone) {
+          setTimeout(() => { if (whoamiRooms[code]) delete whoamiRooms[code]; }, 3 * 60 * 60 * 1000);
+        }
+      }, 90000); // 90 second grace period
       break;
     }
   });

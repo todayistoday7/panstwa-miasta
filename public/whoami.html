@@ -207,7 +207,7 @@
           <div class="wa-cat-btn" data-cat="film" onclick="toggleCat('film')">🎬 <span id="lbl-cat-film">Film & TV</span></div>
           <div class="wa-cat-btn" data-cat="history" onclick="toggleCat('history')">📚 <span id="lbl-cat-history">Historia</span></div>
           <div class="wa-cat-btn" data-cat="animals" onclick="toggleCat('animals')">🐘 <span id="lbl-cat-animals">Zwierzęta</span></div>
-          <div class="wa-cat-btn" data-cat="kids" onclick="toggleCat('kids')">👶 <span id="lbl-cat-kids">Dla dzieci</span></div>
+          <div class="wa-cat-btn" data-cat="kids" onclick="toggleCat('kids')">🧸 <span id="lbl-cat-kids">Bajki & Postacie</span></div>
           <div class="wa-cat-btn mixed" data-cat="mixed" onclick="toggleCat('mixed')">🌍 <span id="lbl-cat-mixed">Wszystkie</span></div>
         </div>
 
@@ -316,6 +316,7 @@
     </div>
 
     <div id="wa-turn-banner" class="wa-turn-banner"></div>
+    <div id="wa-cat-display" style="text-align:center;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:4px;display:none;"></div>
     <div id="wa-timer-wrap" class="wa-timer-wrap" style="display:none;">
       <div class="wa-timer-bar-bg"><div id="wa-timer-bar" class="wa-timer-bar" style="width:100%;"></div></div>
       <div id="wa-timer-text" class="wa-timer-text">2:00</div>
@@ -362,13 +363,22 @@
       </div>
     </div>
 
-    <!-- Guess section (active player) -->
+    <!-- Guess section: voice mode = buttons only, chat mode = text input -->
     <div id="wa-guess-wrap" class="wa-guess-wrap" style="display:none;">
-      <label class="field-label" id="lbl-guess-label">Zgaduję że jestem...</label>
-      <input type="text" id="wa-guess-input" class="wa-guess-input" placeholder="WPISZ POSTAĆ..." maxlength="60"
-             onkeydown="if(event.key==='Enter')submitGuess()"/>
-      <button class="btn" onclick="submitGuess()">✅ <span id="lbl-guess-btn">Zgaduję!</span></button>
-      <button class="btn secondary" onclick="surrender()" id="lbl-surrender-btn">🏳️ Poddaję się</button>
+      <!-- Voice mode: just buttons, no typing -->
+      <div id="wa-voice-guess" style="display:none;">
+        <p style="font-size:13px;font-weight:700;color:var(--muted);text-align:center;margin-bottom:10px;" id="lbl-guess-label">Zgaduję że jestem...</p>
+        <button class="btn" onclick="voiceCorrect()" style="width:100%;margin-bottom:8px;">✅ <span id="lbl-i-got-it">Zgadłem!</span></button>
+        <button class="btn secondary" onclick="surrender()" style="width:100%;">🏳️ <span id="lbl-surrender-btn">Poddaję się</span></button>
+      </div>
+      <!-- Chat mode: text input -->
+      <div id="wa-chat-guess" style="display:none;">
+        <label class="field-label" id="lbl-guess-label-chat">Zgaduję że jestem...</label>
+        <input type="text" id="wa-guess-input" class="wa-guess-input" placeholder="WPISZ POSTAĆ..." maxlength="60"
+               onkeydown="if(event.key==='Enter')submitGuess()"/>
+        <button class="btn" onclick="submitGuess()">✅ <span id="lbl-guess-btn">Zgaduję!</span></button>
+        <button class="btn secondary" onclick="surrender()" style="width:100%;">🏳️ <span id="lbl-surrender-btn2">Poddaję się</span></button>
+      </div>
     </div>
   </div>
 
