@@ -150,6 +150,8 @@
     <a class="game-pill" onclick="return showGame('hangman')" href="#hangman"><span class="game-pill-icon">🪢</span> Hangman</a>
     <a class="game-pill" onclick="return showGame('dots')" href="#dots"><span class="game-pill-icon">🔵</span> Dots &amp; Boxes</a>
     <a class="game-pill" onclick="return showGame('twotruth')" href="#twotruth"><span class="game-pill-icon">🤥</span> 2 Truths 1 Lie</a>
+    <a class="game-pill" onclick="return showGame('sketch')" href="#sketch"><span class="game-pill-icon">🎨</span> Sketch &amp; Guess</a>
+    <a class="game-pill" onclick="return showGame('bingo')" href="#bingo"><span class="game-pill-icon">🎯</span> Corporate Bingo</a>
     <a class="game-pill" onclick="return showGame('drawing')" href="#drawing"><span class="game-pill-icon">🎨</span> Sketch &amp; Guess</a>
   </div>
 
@@ -191,7 +193,7 @@
       <li><strong>+1 for the opposing team</strong> — when the referee catches a forbidden word</li>
     </ul>
     <div class="rules-tip"><p>💡 Describe by purpose or context — instead of naming the thing, say what it's used for or when you'd encounter it.</p></div>
-    <div class="game-cta"><p>Ready to play?</p><a href="/taboo?lang=en" class="btn">🎮 Play Forbidden Words</a></div>
+    <div class="game-cta"><p>Ready to play?</p><a href="/forbidden-words" class="btn">🎮 Play Forbidden Words</a></div>
   </div>
 
   <div id="hangman" class="game-section">
@@ -210,7 +212,7 @@
       <li><strong>+1 for the Picker</strong> — if nobody guesses</li>
     </ul>
     <div class="rules-tip"><p>💡 As a Guesser: start with common letters (E, T, A, O, I, N, S). As a Picker: choose words with rare letters.</p></div>
-    <div class="game-cta"><p>Ready to play?</p><a href="/hangman?lang=en" class="btn">🎮 Play Hangman</a></div>
+    <div class="game-cta"><p>Ready to play?</p><a href="/hangman-online" class="btn">🎮 Play Hangman</a></div>
   </div>
 
   <div id="dots" class="game-section">
@@ -229,7 +231,7 @@
       <li><strong>5×5 / 6×6</strong> — longer strategic games (15–25 min)</li>
     </ul>
     <div class="rules-tip"><p>💡 Avoid drawing the third line on an uncomplete box — you hand your opponent an easy point!</p></div>
-    <div class="game-cta"><p>Ready to play?</p><a href="/dots?lang=en" class="btn">🎮 Play Dots &amp; Boxes</a></div>
+    <div class="game-cta"><p>Ready to play?</p><a href="/dots-and-boxes-online" class="btn">🎮 Play Dots &amp; Boxes</a></div>
   </div>
 
   <div id="twotruth" class="game-section">
@@ -247,7 +249,7 @@
       <li><strong>+1 for the Active player</strong> — for each person they fooled</li>
     </ul>
     <div class="rules-tip"><p>💡 The best lies sound plausible — pick something others might genuinely believe about you.</p></div>
-    <div class="game-cta"><p>Ready to play?</p><a href="/twotruth?lang=en" class="btn">🎮 Play 2 Truths 1 Lie</a></div>
+    <div class="game-cta"><p>Ready to play?</p><a href="/two-truths-one-lie" class="btn">🎮 Play 2 Truths 1 Lie</a></div>
   </div>
 
   
@@ -351,6 +353,8 @@ function showGame(id) {
     'hangman': '/how-to-play/hangman',
     'dots': '/how-to-play/dots-and-boxes',
     'twotruth': '/how-to-play/two-truths-one-lie',
+    'sketch': '/how-to-play/sketch-and-guess',
+    'bingo': '/how-to-play/corporate-bingo',
     'drawing': '/how-to-play/sketch-and-guess'
   };
   document.querySelectorAll('.game-section').forEach(function(s){s.classList.remove('active');});

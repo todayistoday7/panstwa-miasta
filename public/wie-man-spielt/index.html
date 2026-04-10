@@ -133,6 +133,8 @@
     <a class="game-pill" onclick="return showGame('hangman')" href="#hangman"><span class="game-pill-icon">🪢</span> Galgenmännchen</a>
     <a class="game-pill" onclick="return showGame('dots')" href="#dots"><span class="game-pill-icon">🔵</span> Punkte &amp; Linien</a>
     <a class="game-pill" onclick="return showGame('twotruth')" href="#twotruth"><span class="game-pill-icon">🤥</span> 2 Wahrheiten 1 Lüge</a>
+    <a class="game-pill" onclick="return showGame('sketch')" href="#sketch"><span class="game-pill-icon">🎨</span> Zeichnen &amp; Raten</a>
+    <a class="game-pill" onclick="return showGame('bingo')" href="#bingo"><span class="game-pill-icon">🎯</span> Unternehmens-Bingo</a>
     <a class="game-pill" onclick="return showGame('bingo')" href="#bingo"><span class="game-pill-icon">🎯</span> Unternehmens-Bingo</a>
     <a class="game-pill" onclick="return showGame('drawing')" href="#drawing"><span class="game-pill-icon">🎨</span> Zeichnen &amp; Raten</a>
   </div>
@@ -175,7 +177,7 @@
       <li><strong>+1 für das gegnerische Team</strong> — wenn der Schiedsrichter ein verbotenes Wort fängt</li>
     </ul>
     <div class="rules-tip"><p>💡 Beschreibe durch Zweck oder Kontext — statt das Ding zu benennen, sage wofür es verwendet wird oder wann man es antrifft.</p></div>
-    <div class="game-cta"><p>Bereit zu spielen?</p><a href="/taboo?lang=de" class="btn">🎮 Verbotene Wörter spielen</a></div>
+    <div class="game-cta"><p>Bereit zu spielen?</p><a href="/verbotene-woerter" class="btn">🎮 Verbotene Wörter spielen</a></div>
   </div>
 
   <div id="hangman" class="game-section">
@@ -194,7 +196,7 @@
       <li><strong>+1 für den Wähler</strong> — wenn niemand rät</li>
     </ul>
     <div class="rules-tip"><p>💡 Als Rater: beginne mit häufigen Buchstaben (E, N, I, R, S, T). Als Wähler: wähle Wörter mit seltenen Buchstaben.</p></div>
-    <div class="game-cta"><p>Bereit zu spielen?</p><a href="/hangman?lang=de" class="btn">🎮 Galgenmännchen spielen</a></div>
+    <div class="game-cta"><p>Bereit zu spielen?</p><a href="/galgenmaennchen-online" class="btn">🎮 Galgenmännchen spielen</a></div>
   </div>
 
   <div id="dots" class="game-section">
@@ -213,7 +215,7 @@
       <li><strong>5×5 / 6×6</strong> — längere strategische Spiele (15–25 Min)</li>
     </ul>
     <div class="rules-tip"><p>💡 Vermeide es, die dritte Linie an einem unvollständigen Feld zu zeichnen — du gibst deinem Gegner einen einfachen Punkt!</p></div>
-    <div class="game-cta"><p>Bereit zu spielen?</p><a href="/dots?lang=de" class="btn">🎮 Punkte &amp; Linien spielen</a></div>
+    <div class="game-cta"><p>Bereit zu spielen?</p><a href="/punkte-und-linien-online" class="btn">🎮 Punkte &amp; Linien spielen</a></div>
   </div>
 
   <div id="twotruth" class="game-section">
@@ -231,7 +233,7 @@
       <li><strong>+1 für den aktiven Spieler</strong> — für jede Person, die er getäuscht hat</li>
     </ul>
     <div class="rules-tip"><p>💡 Die besten Lügen klingen plausibel — wähle etwas, das andere wirklich über dich glauben könnten.</p></div>
-    <div class="game-cta"><p>Bereit zu spielen?</p><a href="/twotruth?lang=de" class="btn">🎮 2 Wahrheiten 1 Lüge spielen</a></div>
+    <div class="game-cta"><p>Bereit zu spielen?</p><a href="/zwei-wahrheiten-eine-luege" class="btn">🎮 2 Wahrheiten 1 Lüge spielen</a></div>
   </div>
 
   <div id="bingo" class="game-section">
@@ -250,7 +252,7 @@
       <li>Das Spiel überprüft deine Karte automatisch</li>
     </ul>
     <div class="rules-tip"><p>💡 Perfekt für Online-Meetings, Teambuilding-Events und lange Unternehmensveranstaltungen. Lautlos zu spielen — niemand muss wissen, was du tust!</p></div>
-    <div class="game-cta"><p>Bereit zu spielen?</p><a href="/bingo?lang=de" class="btn">🎮 Unternehmens-Bingo spielen</a></div>
+    <div class="game-cta"><p>Bereit zu spielen?</p><a href="/unternehmens-bingo" class="btn">🎮 Unternehmens-Bingo spielen</a></div>
   </div>
 
   <div style="margin-top:40px;padding-top:28px;border-top:2px solid var(--border);">
@@ -331,6 +333,34 @@
     <a href="/games?lang=de" style="color:var(--accent);font-weight:700;font-size:14px;text-decoration:none;">🎮 Alle Spiele ansehen →</a>
   </div>
 
+
+  <div id="sketch" class="game-section">
+    <div class="game-section-header"><span class="game-section-icon">🎨</span><div><div class="game-section-title">Zeichnen &amp; Raten</div><div class="game-section-sub">4–10 Spieler · keine Punkte · PL/EN/DE/SV</div></div></div>
+    <p class="rules-p">Ein Zeichenspiel ohne Punkte — Wörter wandern durch eine Kette von Zeichnungen und Rateversuchen und werden dabei komisch entstellt. Reiner Spaß ohne Wettbewerb.</p>
+    <div class="rules-h2">Wie die Kette funktioniert</div>
+    <ul class="rules-ul">
+      <li><strong>Schritt 1 — Wort eingeben</strong> — jeder Spieler gibt heimlich ein Wort oder eine Phrase ein</li>
+      <li><strong>Schritt 2 — Zeichnen</strong> — du bekommst jemand anderes Wort und zeichnest es (80 Sek)</li>
+      <li><strong>Schritt 3 — Raten</strong> — du bekommst eine Zeichnung und tippst was sie zeigt (30 Sek)</li>
+      <li><strong>Wiederholen</strong> — Zeichnen und Raten wechseln sich ab bis die Kette fertig ist</li>
+      <li><strong>Enthüllung</strong> — alle sehen wie ihr Wort sich von Anfang bis Ende verändert hat</li>
+    </ul>
+    <div class="rules-tip"><p>💡 Du musst nicht gut zeichnen können — schlechte Zeichnungen machen das Spiel witziger. Das ist der ganze Witz.</p></div>
+    <div class="game-cta"><p>Jetzt spielen!</p><a href="/zeichnen-und-raten" class="btn">🎮 Zeichnen &amp; Raten spielen</a></div>
+  </div>
+
+  <div id="bingo" class="game-section">
+    <div class="game-section-header"><span class="game-section-icon">🎯</span><div><div class="game-section-title">Unternehmens-Bingo</div><div class="game-section-sub">2–50 Spieler · für Meetings · PL/EN/DE/SV</div></div></div>
+    <p class="rules-p">Ein heimliches Spiel für langweilige Meetings. Jeder bekommt eine einzigartige 5×5-Karte mit Firmenfloskeln und streicht sie durch wenn er sie hört. Erstes Bingo gewinnt.</p>
+    <div class="rules-h2">Regeln</div>
+    <ul class="rules-ul">
+      <li><strong>Raum beitreten</strong> vor dem Meeting und Karte erhalten</li>
+      <li><strong>Felder markieren</strong> sobald du einen Begriff hörst — tippe auf das Feld</li>
+      <li><strong>Reihe vervollständigen</strong> — waagerecht, senkrecht oder diagonal — und BINGO drücken!</li>
+    </ul>
+    <div class="rules-tip"><p>💡 Teile den Code mit vertrauten Kollegen vor dem Meeting — als Gruppe zu spielen macht es viel witziger.</p></div>
+    <div class="game-cta"><p>Jetzt spielen!</p><a href="/unternehmens-bingo" class="btn">🎮 Unternehmens-Bingo spielen</a></div>
+  </div>
 </div>
 </div>
 
@@ -339,9 +369,11 @@ function showGame(id) {
   var SLUGS = {
     'pm': '/wie-man-spielt',
     'taboo': '/wie-man-spielt/verbotene-woerter',
-    'hangman': '/wie-man-spielt/galgenmaennchen',
-    'dots': '/wie-man-spielt/punkte-und-linien',
+    'hangman': '/wie-man-spielt/galgenmaennchen-online',
+    'dots': '/wie-man-spielt/punkte-und-linien-online',
     'twotruth': '/wie-man-spielt/zwei-wahrheiten-eine-luege',
+    'sketch': '/wie-man-spielt/zeichnen-und-raten',
+    'bingo': '/wie-man-spielt/unternehmens-bingo',
     'bingo': '/wie-man-spielt/unternehmens-bingo'
   };
   document.querySelectorAll('.game-section').forEach(function(s){s.classList.remove('active');});

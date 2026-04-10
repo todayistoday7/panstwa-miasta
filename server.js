@@ -47,6 +47,20 @@ app.get('/wer-bin-ich',(req, res) => res.sendFile(path.join(__dirname, 'public/s
 app.get('/vem-ar-jag', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/vem-ar-jag.html')));
 app.get('/whoami',     (req, res) => res.redirect(301, '/who-am-i'));
 
+// ── How-to-play pages — new additions ───────────────────────────
+app.get('/jak-grac/korporacyjne-bingo',          (req,res) => res.sendFile(path.join(__dirname,'public/jak-grac/korporacyjne-bingo.html')));
+app.get('/how-to-play/corporate-bingo',           (req,res) => res.sendFile(path.join(__dirname,'public/how-to-play/corporate-bingo.html')));
+app.get('/wie-man-spielt/galgenmaennchen-online', (req,res) => res.sendFile(path.join(__dirname,'public/wie-man-spielt/galgenmaennchen-online.html')));
+app.get('/wie-man-spielt/verbotene-woerter',      (req,res) => res.sendFile(path.join(__dirname,'public/wie-man-spielt/verbotene-woerter.html')));
+app.get('/wie-man-spielt/punkte-und-linien-online',(req,res) => res.sendFile(path.join(__dirname,'public/wie-man-spielt/punkte-und-linien-online.html')));
+app.get('/wie-man-spielt/zwei-wahrheiten-eine-luege',(req,res) => res.sendFile(path.join(__dirname,'public/wie-man-spielt/zwei-wahrheiten-eine-luege.html')));
+app.get('/wie-man-spielt/unternehmens-bingo',     (req,res) => res.sendFile(path.join(__dirname,'public/wie-man-spielt/unternehmens-bingo.html')));
+app.get('/hur-man-spelar/hanga-gubbe-online',     (req,res) => res.sendFile(path.join(__dirname,'public/hur-man-spelar/hanga-gubbe-online.html')));
+app.get('/hur-man-spelar/forbjudna-ord',          (req,res) => res.sendFile(path.join(__dirname,'public/hur-man-spelar/forbjudna-ord.html')));
+app.get('/hur-man-spelar/punkter-och-linjer-online',(req,res) => res.sendFile(path.join(__dirname,'public/hur-man-spelar/punkter-och-linjer-online.html')));
+app.get('/hur-man-spelar/tva-sanningar-en-logn',  (req,res) => res.sendFile(path.join(__dirname,'public/hur-man-spelar/tva-sanningar-en-logn.html')));
+app.get('/hur-man-spelar/foretagsbingo',          (req,res) => res.sendFile(path.join(__dirname,'public/hur-man-spelar/foretagsbingo.html')));
+
 // ── SEO Landing Pages — Forbidden Words ─────────────────────────
 app.get('/zakazane-slowa',    (req, res) => res.sendFile(path.join(__dirname, 'public/seo/zakazane-slowa.html')));
 app.get('/forbidden-words',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/forbidden-words.html')));

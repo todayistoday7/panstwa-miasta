@@ -133,6 +133,8 @@
     <a class="game-pill" onclick="return showGame('hangman')" href="#hangman"><span class="game-pill-icon">🪢</span> Hänga gubbe</a>
     <a class="game-pill" onclick="return showGame('dots')" href="#dots"><span class="game-pill-icon">🔵</span> Punkter &amp; Linjer</a>
     <a class="game-pill" onclick="return showGame('twotruth')" href="#twotruth"><span class="game-pill-icon">🤥</span> 2 Sanningar 1 Lögn</a>
+    <a class="game-pill" onclick="return showGame('sketch')" href="#sketch"><span class="game-pill-icon">🎨</span> Skissa &amp; Gissa</a>
+    <a class="game-pill" onclick="return showGame('bingo')" href="#bingo"><span class="game-pill-icon">🎯</span> Företagsbingo</a>
     <a class="game-pill" onclick="return showGame('bingo')" href="#bingo"><span class="game-pill-icon">🎯</span> Företagsbingo</a>
     <a class="game-pill" onclick="return showGame('drawing')" href="#drawing"><span class="game-pill-icon">🎨</span> Skissa &amp; Gissa</a>
   </div>
@@ -175,7 +177,7 @@
       <li><strong>+1 för motståndarlaget</strong> — när domaren fångar ett förbjudet ord</li>
     </ul>
     <div class="rules-tip"><p>💡 Beskriv via syfte eller sammanhang — istället för att namnge saken, säg vad den används till eller när man stöter på den.</p></div>
-    <div class="game-cta"><p>Redo att spela?</p><a href="/taboo?lang=sv" class="btn">🎮 Spela Förbjudna ord</a></div>
+    <div class="game-cta"><p>Redo att spela?</p><a href="/forbjudna-ord" class="btn">🎮 Spela Förbjudna ord</a></div>
   </div>
 
   <div id="hangman" class="game-section">
@@ -194,7 +196,7 @@
       <li><strong>+1 för väljaren</strong> — om ingen gissar</li>
     </ul>
     <div class="rules-tip"><p>💡 Som gissare: börja med vanliga bokstäver (E, N, A, R, S, T). Som väljare: välj ord med ovanliga bokstäver.</p></div>
-    <div class="game-cta"><p>Redo att spela?</p><a href="/hangman?lang=sv" class="btn">🎮 Spela Hänga gubbe</a></div>
+    <div class="game-cta"><p>Redo att spela?</p><a href="/hanga-gubbe-online" class="btn">🎮 Spela Hänga gubbe</a></div>
   </div>
 
   <div id="dots" class="game-section">
@@ -213,7 +215,7 @@
       <li><strong>5×5 / 6×6</strong> — längre strategispel (15–25 min)</li>
     </ul>
     <div class="rules-tip"><p>💡 Undvik att rita den tredje linjen på en ofullständig ruta — du ger din motståndare en enkel poäng!</p></div>
-    <div class="game-cta"><p>Redo att spela?</p><a href="/dots?lang=sv" class="btn">🎮 Spela Punkter &amp; Linjer</a></div>
+    <div class="game-cta"><p>Redo att spela?</p><a href="/punkter-och-linjer-online" class="btn">🎮 Spela Punkter &amp; Linjer</a></div>
   </div>
 
   <div id="twotruth" class="game-section">
@@ -231,7 +233,7 @@
       <li><strong>+1 för den aktiva spelaren</strong> — för varje person de lurade</li>
     </ul>
     <div class="rules-tip"><p>💡 De bästa lögnerna låter trovärdiga — välj något andra faktiskt skulle kunna tro om dig.</p></div>
-    <div class="game-cta"><p>Redo att spela?</p><a href="/twotruth?lang=sv" class="btn">🎮 Spela 2 Sanningar 1 Lögn</a></div>
+    <div class="game-cta"><p>Redo att spela?</p><a href="/tva-sanningar-en-logn" class="btn">🎮 Spela 2 Sanningar 1 Lögn</a></div>
   </div>
 
   <div id="bingo" class="game-section">
@@ -250,7 +252,7 @@
       <li>Spelet kontrollerar ditt kort automatiskt</li>
     </ul>
     <div class="rules-tip"><p>💡 Perfekt för onlinemöten, teambuildingevenemang och långa företagsevenemang. Tyst att spela — ingen behöver veta vad du gör!</p></div>
-    <div class="game-cta"><p>Redo att spela?</p><a href="/bingo?lang=sv" class="btn">🎮 Spela Företagsbingo</a></div>
+    <div class="game-cta"><p>Redo att spela?</p><a href="/foretagsbingo" class="btn">🎮 Spela Företagsbingo</a></div>
   </div>
 
   <div style="margin-top:40px;padding-top:28px;border-top:2px solid var(--border);">
@@ -331,6 +333,34 @@
     <a href="/games?lang=sv" style="color:var(--accent);font-weight:700;font-size:14px;text-decoration:none;">🎮 Se alla spel →</a>
   </div>
 
+
+  <div id="sketch" class="game-section">
+    <div class="game-section-header"><span class="game-section-icon">🎨</span><div><div class="game-section-title">Skissa &amp; Gissa</div><div class="game-section-sub">4–10 spelare · inga poäng · PL/EN/DE/SV</div></div></div>
+    <p class="rules-p">Ett ritspel utan poäng — ord vandrar genom en kedja av teckningar och gissningar och förvrids på ett roligt sätt. Ren kul utan tävling.</p>
+    <div class="rules-h2">Hur kedjan fungerar</div>
+    <ul class="rules-ul">
+      <li><strong>Steg 1 — skriv ett ord</strong> — varje spelare skriver hemligt ett ord eller en fras</li>
+      <li><strong>Steg 2 — rita det</strong> — du får någon annans ord och ritar det (80 sek)</li>
+      <li><strong>Steg 3 — gissa det</strong> — du får en teckning och skriver vad du tror den föreställer (30 sek)</li>
+      <li><strong>Upprepa</strong> — rita och gissa omväxlar tills kedjan är klar</li>
+      <li><strong>Avslöjande</strong> — alla ser hur deras ord förändrades från start till slut</li>
+    </ul>
+    <div class="rules-tip"><p>💡 Du behöver inte kunna rita — dåliga teckningar gör spelet roligare. Det är hela grejen.</p></div>
+    <div class="game-cta"><p>Spela nu!</p><a href="/skissa-och-gissa" class="btn">🎮 Spela Skissa &amp; Gissa</a></div>
+  </div>
+
+  <div id="bingo" class="game-section">
+    <div class="game-section-header"><span class="game-section-icon">🎯</span><div><div class="game-section-title">Företagsbingo</div><div class="game-section-sub">2–50 spelare · för möten · PL/EN/DE/SV</div></div></div>
+    <p class="rules-p">Ett hemligt spel för tråkiga möten. Alla får ett unikt 5×5-kort fullt med företagsjargong och kryssar för ord när de dyker upp. Första Bingo vinner.</p>
+    <div class="rules-h2">Regler</div>
+    <ul class="rules-ul">
+      <li><strong>Anslut till rummet</strong> innan mötet och få ditt kort</li>
+      <li><strong>Markera fraser</strong> när du hör dem under mötet — tryck på rutan</li>
+      <li><strong>Fyll en rad</strong> — vågrätt, lodrätt eller diagonalt — och tryck BINGO!</li>
+    </ul>
+    <div class="rules-tip"><p>💡 Dela koden med betrodda kollegor innan mötet — att spela som grupp är mycket roligare.</p></div>
+    <div class="game-cta"><p>Spela nu!</p><a href="/foretagsbingo" class="btn">🎮 Spela Företagsbingo</a></div>
+  </div>
 </div>
 </div>
 
@@ -339,9 +369,11 @@ function showGame(id) {
   var SLUGS = {
     'pm': '/hur-man-spelar',
     'taboo': '/hur-man-spelar/forbjudna-ord',
-    'hangman': '/hur-man-spelar/hanga-gubbe',
-    'dots': '/hur-man-spelar/punkter-och-linjer',
+    'hangman': '/hur-man-spelar/hanga-gubbe-online',
+    'dots': '/hur-man-spelar/punkter-och-linjer-online',
     'twotruth': '/hur-man-spelar/tva-sanningar-en-logn',
+    'sketch': '/hur-man-spelar/skissa-och-gissa',
+    'bingo': '/hur-man-spelar/foretagsbingo',
     'bingo': '/hur-man-spelar/foretagsbingo'
   };
   document.querySelectorAll('.game-section').forEach(function(s){s.classList.remove('active');});

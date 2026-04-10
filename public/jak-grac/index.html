@@ -141,6 +141,8 @@
     <a class="game-pill" onclick="return showGame('wisielec')" href="#wisielec"><span class="game-pill-icon">🪢</span> Wisielec</a>
     <a class="game-pill" onclick="return showGame('kropki')" href="#kropki"><span class="game-pill-icon">🔵</span> Kropki i Kreski</a>
     <a class="game-pill" onclick="return showGame('dwie')" href="#dwie"><span class="game-pill-icon">🤥</span> Dwie Prawdy</a>
+    <a class="game-pill" onclick="return showGame('szkicuj')" href="#szkicuj"><span class="game-pill-icon">🎨</span> Szkicuj i Zgaduj</a>
+    <a class="game-pill" onclick="return showGame('bingo')" href="#bingo"><span class="game-pill-icon">🎯</span> Korporacyjne Bingo</a>
   </div>
 
   <div id="pm" class="game-section active">
@@ -181,7 +183,7 @@
       <li><strong>+1 dla drużyny przeciwnej</strong> — gdy sędzia złapie na zakazanym słowie</li>
     </ul>
     <div class="rules-tip"><p>💡 Opisuj przez cel i kontekst — zamiast nazywać, mów do czego służy lub kiedy tego używasz.</p></div>
-    <div class="game-cta"><p>Graj teraz!</p><a href="/taboo?lang=pl" class="btn">🎮 Zagraj w Tabu</a></div>
+    <div class="game-cta"><p>Graj teraz!</p><a href="/zakazane-slowa" class="btn">🎮 Zagraj w Tabu</a></div>
   </div>
 
   <div id="wisielec" class="game-section">
@@ -200,7 +202,7 @@
       <li><strong>+1 dla Słownika</strong> — jeśli nikt nie odgadnie</li>
     </ul>
     <div class="rules-tip"><p>💡 Jako Zgadujący: zacznij od najczęstszych liter (A, E, I, O, N, S, T). Jako Słownik: wybieraj słowa z rzadkimi literami.</p></div>
-    <div class="game-cta"><p>Graj teraz!</p><a href="/hangman?lang=pl" class="btn">🎮 Zagraj w Wisielca</a></div>
+    <div class="game-cta"><p>Graj teraz!</p><a href="/wisielec" class="btn">🎮 Zagraj w Wisielca</a></div>
   </div>
 
   <div id="kropki" class="game-section">
@@ -219,7 +221,7 @@
       <li><strong>5×5 / 6×6</strong> — dłuższa gra strategiczna (15–25 min)</li>
     </ul>
     <div class="rules-tip"><p>💡 Unikaj rysowania trzeciej kreski przy niezamkniętym polu — oddajesz punkt przeciwnikowi.</p></div>
-    <div class="game-cta"><p>Graj teraz!</p><a href="/dots?lang=pl" class="btn">🎮 Zagraj w Kropki i Kreski</a></div>
+    <div class="game-cta"><p>Graj teraz!</p><a href="/kropki-i-kreski-online" class="btn">🎮 Zagraj w Kropki i Kreski</a></div>
   </div>
 
   <div id="dwie" class="game-section">
@@ -237,10 +239,38 @@
       <li><strong>+1 dla Aktywnego</strong> — za każdą oszukaną osobę</li>
     </ul>
     <div class="rules-tip"><p>💡 Najlepsze kłamstwa brzmią wiarygodnie — wybieraj coś co inni mogliby w Ciebie uwierzyć.</p></div>
-    <div class="game-cta"><p>Graj teraz!</p><a href="/twotruth?lang=pl" class="btn">🎮 Zagraj w Dwie Prawdy</a></div>
+    <div class="game-cta"><p>Graj teraz!</p><a href="/dwie-prawdy-jedno-klamstwo" class="btn">🎮 Zagraj w Dwie Prawdy</a></div>
   </div>
 
   
+  <div id="szkicuj" class="game-section">
+    <div class="game-section-header"><span class="game-section-icon">🎨</span><div><div class="game-section-title">Szkicuj i Zgaduj</div><div class="game-section-sub">4–10 graczy · bez punktów · PL/EN/DE/SV</div></div></div>
+    <p class="rules-p">Gra rysunkowa bez punktów — słowa przechodzą przez łańcuch rysunków i zgadywań. Po drodze śmiesznie się zniekształcają. Czysta zabawa bez rywalizacji.</p>
+    <div class="rules-h2">Jak działa łańcuch?</div>
+    <ul class="rules-ul">
+      <li><strong>Krok 1 — wpisz słowo</strong> — każdy gracz wpisuje tajne słowo lub frazę</li>
+      <li><strong>Krok 2 — rysuj</strong> — dostajesz słowo od kogoś innego i rysujesz je na płótnie (80 sek)</li>
+      <li><strong>Krok 3 — zgaduj</strong> — dostajesz rysunek i wpisujesz co według Ciebie pokazuje (30 sek)</li>
+      <li><strong>Powtarzaj</strong> — rysowanie i zgadywanie na zmianę, aż łańcuch się zamknie</li>
+      <li><strong>Reveal</strong> — wszyscy widzą jak ich słowo ewoluowało od początku do końca</li>
+    </ul>
+    <div class="rules-tip"><p>💡 Nie musisz umieć rysować — im gorszy rysunek, tym śmieszniejszy wynik. To właśnie jest clue tej gry.</p></div>
+    <div class="game-cta"><p>Graj teraz!</p><a href="/szkicuj-i-zgaduj" class="btn">🎮 Zagraj w Szkicuj i Zgaduj</a></div>
+  </div>
+
+  <div id="bingo" class="game-section">
+    <div class="game-section-header"><span class="game-section-icon">🎯</span><div><div class="game-section-title">Korporacyjne Bingo</div><div class="game-section-sub">2–50 graczy · na spotkania · PL/EN/DE/SV</div></div></div>
+    <p class="rules-p">Tajna gra na nudne zebrania. Każdy dostaje unikalną kartę 5×5 z korporacyjnym żargonem i zaznacza wyrazy gdy je słyszy. Pierwsze Bingo wygrywa.</p>
+    <div class="rules-h2">Zasady</div>
+    <ul class="rules-ul">
+      <li><strong>Dołącz do pokoju</strong> przed zebraniem i dostań swoją kartę</li>
+      <li><strong>Zaznaczaj wyrazy</strong> gdy je słyszysz podczas spotkania — kliknij pole na karcie</li>
+      <li><strong>Ułóż linię</strong> — poziomą, pionową lub po przekątnej — i naciśnij BINGO!</li>
+    </ul>
+    <div class="rules-tip"><p>💡 Udostępnij kod pokoju zaufanym współpracownikom przed zebraniem — gra w grupie jest dużo śmieszniejsza.</p></div>
+    <div class="game-cta"><p>Graj teraz!</p><a href="/korporacyjne-bingo" class="btn">🎮 Zagraj w Korporacyjne Bingo</a></div>
+  </div>
+
   <!-- AGE GUIDE SECTION -->
   <div style="margin-top:40px;padding-top:28px;border-top:2px solid var(--border);">
     <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--accent2);margin-bottom:8px;">Dla kogo są te gry?</div>
@@ -340,7 +370,9 @@ function showGame(id) {
     'tabu': '/jak-grac/tabu',
     'wisielec': '/jak-grac/wisielec',
     'kropki': '/jak-grac/kropki-i-kreski',
-    'dwie': '/jak-grac/dwie-prawdy-jedno-klamstwo'
+    'dwie': '/jak-grac/dwie-prawdy-jedno-klamstwo',
+    'szkicuj': '/jak-grac/szkicuj-i-zgaduj',
+    'bingo': '/jak-grac/korporacyjne-bingo'
   };
   document.querySelectorAll('.game-section').forEach(function(s){s.classList.remove('active');});
   document.querySelectorAll('.game-pill').forEach(function(p){p.classList.remove('active');});
