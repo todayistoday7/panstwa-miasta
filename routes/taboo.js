@@ -288,7 +288,8 @@ function register(io, socket) {
     if (!room || room.state.phase !== 'playing') return;
     if (socket.id !== room.state.turnDescriber) return;
     const word = room.state.currentWord ? room.state.currentWord.word : '';
-    io.to(room.code).emit('taboo_score_event', { type: 'skip', word });
+    // Only notify the describer — other players should not see skipped words
+    socket.emit('taboo_score_event', { type: 'skip', word });
     room.state.currentWord = null;
     emitTabooState(io, room);
   });

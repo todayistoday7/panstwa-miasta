@@ -961,7 +961,7 @@ function applyTranslations() {
     'lbl-final-desc':       'finalDesc',
     'lbl-play-again':       'playAgain',
     'lbl-go-home':          'goHome',
-    'lbl-vis-hint':         'visHint',
+    'lbl-vis-hint':         'visHintPrivate', // default: pages start as Private
     'lbl-no-points':        'noPoints',
   };
   for (const [id, key] of Object.entries(map)) {
@@ -981,6 +981,9 @@ function applyTranslations() {
   if (guessInputEl && L.guessPlaceholder) guessInputEl.placeholder = L.guessPlaceholder;
   // Dup elements
   document.querySelectorAll('.lbl-nav-home-dup').forEach(el => { if (L.navHome) el.textContent = L.navHome; });
+  // Refresh vis hint to match current Private/Public state after language change
+  const _vh = document.getElementById('lbl-vis-hint');
+  if (_vh && L) _vh.textContent = _isPublic ? (L.visHintPublic || '') : (L.visHintPrivate || '');
 }
 
 // ── Prefill join code from URL ────────────────────────────────────
