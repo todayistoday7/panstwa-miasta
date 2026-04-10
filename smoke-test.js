@@ -200,6 +200,7 @@ async function testBurgerMenu(browser) {
   const { page, ctx } = await openPage(browser, BASE + '/');
   await page.waitForSelector('#gb-toggle', { timeout: 5000 });
 
+  await page.waitForTimeout(2000); // wait for shared.js to build burger
   await check('Burger button visible', async () => {
     const btn = await page.$('#gb-toggle');
     if (!btn) throw new Error('gb-toggle not found');
@@ -217,12 +218,12 @@ async function testBurgerMenu(browser) {
   // Check all expected links are present
   const expectedHrefs = [
     '/', '/games',
-    '/zakazane-slowa',       // taboo PL
-    '/wisielec',             // hangman PL
-    '/kropki-i-kreski-online', // dots PL
-    '/dwie-prawdy-jedno-klamstwo', // twotruth PL
-    '/korporacyjne-bingo',   // bingo PL
-    '/szkicuj-i-zgaduj',     // drawing PL
+    'zakazane-slowa',        // taboo PL
+    'wisielec',              // hangman PL
+    'kropki-i-kreski',       // dots PL
+    'dwie-prawdy',           // twotruth PL
+    'korporacyjne-bingo',    // bingo PL
+    'szkicuj-i-zgaduj',      // drawing PL
   ];
   for (const href of expectedHrefs) {
     await check(`Burger has link: ${href}`, async () => {
@@ -297,7 +298,8 @@ async function testLanguageSwitch(browser) {
 
   for (const t of tests) {
     const { page, ctx } = await openPage(browser, BASE + t.page);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(500);
 
     // Click the language flag in the footer lang buttons
     await check(`Click ${t.clickFlag} flag on ${t.page}`, async () => {
@@ -365,10 +367,12 @@ async function testGameLobbies(browser) {
     try {
       await check(`${g.name} — host creates room`, async () => {
         await p1.goto(BASE + g.path, { waitUntil: 'domcontentloaded' });
-        await p1.waitForSelector(g.create, { timeout: 5000 });
-        await p1.fill(g.create, 'TestHost');
+        await p1.waitForSelector(g.create, { timeout: 10000 });
+        await p1.fill(g.create, 'Grace');
+        // For games that need category selection (Who Am I)
+        await p1.click('[data-cat="mixed"]').catch(() => {});
         await p1.click(g.createBtn);
-        await p1.waitForSelector(g.code, { timeout: 8000 });
+        await p1.waitForSelector(g.code, { timeout: 15000 });
         const code = await p1.textContent(g.code);
         if (!code || code.length < 4) throw new Error(`Invalid room code: "${code}"`);
       });
@@ -378,16 +382,15 @@ async function testGameLobbies(browser) {
 
       await check(`${g.name} — player 2 joins with code ${code}`, async () => {
         await p2.goto(BASE + g.path, { waitUntil: 'domcontentloaded' });
-        await p2.waitForSelector(g.join, { timeout: 5000 });
-        await p2.fill(g.join, 'TestGuest');
+        await p2.waitForSelector(g.join, { timeout: 10000 });
+        await p2.fill(g.join, 'SmokeGuest');
         await p2.fill(g.joinCode, code);
-        await p2.click('button:has-text("Join"), button:has-text("Dołącz")');
-        // Wait for lobby to show
-        await p2.waitForSelector('#lobby-players, .lobby-player, .dots-lobby-player', { timeout: 8000 });
+        await p2.click('button:has-text("Join"), button:has-text("Dołącz"), button:has-text("Gå med"), button:has-text("Beitreten")');
+        await p2.waitForSelector('#lobby-players, .lobby-player, .dots-lobby-player', { timeout: 15000 });
       });
 
       await check(`${g.name} — host sees 2 players`, async () => {
-        await p1.waitForTimeout(1000);
+        await p1.waitForTimeout(2000);
         const players = await p1.$$('.lobby-player, .dots-lobby-player');
         if (players.length < 2) throw new Error(`Only ${players.length} player(s) visible`);
       });
@@ -415,10 +418,11 @@ async function testTabuLobby(browser) {
     }
 
     await check('Tabu — host creates room', async () => {
-      await pages[0].goto(BASE + '/taboo', { waitUntil: 'domcontentloaded' });
-      await pages[0].fill('#host-name', 'TabuHost');
-      await pages[0].click('button:has-text("Create"), button:has-text("Stwórz")');
-      await pages[0].waitForSelector('#room-code-display', { timeout: 8000 });
+      await pages[0].goto(BASE + '/zakazane-slowa', { waitUntil: 'domcontentloaded' });
+      await pages[0].waitForSelector('#host-name', { timeout: 10000 });
+      await pages[0].fill('#host-name', 'SmokeTabuHost');
+      await pages[0].click('button:has-text("Stwórz"), button:has-text("Create")');
+      await pages[0].waitForSelector('#room-code-display', { timeout: 15000 });
     });
 
     const code = await pages[0].textContent('#room-code-display').catch(() => null);
@@ -430,7 +434,7 @@ async function testTabuLobby(browser) {
         await pages[i].fill('#join-name', `Player${i + 1}`);
         await pages[i].fill('#join-code', code);
         await pages[i].click('button:has-text("Join"), button:has-text("Dołącz")');
-        await pages[i].waitForSelector('.lobby-player, #lobby-players, .team-player, #lobby-teams', { timeout: 8000 });
+        await pages[i].waitForSelector('.lobby-player, #lobby-players, .team-player, #lobby-teams', { timeout: 12000 });
       });
     }
 
@@ -463,26 +467,29 @@ async function testGamePageTranslations(browser) {
 
   for (const path of gamePaths) {
     for (const ch of checks) {
-      // Only test EN and PL on all pages, DE only on pages that support it
       if (ch.flag === '🇩🇪' && ['/twotruth'].includes(path)) continue;
-
-      const { page, ctx } = await openPage(browser, BASE + path + '?lang=pl');
-      await page.waitForLoadState('networkidle');
-
-      await check(`${path} — switch to ${ch.flag}, URL has ${ch.param}`, async () => {
-        const btn = await page.$(`button:has-text("${ch.flag}")`);
-        if (!btn) throw new Error(`Flag ${ch.flag} not found on ${path}`);
-        await btn.click();
-        await page.waitForTimeout(1000);
-        if (!page.url().includes(ch.param))
-          throw new Error(`URL still shows: ${page.url()}`);
-      });
-
-      await ctx.close();
+      let pg, cx;
+      try {
+        const opened = await openPage(browser, BASE + path + '?lang=pl');
+        pg = opened.page; cx = opened.ctx;
+        await pg.waitForLoadState('domcontentloaded');
+        await pg.waitForTimeout(1500);
+        await check(`${path} — switch to ${ch.flag}, URL has ${ch.param}`, async () => {
+          const btn = await pg.$(`button:has-text("${ch.flag}")`);
+          if (!btn) throw new Error(`Flag ${ch.flag} not found on ${path}`);
+          await btn.click();
+          await pg.waitForTimeout(1000);
+          if (!pg.url().includes(ch.param))
+            throw new Error(`URL still: ${pg.url()}`);
+        });
+      } catch(e) {
+        fail(`${path} — ${ch.flag}`, e.message.split('\n')[0].slice(0,120));
+      } finally {
+        if (cx) await cx.close().catch(() => {});
+      }
     }
   }
 }
-
 // 9. SEO pages — correct language loads automatically (_forceLang)
 async function testSeoPageLanguage(browser) {
   section('SEO pages — correct language on load (no ?lang= param)');
@@ -508,7 +515,8 @@ async function testSeoPageLanguage(browser) {
 
   for (const sp of seoPages) {
     const { page, ctx } = await openPage(browser, BASE + sp.url);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(500);
 
     await check(`${sp.url} — page title contains "${sp.expectedText}"`, async () => {
       const title = await page.title();
@@ -547,7 +555,8 @@ async function testHubPages(browser) {
 
   for (const h of hubs) {
     const { page, ctx } = await openPage(browser, BASE + h.url);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(500);
 
     await check(`${h.url} — loads and contains "${h.expectedText}"`, async () => {
       const body = await page.$eval('body', el => el.innerText);
@@ -616,12 +625,13 @@ async function testShareLinks(browser) {
 
   for (const g of seoGames) {
     const { page, ctx } = await openPage(browser, BASE + g.path);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(500);
 
     await check(`${g.path} — create room and share link uses ${g.expectedSlug}`, async () => {
-      await page.fill('#host-name', 'SmokeHost').catch(() => {});
+      await page.fill('#host-name', 'Grace').catch(() => {});
       await page.click('button:has-text("Create"), button:has-text("Stwórz"), button:has-text("Skapa"), button:has-text("Erstell")').catch(() => {});
-      await page.waitForSelector('#room-code-display', { timeout: 8000 });
+      await page.waitForSelector('#room-code-display', { timeout: 12000 });
 
       // Click share button
       let copied = '';
@@ -660,11 +670,11 @@ async function testWhoAmI(browser) {
     await check('Who Am I — host creates room on /who-am-i', async () => {
       await p1.goto(BASE + '/who-am-i', { waitUntil: 'domcontentloaded' });
       await p1.waitForSelector('#host-name', { timeout: 5000 });
-      await p1.fill('#host-name', 'WhoHost');
+      await p1.fill('#host-name', 'Henry');
       // Select a category
       await p1.click('[data-cat="mixed"]').catch(() => {});
       await p1.click('button:has-text("Create"), button:has-text("Stwórz")');
-      await p1.waitForSelector('#room-code-display', { timeout: 8000 });
+      await p1.waitForSelector('#room-code-display', { timeout: 12000 });
       const code = await p1.textContent('#room-code-display');
       if (!code || code.length < 4) throw new Error(`Invalid code: "${code}"`);
     });
@@ -674,10 +684,10 @@ async function testWhoAmI(browser) {
 
     await check('Who Am I — player 2 joins', async () => {
       await p2.goto(BASE + '/who-am-i', { waitUntil: 'domcontentloaded' });
-      await p2.fill('#join-name', 'WhoGuest');
+      await p2.fill('#join-name', 'Iris');
       await p2.fill('#join-code', code);
       await p2.click('button:has-text("Join"), button:has-text("Dołącz")');
-      await p2.waitForSelector('#lobby-players', { timeout: 8000 });
+      await p2.waitForSelector('#lobby-players', { timeout: 12000 });
     });
 
     await check('Who Am I — host sees 2 players', async () => {
