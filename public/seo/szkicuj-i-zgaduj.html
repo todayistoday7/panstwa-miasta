@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Szkicuj i Zgaduj Online — Darmowa Gra Rysunkowa | panstwamiastagra.com</title>
+<meta name="description" content="Zagraj w Szkicuj i Zgaduj online za darmo! Rysuj słowa, zgaduj rysunki. Bez punktów, czysta zabawa dla 4-10 graczy. Bez rejestracji.">
+<meta property="og:title" content="Szkicuj i Zgaduj Online — Darmowa Gra Rysunkowa | panstwamiastagra.com">
+<meta property="og:description" content="Zagraj w Szkicuj i Zgaduj online za darmo! Rysuj słowa, zgaduj rysunki. Bez punktów, czysta zabawa dla 4-10 graczy. Bez rejestracji.">
+<meta property="og:url" content="https://panstwamiastagra.com/szkicuj-i-zgaduj">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://panstwamiastagra.com/szkicuj-i-zgaduj">
+<link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/szkicuj-i-zgaduj">
+<link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/sketch-and-guess">
+<link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zeichnen-und-raten">
+<link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/skissa-och-gissa">
+<link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/sketch-and-guess">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0f1117;--surface:#1a1d2e;--card:#1e2235;--border:#2d3152;
+  --text:#e2e8f0;--muted:#64748b;--accent:#ff6b35;--accent2:#06d6a0;
+  --red:#ef4444;--green:#22c55e;--yellow:#f59e0b;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;overflow-x:hidden;}
+
+/* ── Layout ── */
+.screen{display:none;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;}
+.container{max-width:680px;margin:0 auto;padding:16px;width:100%;}
+
+/* ── Top nav ── */
+#top-nav{display:none;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.nav-code{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--accent2);}
+.nav-home-btn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;}
+.nav-home-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:12px;padding:12px 24px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:opacity .15s,transform .1s;}
+.btn:hover{opacity:.9;transform:translateY(-1px);}
+.btn:active{transform:translateY(0);}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#ff8c55);color:#fff;}
+.btn-secondary{background:var(--surface);color:var(--muted);border:1px solid var(--border);}
+.btn-green{background:linear-gradient(135deg,var(--accent2),#00b894);color:#000;}
+.btn-full{width:100%;max-width:360px;}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+/* ── Cards & fields ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;}
+.field-label{display:block;font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.field-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:15px;font-family:'Nunito',sans-serif;font-weight:700;outline:none;}
+.field-input:focus{border-color:var(--accent2);}
+.field-select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:14px;font-family:'Nunito',sans-serif;font-weight:700;outline:none;margin-bottom:12px;}
+.error-box{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:700;display:none;margin-top:8px;}
+
+/* ── Hero ── */
+.hero{text-align:center;padding:32px 0 24px;}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,10vw,64px);letter-spacing:4px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:6px;}
+.hero p{color:var(--muted);font-size:14px;font-weight:700;}
+
+/* ── Language bar ── */
+.lang-bar{display:flex;justify-content:flex-end;gap:6px;padding:10px 16px 0;}
+.lang-btn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;}
+.lang-btn.active,.lang-btn:hover{border-color:var(--accent2);color:var(--accent2);}
+
+/* ── Player list ── */
+.player-list{display:flex;flex-direction:column;gap:8px;margin:12px 0;}
+.player-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface);border-radius:10px;border:1px solid var(--border);}
+.player-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;flex-shrink:0;}
+.player-name{font-weight:700;font-size:14px;flex:1;}
+.badge{font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;border:1px solid;letter-spacing:1px;}
+.badge-host{color:var(--accent);border-color:var(--accent);background:rgba(255,107,53,.1);}
+.badge-you{color:var(--accent2);border-color:var(--accent2);background:rgba(6,214,160,.1);}
+.badge-offline{color:var(--muted);border-color:var(--border);background:none;}
+
+/* ── Progress bar ── */
+.progress-wrap{background:var(--surface);border-radius:8px;height:8px;margin:12px 0;overflow:hidden;}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:8px;transition:width .4s ease;}
+
+/* ── Phase label ── */
+.phase-label{text-align:center;font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--accent2);margin-bottom:8px;}
+.step-label{text-align:center;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:20px;}
+
+/* ── Timer ── */
+.timer-ring{display:flex;justify-content:center;margin:12px 0;}
+.timer-circle{position:relative;width:72px;height:72px;}
+.timer-circle svg{transform:rotate(-90deg);}
+.timer-circle circle{fill:none;stroke:var(--border);stroke-width:5;}
+.timer-circle .progress{stroke:var(--accent2);stroke-linecap:round;transition:stroke-dashoffset .9s linear;}
+.timer-circle.urgent .progress{stroke:var(--red);}
+.timer-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--text);}
+
+/* ── Write / Guess input ── */
+.task-card{background:var(--card);border:2px solid var(--accent2);border-radius:16px;padding:20px;margin:16px 0;}
+.task-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent2);margin-bottom:8px;}
+.task-hint{font-size:13px;color:var(--muted);font-weight:700;margin-bottom:14px;line-height:1.5;}
+.big-input{width:100%;background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:14px 16px;color:var(--text);font-size:18px;font-family:'Nunito',sans-serif;font-weight:800;outline:none;text-align:center;}
+.big-input:focus{border-color:var(--accent2);}
+
+/* ── Drawing canvas ── */
+.canvas-wrap{position:relative;margin:12px 0;border-radius:12px;overflow:hidden;border:2px solid var(--border);background:#fff;touch-action:none;}
+.canvas-wrap canvas{display:block;width:100%;cursor:crosshair;touch-action:none;}
+.drawing-tools{display:flex;align-items:center;gap:8px;padding:10px;background:var(--surface);border-radius:12px;margin-bottom:8px;flex-wrap:wrap;}
+.color-btn{width:28px;height:28px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:transform .1s;}
+.color-btn.active,.color-btn:hover{border-color:var(--accent2);transform:scale(1.2);}
+.size-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:4px 8px;cursor:pointer;font-size:11px;font-weight:800;color:var(--muted);font-family:'Nunito',sans-serif;}
+.size-btn.active,.size-btn:hover{border-color:var(--accent2);color:var(--accent2);}
+.tool-divider{width:1px;height:24px;background:var(--border);}
+.erase-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px;font-weight:800;color:var(--muted);font-family:'Nunito',sans-serif;}
+.erase-btn:hover,.erase-btn.active{border-color:var(--red);color:var(--red);}
+.clear-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px;font-weight:800;color:var(--muted);font-family:'Nunito',sans-serif;}
+.clear-btn:hover{border-color:var(--yellow);color:var(--yellow);}
+
+/* ── Waiting ── */
+.waiting-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;text-align:center;margin:16px 0;}
+.waiting-icon{font-size:48px;margin-bottom:12px;}
+.waiting-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent2);margin-bottom:8px;}
+.waiting-desc{font-size:13px;color:var(--muted);font-weight:700;}
+.submitted-count{font-size:18px;font-weight:900;color:var(--text);margin:8px 0;}
+
+/* ── Reveal ── */
+.chain-container{margin:12px 0;}
+.chain-header{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;margin-bottom:12px;color:var(--text);}
+.chain-entry{background:var(--surface);border-radius:12px;padding:14px;margin-bottom:10px;border-left:4px solid var(--border);}
+.chain-entry.type-word{border-color:var(--accent);}
+.chain-entry.type-draw{border-color:var(--accent2);}
+.chain-entry.type-guess{border-color:var(--yellow);}
+.chain-type{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;}
+.chain-type.type-word{color:var(--accent);}
+.chain-type.type-draw{color:var(--accent2);}
+.chain-type.type-guess{color:var(--yellow);}
+.chain-player{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;}
+.chain-word{font-size:22px;font-weight:900;color:var(--text);}
+.chain-img{width:100%;border-radius:8px;image-rendering:auto;}
+.chain-nav{display:flex;gap:10px;margin:16px 0;align-items:center;}
+.chain-dot{width:10px;height:10px;border-radius:50%;background:var(--border);cursor:pointer;transition:background .2s;}
+.chain-dot.active{background:var(--accent2);}
+
+/* ── Final ── */
+.final-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin:16px 0;}
+.final-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;}
+.final-card h3{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;margin-bottom:10px;color:var(--accent2);}
+
+/* ── Rules ── */
+.rules-list{display:flex;flex-direction:column;gap:8px;margin:12px 0;}
+.rule-step{display:flex;gap:10px;align-items:flex-start;}
+.rule-num{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#000;font-weight:900;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.rule-text{font-size:13px;font-weight:700;color:var(--muted);line-height:1.5;}
+
+/* ── Vis toggle ── */
+.vis-toggle{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:4px 0 12px;}
+.vis-option{flex:1;padding:8px;text-align:center;font-size:12px;font-weight:800;cursor:pointer;color:var(--muted);transition:background .15s;}
+.vis-option.active{background:var(--accent);color:#000;}
+
+/* ── Submitted badge ── */
+.submitted-badge{background:rgba(6,214,160,.15);border:1px solid rgba(6,214,160,.3);color:var(--accent2);border-radius:10px;padding:10px 16px;text-align:center;font-size:14px;font-weight:800;margin:12px 0;}
+
+@media(max-width:400px){
+  .drawing-tools{gap:6px;}
+  .color-btn{width:24px;height:24px;}
+}
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/favicon.svg">
+<script async data-cfasync="false" src="https://www.googletagmanager.com/gtag/js?id=G-BJ79ZM6WPQ"></script>
+<script data-cfasync="false">window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BJ79ZM6WPQ');</script>
+<script>window._forceLang = 'pl';</script>
+</head>
+<body>
+
+<div id="lang-bar" class="lang-bar"></div>
+<div id="top-nav" style="display:none;">
+  <span class="nav-code" id="nav-room-code"></span>
+  <button class="nav-home-btn" onclick="confirmGoHome()">🏠 <span id="lbl-nav-home">Home</span></button>
+</div>
+
+<!-- ══ HOME ══ -->
+<div id="screen-home" class="screen active">
+  <div class="container">
+    <div class="hero">
+      <h1 id="game-title">SZKICUJ I ZGADUJ</h1>
+      <p id="game-subtitle">Gra rysunkowa · 3-10 graczy</p>
+      <p id="lbl-no-points" style="font-size:13px;color:var(--accent2);font-weight:800;margin-top:4px;text-align:center;"></p>
+    </div>
+    <div id="lang-bar-inline" style="display:flex;gap:6px;justify-content:center;margin-bottom:20px;"></div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <label class="field-label" id="lbl-create-room">Stwórz pokój</label>
+      <p id="lbl-create-disclaimer" style="font-size:12px;color:var(--muted);font-weight:700;margin-bottom:10px;line-height:1.5;"></p>
+      <input class="field-input" id="host-name" placeholder="Twoje imię" maxlength="20" style="margin-bottom:10px;"/>
+        <input type="text" id="hp-website" name="website" style="display:none;position:absolute;left:-9999px;" tabindex="-1" autocomplete="off"/>
+
+      <div id="home-error-create" class="error-box"></div>
+      <div style="margin-top:10px;">
+        <label class="field-label" id="lbl-room-vis">Widoczność pokoju</label>
+        <div class="vis-toggle">
+          <div class="vis-option active" id="vis-private" onclick="setVisibility(false)">🔒 <span id="lbl-vis-private">Prywatny</span></div>
+          <div class="vis-option" id="vis-public" onclick="setVisibility(true)">🌐 <span id="lbl-vis-public">Publiczny</span></div>
+        </div>
+        <p id="lbl-vis-hint" style="font-size:11px;color:var(--muted);margin-bottom:8px;font-weight:700;"></p>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="createRoom()" id="lbl-create-btn">🎮 Stwórz pokój</button>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;">
+      <label class="field-label" id="lbl-join-room">Dołącz do pokoju</label>
+      <p id="lbl-join-disclaimer" style="font-size:12px;color:var(--muted);font-weight:700;margin-bottom:10px;line-height:1.5;"></p>
+      <input class="field-input" id="join-name" placeholder="Twoje imię" maxlength="20" style="margin-bottom:8px;"/>
+      <input class="field-input" id="join-code" placeholder="Kod pokoju" maxlength="5" style="margin-bottom:10px;text-transform:uppercase;letter-spacing:3px;"/>
+      <div id="home-error-join" class="error-box"></div>
+      <button class="btn btn-primary btn-full" onclick="joinRoom()" id="lbl-join-btn" style="margin-top:8px;">🚪 Dołącz</button>
+    </div>
+
+    <div class="card">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent2);margin-bottom:12px;" id="lbl-how-to-play">Jak grać</div>
+      <div class="rules-list">
+        <div class="rule-step"><div class="rule-num">1</div><p class="rule-text" id="lbl-rule-1">Każdy gracz wpisuje tajne słowo</p></div>
+        <div class="rule-step"><div class="rule-num">2</div><p class="rule-text" id="lbl-rule-2">Kartki się mieszają — rysujesz słowo które dostałeś</p></div>
+        <div class="rule-step"><div class="rule-num">3</div><p class="rule-text" id="lbl-rule-3">Kartki mieszają się ponownie — zgadujesz co przedstawia rysunek</p></div>
+        <div class="rule-step"><div class="rule-num">4</div><p class="rule-text" id="lbl-rule-4">Przemiana rysowania i zgadywania trwa aż wszyscy wezmą udział</p></div>
+        <div class="rule-step"><div class="rule-num">5</div><p class="rule-text" id="lbl-rule-5">Wielkie ujawnienie — wszyscy widzą jak Twoje słowo ewoluowało!</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LOBBY ══ -->
+<div id="screen-lobby" class="screen">
+
+  <div class="container" style="padding-top:20px;">
+    <div style="text-align:center;margin-bottom:16px;">
+      <p style="font-size:12px;color:var(--muted);font-weight:700;margin-bottom:4px;" id="lbl-share-code">Udostępnij kod znajomym</p>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:8px;color:var(--accent);" id="room-code-display"></div>
+      <button class="btn btn-secondary" onclick="copyRoomCode()" style="margin-top:8px;font-size:12px;padding:6px 16px;" id="lbl-copy-code">📋 Kopiuj kod</button>
+    </div>
+
+    <div class="card" style="margin-bottom:12px;">
+      <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;" id="lbl-players-title">Gracze</div>
+      <div id="lobby-players" class="player-list"></div>
+      <div id="player-warning" class="error-box" style="display:none;margin-top:8px;"></div>
+    </div>
+
+    <div id="lobby-settings" class="card" style="margin-bottom:12px;display:none;">
+      <div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;" id="lbl-settings">Ustawienia</div>
+      <label class="field-label" id="lbl-draw-time">Czas rysowania</label>
+      <select class="field-select" id="settings-draw-time" onchange="updateSettings()">
+        <option value="60">60 sekund</option>
+        <option value="80" selected>80 sekund</option>
+        <option value="100">100 sekund</option>
+        <option value="120">2 minuty</option>
+      </select>
+      <label class="field-label" id="lbl-write-time">Czas pisania / zgadywania</label>
+      <select class="field-select" id="settings-write-time" onchange="updateSettings()">
+        <option value="20">20 sekund</option>
+        <option value="30" selected>30 sekund</option>
+        <option value="45">45 sekund</option>
+      </select>
+      <label class="field-label" id="lbl-room-visibility">Widoczność pokoju</label>
+      <div class="vis-toggle">
+        <div class="vis-option active" id="lobby-vis-private" onclick="setLobbyVisibility(false)">🔒 <span id="lbl-lobby-vis-private">Prywatny</span></div>
+        <div class="vis-option" id="lobby-vis-public" onclick="setLobbyVisibility(true)">🌐 <span id="lbl-lobby-vis-public">Publiczny</span></div>
+      </div>
+    </div>
+
+    <div id="lobby-btn-row" style="display:none;flex-direction:column;align-items:center;gap:10px;">
+      <button class="btn btn-green btn-full" onclick="startGame()" id="lbl-start-btn">▶ Rozpocznij grę</button>
+      <button class="btn btn-secondary btn-full" onclick="confirmGoHome()" id="lbl-leave-room">🚪 Wyjdź</button>
+    </div>
+    <div id="waiting-msg" style="text-align:center;color:var(--muted);font-size:13px;font-weight:700;padding:16px 0;display:none;" id="lbl-waiting-for-host">Czekam na hosta...</div>
+  </div>
+</div>
+
+<!-- ══ PLAYING ══ -->
+<div id="screen-playing" class="screen">
+  <div style="padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;">
+    <span id="play-step-label" style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--accent2);"></span>
+    <div class="timer-circle" id="timer-circle">
+      <svg width="48" height="48" viewBox="0 0 48 48">
+        <circle cx="24" cy="24" r="20" stroke-width="4"/>
+        <circle class="progress" id="timer-progress" cx="24" cy="24" r="20" stroke-width="4" stroke-dasharray="125.6" stroke-dashoffset="0"/>
+      </svg>
+      <div class="timer-num" id="timer-num">--</div>
+    </div>
+  </div>
+  <div class="container" style="padding-top:16px;">
+
+    <!-- Write word task -->
+    <div id="task-write-word" style="display:none;">
+      <div class="task-card">
+        <div class="task-title" id="lbl-write-title">✍️ WPISZ SŁOWO</div>
+        <p class="task-hint" id="lbl-write-hint">Wpisz dowolne słowo lub krótką frazę. Inni będą je rysować!</p>
+        <input class="big-input" id="word-input" placeholder="np. słoń, pizza, czarna dziura..." maxlength="40" oninput="onWriteInput()"/>
+      </div>
+      <div style="text-align:center;">
+        <button class="btn btn-primary btn-full" onclick="submitWord()" id="lbl-submit-word-btn" disabled>✓ Zatwierdź słowo</button>
+      </div>
+    </div>
+
+    <!-- Guess task -->
+    <div id="task-guess" style="display:none;">
+      <div class="task-card">
+        <div class="task-title" id="lbl-guess-title">🤔 ZGADNIJ SŁOWO</div>
+        <p class="task-hint" id="lbl-guess-hint">Co widzisz na rysunku? Wpisz swoje najlepsze przypuszczenie!</p>
+        <div id="guess-image-wrap" style="background:#fff;border-radius:10px;overflow:hidden;margin-bottom:12px;border:2px solid var(--border);">
+          <img id="guess-image" src="" alt="" style="width:100%;display:block;"/>
+        </div>
+        <input class="big-input" id="guess-input" placeholder="Twoja odpowiedź..." maxlength="40" oninput="onGuessInput()"/>
+      </div>
+      <div style="text-align:center;">
+        <button class="btn btn-primary btn-full" onclick="submitGuess()" id="lbl-submit-guess-btn" disabled>✓ Zatwierdź odpowiedź</button>
+      </div>
+    </div>
+
+    <!-- Draw task -->
+    <div id="task-draw" style="display:none;">
+      <div class="task-card" style="margin-bottom:8px;">
+        <div class="task-title" id="lbl-draw-title">🎨 RYSUJ!</div>
+        <p class="task-hint" id="lbl-draw-hint">Narysuj to słowo jak najlepiej potrafisz — bez liter!</p>
+        <div style="background:rgba(255,107,53,.1);border:1px solid rgba(255,107,53,.3);border-radius:8px;padding:8px 12px;text-align:center;">
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent);" id="word-to-draw"></span>
+        </div>
+      </div>
+      <div class="drawing-tools">
+        <div id="color-palette" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+        <div class="tool-divider"></div>
+        <button class="size-btn active" data-size="4" onclick="setBrushSize(4,this)">S</button>
+        <button class="size-btn" data-size="8" onclick="setBrushSize(8,this)">M</button>
+        <button class="size-btn" data-size="16" onclick="setBrushSize(16,this)">L</button>
+        <div class="tool-divider"></div>
+        <button class="erase-btn" id="erase-btn" onclick="toggleErase()">🧹 <span id="lbl-erase">Gumka</span></button>
+        <button class="clear-btn" onclick="clearCanvas()">🗑️ <span id="lbl-clear">Wyczyść</span></button>
+      </div>
+      <div class="canvas-wrap" id="canvas-wrap">
+        <canvas id="drawing-canvas"></canvas>
+      </div>
+      <div style="text-align:center;margin-top:8px;">
+        <button class="btn btn-primary btn-full" onclick="submitDrawing()" id="lbl-submit-draw-btn">✓ Wyślij rysunek</button>
+      </div>
+    </div>
+
+    <!-- Waiting for others -->
+    <div id="task-waiting" style="display:none;">
+      <div class="waiting-card">
+        <div class="waiting-icon">⏳</div>
+        <div class="waiting-title" id="lbl-waiting-others">CZEKAM NA INNYCH</div>
+        <div class="submitted-count" id="submitted-count">0/0</div>
+        <p class="waiting-desc" id="lbl-waiting-desc">Pozostałe osoby jeszcze pracują...</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ REVEAL ══ -->
+<div id="screen-reveal" class="screen">
+  <div style="padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;">
+    <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);" id="lbl-reveal-title">WIELKIE UJAWNIENIE!</span>
+    <button class="nav-home-btn" onclick="confirmGoHome()">🏠</button>
+  </div>
+  <div class="container" style="padding-top:16px;">
+    <p style="text-align:center;color:var(--muted);font-size:13px;font-weight:700;margin-bottom:16px;" id="lbl-reveal-desc">Zobaczcie jak słowa ewoluowały!</p>
+    <div id="reveal-chains"></div>
+    <div id="reveal-nav" class="chain-nav" style="justify-content:center;"></div>
+    <div style="text-align:center;margin-top:20px;" id="host-reveal-btn-wrap" style="display:none;">
+      <button class="btn btn-green btn-full" onclick="endReveal()" id="lbl-end-reveal">🏁 Zakończ grę</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FINAL ══ -->
+<div id="screen-final" class="screen">
+  <div style="padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;">
+    <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);" id="lbl-game-over">KONIEC GRY!</span>
+    <button class="nav-home-btn" onclick="confirmGoHome()">🏠</button>
+  </div>
+  <div class="container" style="padding-top:16px;text-align:center;">
+    <p style="color:var(--muted);font-size:13px;font-weight:700;margin-bottom:16px;" id="lbl-final-desc">Sprawdź wszystkie łańcuchy ewolucji!</p>
+    <div id="final-chains" class="final-grid"></div>
+    <div style="margin-top:24px;display:flex;flex-direction:column;align-items:center;gap:10px;">
+      <button class="btn btn-green btn-full" onclick="playAgain()" id="lbl-play-again">🔄 Zagraj jeszcze raz</button>
+      <button class="btn btn-secondary btn-full" onclick="confirmGoHome()" id="lbl-go-home">🏠 Wróć do menu</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CONFIRM LEAVE MODAL ══ -->
+<div id="confirm-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;padding:16px;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:340px;width:100%;text-align:center;">
+    <h2 style="color:var(--accent2);font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:8px;" id="lbl-confirm-title">Opuścić grę?</h2>
+    <p style="color:var(--muted);font-size:13px;font-weight:700;margin-bottom:20px;" id="lbl-confirm-msg">Gra jest w toku. Na pewno chcesz wyjść?</p>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-secondary" style="flex:1;" onclick="closeConfirm()" id="lbl-confirm-no">Anuluj</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="goHome()" id="lbl-confirm-yes">Wyjdź</button>
+    </div>
+  </div>
+</div>
+
+
+  <div id="seo-intro" style="padding:8px 0 0;">
+    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,6vw,46px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 10px;">Szkicuj i Zgaduj Online</h1>
+    <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;"><strong style="color:var(--text);">Szkicuj i Zgaduj</strong> to gra rysunkowa, w której słowa przechodzą przez łańcuch rysunków i zgadywań — i po drodze śmiesznie się zniekształcają. Darmowa, dla 4-10 graczy, na każdym urządzeniu.</p>
+    <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;">Narysuj hasło, odgadnij rysunek — i patrz jak w kilku rundach zmienia się nie do poznania! <strong style="color:var(--text);">Bez punktów, bez rywalizacji</strong> — czysta zabawa i śmiech dla wszystkich.</p>
+    <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;">Idealna jako <strong style="color:var(--text);">gra integracyjna dla zespołów pracujących zdalnie</strong>. Nie wymaga znajomości języka — rysunki są uniwersalne. Świetna na imprezę, spotkanie firmowe i wieczór ze znajomymi.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;"><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">🎨 4-10 graczy</span><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">👶 Od 8 lat</span><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">🆓 Za darmo</span><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">📱 Działa na telefonie</span><span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">🎉 Bez punktów</span></div>
+  </div>
+<script>
+  (function() {
+    var intro = document.getElementById('seo-intro');
+    var container = document.querySelector('.container');
+    if (intro && container) container.insertBefore(intro, container.firstChild);
+  })();
+</script>
+<div style="max-width:780px;margin:0 auto;padding:32px 16px 16px;border-top:1px solid var(--border);margin-top:16px;">
+  <h2 style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent2);margin-bottom:12px;">Jak grać w Szkicuj i Zgaduj?</h2>
+  <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;">Każdy gracz wpisuje tajne słowo. Słowa rotują — kolejna osoba rysuje, następna zgaduje, kolejna rysuje swoje przypuszczenie i tak dalej. Na końcu wszyscy widzą pełny łańcuch jak słowo ewoluowało. Im gorszy rysunek, tym śmieszniejszy wynik!</p>
+  <h2 style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent2);margin-bottom:12px;">Dla kogo jest ta gra?</h2>
+  <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;">Szkicuj i Zgaduj to idealna gra dla grup szukających zabawy bez rywalizacji. Sprawdza się na imprezach, spotkaniach integracyjnych, wideokonferencjach i jako rozgrzewka przed warsztatem.</p>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;padding-top:16px;border-top:1px solid var(--border);">
+    <a href="/sketch-and-guess" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🇬🇧 Sketch & Guess</a><a href="/zeichnen-und-raten" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🇩🇪 Zeichnen & Raten</a><a href="/skissa-och-gissa" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🇸🇪 Skissa & Gissa</a><a href="/jak-grac/szkicuj-i-zgaduj" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">📖 Zasady gry</a><a href="/gry" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🎮 Wszystkie gry</a>
+  </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/shared.js"></script>
+<script src="/js/drawing-client.js"></script>
+</body>
+</html>

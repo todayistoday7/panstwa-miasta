@@ -39,6 +39,45 @@ app.get('/bingo',       (req, res) => res.sendFile(path.join(__dirname, 'public/
 // DRAWING TELEPHONE — hidden until ready to launch
 app.get('/drawing',     (req, res) => res.sendFile(path.join(__dirname, 'public/drawing.html')));
 
+// ── SEO Landing Pages — Forbidden Words ─────────────────────────
+app.get('/zakazane-slowa',    (req, res) => res.sendFile(path.join(__dirname, 'public/seo/zakazane-slowa.html')));
+app.get('/forbidden-words',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/forbidden-words.html')));
+app.get('/verbotene-woerter', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/verbotene-woerter.html')));
+app.get('/forbjudna-ord',     (req, res) => res.sendFile(path.join(__dirname, 'public/seo/forbjudna-ord.html')));
+
+// Legacy redirect
+app.get('/taboo', (req, res) => {
+  const lang = req.query.lang || 'en';
+  const map = { pl:'/zakazane-slowa', de:'/verbotene-woerter', sv:'/forbjudna-ord' };
+  res.redirect(301, map[lang] || '/forbidden-words');
+});
+
+// ── SEO Landing Pages — Corporate Bingo ──────────────────────────
+app.get('/korporacyjne-bingo',  (req, res) => res.sendFile(path.join(__dirname, 'public/seo/korporacyjne-bingo.html')));
+app.get('/corporate-bingo',     (req, res) => res.sendFile(path.join(__dirname, 'public/seo/corporate-bingo.html')));
+app.get('/unternehmens-bingo',  (req, res) => res.sendFile(path.join(__dirname, 'public/seo/unternehmens-bingo.html')));
+app.get('/foretagsbingo',       (req, res) => res.sendFile(path.join(__dirname, 'public/seo/foretagsbingo.html')));
+
+// Legacy redirect
+app.get('/bingo', (req, res) => {
+  const lang = req.query.lang || 'en';
+  const map = { pl:'/korporacyjne-bingo', de:'/unternehmens-bingo', sv:'/foretagsbingo' };
+  res.redirect(301, map[lang] || '/corporate-bingo');
+});
+
+// ── SEO Landing Pages — Sketch & Guess ──────────────────────────
+app.get('/szkicuj-i-zgaduj',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/szkicuj-i-zgaduj.html')));
+app.get('/sketch-and-guess',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/sketch-and-guess.html')));
+app.get('/zeichnen-und-raten', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/zeichnen-und-raten.html')));
+app.get('/skissa-och-gissa',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/skissa-och-gissa.html')));
+
+// Legacy redirect
+app.get('/drawing', (req, res) => {
+  const lang = req.query.lang || 'pl';
+  const map = { pl:'/szkicuj-i-zgaduj', en:'/sketch-and-guess', de:'/zeichnen-und-raten', sv:'/skissa-och-gissa' };
+  res.redirect(301, map[lang] || '/sketch-and-guess');
+});
+
 // ── SEO Landing Pages — Hangman ─────────────────────────────────
 app.get('/wisielec',                (req, res) => res.sendFile(path.join(__dirname, 'public/seo/wisielec.html')));
 app.get('/hangman-online',          (req, res) => res.sendFile(path.join(__dirname, 'public/seo/hangman-online.html')));

@@ -238,12 +238,12 @@
     var g = GAMES[l] || GAMES['pl'];
     document.getElementById('games-grid').innerHTML =
       card('/', '🌍', g.pm.title || 'Państwa-Miasta', g.pm.desc, g.pm.players, 'PL/EN/DE/SV', g.pm.tag1, false, g.pm.play, l, g.pm.age) +
-      card('/taboo', '🎭', g.taboo.title || 'Tabu', g.taboo.desc, g.taboo.players, 'PL/EN/DE/SV', g.taboo.tag1, false, g.taboo.play, l, g.taboo.age) +
+      card(l==='pl'?'/zakazane-slowa':l==='de'?'/verbotene-woerter':l==='sv'?'/forbjudna-ord':'/forbidden-words', '🎭', g.taboo.title || 'Tabu', g.taboo.desc, g.taboo.players, 'PL/EN/DE/SV', g.taboo.tag1, false, g.taboo.play, l, g.taboo.age) +
       card(l==='pl'?'/dwie-prawdy-jedno-klamstwo':l==='de'?'/zwei-wahrheiten-eine-luege':l==='sv'?'/tva-sanningar-en-logn':'/two-truths-one-lie', '🤥', g.twotruth.title || '2 Truths 1 Lie', g.twotruth.desc, g.twotruth.players, 'PL/EN/DE/SV', g.twotruth.tag1, false, g.twotruth.play, l, g.twotruth.age) +
       card(l==='pl'?'/kropki-i-kreski-online':l==='de'?'/punkte-und-linien-online':l==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online', '🔵', g.dots.title || 'Dots & Boxes', g.dots.desc, g.dots.players, 'PL/EN/DE/SV', g.dots.tag1, false, g.dots.play, l, g.dots.age) +
       card(l==='pl'?'/wisielec':l==='de'?'/galgenmaennchen-online':l==='sv'?'/hanga-gubbe-online':'/hangman-online', '🪢', g.hangman.title || 'Hangman', g.hangman.desc, g.hangman.players, 'PL/EN/DE/SV', g.hangman.tag1, false, g.hangman.play, l, g.hangman.age) +
-      card('/bingo', '🎯', g.bingo ? g.bingo.title : 'Corporate Bingo', g.bingo ? g.bingo.desc : '', g.bingo ? g.bingo.players : '2-50', 'PL/EN/DE/SV', g.bingo ? g.bingo.tag1 : 'Team building', false, g.bingo ? g.bingo.play : '🎮 Play now', l, g.bingo ? g.bingo.age : '16+') +
-      card('/drawing', '🎨', g.drawing ? g.drawing.title : 'Sketch & Guess', g.drawing ? g.drawing.desc : '', g.drawing ? g.drawing.players : '4-10', 'PL/EN/DE/SV', g.drawing ? g.drawing.tag1 : 'Ice breaker', false, g.drawing ? g.drawing.play : '🎮 Play now', l, g.drawing ? g.drawing.age : '8+');
+      card((l==='pl'?'/korporacyjne-bingo':l==='de'?'/unternehmens-bingo':l==='sv'?'/foretagsbingo':'/corporate-bingo'), '🎯', g.bingo ? g.bingo.title : 'Corporate Bingo', g.bingo ? g.bingo.desc : '', g.bingo ? g.bingo.players : '2-50', 'PL/EN/DE/SV', g.bingo ? g.bingo.tag1 : 'Team building', false, g.bingo ? g.bingo.play : '🎮 Play now', l, g.bingo ? g.bingo.age : '16+') +
+      card(l==='pl'?'/szkicuj-i-zgaduj':l==='de'?'/zeichnen-und-raten':l==='sv'?'/skissa-och-gissa':'/sketch-and-guess', '🎨', g.drawing ? g.drawing.title : 'Sketch & Guess', g.drawing ? g.drawing.desc : '', g.drawing ? g.drawing.players : '4-10', 'PL/EN/DE/SV', g.drawing ? g.drawing.tag1 : 'Ice breaker', false, g.drawing ? g.drawing.play : '🎮 Play now', l, g.drawing ? g.drawing.age : '8+');
   }
 
   function card(href, icon, title, desc, players, lang_tag, tag1, comingSoon, btnLabel, l, age) {

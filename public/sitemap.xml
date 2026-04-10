@@ -429,4 +429,109 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/galgenmaennchen-online"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/hangman-online"/>
   </url>
+
+  <!-- Sketch & Guess SEO landing pages -->
+  <url>
+    <loc>https://panstwamiastagra.com/szkicuj-i-zgaduj</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/szkicuj-i-zgaduj"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/sketch-and-guess"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zeichnen-und-raten"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/skissa-och-gissa"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/sketch-and-guess"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/sketch-and-guess</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/sketch-and-guess"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/szkicuj-i-zgaduj"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zeichnen-und-raten"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/skissa-och-gissa"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/sketch-and-guess"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/zeichnen-und-raten</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zeichnen-und-raten"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/szkicuj-i-zgaduj"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/sketch-and-guess"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/skissa-och-gissa"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/sketch-and-guess"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/skissa-och-gissa</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/skissa-och-gissa"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/szkicuj-i-zgaduj"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/sketch-and-guess"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zeichnen-und-raten"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/sketch-and-guess"/>
+  </url>
+
+  <!-- Forbidden Words SEO landing pages -->
+  <url><loc>https://panstwamiastagra.com/zakazane-slowa</loc><lastmod>2026-04-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/zakazane-slowa"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/forbidden-words"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/verbotene-woerter"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/forbjudna-ord"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/forbidden-words"/>
+  </url>
+  <url><loc>https://panstwamiastagra.com/forbidden-words</loc><lastmod>2026-04-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/forbidden-words"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/zakazane-slowa"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/verbotene-woerter"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/forbjudna-ord"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/forbidden-words"/>
+  </url>
+  <url><loc>https://panstwamiastagra.com/verbotene-woerter</loc><lastmod>2026-04-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/verbotene-woerter"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/zakazane-slowa"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/forbidden-words"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/forbjudna-ord"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/forbidden-words"/>
+  </url>
+  <url><loc>https://panstwamiastagra.com/forbjudna-ord</loc><lastmod>2026-04-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/forbjudna-ord"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/zakazane-slowa"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/forbidden-words"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/verbotene-woerter"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/forbidden-words"/>
+  </url>
+  <!-- Corporate Bingo SEO landing pages -->
+  <url><loc>https://panstwamiastagra.com/korporacyjne-bingo</loc><lastmod>2026-04-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/korporacyjne-bingo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/corporate-bingo"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/unternehmens-bingo"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/foretagsbingo"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/corporate-bingo"/>
+  </url>
+  <url><loc>https://panstwamiastagra.com/corporate-bingo</loc><lastmod>2026-04-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/corporate-bingo"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/korporacyjne-bingo"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/unternehmens-bingo"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/foretagsbingo"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/corporate-bingo"/>
+  </url>
+  <url><loc>https://panstwamiastagra.com/unternehmens-bingo</loc><lastmod>2026-04-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/unternehmens-bingo"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/korporacyjne-bingo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/corporate-bingo"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/foretagsbingo"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/corporate-bingo"/>
+  </url>
+  <url><loc>https://panstwamiastagra.com/foretagsbingo</loc><lastmod>2026-04-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/foretagsbingo"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/korporacyjne-bingo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/corporate-bingo"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/unternehmens-bingo"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/corporate-bingo"/>
+  </url>
 </urlset>

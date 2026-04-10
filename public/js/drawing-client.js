@@ -211,7 +211,9 @@ const LANGS = {
 
 // ── State ─────────────────────────────────────────────────────────
 const _urlLang = new URLSearchParams(window.location.search).get('lang');
-let lang = (['pl','en','de','sv'].includes(_urlLang) ? _urlLang : 'pl');
+let lang = (window._forceLang && ['pl','en','de','sv'].includes(window._forceLang))
+           ? window._forceLang
+           : (['pl','en','de','sv'].includes(_urlLang) ? _urlLang : 'pl');
 let L = LANGS[lang];
 let myId = null, myName = '', roomCode = '', roomState = null, isHost = false;
 let timerInterval = null;
