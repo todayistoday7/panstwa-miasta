@@ -844,7 +844,7 @@ function applyTranslations() {
   set('lbl-cat-film',       'catFilm');
   set('lbl-cat-history',    'catHistory');
   set('lbl-cat-animals',    'catAnimals');
-  set('lbl-cat-kids',       'catKids');
+  set('lbl-cat-kids',       'catKids'); // cartoons category
   set('lbl-cat-mixed',      'catMixed');
   set('lbl-turns-each',     'turnsEach');
   set('lbl-timer',          'timer');
