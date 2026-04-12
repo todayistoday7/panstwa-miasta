@@ -535,32 +535,36 @@ window._buildFooterLangBtns = function() {
                      lp === 'de' ? '/wie-man-spielt' :
                      lp === 'sv' ? '/hur-man-spelar' : '/how-to-play';
     var rulesLinks = lp === 'pl'
-      ? { pm:   '/jak-grac',
-          tabu: '/jak-grac/tabu',
-          hang: '/jak-grac/wisielec',
-          dots: '/jak-grac/kropki-i-kreski',
-          tt:   '/jak-grac/dwie-prawdy-jedno-klamstwo',
-          drawing: '/jak-grac/szkicuj-i-zgaduj' }
+      ? { pm:      '/jak-grac',
+          tabu:    '/jak-grac/tabu',
+          hang:    '/jak-grac/wisielec',
+          dots:    '/jak-grac/kropki-i-kreski',
+          tt:      '/jak-grac/dwie-prawdy-jedno-klamstwo',
+          drawing: '/jak-grac/szkicuj-i-zgaduj',
+          bingo:   '/jak-grac/korporacyjne-bingo' }
       : lp === 'de'
-      ? { pm:   '/wie-man-spielt',
-          tabu: '/wie-man-spielt/verbotene-woerter',
-          hang: '/wie-man-spielt/galgenmaennchen',
-          dots: '/wie-man-spielt/punkte-und-linien',
-          tt:   '/wie-man-spielt/zwei-wahrheiten-eine-luege',
-          drawing: '/wie-man-spielt/zeichnen-und-raten' }
+      ? { pm:      '/wie-man-spielt',
+          tabu:    '/wie-man-spielt/verbotene-woerter',
+          hang:    '/wie-man-spielt/galgenmaennchen-online',
+          dots:    '/wie-man-spielt/punkte-und-linien-online',
+          tt:      '/wie-man-spielt/zwei-wahrheiten-eine-luege',
+          drawing: '/wie-man-spielt/zeichnen-und-raten',
+          bingo:   '/wie-man-spielt/unternehmens-bingo' }
       : lp === 'sv'
-      ? { pm:   '/hur-man-spelar',
-          tabu: '/hur-man-spelar/forbjudna-ord',
-          hang: '/hur-man-spelar/hanga-gubbe',
-          dots: '/hur-man-spelar/punkter-och-linjer',
-          tt:   '/hur-man-spelar/tva-sanningar-en-logn',
-          drawing: '/hur-man-spelar/skissa-och-gissa' }
-      : { pm:   '/how-to-play',
-          tabu: '/how-to-play/taboo',
-          hang: '/how-to-play/hangman',
-          dots: '/how-to-play/dots-and-boxes',
-          tt:   '/how-to-play/two-truths-one-lie',
-          drawing: '/how-to-play/sketch-and-guess' };
+      ? { pm:      '/hur-man-spelar',
+          tabu:    '/hur-man-spelar/forbjudna-ord',
+          hang:    '/hur-man-spelar/hanga-gubbe-online',
+          dots:    '/hur-man-spelar/punkter-och-linjer-online',
+          tt:      '/hur-man-spelar/tva-sanningar-en-logn',
+          drawing: '/hur-man-spelar/skissa-och-gissa',
+          bingo:   '/hur-man-spelar/foretagsbingo' }
+      : { pm:      '/how-to-play',
+          tabu:    '/how-to-play/taboo',
+          hang:    '/how-to-play/hangman',
+          dots:    '/how-to-play/dots-and-boxes',
+          tt:      '/how-to-play/two-truths-one-lie',
+          drawing: '/how-to-play/sketch-and-guess',
+          bingo:   '/how-to-play/corporate-bingo' };
 
     var L = {
       pl: { games:'Gry', rules:'Zasady gry', about:'O grze',
@@ -576,6 +580,7 @@ window._buildFooterLangBtns = function() {
             howto_dots:'Jak grać — Kropki i Kreski',
             howto_tt:'Jak grać — Dwie Prawdy',
             howto_drawing:'Jak grać — Szkicuj i Zgaduj',
+            howto_bingo:'Jak grać — Korporacyjne Bingo',
             home:'Strona główna', words:'Słowa na literę', bug:'🐛 Zgłoś błąd' },
       en: { games:'Games', rules:'Rules', about:'About',
             cats:'Categories', tagline:'Free online multiplayer games for friends and family',
@@ -589,7 +594,8 @@ window._buildFooterLangBtns = function() {
             howto_hang:'How to play — Hangman',
             howto_dots:'How to play — Dots & Boxes',
             howto_tt:'How to play — 2 Truths 1 Lie',
-            howto_drawing:'How to play — Sketch & Guess', home:'Home', words:'Words by letter', bug:'🐛 Report a Bug' },
+            howto_drawing:'How to play — Sketch & Guess',
+            howto_bingo:'How to play — Corporate Bingo', home:'Home', words:'Words by letter', bug:'🐛 Report a Bug' },
       de: { games:'Spiele', rules:'Regeln', about:'Über',
             cats:'Kategorien', tagline:'Kostenlose Multiplayer-Spiele online',
             privacy:'Datenschutz',
@@ -602,6 +608,8 @@ window._buildFooterLangBtns = function() {
             howto_hang:'Spielregeln — Galgenmännchen',
             howto_dots:'Spielregeln — Punkte & Linien',
             howto_tt:'Spielregeln — 2 Wahrheiten 1 Lüge',
+            howto_drawing:'Spielregeln — Zeichnen & Raten',
+            howto_bingo:'Spielregeln — Unternehmens-Bingo',
             words:'Wörter nach Buchstabe', bug:'🐛 Fehler melden' },
       sv: { games:'Spel', rules:'Regler', about:'Om',
             cats:'Kategorier', tagline:'Gratis multiplayer-spel online för vänner och familj',
@@ -615,6 +623,8 @@ window._buildFooterLangBtns = function() {
             howto_hang:'Spelregler — Hänga gubbe',
             howto_dots:'Spelregler — Punkter & Linjer',
             howto_tt:'Spelregler — 2 Sanningar 1 Lögn',
+            howto_drawing:'Spelregler — Skissa & Gissa',
+            howto_bingo:'Spelregler — Företagsbingo',
             words:'Ord per bokstav', bug:'🐛 Rapportera fel' },
     };
     var t = L[lp] || L['en'];
@@ -644,6 +654,7 @@ window._buildFooterLangBtns = function() {
             '<a href="' + rulesLinks.dots + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_dots + '</a>' +
             '<a href="' + rulesLinks.tt   + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_tt   + '</a>' +
             '<a href="' + rulesLinks.drawing + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + (t.howto_drawing||'How to play — Sketch & Guess') + '</a>' +
+            '<a href="' + rulesLinks.bingo + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + (t.howto_bingo||'How to play — Corporate Bingo') + '</a>' +
           '</div>' +
         '</div>' +
         '<div>' +
