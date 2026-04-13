@@ -545,7 +545,7 @@ window._buildFooterLangBtns = function() {
                      lp === 'sv' ? '/hur-man-spelar' : '/how-to-play';
     var rulesLinks = lp === 'pl'
       ? { pm:      '/jak-grac',
-          tabu:    '/jak-grac/tabu',
+          tabu:    '/jak-grac/zakazane-slowa',
           hang:    '/jak-grac/wisielec',
           dots:    '/jak-grac/kropki-i-kreski',
           tt:      '/jak-grac/dwie-prawdy-jedno-klamstwo',
@@ -568,7 +568,7 @@ window._buildFooterLangBtns = function() {
           drawing: '/hur-man-spelar/skissa-och-gissa',
           bingo:   '/hur-man-spelar/foretagsbingo' }
       : { pm:      '/how-to-play',
-          tabu:    '/how-to-play/taboo',
+          tabu:    '/how-to-play/forbidden-words',
           hang:    '/how-to-play/hangman',
           dots:    '/how-to-play/dots-and-boxes',
           tt:      '/how-to-play/two-truths-one-lie',

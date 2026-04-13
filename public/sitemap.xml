@@ -107,12 +107,12 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/jak-grac"/>
   </url>
   <url>
-    <loc>https://panstwamiastagra.com/jak-grac/tabu</loc>
+    <loc>https://panstwamiastagra.com/jak-grac/zakazane-slowa</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac/tabu"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/jak-grac/tabu"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac/zakazane-slowa"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/jak-grac/zakazane-slowa"/>
   </url>
   <url>
     <loc>https://panstwamiastagra.com/jak-grac/wisielec</loc>
@@ -147,12 +147,12 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play"/>
   </url>
   <url>
-    <loc>https://panstwamiastagra.com/how-to-play/taboo</loc>
+    <loc>https://panstwamiastagra.com/how-to-play/forbidden-words</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play/taboo"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play/taboo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play/forbidden-words"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play/forbidden-words"/>
   </url>
   <url>
     <loc>https://panstwamiastagra.com/how-to-play/hangman</loc>

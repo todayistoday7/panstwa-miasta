@@ -133,8 +133,8 @@
     <a class="game-pill" onclick="return showGame('hangman')" href="#hangman"><span class="game-pill-icon">🪢</span> Galgenmännchen</a>
     <a class="game-pill" onclick="return showGame('dots')" href="#dots"><span class="game-pill-icon">🔵</span> Punkte &amp; Linien</a>
     <a class="game-pill" onclick="return showGame('twotruth')" href="#twotruth"><span class="game-pill-icon">🤥</span> 2 Wahrheiten 1 Lüge</a>
-    <a class="game-pill" href="/wie-man-spielt/zeichnen-und-raten"><span class="game-pill-icon">🎨</span> Zeichnen &amp; Raten</a>
-    <a class="game-pill" href="/wie-man-spielt/unternehmens-bingo"><span class="game-pill-icon">🎯</span> Unternehmens-Bingo</a>
+    <a class="game-pill" onclick="return showGame('zeichnen')" href="#zeichnen"><span class="game-pill-icon">🎨</span> Zeichnen &amp; Raten</a>
+    <a class="game-pill" onclick="return showGame('bingo')" href="#bingo"><span class="game-pill-icon">🎯</span> Unternehmens-Bingo</a>
     
   </div>
 
@@ -314,20 +314,46 @@
   </div>
 
 
-   <div id="bingo" class="game-section">
-    <div class="game-section-header"><span class="game-section-icon">🎯</span><div><div class="game-section-title">Unternehmens-Bingo</div><div class="game-section-sub">2–50 Spieler · für Meetings · PL/EN/DE/SV</div></div></div>
-    <p class="rules-p">Ein heimliches Spiel für langweilige Meetings. Jeder bekommt eine einzigartige 5×5-Karte mit Firmenfloskeln und streicht sie durch wenn er sie hört. Erstes Bingo gewinnt.</p>
-    <div class="rules-h2">Regeln</div>
+</div>
+
+  <div id="zeichnen" class="game-section">
+    <div class="game-section-header"><span class="game-section-icon">🎨</span><div><div class="game-section-title">Zeichnen &amp; Raten</div><div class="game-section-sub">3–10 Spieler · keine Punkte · jedes Gerät</div></div></div>
+    <p class="rules-p">Ein Partyspiel ohne Punkte, bei dem Wörter durch eine Kette von Zeichnungen und Rateversuchen gehen — und dabei komisch entstellt werden.</p>
+    <div class="rules-h2">So funktioniert es</div>
+    <p class="rules-p">Jeder Spieler gibt ein geheimes Wort ein. Es wird weitergegeben, der nächste zeichnet es, der übernächste rät was die Zeichnung zeigt — und so weiter bis die Kette vollständig ist. Dann sehen alle die Entwicklung ihres ursprünglichen Wortes.</p>
+    <div class="rules-h2">Schritt für Schritt</div>
     <ul class="rules-ul">
-      <li><strong>Raum beitreten</strong> vor dem Meeting und Karte erhalten</li>
-      <li><strong>Felder markieren</strong> sobald du einen Begriff hörst — tippe auf das Feld</li>
-      <li><strong>Reihe vervollständigen</strong> — waagerecht, senkrecht oder diagonal — und BINGO drücken!</li>
+      <li><strong>Wort eingeben</strong> — alles: Tiere, Objekte, berühmte Personen (30 Sekunden)</li>
+      <li><strong>Zeichnen</strong> — du erhältst ein fremdes Wort und zeichnest es (80 Sekunden)</li>
+      <li><strong>Raten</strong> — du erhältst eine Zeichnung und tippst was sie zeigt (30 Sekunden)</li>
+      <li><strong>Enthüllung</strong> — alle sehen die volle Kette und lachen</li>
     </ul>
-    <div class="rules-tip"><p>💡 Teile den Code mit vertrauten Kollegen vor dem Meeting — als Gruppe zu spielen macht es viel witziger.</p></div>
-    <div class="game-cta"><p>Jetzt spielen!</p><a href="/unternehmens-bingo" class="btn">🎮 Unternehmens-Bingo spielen</a></div>
+    <div class="rules-tip"><p>💡 Du musst nicht gut zeichnen können — schlechte Zeichnungen machen das Spiel lustiger.</p></div>
+    <div class="rules-h2">Keine Punkte</div>
+    <p class="rules-p">Es gibt keinen Gewinner. Die Belohnung ist zu sehen wie dein „Eiffelturm" zu einem „Zauberer" wird. Am besten mit 5–8 Spielern.</p>
+    <div class="game-cta"><p>Bereit zu spielen?</p><a href="/zeichnen-und-raten" class="btn">🎨 Zeichnen &amp; Raten spielen</a></div>
   </div>
-</div>
-</div>
+
+  <div id="bingo" class="game-section">
+    <div class="game-section-header"><span class="game-section-icon">🎯</span><div><div class="game-section-title">Unternehmens-Bingo</div><div class="game-section-sub">2–50 Spieler · Meetings · jedes Gerät</div></div></div>
+    <p class="rules-p">Für alle die schon zu oft „Synergien heben" oder „die Nadel bewegen" gehört haben. Unternehmens-Bingo macht selbst das ödetse Meeting erträglich.</p>
+    <div class="rules-h2">So funktioniert es</div>
+    <ul class="rules-ul">
+      <li><strong>Host erstellt einen Raum</strong> — Code mit dem Team teilen</li>
+      <li><strong>Alle bekommen eine einzigartige 5×5-Karte</strong> — mit Unternehmensfloskeln</li>
+      <li><strong>Während des Meetings</strong> — Floskel antippen wenn du sie hörst</li>
+      <li><strong>Fünf in einer Zeile</strong> — waagerecht, senkrecht oder diagonal — BINGO!</li>
+    </ul>
+    <div class="rules-tip"><p>💡 Halte die App in einem Tab offen während die Kamera läuft — ein kurzer Blick aufs Handy fällt niemandem auf.</p></div>
+    <div class="rules-h2">Einstellungen</div>
+    <ul class="rules-ul">
+      <li><strong>2–50 Spieler</strong> — skaliert für jede Teamgröße</li>
+      <li><strong>Privat oder öffentlich</strong></li>
+      <li><strong>Keine Anmeldung nötig</strong></li>
+    </ul>
+    <div class="game-cta"><p>Bereit zu spielen?</p><a href="/unternehmens-bingo" class="btn">🎯 Unternehmens-Bingo spielen</a></div>
+  </div>
+
 
 <script>
 function showGame(id) {
@@ -337,9 +363,8 @@ function showGame(id) {
     'hangman': '/wie-man-spielt/galgenmaennchen-online',
     'dots': '/wie-man-spielt/punkte-und-linien-online',
     'twotruth': '/wie-man-spielt/zwei-wahrheiten-eine-luege',
-    'sketch': '/wie-man-spielt/zeichnen-und-raten',
-    'bingo': '/wie-man-spielt/unternehmens-bingo',
-    'bingo': '/wie-man-spielt/unternehmens-bingo'
+    'zeichnen': '/wie-man-spielt/zeichnen-und-raten',
+    'bingo':    '/wie-man-spielt/unternehmens-bingo'
   };
   document.querySelectorAll('.game-section').forEach(function(s){s.classList.remove('active');});
   document.querySelectorAll('.game-pill').forEach(function(p){p.classList.remove('active');});
@@ -355,9 +380,10 @@ function showGame(id) {
 (function() {
   var pathMap = {
     'verbotene-woerter': 'taboo',
-    'galgenmaennchen': 'hangman',
-    'punkte-und-linien': 'dots',
+    'galgenmaennchen-online': 'hangman',
+    'punkte-und-linien-online': 'dots',
     'zwei-wahrheiten-eine-luege': 'twotruth',
+    'zeichnen-und-raten': 'zeichnen',
     'unternehmens-bingo': 'bingo'
   };
   var pathSeg = window.location.pathname.split('/').pop();
