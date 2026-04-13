@@ -291,10 +291,12 @@ function initVisibilityToggle() {
 
   window._gbLabels = LABELS;
 
+  var SUPPORTED_LANGS = ['pl','en','de','sv'];
   function getLang() {
-    return (new URLSearchParams(window.location.search).get('lang')) ||
-           (window._forceLang) ||
-           (navigator.language || '').slice(0, 2) || 'pl';
+    var raw = (new URLSearchParams(window.location.search).get('lang')) ||
+              (window._forceLang) ||
+              (navigator.language || '').slice(0, 2) || 'pl';
+    return SUPPORTED_LANGS.indexOf(raw) !== -1 ? raw : 'pl';
   }
 
   function injectBurger() {
@@ -375,6 +377,7 @@ function initVisibilityToggle() {
       '<a href="' + ruleBase + '"><span class="gb-ico">📖</span>' + t.rules + '</a>' +
       '<div class="gb-div"></div>' +
       '<a href="/privacy' + ql + '"><span class="gb-ico">🔒</span>' + t.privacy + '</a>' +
+      '<a href="/blog' + (lang==='pl'?'/pl':lang==='de'?'/de':lang==='sv'?'/sv':'') + '" ><span class="gb-ico">✍️</span>' + (t.blog||'Blog') + '</a>' +
       '<a href="#" onclick="event.preventDefault();openBugModal();" style="cursor:pointer;"><span class="gb-ico">🐛</span>' + (t.bug||'Report a Bug') + '</a>';
 
     // ── Wrap and insert ──────────────────────────────────────────
@@ -483,18 +486,22 @@ window._rebuildBurger = function(newLang) {
     '<div class="gb-sec">' + t.sg + '</div>' +
     '<a href="/' + ql + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
     '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
+    '<div class="gb-div"></div>' +
     '<a href="/' + ql + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
-    '<a href="' + (lang==='pl'?'/zakazane-slowa':lang==='de'?'/verbotene-woerter':lang==='sv'?'/forbjudna-ord':'/forbidden-words') + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
-    '<a href="' + (lang==='pl'?'/wisielec':lang==='de'?'/galgenmaennchen-online':lang==='sv'?'/hanga-gubbe-online':'/hangman-online') + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
-    '<a href="' + (lang==='pl'?'/kropki-i-kreski-online':lang==='de'?'/punkte-und-linien-online':lang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
-    '<a href="' + (lang==='pl'?'/dwie-prawdy-jedno-klamstwo':lang==='de'?'/zwei-wahrheiten-eine-luege':lang==='sv'?'/tva-sanningar-en-logn':'/two-truths-one-lie') + '"><span class="gb-ico">🤥</span>' + t.gtt + '</a>' +
+    '<a href="' + (newLang==='pl'?'/zakazane-slowa':newLang==='de'?'/verbotene-woerter':newLang==='sv'?'/forbjudna-ord':'/forbidden-words') + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
+    '<a href="' + (newLang==='pl'?'/wisielec':newLang==='de'?'/galgenmaennchen-online':newLang==='sv'?'/hanga-gubbe-online':'/hangman-online') + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
+    '<a href="' + (newLang==='pl'?'/kropki-i-kreski-online':newLang==='de'?'/punkte-und-linien-online':newLang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
+    '<a href="' + (newLang==='pl'?'/dwie-prawdy-jedno-klamstwo':newLang==='de'?'/zwei-wahrheiten-eine-luege':newLang==='sv'?'/tva-sanningar-en-logn':'/two-truths-one-lie') + '"><span class="gb-ico">🤥</span>' + t.gtt + '</a>' +
+    '<a href="' + (newLang==='pl'?'/korporacyjne-bingo':newLang==='de'?'/unternehmens-bingo':newLang==='sv'?'/foretagsbingo':'/corporate-bingo') + '"><span class="gb-ico">🎯</span>' + (t.gbingo||'Corporate Bingo') + '</a>' +
+    '<a href="' + (newLang==='pl'?'/szkicuj-i-zgaduj':newLang==='de'?'/zeichnen-und-raten':newLang==='sv'?'/skissa-och-gissa':'/sketch-and-guess') + '"><span class="gb-ico">🎨</span>' + (t.gdrawing||'Sketch & Guess') + '</a>' +
+    '<a href="/rooms' + ql + '"><span class="gb-ico">🔴</span>' + (t.rooms||'Live Rooms') + '</a>' +
     '<div class="gb-div"></div>' +
     '<div class="gb-sec">' + t.sr + '</div>' +
     '<a href="' + ruleBase + '"><span class="gb-ico">📖</span>' + t.rules + '</a>' +
     '<div class="gb-div"></div>' +
-    '<div class="gb-sec">' + t.sm + '</div>' +
-    '<a href="/kategorie"><span class="gb-ico">📋</span>' + t.cats + '</a>' +
-    '<a href="/slowa"><span class="gb-ico">🔤</span>' + t.words + '</a>';
+    '<a href="/blog' + (newLang==='pl'?'/pl':newLang==='de'?'/de':newLang==='sv'?'/sv':'') + '"><span class="gb-ico">✍️</span>' + (t.blog||'Blog') + '</a>' +
+    '<a href="/privacy' + ql + '"><span class="gb-ico">🔒</span>' + t.privacy + '</a>' +
+    '<a href="#" onclick="event.preventDefault();openBugModal();" style="cursor:pointer;"><span class="gb-ico">🐛</span>' + (t.bug||'Report a Bug') + '</a>';
   // Update logo href
   if (logo) logo.href = '/' + ql;
 };
@@ -525,8 +532,10 @@ window._buildFooterLangBtns = function() {
   function getFooterLang() {
     // Use the live page lang variable if available, else URL param, else browser lang
     if (typeof lang !== 'undefined' && lang) return lang;
-    return (new URLSearchParams(window.location.search).get('lang')) ||
-           (navigator.language || '').slice(0,2) || 'pl';
+    var _raw = (new URLSearchParams(window.location.search).get('lang')) ||
+               (window._forceLang) ||
+               (navigator.language || '').slice(0,2) || 'pl';
+    return ['pl','en','de','sv'].indexOf(_raw) !== -1 ? _raw : 'pl';
   }
 
   function buildFooterHTML(footerLang) {
@@ -700,8 +709,9 @@ window._buildFooterLangBtns = function() {
     if (localStorage.getItem('gdpr_consent')) return;
     if (document.getElementById('gdpr-banner')) return;
 
-    var lang = (new URLSearchParams(window.location.search).get('lang')) ||
+    var _rl = (new URLSearchParams(window.location.search).get('lang')) ||
                (navigator.language || '').slice(0,2) || 'pl';
+    var lang = ['pl','en','de','sv'].indexOf(_rl) !== -1 ? _rl : 'pl';
 
     var texts = {
       pl: {
