@@ -267,7 +267,7 @@ function initVisibilityToggle() {
 
   var LABELS = {
     pl: { home:'Strona główna', games:'Wszystkie gry', rooms:'Aktywne pokoje', privacy:'Prywatność', bug:'🐛 Zgłoś błąd', rules:'Zasady gier',
-          cats:'Kategorie', howto_drawing:'Jak grać — Szkicuj i Zgaduj', home:'Strona główna', words:'Słowa na literę',
+          cats:'Kategorie', howto_drawing:'Jak grać — Szkicuj i Zgaduj', home:'Strona główna', blog:'Blog', words:'Słowa na literę',
           sg:'Gry', sr:'Zasady', sm:'Więcej',
           gpm:'Państwa-Miasta', gtaboo:'Zakazane Słowa',
           ghang:'Wisielec', gdots:'Kropki i Kreski', gtt:'Dwie Prawdy Jedno Kłamstwo', gbingo:'Korporacyjne Bingo', gdrawing:'Szkicuj i Zgaduj' },
@@ -595,7 +595,7 @@ window._buildFooterLangBtns = function() {
             howto_dots:'How to play — Dots & Boxes',
             howto_tt:'How to play — 2 Truths 1 Lie',
             howto_drawing:'How to play — Sketch & Guess',
-            howto_bingo:'How to play — Corporate Bingo', home:'Home', words:'Words by letter', bug:'🐛 Report a Bug' },
+            howto_bingo:'How to play — Corporate Bingo', home:'Home', blog:'Blog', words:'Words by letter', bug:'🐛 Report a Bug' },
       de: { games:'Spiele', rules:'Regeln', about:'Über',
             cats:'Kategorien', tagline:'Kostenlose Multiplayer-Spiele online',
             privacy:'Datenschutz',
@@ -610,7 +610,7 @@ window._buildFooterLangBtns = function() {
             howto_tt:'Spielregeln — 2 Wahrheiten 1 Lüge',
             howto_drawing:'Spielregeln — Zeichnen & Raten',
             howto_bingo:'Spielregeln — Unternehmens-Bingo',
-            words:'Wörter nach Buchstabe', bug:'🐛 Fehler melden' },
+            blog:'Blog', words:'Wörter nach Buchstabe', bug:'🐛 Fehler melden' },
       sv: { games:'Spel', rules:'Regler', about:'Om',
             cats:'Kategorier', tagline:'Gratis multiplayer-spel online för vänner och familj',
             privacy:'Integritetspolicy',
@@ -625,7 +625,7 @@ window._buildFooterLangBtns = function() {
             howto_tt:'Spelregler — 2 Sanningar 1 Lögn',
             howto_drawing:'Spelregler — Skissa & Gissa',
             howto_bingo:'Spelregler — Företagsbingo',
-            words:'Ord per bokstav', bug:'🐛 Rapportera fel' },
+            blog:'Blog', words:'Ord per bokstav', bug:'🐛 Rapportera fel' },
     };
     var t = L[lp] || L['en'];
 
@@ -662,6 +662,7 @@ window._buildFooterLangBtns = function() {
           '<div style="display:flex;flex-direction:column;gap:6px;">' +
             '<a href="/?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🏠 ' + (t.home||'Home') + '</a>' +
             '<a href="/privacy" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔒 ' + t.privacy + '</a>' +
+            '<a href="/blog' + (footerLang==='pl'?'/pl':footerLang==='de'?'/de':footerLang==='sv'?'/sv':'') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">✍️ ' + (t.blog||'Blog') + '</a>' +
             '<a href="#" onclick="event.preventDefault();if(typeof openBugModal===\'function\')openBugModal();" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;">' + (t.bug||'🐛 Report a Bug') + '</a>' +
           '</div>' +
         '</div>' +

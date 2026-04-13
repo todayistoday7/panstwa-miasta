@@ -143,6 +143,21 @@ app.get('/dots', (req, res) => {
   const map = { pl:'/kropki-i-kreski-online', de:'/punkte-und-linien-online', sv:'/punkter-och-linjer-online' };
   res.redirect(301, map[lang] || '/dots-and-boxes-online');
 });
+
+// ── Blog Routes ───────────────────────────────────────────────
+app.get('/blog',                                   (req,res) => res.sendFile(path.join(__dirname,'public/blog/index.html')));
+app.get('/blog/pl',                                (req,res) => res.sendFile(path.join(__dirname,'public/blog/pl/index.html')));
+app.get('/blog/de',                                (req,res) => res.sendFile(path.join(__dirname,'public/blog/de/index.html')));
+app.get('/blog/sv',                                (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/index.html')));
+app.get('/blog/fun-games-to-play-on-zoom',         (req,res) => res.sendFile(path.join(__dirname,'public/blog/fun-games-to-play-on-zoom.html')));
+app.get('/blog/online-party-games-no-download',    (req,res) => res.sendFile(path.join(__dirname,'public/blog/online-party-games-no-download.html')));
+app.get('/blog/pl/gry-na-spotkania-online',        (req,res) => res.sendFile(path.join(__dirname,'public/blog/pl/gry-na-spotkania-online.html')));
+app.get('/blog/pl/gry-integracyjne-dla-firm',      (req,res) => res.sendFile(path.join(__dirname,'public/blog/pl/gry-integracyjne-dla-firm.html')));
+app.get('/blog/de/spiele-fuer-videokonferenzen',   (req,res) => res.sendFile(path.join(__dirname,'public/blog/de/spiele-fuer-videokonferenzen.html')));
+app.get('/blog/de/online-partyspiele-kostenlos',   (req,res) => res.sendFile(path.join(__dirname,'public/blog/de/online-partyspiele-kostenlos.html')));
+app.get('/blog/sv/spel-att-spela-pa-distans',      (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/spel-att-spela-pa-distans.html')));
+app.get('/blog/sv/roliga-spel-pa-zoom',            (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/roliga-spel-pa-zoom.html')));
+
 app.get('/rooms',       (req, res) => res.sendFile(path.join(__dirname, 'public/rooms.html')));
 app.get('/privacy',     (req, res) => res.sendFile(path.join(__dirname, 'public/privacy.html')));
 app.get('/games',       (req, res) => res.sendFile(path.join(__dirname, 'public/games.html')));

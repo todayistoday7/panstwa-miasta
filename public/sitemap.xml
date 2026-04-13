@@ -562,4 +562,26 @@
   <url><loc>https://panstwamiastagra.com/hur-man-spelar/punkter-och-linjer-online</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://panstwamiastagra.com/hur-man-spelar/tva-sanningar-en-logn</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://panstwamiastagra.com/hur-man-spelar/foretagsbingo</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- Blog Hub Pages -->
+  <url><loc>https://panstwamiastagra.com/blog</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/blog/pl</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/blog/de</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/blog/sv</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+
+  <!-- Blog Articles — EN -->
+  <url><loc>https://panstwamiastagra.com/blog/fun-games-to-play-on-zoom</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://panstwamiastagra.com/blog/online-party-games-no-download</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+  <!-- Blog Articles — PL -->
+  <url><loc>https://panstwamiastagra.com/blog/pl/gry-na-spotkania-online</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://panstwamiastagra.com/blog/pl/gry-integracyjne-dla-firm</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+  <!-- Blog Articles — DE -->
+  <url><loc>https://panstwamiastagra.com/blog/de/spiele-fuer-videokonferenzen</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://panstwamiastagra.com/blog/de/online-partyspiele-kostenlos</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+  <!-- Blog Articles — SV -->
+  <url><loc>https://panstwamiastagra.com/blog/sv/spel-att-spela-pa-distans</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://panstwamiastagra.com/blog/sv/roliga-spel-pa-zoom</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
 </urlset>
