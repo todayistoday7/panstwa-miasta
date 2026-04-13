@@ -389,22 +389,6 @@
     display: none;
   }
 
-  /* ── Nav share btn ── */
-  .nav-share-btn {
-    display: none;
-    position: fixed;
-    top: 12px; right: 16px;
-    z-index: 200;
-    padding: 6px 12px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: 'Nunito', sans-serif;
-  }
 
   /* ── Waiting / need players ── */
   .waiting-msg {
@@ -439,7 +423,6 @@
 </head>
 <body>
 
-<button class="nav-share-btn" id="nav-share-btn" onclick="shareRoomBingo()">📤 Share</button>
 
 <div id="lang-bar" class="lang-bar"></div>
 
@@ -500,9 +483,9 @@
   <div id="screen-lobby" class="screen">
     <div style="width:100%;text-align:center;">
       <div class="room-code-display" id="room-code-display"></div>
-      <p class="room-code-hint">Udostępnij kod znajomym</p>
-      <button class="btn btn-secondary" onclick="shareRoomBingo()" style="margin-bottom:8px;">
-        📤 <span id="lbl-share-room">Udostępnij pokój</span>
+      <p class="room-code-hint" id="lbl-room-code-hint">Udostępnij kod znajomym</p>
+      <button class="btn" onclick="shareRoomBingo()" style="margin-bottom:8px;">
+        <span id="lbl-share-room">Udostępnij pokój</span>
       </button>
       <div style="display:flex;justify-content:center;margin-bottom:4px;">
         <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;max-width:280px;width:100%;">
