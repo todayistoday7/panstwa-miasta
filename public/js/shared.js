@@ -106,10 +106,22 @@ function shareRoom(gameSlug, titleText) {
     ? currentPath
     : (gameSlug ? '/' + gameSlug : '/');
   const url  = 'https://panstwamiastagra.com' + usePath + '?join=' + roomCode + '&lang=' + currentLang;
-  var copiedLabels = {pl:'🔗 Link skopiowany!', en:'🔗 Link copied!', de:'🔗 Link kopiert!'};
-  var toastMsg = copiedLabels[currentLang] || copiedLabels['en'];
-  _copyText(url);
-  if (typeof showToast === 'function') showToast(toastMsg);
+  var shareLabels = {pl:'Dołącz do gry! Kod pokoju: ', en:'Join my game! Room code: ', de:'Tritt dem Spiel bei! Raumcode: ', sv:'Gå med i mitt spel! Rumskod: '};
+  var shareTitle = {pl:'Zagraj ze mną!', en:'Play with me!', de:'Spiel mit mir!', sv:'Spela med mig!'};
+  var copiedLabels = {pl:'🔗 Link skopiowany!', en:'🔗 Link copied!', de:'🔗 Link kopiert!', sv:'🔗 Länk kopierad!'};
+  var shareText = (shareLabels[currentLang] || shareLabels['en']) + roomCode + ' ' + url;
+  if (navigator.share) {
+    navigator.share({
+      title: shareTitle[currentLang] || shareTitle['en'],
+      text: shareText
+    }).catch(function() {
+      _copyText(url);
+      if (typeof showToast === 'function') showToast(copiedLabels[currentLang] || copiedLabels['en']);
+    });
+  } else {
+    _copyText(url);
+    if (typeof showToast === 'function') showToast(copiedLabels[currentLang] || copiedLabels['en']);
+  }
 }
 
 function _copyText(text) {
@@ -164,6 +176,101 @@ function buildLangBar() {
     '<button class="lang-btn' + (code === (typeof lang !== 'undefined' ? lang : 'en') ? ' active' : '') +
     '" onclick="setUiLang(\'' + code + '\')">' + LANGS[code].name + '</button>'
   ).join('');
+}
+
+// ─── OTHER GAMES SUGGESTION ──────────────────────────────────────
+// Call at end of each game's final screen render, passing current game slug
+function renderOtherGames(currentGame) {
+  var el = document.getElementById('other-games-strip');
+  if (!el) return;
+
+  var lng = (typeof lang !== 'undefined' && lang) || window._forceLang || 'pl';
+
+  var labels = {
+    pl: { title: 'Może Cię zainteresować:', games: {
+      pm:      { name: 'Państwa-Miasta', icon: '🌍' },
+      taboo:   { name: 'Zakazane Słowa', icon: '🎭' },
+      hangman: { name: 'Wisielec',       icon: '🪢' },
+      dots:    { name: 'Kropki i Kreski',icon: '🔵' },
+      twotruth:{ name: '2 Prawdy 1 Kłamstwo', icon: '🤥' },
+      drawing: { name: 'Szkicuj i Zgaduj', icon: '🎨' },
+      bingo:   { name: 'Korporacyjne Bingo', icon: '🎯' },
+      whoami:  { name: 'Kim Jestem?',    icon: '❓' },
+    }},
+    en: { title: 'You might also enjoy:', games: {
+      pm:      { name: 'Countries & Cities', icon: '🌍' },
+      taboo:   { name: 'Forbidden Words',    icon: '🎭' },
+      hangman: { name: 'Hangman',            icon: '🪢' },
+      dots:    { name: 'Dots & Boxes',       icon: '🔵' },
+      twotruth:{ name: '2 Truths 1 Lie',     icon: '🤥' },
+      drawing: { name: 'Sketch & Guess',     icon: '🎨' },
+      bingo:   { name: 'Corporate Bingo',    icon: '🎯' },
+      whoami:  { name: 'Who Am I?',          icon: '❓' },
+    }},
+    de: { title: 'Das könnte dir gefallen:', games: {
+      pm:      { name: 'Länder & Städte',      icon: '🌍' },
+      taboo:   { name: 'Verbotene Wörter',     icon: '🎭' },
+      hangman: { name: 'Galgenmännchen',       icon: '🪢' },
+      dots:    { name: 'Punkte & Linien',      icon: '🔵' },
+      twotruth:{ name: '2 Wahrheiten 1 Lüge', icon: '🤥' },
+      drawing: { name: 'Zeichnen & Raten',     icon: '🎨' },
+      bingo:   { name: 'Unternehmens-Bingo',   icon: '🎯' },
+      whoami:  { name: 'Wer bin ich?',         icon: '❓' },
+    }},
+    sv: { title: 'Du kanske gillar:', games: {
+      pm:      { name: 'Länder & Städer',    icon: '🌍' },
+      taboo:   { name: 'Förbjudna ord',      icon: '🎭' },
+      hangman: { name: 'Hänga gubbe',        icon: '🪢' },
+      dots:    { name: 'Punkter & Linjer',   icon: '🔵' },
+      twotruth:{ name: '2 Sanningar 1 Lögn', icon: '🤥' },
+      drawing: { name: 'Skissa & Gissa',     icon: '🎨' },
+      bingo:   { name: 'Företagsbingo',      icon: '🎯' },
+      whoami:  { name: 'Vem är jag?',        icon: '❓' },
+    }},
+  };
+
+  var urls = {
+    pl: { pm:'/państwa-miasta', taboo:'/zakazane-slowa', hangman:'/wisielec',
+          dots:'/kropki-i-kreski-online', twotruth:'/dwie-prawdy-jedno-klamstwo',
+          drawing:'/szkicuj-i-zgaduj', bingo:'/korporacyjne-bingo', whoami:'/kim-jestem' },
+    en: { pm:'/panstwa-miasta', taboo:'/forbidden-words', hangman:'/hangman-online',
+          dots:'/dots-and-boxes-online', twotruth:'/two-truths-one-lie',
+          drawing:'/sketch-and-guess', bingo:'/corporate-bingo', whoami:'/who-am-i' },
+    de: { pm:'/panstwa-miasta', taboo:'/verbotene-woerter', hangman:'/galgenmaennchen-online',
+          dots:'/punkte-und-linien-online', twotruth:'/zwei-wahrheiten-eine-luege',
+          drawing:'/zeichnen-und-raten', bingo:'/unternehmens-bingo', whoami:'/wer-bin-ich' },
+    sv: { pm:'/panstwa-miasta', taboo:'/forbjudna-ord', hangman:'/hanga-gubbe-online',
+          dots:'/punkter-och-linjer-online', twotruth:'/tva-sanningar-en-logn',
+          drawing:'/skissa-och-gissa', bingo:'/foretagsbingo', whoami:'/vem-ar-jag' },
+  };
+
+  var L2 = labels[lng] || labels['en'];
+  var U  = urls[lng]   || urls['en'];
+
+  // All games except the current one, pick 3 varied ones
+  var all = ['pm','taboo','hangman','dots','twotruth','drawing','bingo','whoami'];
+  var others = all.filter(function(g) { return g !== currentGame; });
+  // Always show the same 3 for a given current game (deterministic, varied)
+  var picks = others.slice(0, 3);
+
+  var html = '<div style="border-top:1px solid var(--border);margin-top:28px;padding-top:18px;text-align:center;">'
+    + '<p style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">'
+    + L2.title + '</p>'
+    + '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">';
+
+  picks.forEach(function(g) {
+    var info = L2.games[g];
+    var url  = U[g] || '/';
+    html += '<a href="' + url + '" style="display:flex;align-items:center;gap:6px;'
+      + 'background:var(--card);border:1px solid var(--border);border-radius:50px;'
+      + 'padding:8px 16px;text-decoration:none;color:var(--text);font-size:13px;'
+      + 'font-weight:700;transition:border-color 0.2s;">'
+      + '<span style="font-size:16px;">' + info.icon + '</span>'
+      + info.name + '</a>';
+  });
+
+  html += '</div></div>';
+  el.innerHTML = html;
 }
 
 // ─── URL JOIN CODE PRE-FILL ──────────────────────────────────────

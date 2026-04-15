@@ -24,14 +24,12 @@ socket.on('connect', () => {
   keepAliveInterval = setInterval(() => {
     if (roomCode) socket.emit('keep_alive', { code: roomCode });
   }, 20000);
-  // Auto-rejoin on reconnect
+  // Auto-rejoin — works after full page reload (mobile sleep)
   const savedCode = sessionStorage.getItem('pm_code');
   const savedName = sessionStorage.getItem('pm_name');
-  if (prevId && prevId !== socket.id) {
-    if (savedCode && savedName) {
-      myName = savedName;
-      socket.emit('rejoin', { code: savedCode, name: savedName });
-    }
+  if (savedCode && savedName && !roomCode) {
+    myName = savedName;
+    socket.emit('rejoin', { code: savedCode, name: savedName });
   }
 });
 
@@ -703,7 +701,7 @@ function shareGame() {
     : (L2.inviteText || 'Come play Państwa-Miasta with me!') + ' ' + shareUrl;
 
   if (navigator.share) {
-    navigator.share({ title: 'Państwa-Miasta', text: text, url: shareUrl })
+    navigator.share({ title: 'Państwa-Miasta', text: text })
       .catch(function() { copyTextFallback(text); });
   } else {
     copyTextFallback(text);

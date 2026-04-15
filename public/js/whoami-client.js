@@ -325,11 +325,10 @@ let L = LANGS[lang] || LANGS['pl'];
 socket.on('connect', () => {
   const prevId = myId;
   myId = socket.id;
-  if (prevId && prevId !== socket.id) {
-    const sc = sessionStorage.getItem('whoami_code');
-    const sn = sessionStorage.getItem('whoami_name');
-    if (sc && sn) { myName = sn; socket.emit('whoami_rejoin', { code: sc, name: sn }); }
-  }
+  // Auto-rejoin — works after full page reload (mobile sleep)
+  const sc = sessionStorage.getItem('whoami_code');
+  const sn = sessionStorage.getItem('whoami_name');
+  if (sc && sn && !roomCode) { myName = sn; socket.emit('whoami_rejoin', { code: sc, name: sn }); }
 });
 
 socket.on('whoami_created', ({ code }) => {
@@ -744,6 +743,8 @@ function renderFinal(data) {
       <span class="wa-score-pts">${p.score}</span>
     </div>`
   ).join('');
+
+  if (typeof renderOtherGames === 'function') renderOtherGames('whoami');
 }
 
 // ── UI Actions ────────────────────────────────────────────────────

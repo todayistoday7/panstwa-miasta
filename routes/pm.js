@@ -531,7 +531,7 @@ function register(io, socket) {
             emitRoomState(io, room);
           }
           p._disconnectTimer = null;
-        }, 45000);
+        }, room.state.phase === 'lobby' ? 600000 : 45000); // 10min lobby, 45s game
         emitRoomState(io, room);
         const allGone = room.players.every(p => !p.connected);
         if (allGone) { lobby.remove(code); setTimeout(() => { if (rooms[code]) delete rooms[code]; }, 30 * 60 * 1000); }

@@ -192,14 +192,20 @@ let isHost    = false;
 // ── Socket plumbing ───────────────────────────────────────
 socket.on('connect', () => {
   myId = socket.id;
-});
-socket.on('reconnect', () => {
-  myId = socket.id;
+  // Auto-rejoin — works after full page reload (mobile sleep)
+  const sc = sessionStorage.getItem('bingo_code');
+  const sn = sessionStorage.getItem('bingo_name');
+  if (sc && sn && !roomCode) {
+    myName = sn;
+    socket.emit('bingo_join', { name: sn, code: sc });
+  }
 });
 
 socket.on('bingo_created', ({ code }) => {
   roomCode = code;
   isHost   = true;
+  sessionStorage.setItem('bingo_code', code);
+  sessionStorage.setItem('bingo_name', myName);
   document.getElementById('host-name').value = '';
   showScreen('screen-lobby');
 });
@@ -207,6 +213,9 @@ socket.on('bingo_created', ({ code }) => {
 socket.on('bingo_joined', ({ code, isHost: h }) => {
   roomCode = code;
   isHost   = h;
+  sessionStorage.setItem('bingo_code', code);
+  const nameEl = document.getElementById(h ? 'host-name' : 'join-name');
+  if (nameEl) sessionStorage.setItem('bingo_name', nameEl.value || myName);
   document.getElementById('join-name').value = '';
   showScreen('screen-lobby');
 });
@@ -381,6 +390,8 @@ function renderFinal(data) {
   if (playAgainBtn) playAgainBtn.style.display = isHost ? 'inline-flex' : 'none';
 
   applyTranslations();
+
+  if (typeof renderOtherGames === 'function') renderOtherGames('bingo');
 }
 
 // ── Actions ──────────────────────────────────────────────

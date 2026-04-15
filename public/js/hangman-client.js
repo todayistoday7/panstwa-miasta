@@ -411,11 +411,10 @@ socket.on('connect', () => {
   keepAliveInterval = setInterval(() => {
     if (roomCode) socket.emit('hang_keep_alive');
   }, 20000);
-  if (prevId && prevId !== socket.id) {
-    const sc = sessionStorage.getItem('hang_code');
-    const sn = sessionStorage.getItem('hang_name');
-    if (sc && sn) { myName = sn; socket.emit('hang_rejoin', { code: sc, name: sn }); }
-  }
+  // Auto-rejoin — works after full page reload (mobile sleep)
+  const sc = sessionStorage.getItem('hang_code');
+  const sn = sessionStorage.getItem('hang_name');
+  if (sc && sn && !roomCode) { myName = sn; socket.emit('hang_rejoin', { code: sc, name: sn }); }
 });
 
 socket.on('hang_room_created', ({ code }) => {
@@ -691,6 +690,8 @@ function renderFinal(data) {
 
   const playBtn = document.getElementById('lbl-play-again');
   if (playBtn) { playBtn.style.display = myId === data.hostId ? 'inline-flex' : 'none'; }
+
+  if (typeof renderOtherGames === 'function') renderOtherGames('hangman');
 }
 
 // ─── SHARED RENDERERS ────────────────────────────────────────────

@@ -292,11 +292,10 @@ socket.on('connect', () => {
   keepAliveInterval = setInterval(() => {
     if (roomCode) socket.emit('tt_keep_alive');
   }, 20000);
-  if (prevId && prevId !== socket.id) {
-    const sc = sessionStorage.getItem('tt_code');
-    const sn = sessionStorage.getItem('tt_name');
-    if (sc && sn) { myName = sn; socket.emit('tt_rejoin', { code: sc, name: sn }); }
-  }
+  // Auto-rejoin — works after full page reload (mobile sleep)
+  const sc = sessionStorage.getItem('tt_code');
+  const sn = sessionStorage.getItem('tt_name');
+  if (sc && sn && !roomCode) { myName = sn; socket.emit('tt_rejoin', { code: sc, name: sn }); }
 });
 
 socket.on('tt_room_created', ({ code }) => {
@@ -653,6 +652,8 @@ function renderFinal(data) {
   });
 
   document.getElementById('lbl-go-home').textContent = L.goHome;
+
+  if (typeof renderOtherGames === 'function') renderOtherGames('twotruth');
 }
 
 // ─── MINI SCOREBOARD (shown during writing phase for non-active) ──

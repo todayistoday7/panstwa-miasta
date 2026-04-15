@@ -374,7 +374,7 @@ function register(io, socket) {
           emitHangState(io, room);
         }
         p._disconnectTimer = null;
-      }, 45000);
+      }, room.state.phase === 'lobby' ? 600000 : 45000); // 10min lobby, 45s game
       emitHangState(io, room);
       const allGone = room.players.every(pl => !pl.connected);
       if (allGone) {

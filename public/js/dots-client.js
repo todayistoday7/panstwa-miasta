@@ -316,14 +316,12 @@ socket.on('connect', () => {
     if (roomCode) socket.emit('dots_keep_alive');
   }, 20000);
 
-  // Only attempt rejoin if this is a REconnect (we had a previous socket id)
-  // and we actually have a saved room. Never clear roomCode — it breaks the game.
-  if (prevId && prevId !== socket.id) {
-    const savedCode = sessionStorage.getItem('dots_code');
-    const savedName = sessionStorage.getItem('dots_name');
-    if (savedCode && savedName) {
-      socket.emit('dots_rejoin', { code: savedCode, name: savedName });
-    }
+  // Auto-rejoin — works after full page reload (mobile sleep)
+  const savedCode = sessionStorage.getItem('dots_code');
+  const savedName = sessionStorage.getItem('dots_name');
+  if (savedCode && savedName && !roomCode) {
+    myName = savedName;
+    socket.emit('dots_rejoin', { code: savedCode, name: savedName });
   }
 });
 
@@ -769,6 +767,8 @@ function renderFinal(data) {
     rematchBtn.textContent = L.rematch;
   }
   document.getElementById('lbl-new-game').textContent = L.newGame;
+
+  if (typeof renderOtherGames === 'function') renderOtherGames('dots');
 }
 
 // ─── ACTIONS ─────────────────────────────────────────────────────

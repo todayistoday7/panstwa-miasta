@@ -782,6 +782,8 @@ function renderFinal(data) {
       ` : ''}
     </div>`;
   }).join('');
+
+  if (typeof renderOtherGames === 'function') renderOtherGames('drawing');
 }
 
 function playAgain() {

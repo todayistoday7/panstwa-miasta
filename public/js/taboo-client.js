@@ -240,16 +240,12 @@ socket.on('connect', () => {
     if (roomCode) socket.emit('taboo_keep_alive', { code: roomCode });
   }, 20000);
 
-  // Bug 5 fix: auto-rejoin on reconnect if we were in a room
+  // Auto-rejoin — works after full page reload (mobile sleep)
   const savedCode = sessionStorage.getItem('taboo_code');
   const savedName = sessionStorage.getItem('taboo_name');
-  if (prevId && prevId !== socket.id) {
-    const savedCode = sessionStorage.getItem('taboo_code');
-    const savedName = sessionStorage.getItem('taboo_name');
-    if (savedCode && savedName) {
-      myName = savedName;
-      socket.emit('taboo_rejoin', { code: savedCode, name: savedName });
-    }
+  if (savedCode && savedName && !roomCode) {
+    myName = savedName;
+    socket.emit('taboo_rejoin', { code: savedCode, name: savedName });
   }});
 
 socket.on('taboo_room_created', ({ code }) => {
@@ -580,6 +576,8 @@ function renderFinal(data) {
   document.getElementById('lbl-game-over').textContent = L.gameOver;
   document.getElementById('lbl-new-game').textContent  = L.newGame;
   document.getElementById('lbl-share').textContent     = L.shareResults;
+
+  if (typeof renderOtherGames === 'function') renderOtherGames('taboo');
 }
 
 // ─── ACTIONS ─────────────────────────────────────────────────────
@@ -640,7 +638,7 @@ function shareResults() {
   var text = (lang === 'pl'
     ? 'Właśnie zagraliśmy w Zakazane Słowa online! 🎭\n\nZagraj za darmo: '
     : 'We just played Forbidden Words online! 🎭\n\nPlay for free: ') + url;
-  if (navigator.share) { navigator.share({ title: 'Forbidden Words Online', text, url }).catch(() => {}); }
+  if (navigator.share) { navigator.share({ title: 'Forbidden Words Online', text }).catch(() => {}); }
   else {
     var ta = document.createElement('textarea');
     ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
