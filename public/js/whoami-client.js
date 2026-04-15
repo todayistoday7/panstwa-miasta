@@ -87,6 +87,8 @@ const LANGS = {
     yourName:'Twoje imię', roomCode:'Kod pokoju',
     createBtn:'Stwórz pokój', joinBtn:'Dołącz',
     shareCode:'Udostępnij kod znajomym', shareRoom:'Udostępnij pokój',
+    visPrivate:'Prywatny', visPublic:'Publiczny',
+    visPrivateHint:'Prywatny — tylko osoby z kodem', visPublicHint:'Publiczny — widoczny w pokojach',
     playersTitle:'Gracze', settings:'Ustawienia',
     startBtn:'🎮 Rozpocznij grę', leaveRoom:'🚪 Wyjdź',
     mode:'Tryb gry', modeVoice:'🎤 Głosowy', modeChat:'💬 Czat',
@@ -121,6 +123,8 @@ const LANGS = {
     voteYes:'✅ TAK', voteNo:'❌ NIE', voteMaybe:'🤷 MOŻE',
     qPlaceholder:'Zadaj pytanie...',
     qCount:'Liczba pytań:', nextTurn:'Następna tura',
+    skipChar:'Pomiń postać', showFinalScores:'Pokaż wyniki końcowe',
+    roundOf:'Runda', roundLabel:'Runda',
     resultCorrect:'✅ Brawo! Zgadłeś!', resultSurrender:'🏳️ Poddanie się',
     resultTimeout:'⏱️ Czas minął!', itWas:'Postać:',
     gameOver:'Koniec gry!', playAgain:'🔄 Zagraj ponownie',
@@ -143,6 +147,8 @@ const LANGS = {
     yourName:'Your name', roomCode:'Room code',
     createBtn:'Create Room', joinBtn:'Join',
     shareCode:'Share this code with friends', shareRoom:'Share Room',
+    visPrivate:'Private', visPublic:'Public',
+    visPrivateHint:'Private — only people with code', visPublicHint:'Public — visible in live rooms',
     playersTitle:'Players', settings:'Settings',
     startBtn:'🎮 Start Game', leaveRoom:'🚪 Leave',
     mode:'Game Mode', modeVoice:'🎤 Voice', modeChat:'💬 Chat',
@@ -177,6 +183,8 @@ const LANGS = {
     voteYes:'✅ YES', voteNo:'❌ NO', voteMaybe:'🤷 MAYBE',
     qPlaceholder:'Ask a question...',
     qCount:'Questions asked:', nextTurn:'Next Turn',
+    skipChar:'Skip character', showFinalScores:'Show Final Scores',
+    roundOf:'Round', roundLabel:'Round',
     resultCorrect:'✅ Correct!', resultSurrender:'🏳️ Surrendered',
     resultTimeout:'⏱️ Time\'s up!', itWas:'Character:',
     gameOver:'Game Over!', playAgain:'🔄 Play Again',
@@ -199,6 +207,8 @@ const LANGS = {
     yourName:'Dein Name', roomCode:'Raumcode',
     createBtn:'Raum erstellen', joinBtn:'Beitreten',
     shareCode:'Code mit Freunden teilen', shareRoom:'Raum teilen',
+    visPrivate:'Privat', visPublic:'Öffentlich',
+    visPrivateHint:'Privat — nur mit Code', visPublicHint:'Öffentlich — in aktiven Räumen sichtbar',
     playersTitle:'Spieler', settings:'Einstellungen',
     startBtn:'🎮 Spiel starten', leaveRoom:'🚪 Verlassen',
     mode:'Spielmodus', modeVoice:'🎤 Sprache', modeChat:'💬 Chat',
@@ -233,6 +243,8 @@ const LANGS = {
     voteYes:'✅ JA', voteNo:'❌ NEIN', voteMaybe:'🤷 VIELLEICHT',
     qPlaceholder:'Frage stellen...',
     qCount:'Gestellte Fragen:', nextTurn:'Nächste Runde',
+    skipChar:'Figur überspringen', showFinalScores:'Endergebnis zeigen',
+    roundOf:'Runde', roundLabel:'Runde',
     resultCorrect:'✅ Richtig!', resultSurrender:'🏳️ Aufgegeben',
     resultTimeout:'⏱️ Zeit abgelaufen!', itWas:'Figur:',
     gameOver:'Spiel vorbei!', playAgain:'🔄 Nochmal spielen',
@@ -255,6 +267,8 @@ const LANGS = {
     yourName:'Ditt namn', roomCode:'Rumskod',
     createBtn:'Skapa rum', joinBtn:'Gå med',
     shareCode:'Dela koden med vänner', shareRoom:'Dela rum',
+    visPrivate:'Privat', visPublic:'Offentligt',
+    visPrivateHint:'Privat — bara med kod', visPublicHint:'Offentligt — synligt i aktiva rum',
     playersTitle:'Spelare', settings:'Inställningar',
     startBtn:'🎮 Starta spelet', leaveRoom:'🚪 Lämna',
     mode:'Spelläge', modeVoice:'🎤 Röst', modeChat:'💬 Chatt',
@@ -289,6 +303,8 @@ const LANGS = {
     voteYes:'✅ JA', voteNo:'❌ NEJ', voteMaybe:'🤷 KANSKE',
     qPlaceholder:'Ställ en fråga...',
     qCount:'Ställda frågor:', nextTurn:'Nästa omgång',
+    skipChar:'Hoppa över karaktär', showFinalScores:'Visa slutresultat',
+    roundOf:'Omgång', roundLabel:'Omgång',
     resultCorrect:'✅ Rätt!', resultSurrender:'🏳️ Gav upp',
     resultTimeout:'⏱️ Tiden är slut!', itWas:'Karaktär:',
     gameOver:'Spelet slut!', playAgain:'🔄 Spela igen',
@@ -357,6 +373,16 @@ function renderLobby(data) {
   const startBtn = document.getElementById('lobby-start-btn');
   if (startBtn) startBtn.style.display = isHost ? '' : 'none';
 
+  // Sync visibility toggle to match current room state (host only)
+  if (isHost && data.isPublic !== undefined) {
+    setWhoamiVisibility(data.isPublic);
+  }
+  // Hide vis toggle for non-hosts
+  const visRow = document.querySelector('#wa-vis-private')?.parentElement;
+  const visHint = document.getElementById('wa-vis-hint');
+  if (visRow) visRow.style.display = isHost ? '' : 'none';
+  if (visHint) visHint.style.display = isHost ? '' : 'none';
+
   const players = document.getElementById('lobby-players');
   if (players) {
     players.innerHTML = data.players.map(p =>
@@ -405,7 +431,7 @@ function renderPlaying(data) {
   if (isActive) {
     if (charCard)    charCard.style.display    = 'none';
     if (mysteryCard) { mysteryCard.style.display = ''; document.getElementById('wa-mystery-text').textContent = L.mysteryText; }
-    if (hintsWrap && data.settings.hintsOn) { hintsWrap.style.display = ''; renderHints(data); }
+    if (hintsWrap && data.settings.hintsOn && data.mode !== 'chat') { hintsWrap.style.display = ''; renderHints(data); }
     if (guessWrap) {
       guessWrap.style.display = '';
       const voiceGuess = document.getElementById('wa-voice-guess');
@@ -444,10 +470,30 @@ function renderPlaying(data) {
     if (helperArea) helperArea.style.display = 'none';
   }
 
+  // Apply compact layout class in chat mode
+  const playingScreen = document.getElementById('screen-playing');
+  if (playingScreen) {
+    if (data.mode === 'chat') playingScreen.classList.add('chat-mode-compact');
+    else playingScreen.classList.remove('chat-mode-compact');
+  }
+
   // Chat (both modes show it, but input/votes only in chat mode)
   if (chatWrap) {
     chatWrap.style.display = '';
     renderChat(data, isActive);
+  }
+
+  // Skip button — visible to host only
+  const skipBtn = document.getElementById('wa-skip-btn');
+  if (skipBtn) skipBtn.style.display = isHost ? '' : 'none';
+
+  // Round indicator
+  const roundEl = document.getElementById('wa-round-indicator');
+  if (roundEl && data.totalTurns && data.players.length) {
+    const turnsEach = data.settings.turnsEach || 1;
+    const playerCount = data.players.length;
+    const currentRound = Math.floor(data.turnCount / playerCount) + 1;
+    roundEl.textContent = (L.roundLabel || 'Round') + ' ' + currentRound + '/' + turnsEach;
   }
 
   // Score mini bar
@@ -499,13 +545,16 @@ function renderChatHelpers(data) {
   const questions = data.settings ? getHelperQuestions(data.settings.categories, data.settings.difficulty) : [];
   if (!questions.length) { wrap.style.display = 'none'; return; }
   wrap.style.display = '';
-  wrap.innerHTML = questions.map(q =>
-    `<button class="wa-helper-btn" onclick="sendHelperQuestion(${JSON.stringify(q)})">${q}</button>`
+  wrap.innerHTML = questions.map((q, i) =>
+    `<button class="wa-helper-btn" data-q="${q.replace(/"/g,'&quot;')}" onclick="sendHelperQuestion(this.dataset.q)">${q}</button>`
   ).join('');
 }
 
 function sendHelperQuestion(text) {
+  if (!roomCode || !text) return;
   socket.emit('whoami_question', { code: roomCode, text });
+  const chatEl = document.getElementById('wa-chat');
+  if (chatEl) setTimeout(() => { chatEl.scrollTop = chatEl.scrollHeight; }, 150);
 }
 
 function markHintUsed(i) {
@@ -662,7 +711,24 @@ function renderTurnResult(data) {
     ).join('');
   }
 
-  if (nextBtn) nextBtn.style.display = isHost ? '' : 'none';
+  // Round indicator on result screen
+  const resultRound = document.getElementById('wa-result-round');
+  if (resultRound && data.totalTurns && data.players.length) {
+    const turnsEach = data.settings.turnsEach || 1;
+    const playerCount = data.players.length;
+    const currentRound = Math.floor((data.turnCount - 1) / playerCount) + 1;
+    resultRound.textContent = (L.roundLabel || 'Round') + ' ' + currentRound + '/' + turnsEach;
+  }
+
+  // Last turn — change button label to "Show Final Scores"
+  if (nextBtn) {
+    nextBtn.style.display = isHost ? '' : 'none';
+    const isLastTurn = data.turnsLeft <= 0;
+    const nextLabel = nextBtn.querySelector('span');
+    if (nextLabel) nextLabel.textContent = isLastTurn
+      ? (L.showFinalScores || 'Show Final Scores')
+      : (L.nextTurn || 'Next Turn');
+  }
 }
 
 // ── Final ─────────────────────────────────────────────────────────
@@ -745,6 +811,21 @@ function startGame() {
   socket.emit('whoami_start', { code: roomCode });
 }
 
+function setWhoamiVisibility(isPublic) {
+  _isPublic = isPublic;
+  const priv = document.getElementById('wa-vis-private');
+  const pub  = document.getElementById('wa-vis-public');
+  const hint = document.getElementById('wa-vis-hint');
+  if (priv) { priv.style.background = isPublic ? '' : 'rgba(255,107,53,0.1)'; priv.style.color = isPublic ? 'var(--muted)' : 'var(--accent)'; }
+  if (pub)  { pub.style.background  = isPublic ? 'rgba(255,107,53,0.1)' : ''; pub.style.color  = isPublic ? 'var(--accent)' : 'var(--muted)'; }
+  if (hint) {
+    const hintSpan = document.getElementById('lbl-wa-vis-hint');
+    if (hintSpan) hintSpan.textContent = isPublic ? (L.visPublicHint || 'Public — visible in live rooms') : (L.visPrivateHint || 'Private — only people with code');
+    const hintEl = hint.querySelector('span') || hint;
+    hint.firstChild.textContent = isPublic ? '🌐 ' : '🔒 ';
+  }
+}
+
 function sendQuestion() {
   const inp = document.getElementById('wa-q-input');
   const txt = (inp ? inp.value : '').trim();
@@ -774,6 +855,11 @@ function submitGuess() {
 function voiceCorrect() {
   // Voice mode: player self-reports correct guess
   socket.emit('whoami_voice_correct', { code: roomCode });
+}
+
+function skipCharacter() {
+  if (!roomCode) return;
+  socket.emit('whoami_skip', { code: roomCode });
 }
 
 function surrender() {

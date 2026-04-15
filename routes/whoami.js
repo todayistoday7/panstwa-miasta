@@ -511,6 +511,42 @@ const CHARACTERS = {
     {en:"Cheetah",pl:"Gepard",de:"Gepard",sv:"Gepard",langs:["en", "pl", "de", "sv"]},
     {en:"Gorilla",pl:"Goryl",de:"Gorilla",sv:"Gorilla",langs:["en", "pl", "de", "sv"]},
     {en:"Flamingo",pl:"Flaming",de:"Flamingo",sv:"Flamingo",langs:["en", "pl", "de", "sv"]},
+    {en:"Dog",pl:"Pies",de:"Hund",sv:"Hund",langs:["en","pl","de","sv"]},
+    {en:"Cat",pl:"Kot",de:"Katze",sv:"Katt",langs:["en","pl","de","sv"]},
+    {en:"Cow",pl:"Krowa",de:"Kuh",sv:"Ko",langs:["en","pl","de","sv"]},
+    {en:"Pig",pl:"Świnia",de:"Schwein",sv:"Gris",langs:["en","pl","de","sv"]},
+    {en:"Horse",pl:"Koń",de:"Pferd",sv:"Häst",langs:["en","pl","de","sv"]},
+    {en:"Chicken",pl:"Kurczak",de:"Huhn",sv:"Höna",langs:["en","pl","de","sv"]},
+    {en:"Duck",pl:"Kaczka",de:"Ente",sv:"Anka",langs:["en","pl","de","sv"]},
+    {en:"Fish",pl:"Ryba",de:"Fisch",sv:"Fisk",langs:["en","pl","de","sv"]},
+    {en:"Rabbit",pl:"Królik",de:"Kaninchen",sv:"Kanin",langs:["en","pl","de","sv"]},
+    {en:"Sheep",pl:"Owca",de:"Schaf",sv:"Får",langs:["en","pl","de","sv"]},
+    {en:"Goat",pl:"Koza",de:"Ziege",sv:"Get",langs:["en","pl","de","sv"]},
+    {en:"Monkey",pl:"Małpa",de:"Affe",sv:"Apa",langs:["en","pl","de","sv"]},
+    {en:"Bear",pl:"Niedźwiedź",de:"Bär",sv:"Björn",langs:["en","pl","de","sv"]},
+    {en:"Fox",pl:"Lis",de:"Fuchs",sv:"Räv",langs:["en","pl","de","sv"]},
+    {en:"Deer",pl:"Jeleń",de:"Hirsch",sv:"Hjort",langs:["en","pl","de","sv"]},
+    {en:"Camel",pl:"Wielbłąd",de:"Kamel",sv:"Kamel",langs:["en","pl","de","sv"]},
+    {en:"Turtle",pl:"Żółw",de:"Schildkröte",sv:"Sköldpadda",langs:["en","pl","de","sv"]},
+    {en:"Owl",pl:"Sowa",de:"Eule",sv:"Uggla",langs:["en","pl","de","sv"]},
+    {en:"Swan",pl:"Łabędź",de:"Schwan",sv:"Svan",langs:["en","pl","de","sv"]},
+    {en:"Snake",pl:"Wąż",de:"Schlange",sv:"Orm",langs:["en","pl","de","sv"]},
+    {en:"Frog",pl:"Żaba",de:"Frosch",sv:"Groda",langs:["en","pl","de","sv"]},
+    {en:"Lizard",pl:"Jaszczurka",de:"Eidechse",sv:"Ödla",langs:["en","pl","de","sv"]},
+    {en:"Crab",pl:"Krab",de:"Krabbe",sv:"Krabba",langs:["en","pl","de","sv"]},
+    {en:"Seal",pl:"Foka",de:"Seehund",sv:"Säl",langs:["en","pl","de","sv"]},
+    {en:"Hyena",pl:"Hiena",de:"Hyäne",sv:"Hyena",langs:["en","pl","de","sv"]},
+    {en:"Lobster",pl:"Homar",de:"Hummer",sv:"Hummer",langs:["en","pl","de","sv"]},
+    {en:"Starfish",pl:"Rozgwiazda",de:"Seestern",sv:"Sjöstjärna",langs:["en","pl","de","sv"]},
+    {en:"Stingray",pl:"Płaszczka",de:"Stechrochen",sv:"Rocka",langs:["en","pl","de","sv"]},
+    {en:"Squid",pl:"Kałamarnica",de:"Tintenfisch",sv:"Bläckfisk",langs:["en","pl","de","sv"]},
+    {en:"Walrus",pl:"Mors",de:"Walross",sv:"Valross",langs:["en","pl","de","sv"]},
+    {en:"Crow",pl:"Wrona",de:"Krähe",sv:"Kråka",langs:["en","pl","de","sv"]},
+    {en:"Pigeon",pl:"Gołąb",de:"Taube",sv:"Duva",langs:["en","pl","de","sv"]},
+    {en:"Sparrow",pl:"Wróbel",de:"Spatz",sv:"Sparv",langs:["en","pl","de","sv"]},
+    {en:"Seagull",pl:"Mewa",de:"Möwe",sv:"Mås",langs:["en","pl","de","sv"]},
+    {en:"Ostrich",pl:"Struś",de:"Strauß",sv:"Struts",langs:["en","pl","de","sv"]},
+    {en:"Chameleon",pl:"Kameleon",de:"Chamäleon",sv:"Kameleont",langs:["en","pl","de","sv"]},
     {en:"Panda",pl:"Panda",de:"Panda",sv:"Panda",langs:["en", "pl", "de", "sv"]},
     {en:"Kangaroo",pl:"Kangur",de:"K\u00e4nguru",sv:"K\u00e4nguru",langs:["en", "pl", "de", "sv"]},
     {en:"Crocodile",pl:"Krokodyl",de:"Krokodil",sv:"Krokodil",langs:["en", "pl", "de", "sv"]},
@@ -562,7 +598,31 @@ const CHARACTERS = {
     {en:"Gharial",pl:"Gharial",de:"Gangesgavial",sv:"Gangesgavial",langs:["en", "pl", "de", "sv"]},
     {en:"Sun Bear",pl:"Nied\u017awied\u017a malajski",de:"Malaienb\u00e4r",sv:"Malajbj\u00f6rn",langs:["en", "pl", "de", "sv"]},
     {en:"Clouded Leopard",pl:"Lampart mglisty",de:"Nebelparder",sv:"Molnleopard",langs:["en", "pl", "de", "sv"]},
-    {en:"Proboscis Monkey",pl:"Nosacz sundajski",de:"Nasenaffe",sv:"Snabeln\u00e4sa",langs:["en", "pl", "de", "sv"]}
+    {en:"Proboscis Monkey",pl:"Nosacz sundajski",de:"Nasenaffe",sv:"Snabeln\u00e4sa",langs:["en", "pl", "de", "sv"]},
+    {en:"Honey Badger",pl:"Miodożer",de:"Honigdachs",sv:"Honungsgrävling",langs:["en","pl","de","sv"]},
+    {en:"Red Panda",pl:"Panda ruda",de:"Roter Panda",sv:"Röd panda",langs:["en","pl","de","sv"]},
+    {en:"Hammerhead Shark",pl:"Rekin młot",de:"Hammerhai",sv:"Hammarhajen",langs:["en","pl","de","sv"]},
+    {en:"Seahorse",pl:"Konik morski",de:"Seepferdchen",sv:"Sjöhäst",langs:["en","pl","de","sv"]},
+    {en:"Flying Squirrel",pl:"Lotnik wiewiórkowaty",de:"Flughörnchen",sv:"Flygekorr",langs:["en","pl","de","sv"]},
+    {en:"Mandrill",pl:"Mandryl",de:"Mandrill",sv:"Mandrill",langs:["en","pl","de","sv"]},
+    {en:"Iguana",pl:"Iguana",de:"Leguan",sv:"Iguana",langs:["en","pl","de","sv"]},
+    {en:"Gecko",pl:"Gekon",de:"Gecko",sv:"Gecko",langs:["en","pl","de","sv"]},
+    {en:"Toad",pl:"Ropucha",de:"Kröte",sv:"Padda",langs:["en","pl","de","sv"]},
+    {en:"Butterfly",pl:"Motyl",de:"Schmetterling",sv:"Fjäril",langs:["en","pl","de","sv"]},
+    {en:"Bee",pl:"Pszczoła",de:"Biene",sv:"Bi",langs:["en","pl","de","sv"]},
+    {en:"Ant",pl:"Mrówka",de:"Ameise",sv:"Myra",langs:["en","pl","de","sv"]},
+    {en:"Spider",pl:"Pająk",de:"Spinne",sv:"Spindel",langs:["en","pl","de","sv"]},
+    {en:"Mosquito",pl:"Komar",de:"Mücke",sv:"Mygga",langs:["en","pl","de","sv"]},
+    {en:"Fly",pl:"Mucha",de:"Fliege",sv:"Fluga",langs:["en","pl","de","sv"]},
+    {en:"Grasshopper",pl:"Konik polny",de:"Grashüpfer",sv:"Gräshoppa",langs:["en","pl","de","sv"]},
+    {en:"Beetle",pl:"Żuk",de:"Käfer",sv:"Skalbagge",langs:["en","pl","de","sv"]},
+    {en:"Dragonfly",pl:"Ważka",de:"Libelle",sv:"Trollslända",langs:["en","pl","de","sv"]},
+    {en:"Hedgehog",pl:"Jeż",de:"Igel",sv:"Igelkott",langs:["en","pl","de","sv"]},
+    {en:"Bat",pl:"Nietoperz",de:"Fledermaus",sv:"Fladdermus",langs:["en","pl","de","sv"]},
+    {en:"Raccoon",pl:"Szop pracz",de:"Waschbär",sv:"Tvättbjörn",langs:["en","pl","de","sv"]},
+    {en:"Skunk",pl:"Skunks",de:"Stinktier",sv:"Skunk",langs:["en","pl","de","sv"]},
+    {en:"Otter",pl:"Wydra",de:"Otter",sv:"Utter",langs:["en","pl","de","sv"]},
+    {en:"Beaver",pl:"Bóbr",de:"Biber",sv:"Bäver",langs:["en","pl","de","sv"]},
     ],
     hard: [
     {en:"Okapi",pl:"Okapi",de:"Okapi",sv:"Okapi",langs:["en", "pl", "de", "sv"]},
@@ -579,7 +639,27 @@ const CHARACTERS = {
     {en:"Gerenuk",pl:"Gerenuk",de:"Giraffengazelle",sv:"Gerenuk",langs:["en", "pl", "de", "sv"]},
     {en:"Patagonian Mara",pl:"Mara patago\u0144ska",de:"Patagonisches Meerschweinchen",sv:"Patagonsk mara",langs:["en", "pl", "de", "sv"]},
     {en:"Lowland Streaked Tenrec",pl:"Tenrek paskowany",de:"Streifentenrek",sv:"R\u00e4ndrad tenrek",langs:["en", "pl", "de", "sv"]},
-    {en:"Babirusa",pl:"Babirussa",de:"Hirscheber",sv:"Hjortgalt",langs:["en", "pl", "de", "sv"]}
+    {en:"Babirusa",pl:"Babirussa",de:"Hirscheber",sv:"Hjortgalt",langs:["en", "pl", "de", "sv"]},
+    {en:"Mantis Shrimp",pl:"Rozkolec",de:"Fangschreckenkrebs",sv:"Bönsyrseräka",langs:["en","pl","de","sv"]},
+    {en:"Glass Frog",pl:"Szklana żaba",de:"Glasfrosch",sv:"Glasgroda",langs:["en","pl","de","sv"]},
+    {en:"Mimic Octopus",pl:"Ośmiornica naśladowcza",de:"Mimik-Oktopus",sv:"Mimikbläckfisk",langs:["en","pl","de","sv"]},
+    {en:"Mantis",pl:"Modliszka",de:"Gottesanbeterin",sv:"Bönsyrsa",langs:["en","pl","de","sv"]},
+    {en:"Leafy Sea Dragon",pl:"Smok liściasty",de:"Blattmeerdrache",sv:"Lövhavsdrake",langs:["en","pl","de","sv"]},
+    {en:"Axolotl",pl:"Aksolotl",de:"Axolotl",sv:"Axolotl",langs:["en","pl","de","sv"]},
+    {en:"Reindeer",pl:"Renifer",de:"Rentier",sv:"Ren",langs:["en","pl","de","sv"]},
+    {en:"Pelican",pl:"Pelikan",de:"Pelikan",sv:"Pelikan",langs:["en","pl","de","sv"]},
+    {en:"Canary",pl:"Kanarek",de:"Kanarienvogel",sv:"Kanariefågel",langs:["en","pl","de","sv"]},
+    {en:"Hawk",pl:"Jastrząb",de:"Habicht",sv:"Hök",langs:["en","pl","de","sv"]},
+    {en:"Woodpecker",pl:"Dzięcioł",de:"Specht",sv:"Hackspett",langs:["en","pl","de","sv"]},
+    {en:"Alligator",pl:"Aligator",de:"Alligator",sv:"Alligator",langs:["en","pl","de","sv"]},
+    {en:"Donkey",pl:"Osioł",de:"Esel",sv:"Åsna",langs:["en","pl","de","sv"]},
+    {en:"Turkey",pl:"Indyk",de:"Truthahn",sv:"Kalkon",langs:["en","pl","de","sv"]},
+    {en:"Goose",pl:"Gęś",de:"Gans",sv:"Gås",langs:["en","pl","de","sv"]},
+    {en:"Rooster",pl:"Kogut",de:"Hahn",sv:"Tupp",langs:["en","pl","de","sv"]},
+    {en:"Llama",pl:"Lama",de:"Lama",sv:"Lama",langs:["en","pl","de","sv"]},
+    {en:"Yak",pl:"Jak",de:"Yak",sv:"Jak",langs:["en","pl","de","sv"]},
+    {en:"Buffalo",pl:"Bawół",de:"Büffel",sv:"Buffel",langs:["en","pl","de","sv"]},
+    {en:"Ferret",pl:"Fretka",de:"Frettchen",sv:"Iller",langs:["en","pl","de","sv"]},
     ],
   },
   cartoons: {
@@ -640,9 +720,54 @@ const CHARACTERS = {
     {en:"Moominpappa",pl:"Moominpappa",de:"Moominpappa",sv:"Moominpappa",langs:["sv"]},
     {en:"LasseMajas detektivbyr\u00e5",pl:"LasseMajas detektivbyr\u00e5",de:"LasseMajas detektivbyr\u00e5",sv:"LasseMajas detektivbyr\u00e5",langs:["sv"]}
     ],
+    medium: [
+      {en:"Paddington Bear",pl:"Paddington",de:"Paddington Bär",sv:"Paddington",langs:["en","pl","de","sv"]},
+      {en:"Dexter (Lab)",pl:"Dexter",de:"Dexter",sv:"Dexter",langs:["en","pl","de","sv"]},
+      {en:"Johnny Bravo",pl:"Johnny Bravo",de:"Johnny Bravo",sv:"Johnny Bravo",langs:["en","pl","de","sv"]},
+      {en:"Courage the Cowardly Dog",pl:"Tchórzliwy Pies Kurak",de:"Courage der feige Hund",sv:"Den fege hunden Courage",langs:["en","pl","de","sv"]},
+      {en:"The Powerpuff Girls",pl:"Atomówki",de:"Powerpuff Girls",sv:"Powerpuff Girls",langs:["en","pl","de","sv"]},
+      {en:"Hey Arnold",pl:"Hej Arnold",de:"Hey Arnold",sv:"Hej Arnold",langs:["en","pl","de","sv"]},
+      {en:"Beavis and Butt-Head",pl:"Beavis i Butt-Head",de:"Beavis und Butt-Head",sv:"Beavis och Butt-Head",langs:["en","pl","de","sv"]},
+      {en:"Zuko (Avatar)",pl:"Zuko",de:"Zuko",sv:"Zuko",langs:["en","pl","de","sv"]},
+      {en:"Uncle Iroh (Avatar)",pl:"Wuj Iroh",de:"Onkel Iroh",sv:"Farbror Iroh",langs:["en","pl","de","sv"]},
+      {en:"Baymax",pl:"Baymax",de:"Baymax",sv:"Baymax",langs:["en","pl","de","sv"]},
+      {en:"Cheshire Cat",pl:"Kot z Cheshire",de:"Grinsekatze",sv:"Cheshire-katten",langs:["en","pl","de","sv"]},
+      {en:"Mad Hatter",pl:"Szalony Kapelusznik",de:"Hutmacher",sv:"Galenpannan",langs:["en","pl","de","sv"]},
+      {en:"Sleeping Beauty",pl:"Śpiąca Królewna",de:"Dornröschen",sv:"Törnrosa",langs:["en","pl","de","sv"]},
+      {en:"Baloo (Jungle Book)",pl:"Baloo",de:"Balu",sv:"Baloo",langs:["en","pl","de","sv"]},
+      {en:"Scar (Lion King)",pl:"Skaza",de:"Scar",sv:"Scar",langs:["en","pl","de","sv"]},
+      {en:"Mike Wazowski",pl:"Mike Wazowski",de:"Mike Wazowski",sv:"Mike Wazowski",langs:["en","pl","de","sv"]},
+      {en:"Sulley (Monsters Inc)",pl:"Sulley",de:"Sulley",sv:"Sulley",langs:["en","pl","de","sv"]},
+      {en:"Remy (Ratatouille)",pl:"Remy",de:"Remy",sv:"Remy",langs:["en","pl","de","sv"]},
+      {en:"Carl Fredricksen (Up)",pl:"Carl",de:"Carl",sv:"Carl",langs:["en","pl","de","sv"]},
+      {en:"Yzma (Emperor's New Groove)",pl:"Yzma",de:"Yzma",sv:"Yzma",langs:["en","pl","de","sv"]},
+      {en:"Mulan",pl:"Mulan",de:"Mulan",sv:"Mulan",langs:["en","de","sv"]},
+      {en:"Lilo (Lilo & Stitch)",pl:"Lilo",de:"Lilo",sv:"Lilo",langs:["en","pl","de","sv"]},
+      {en:"Hiro Hamada (Big Hero 6)",pl:"Hiro Hamada",de:"Hiro Hamada",sv:"Hiro Hamada",langs:["en","pl","de","sv"]},
+      {en:"Bamse",pl:"",de:"",sv:"Bamse",langs:["sv"]},
+      {en:"Pippi Longstocking",pl:"Pippi Pończoszanka",de:"Pippi Langstrumpf",sv:"Pippi Långstrump",langs:["en","pl","de","sv"]},
+    ],
     hard: [
-    {en:"Tintin",pl:"Tintin",de:"Tim",sv:"Tintin",langs:["en"]},
-    {en:"Mulan",pl:"Mulan",de:"Mulan",sv:"Mulan",langs:["en", "de", "sv"]}
+      {en:"Tintin",pl:"Tintin",de:"Tim",sv:"Tintin",langs:["en","pl","de","sv"]},
+      {en:"Asterix",pl:"Asteriks",de:"Asterix",sv:"Asterix",langs:["en","pl","de","sv"]},
+      {en:"Obelix",pl:"Obeliks",de:"Obelix",sv:"Obelix",langs:["en","pl","de","sv"]},
+      {en:"Lucky Luke",pl:"Lucky Luke",de:"Lucky Luke",sv:"Lucky Luke",langs:["en","pl","de","sv"]},
+      {en:"Marsupilami",pl:"Marsupilami",de:"Marsupilami",sv:"Marsupilami",langs:["en","pl","de","sv"]},
+      {en:"Naruto",pl:"Naruto",de:"Naruto",sv:"Naruto",langs:["en","pl","de","sv"]},
+      {en:"Goku (Dragon Ball)",pl:"Goku",de:"Goku",sv:"Goku",langs:["en","pl","de","sv"]},
+      {en:"Sailor Moon",pl:"Sailor Moon",de:"Sailor Moon",sv:"Sailor Moon",langs:["en","pl","de","sv"]},
+      {en:"Luffy (One Piece)",pl:"Luffy",de:"Luffy",sv:"Luffy",langs:["en","pl","de","sv"]},
+      {en:"Boo (Monsters Inc)",pl:"Boo",de:"Buh",sv:"Boo",langs:["en","pl","de","sv"]},
+      {en:"Flik (A Bug's Life)",pl:"Flik",de:"Flik",sv:"Flik",langs:["en","pl","de","sv"]},
+      {en:"Russell (Up)",pl:"Russel",de:"Russell",sv:"Russell",langs:["en","pl","de","sv"]},
+      {en:"Kronk (Emperor's New Groove)",pl:"Kronk",de:"Kronk",sv:"Kronk",langs:["en","pl","de","sv"]},
+      {en:"King Louie (Jungle Book)",pl:"Król Louie",de:"König Louie",sv:"Kung Louie",langs:["en","pl","de","sv"]},
+      {en:"Ren and Stimpy",pl:"Ren i Stimpy",de:"Ren und Stimpy",sv:"Ren och Stimpy",langs:["en","pl","de","sv"]},
+      {en:"Samurai Jack",pl:"Samuraj Jack",de:"Samurai Jack",sv:"Samurai Jack",langs:["en","pl","de","sv"]},
+      {en:"Bolek i Lolek",pl:"Bolek i Lolek",de:"",sv:"",langs:["pl"]},
+      {en:"Reksio",pl:"Reksio",de:"",sv:"",langs:["pl"]},
+      {en:"Alfons Åberg",pl:"",de:"",sv:"Alfons Åberg",langs:["sv"]},
+      {en:"Mamma Mu",pl:"",de:"",sv:"Mamma Mu",langs:["sv"]},
     ],
   },
 };
@@ -679,7 +804,14 @@ function getCharacters(categories, difficulty, lang) {
     const catData = CHARACTERS[cat];
     if (!catData) return;
     if (cat === 'cartoons' || cat === 'kids') {
-      pool = pool.concat((catData.easy || []).filter(c => !c.langs || c.langs.includes(activeLang)));
+      const cartLevels = difficulty === 'easy'   ? ['easy'] :
+                         difficulty === 'medium' ? ['easy', 'medium'] :
+                                                   ['easy', 'medium', 'hard'];
+      cartLevels.forEach(lvl => {
+        if (catData[lvl]) pool = pool.concat(
+          catData[lvl].filter(ch => !ch.langs || ch.langs.includes(activeLang))
+        );
+      });
     } else {
       const levels = difficulty === 'easy'   ? ['easy'] :
                      difficulty === 'medium' ? ['easy', 'medium'] :
@@ -768,6 +900,8 @@ function emitState(io, room) {
       timerEnd:      room.state.timerEnd,
       turnsLeft:     (room.settings.turnsEach * room.players.filter(p=>p.connected).length)
                      - room.state.turnCount,
+      turnCount:     room.state.turnCount,
+      totalTurns:    room.settings.turnsEach * room.players.filter(p=>p.connected).length,
     };
     io.to(p.id).emit('whoami_state', state);
   });
@@ -832,7 +966,20 @@ function register(io, socket) {
 
     const room = whoamiRooms[roomCode];
     if (!room) { socket.emit('whoami_error', { msg: 'Room not found.' }); return; }
-    if (room.state.phase !== 'lobby') { socket.emit('whoami_error', { msg: 'Game already started.' }); return; }
+    // If game in progress, try to rejoin as existing disconnected player
+    if (room.state.phase !== 'lobby') {
+      const existing = room.players.find(p => p.name.toLowerCase() === trimmed.toLowerCase() && !p.connected);
+      if (existing) {
+        if (room.hostId === existing.id) room.hostId = socket.id;
+        existing.id = socket.id;
+        existing.connected = true;
+        socket.join(roomCode);
+        socket.emit('whoami_joined', { code: roomCode });
+        emitState(io, room);
+        return;
+      }
+      socket.emit('whoami_error', { msg: 'Game already started.' }); return;
+    }
     if (room.players.length >= 16) { socket.emit('whoami_error', { msg: 'Room is full.' }); return; }
 
     const nameTaken = room.players.find(p => p.name.toLowerCase() === trimmed.toLowerCase() && p.connected);
@@ -962,6 +1109,37 @@ function register(io, socket) {
   });
 
   // SURRENDER
+  socket.on('whoami_skip', ({ code }) => {
+    const room = whoamiRooms[code];
+    if (!room || room.state.phase !== 'playing') return;
+    if (socket.id !== room.hostId) return; // host only
+    // Pick new character, reset timer, keep same active player
+    const pool = getCharacters(room.settings.categories, room.settings.difficulty, room.lang);
+    const charObj = pickCharacter(pool, room.state.usedChars);
+    const charEn  = typeof charObj === 'string' ? charObj : charObj.en;
+    room.state.charByLang = typeof charObj === 'object' ? charObj : null;
+    room.state.usedChars.push(charEn);
+    room.state.activeChar    = charEn;
+    room.state.wikiSlug      = WIKI_OVERRIDES[charEn] || charEn;
+    room.state.questionCount = 0;
+    room.state.chat          = [];
+    if (room.settings.timerSecs > 0) {
+      room.state.timerEnd = Date.now() + room.settings.timerSecs * 1000;
+      if (room._turnTimer) clearTimeout(room._turnTimer);
+      room._turnTimer = setTimeout(() => {
+        if (room.state.phase === 'playing') {
+          room.state.chat.push({ type:'system', text:'⏱️ ' + room.state.activeChar, ts: Date.now() });
+          room.state.phase = 'turn_result';
+          room.state.turnCount++;
+          const total = room.settings.turnsEach * room.players.filter(p=>p.connected).length;
+          if (room.state.turnCount >= total) room.state.phase = 'final';
+          emitState(io, room);
+        }
+      }, room.settings.timerSecs * 1000);
+    }
+    emitState(io, room);
+  });
+
   socket.on('whoami_surrender', ({ code }) => {
     const room = whoamiRooms[code];
     if (!room || room.state.phase !== 'playing') return;
