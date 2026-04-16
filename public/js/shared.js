@@ -187,7 +187,7 @@ function renderOtherGames(currentGame) {
   var lng = (typeof lang !== 'undefined' && lang) || window._forceLang || 'pl';
 
   var labels = {
-    pl: { title: 'Może Cię zainteresować:', games: {
+    pl: { title: 'Inne polecane gry:', games: {
       pm:      { name: 'Państwa-Miasta', icon: '🌍' },
       taboo:   { name: 'Zakazane Słowa', icon: '🎭' },
       hangman: { name: 'Wisielec',       icon: '🪢' },

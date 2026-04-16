@@ -992,7 +992,7 @@ function makeWhoamiRoom(hostId, settings) {
       categories:  settings.categories  || ['mixed'],
       difficulty:  settings.difficulty  || 'easy',
       turnsEach:   settings.turnsEach   || 1,
-      timerSecs:   settings.timerSecs   || 120,  // 0 = no timer
+      timerSecs:   (settings.timerSecs !== undefined && settings.timerSecs !== null) ? settings.timerSecs : 120,  // 0 = no timer
       hintsOn:     settings.hintsOn     !== false,
       lang:        settings.lang        || 'pl',
     },

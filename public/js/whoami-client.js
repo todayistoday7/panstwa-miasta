@@ -96,7 +96,7 @@ const LANGS = {
     categories:'Kategorie', difficulty:'Poziom trudności',
     diffEasy:'🌟 Łatwy', diffMedium:'🎭 Średni', diffHard:'🔥 Trudny',
     catSports:'⚽ Sport', catMusic:'🎵 Muzyka', catFilm:'🎬 Film & TV',
-    catHistory:'📚 Historia', catAnimals:'🐘 Zwierzęta', catKids:'🧸 Bajki & Postacie',
+    catHistory:'📚 Historia', catAnimals:'🐘 Zwierzęta', catCartoons:'🧸 Bajki & Postacie',
     catMixed:'🌍 Wszystkie',
     catLabel:'Kategoria:',
     chatTitle:'💬 Pytania i Odpowiedzi',
@@ -119,7 +119,7 @@ const LANGS = {
     ],
     itsTurn:'Tura:', mysteryText:'KIM JESTEM?',
     guessLabel:'Zgaduję że jestem...', guessPlaceholder:'WPISZ POSTAĆ...',
-    guessBtn:'Zgaduję!', surrenderBtn:'🏳️ Poddaję się', iGotIt:'Zgadłem / Zgadłam!', mysteryHint:'Powiedz odpowiedź głośno → naciśnij ✅ poniżej',
+    guessBtn:'Zgaduję!', surrenderBtn:'🏳️ Poddaję się', iGotIt:'Zgadłem / Zgadłam!', mysteryHint:'Podaj odpowiedź → następnie naciśnij ✅ poniżej ↓',
     voteYes:'✅ TAK', voteNo:'❌ NIE', voteMaybe:'🤷 MOŻE',
     qPlaceholder:'Zadaj pytanie...',
     qCount:'Liczba pytań:', nextTurn:'Następna tura',
@@ -158,7 +158,7 @@ const LANGS = {
     categories:'Categories', difficulty:'Difficulty',
     diffEasy:'🌟 Easy', diffMedium:'🎭 Medium', diffHard:'🔥 Hard',
     catSports:'⚽ Sports', catMusic:'🎵 Music', catFilm:'🎬 Film & TV',
-    catHistory:'📚 History', catAnimals:'🐘 Animals', catKids:'🧸 Cartoons & Stories',
+    catHistory:'📚 History', catAnimals:'🐘 Animals', catCartoons:'🧸 Cartoons & Stories',
     catMixed:'🌍 Mixed',
     catLabel:'Category:',
     chatTitle:'💬 Questions & Answers',
@@ -220,7 +220,7 @@ const LANGS = {
     categories:'Kategorien', difficulty:'Schwierigkeit',
     diffEasy:'🌟 Leicht', diffMedium:'🎭 Mittel', diffHard:'🔥 Schwer',
     catSports:'⚽ Sport', catMusic:'🎵 Musik', catFilm:'🎬 Film & TV',
-    catHistory:'📚 Geschichte', catAnimals:'🐘 Tiere', catKids:'🧸 Cartoons & Figuren',
+    catHistory:'📚 Geschichte', catAnimals:'🐘 Tiere', catCartoons:'🧸 Cartoons & Figuren',
     catMixed:'🌍 Alle',
     catLabel:'Kategorie:',
     chatTitle:'💬 Fragen & Antworten',
@@ -282,7 +282,7 @@ const LANGS = {
     categories:'Kategorier', difficulty:'Svårighetsgrad',
     diffEasy:'🌟 Lätt', diffMedium:'🎭 Medel', diffHard:'🔥 Svår',
     catSports:'⚽ Sport', catMusic:'🎵 Musik', catFilm:'🎬 Film & TV',
-    catHistory:'📚 Historia', catAnimals:'🐘 Djur', catKids:'🧸 Tecknat & Berättelser',
+    catHistory:'📚 Historia', catAnimals:'🐘 Djur', catCartoons:'🧸 Tecknat & Berättelser',
     catMixed:'🌍 Alla',
     catLabel:'Kategori:',
     chatTitle:'💬 Frågor & Svar',
@@ -974,7 +974,7 @@ function applyTranslations() {
   set('lbl-cat-film',       'catFilm');
   set('lbl-cat-history',    'catHistory');
   set('lbl-cat-animals',    'catAnimals');
-  set('lbl-cat-kids',       'catKids'); // cartoons category
+  set('lbl-cat-cartoons',   'catCartoons'); // cartoons category
   set('lbl-cat-mixed',      'catMixed');
   set('lbl-turns-each',     'turnsEach');
   set('lbl-timer',          'timer');
