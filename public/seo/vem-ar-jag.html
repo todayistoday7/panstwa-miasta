@@ -168,6 +168,7 @@
 </head>
 <body>
 
+
 <!-- CONFIRM LEAVE MODAL -->
 <div id="confirm-modal" class="modal-overlay" style="display:none;">
   <div class="modal" style="max-width:360px;text-align:center;">
@@ -239,6 +240,8 @@
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
             </select>
           </div>
           <div>
@@ -297,6 +300,11 @@
         <div class="room-code-display" id="room-code-display"></div>
         <p class="room-code-hint" id="lbl-share-code">Udostępnij kod znajomym</p>
         <button class="btn share-btn" onclick="shareRoom('who-am-i')" style="margin-top:6px;">📤 <span id="lbl-share-room">Udostępnij pokój</span></button>
+        <div style="display:flex;margin-top:8px;border:1px solid var(--border);border-radius:8px;overflow:hidden;max-width:260px;">
+          <div class="vis-option" id="wa-vis-private" style="flex:1;padding:6px 10px;text-align:center;font-size:12px;cursor:pointer;background:rgba(255,107,53,0.1);border-right:1px solid var(--border);color:var(--accent);font-weight:700;" onclick="setWhoamiVisibility(false)">🔒 <span id="lbl-wa-vis-private">Prywatny</span></div>
+          <div class="vis-option" id="wa-vis-public"  style="flex:1;padding:6px 10px;text-align:center;font-size:12px;cursor:pointer;color:var(--muted);font-weight:700;" onclick="setWhoamiVisibility(true)">🌐 <span id="lbl-wa-vis-public">Publiczny</span></div>
+        </div>
+        <p id="wa-vis-hint" style="font-size:11px;color:var(--muted);font-weight:600;margin-top:4px;">🔒 <span id="lbl-wa-vis-hint">Prywatny — tylko osoby z kodem</span></p>
       </div>
     </div>
 
@@ -314,6 +322,8 @@
       </div>
     </div>
 
+    <div id="player-warning" class="player-warning" style="display:none;"></div>
+
     <div class="btn-row" id="lobby-btn-row">
       <button class="btn" onclick="startGame()" id="lobby-start-btn">🎮 <span id="lbl-start-btn">Rozpocznij grę</span></button>
       <button class="btn secondary" onclick="confirmGoHome()" id="lbl-leave-room">🚪 Wyjdź</button>
@@ -327,6 +337,7 @@
       <div id="wa-score-mini" style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--muted);"></div>
     </div>
 
+    <div id="wa-round-indicator" style="text-align:center;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;"></div>
     <div id="wa-turn-banner" class="wa-turn-banner"></div>
     <div id="wa-cat-display" style="text-align:center;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:4px;display:none;"></div>
     <div id="wa-timer-wrap" class="wa-timer-wrap" style="display:none;">
@@ -348,6 +359,7 @@
     <div id="wa-mystery-card" class="wa-mystery-card" style="display:none;">
       <div class="wa-mystery-icon wa-bounce">❓</div>
       <div class="wa-mystery-text" id="wa-mystery-text">KIM JESTEM?</div>
+      <div class="wa-mystery-hint" id="wa-mystery-hint" style="display:none;">💡 <span id="lbl-mystery-hint">Powiedz odpowiedź głośno → naciśnij ✅ poniżej</span> ↓</div>
     </div>
 
     <!-- Question hints (active player, togglable) -->
@@ -356,18 +368,19 @@
       <div id="wa-hints-list"></div>
     </div>
 
+    <!-- Helper questions — active player, chat mode, shown ABOVE chat -->
+    <div id="wa-helper-area" style="display:none;margin:6px 0;">
+      <div class="wa-helper-label" id="lbl-helper-title">💡 Quick questions</div>
+      <div id="wa-helper-btns" class="wa-helper-grid"></div>
+    </div>
+
     <!-- Chat (chat mode) — framed, labelled, sticky input -->
     <div id="wa-chat-wrap" style="display:none;">
       <div id="wa-q-count" class="wa-q-count"></div>
       <div class="wa-chat-frame">
         <div class="wa-chat-label" id="lbl-chat-title">💬 Questions & Answers</div>
         <div id="wa-chat" class="wa-chat"></div>
-        <!-- Helper questions — active player, chat mode only -->
-        <div id="wa-helper-area" style="display:none;padding:8px 10px 0;border-top:1px solid var(--border);">
-          <div class="wa-helper-label" id="lbl-helper-title">💡 Quick questions</div>
-          <div id="wa-helper-btns" class="wa-helper-grid"></div>
-        </div>
-        <!-- Question input sticky at bottom — active player only -->
+        <!-- Question input sticky at bottom of chat frame -->
         <div id="wa-q-input-wrap" class="wa-q-sticky" style="display:none;">
           <div class="wa-q-wrap">
             <input type="text" id="wa-q-input" class="wa-q-input" maxlength="120" placeholder="Ask a question..."/>
@@ -375,7 +388,6 @@
           </div>
         </div>
       </div>
-      <!-- Hidden legacy vote row — replaced by inline per-question buttons -->
       <div id="wa-vote-wrap" style="display:none;"></div>
     </div>
 
@@ -393,6 +405,8 @@
                onkeydown="if(event.key==='Enter')submitGuess()"/>
         <button class="btn" onclick="submitGuess()" style="width:100%;margin-bottom:8px;">✅ <span id="lbl-guess-btn">Zgaduję!</span></button>
       </div>
+      <!-- Skip — host only, shown to all but only host can trigger -->
+      <button id="wa-skip-btn" class="btn secondary" onclick="skipCharacter()" style="width:100%;margin-top:4px;display:none;">⏭️ <span id="lbl-skip-btn">Pomiń postać</span></button>
       <!-- Surrender always visible in both modes -->
       <button class="btn secondary" onclick="surrender()" style="width:100%;margin-top:4px;">🏳️ <span id="lbl-surrender-btn">Poddaję się</span></button>
     </div>
@@ -400,6 +414,7 @@
 
   <!-- ══ SCREEN: TURN RESULT ══ -->
   <div id="screen-turn-result" class="screen">
+    <div id="wa-result-round" style="text-align:center;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;"></div>
     <div id="wa-result-banner" class="wa-result-banner correct"></div>
     <div id="wa-char-revealed" class="wa-char-card" style="margin:16px 0;"></div>
     <div id="wa-scores" class="wa-scores"></div>
@@ -422,11 +437,15 @@
     </div>
   </div>
 
+
+  <div id="other-games-strip"></div>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/shared.js"></script>
 <script src="/js/whoami-client.js"></script>
+
+
 <script>
 // Override setUiLang on SEO pages — navigate to language-specific URL
 // instead of translating in place (keeps URL consistent with language)

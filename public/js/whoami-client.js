@@ -823,7 +823,7 @@ function createRoom() {
       categories: selCats.length ? selCats : ['mixed'],
       difficulty: selDiff,
       turnsEach:  parseInt(document.getElementById('host-turns').value) || 1,
-      timerSecs:  parseInt(document.getElementById('host-timer').value) || 120,
+      timerSecs:  (function(){ var v = parseInt(document.getElementById('host-timer').value); return isNaN(v) ? 120 : v; })(),
       hintsOn:    document.getElementById('host-hints').checked,
       isPublic:   typeof _isPublic !== 'undefined' ? _isPublic : false,
       lang,
