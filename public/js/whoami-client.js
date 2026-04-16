@@ -119,7 +119,7 @@ const LANGS = {
     ],
     itsTurn:'Tura:', mysteryText:'KIM JESTEM?',
     guessLabel:'Zgaduję że jestem...', guessPlaceholder:'WPISZ POSTAĆ...',
-    guessBtn:'Zgaduję!', surrenderBtn:'🏳️ Poddaję się', iGotIt:'Zgadłem / Zgadłam!',
+    guessBtn:'Zgaduję!', surrenderBtn:'🏳️ Poddaję się', iGotIt:'Zgadłem / Zgadłam!', mysteryHint:'Powiedz odpowiedź głośno → naciśnij ✅ poniżej',
     voteYes:'✅ TAK', voteNo:'❌ NIE', voteMaybe:'🤷 MOŻE',
     qPlaceholder:'Zadaj pytanie...',
     qCount:'Liczba pytań:', nextTurn:'Następna tura',
@@ -132,6 +132,8 @@ const LANGS = {
     confirmLeave:'Na pewno chcesz opuścić pokój?',
     leaveYes:'Tak, wyjdź', leaveNo:'Anuluj',
     needPlayers:'Potrzebujesz minimum 2 graczy',
+    waitingPlayers: (cur, min) => `Czekamy na graczy... ${cur}/${min} dołączyło. Udostępnij kod znajomym!`,
+    enoughPlayers:  (n) => `✅ ${n} graczy gotowych — można zaczynać!`,
     selectCat:'Wybierz przynajmniej jedną kategorię',
     modeLabel:'Tryb:', catsLabel:'Kategorie:', diffLabel:'Trudność:', timerLabel:'Timer:',
     voiceModeTip:'🎤 Tryb głosowy — pytajcie się nawzajem na żywo lub przez telefon',
@@ -179,7 +181,7 @@ const LANGS = {
     ],
     itsTurn:'Turn:', mysteryText:'WHO AM I?',
     guessLabel:'I think I am...', guessPlaceholder:'TYPE CHARACTER...',
-    guessBtn:'Guess!', surrenderBtn:'🏳️ Surrender', iGotIt:'I guessed it!',
+    guessBtn:'Guess!', surrenderBtn:'🏳️ Surrender', iGotIt:'I guessed it!', mysteryHint:'Say your answer out loud → tap ✅ below',
     voteYes:'✅ YES', voteNo:'❌ NO', voteMaybe:'🤷 MAYBE',
     qPlaceholder:'Ask a question...',
     qCount:'Questions asked:', nextTurn:'Next Turn',
@@ -192,6 +194,8 @@ const LANGS = {
     confirmLeave:'Are you sure you want to leave?',
     leaveYes:'Yes, leave', leaveNo:'Cancel',
     needPlayers:'You need at least 2 players',
+    waitingPlayers: (cur, min) => `Waiting for players... ${cur}/${min} joined. Share the code to invite friends!`,
+    enoughPlayers:  (n) => `✅ ${n} players ready — good to go!`,
     selectCat:'Select at least one category',
     modeLabel:'Mode:', catsLabel:'Categories:', diffLabel:'Difficulty:', timerLabel:'Timer:',
     voiceModeTip:'🎤 Voice mode — ask questions out loud or on a call',
@@ -239,7 +243,7 @@ const LANGS = {
     ],
     itsTurn:'Zug:', mysteryText:'WER BIN ICH?',
     guessLabel:'Ich glaube ich bin...', guessPlaceholder:'FIGUR EINGEBEN...',
-    guessBtn:'Raten!', surrenderBtn:'🏳️ Aufgeben', iGotIt:'Ich hab\'s erraten!',
+    guessBtn:'Raten!', surrenderBtn:'🏳️ Aufgeben', iGotIt:'Ich hab\'s erraten!', mysteryHint:'Sag deine Antwort laut → tippt ✅ unten',
     voteYes:'✅ JA', voteNo:'❌ NEIN', voteMaybe:'🤷 VIELLEICHT',
     qPlaceholder:'Frage stellen...',
     qCount:'Gestellte Fragen:', nextTurn:'Nächste Runde',
@@ -252,6 +256,8 @@ const LANGS = {
     confirmLeave:'Raum wirklich verlassen?',
     leaveYes:'Ja, verlassen', leaveNo:'Abbrechen',
     needPlayers:'Du brauchst mindestens 2 Spieler',
+    waitingPlayers: (cur, min) => `Warte auf Spieler... ${cur}/${min} beigetreten. Teile den Code mit Freunden!`,
+    enoughPlayers:  (n) => `✅ ${n} Spieler bereit — los geht's!`,
     selectCat:'Wähle mindestens eine Kategorie',
     modeLabel:'Modus:', catsLabel:'Kategorien:', diffLabel:'Schwierigkeit:', timerLabel:'Timer:',
     voiceModeTip:'🎤 Sprachmodus — Fragen laut stellen oder per Anruf',
@@ -299,7 +305,7 @@ const LANGS = {
     ],
     itsTurn:'Tur:', mysteryText:'VEM ÄR JAG?',
     guessLabel:'Jag tror att jag är...', guessPlaceholder:'SKRIV KARAKTÄR...',
-    guessBtn:'Gissa!', surrenderBtn:'🏳️ Ge upp', iGotIt:'Jag gissade rätt!',
+    guessBtn:'Gissa!', surrenderBtn:'🏳️ Ge upp', iGotIt:'Jag gissade rätt!', mysteryHint:'Säg svaret högt → tryck ✅ nedan',
     voteYes:'✅ JA', voteNo:'❌ NEJ', voteMaybe:'🤷 KANSKE',
     qPlaceholder:'Ställ en fråga...',
     qCount:'Ställda frågor:', nextTurn:'Nästa omgång',
@@ -312,6 +318,8 @@ const LANGS = {
     confirmLeave:'Vill du verkligen lämna rummet?',
     leaveYes:'Ja, lämna', leaveNo:'Avbryt',
     needPlayers:'Du behöver minst 2 spelare',
+    waitingPlayers: (cur, min) => `Väntar på spelare... ${cur}/${min} har gått med. Dela koden med vänner!`,
+    enoughPlayers:  (n) => `✅ ${n} spelare redo — sätt igång!`,
     selectCat:'Välj minst en kategori',
     modeLabel:'Läge:', catsLabel:'Kategorier:', diffLabel:'Svårighet:', timerLabel:'Timer:',
     voiceModeTip:'🎤 Röstläge — ställ frågor högt eller via samtal',
@@ -396,13 +404,34 @@ function renderLobby(data) {
     ).join('');
   }
 
+  // Player warning
+  const warn = document.getElementById('player-warning');
+  if (warn) {
+    const count = data.players.filter(p => p.connected !== false).length;
+    const min = 2;
+    warn.style.display = 'block';
+    warn.classList.remove('flash');
+    if (count >= min) {
+      warn.classList.add('ready');
+      warn.textContent = L.enoughPlayers ? L.enoughPlayers(count) : '✅ ' + count + ' players ready!';
+    } else {
+      warn.classList.remove('ready');
+      warn.textContent = L.waitingPlayers ? L.waitingPlayers(count, min) : 'Waiting for players... ' + count + '/' + min + ' joined.';
+    }
+  }
+
   // Settings display
   const modeD = document.getElementById('lobby-mode-display');
   const catsD = document.getElementById('lobby-cats-display');
   const diffD = document.getElementById('lobby-diff-display');
   const timD  = document.getElementById('lobby-timer-display');
   if (modeD) modeD.textContent = L.modeLabel + ' ' + (data.mode === 'voice' ? L.modeVoice : L.modeChat);
-  if (catsD) catsD.textContent = L.catsLabel + ' ' + (data.settings.categories || []).join(', ');
+  if (catsD) {
+    var getCatLbl = function(cat) { return L['cat' + cat.charAt(0).toUpperCase() + cat.slice(1)] || cat; };
+    var cats = (data.settings.categories || []);
+    var catStr = cats.includes('mixed') ? getCatLbl('mixed') : cats.map(getCatLbl).join(', ');
+    catsD.textContent = L.catsLabel + ' ' + catStr;
+  }
   if (diffD) diffD.textContent = L.diffLabel + ' ' + (data.settings.difficulty || 'easy');
   if (timD)  timD.textContent  = L.timerLabel + ' ' + (data.settings.timerSecs > 0 ? Math.floor(data.settings.timerSecs/60) + ' min' : L.noTimer);
 }
@@ -438,10 +467,15 @@ function renderPlaying(data) {
       if (voiceGuess) voiceGuess.style.display = (data.mode === 'voice') ? '' : 'none';
       if (chatGuess)  chatGuess.style.display  = (data.mode === 'chat')  ? '' : 'none';
     }
+    // Show hint only in voice mode
+    const hintEl = document.getElementById('wa-mystery-hint');
+    if (hintEl) hintEl.style.display = (data.mode === 'voice') ? '' : 'none';
   } else {
     if (mysteryCard) mysteryCard.style.display  = 'none';
     if (hintsWrap)   hintsWrap.style.display    = 'none';
     if (guessWrap)   guessWrap.style.display    = 'none';
+    const hintElOther = document.getElementById('wa-mystery-hint');
+    if (hintElOther) hintElOther.style.display = 'none';
     if (charCard) {
       charCard.style.display = '';
       renderCharCard(data.activeChar, data.wikiSlug);
@@ -809,6 +843,15 @@ function joinRoom() {
 }
 
 function startGame() {
+  if (!roomCode) return;
+  const warn = document.getElementById('player-warning');
+  if (warn && !warn.classList.contains('ready')) {
+    warn.classList.remove('flash');
+    void warn.offsetWidth;
+    warn.classList.add('flash');
+    setTimeout(() => warn.classList.remove('flash'), 1600);
+    return;
+  }
   socket.emit('whoami_start', { code: roomCode });
 }
 

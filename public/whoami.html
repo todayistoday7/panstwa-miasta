@@ -68,6 +68,8 @@
   }
   .wa-mystery-icon { font-size:56px; margin-bottom:8px; }
   .wa-mystery-text { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:3px; color:var(--muted); }
+  .wa-mystery-hint { font-size:12px; font-weight:700; color:var(--border); margin-top:10px; letter-spacing:0.5px; animation: wa-hint-pulse 2.5s ease-in-out infinite; }
+  @keyframes wa-hint-pulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
 
   /* Chat mode — compact cards so chat is visible without scrolling */
   .chat-mode-compact .wa-mystery-card {
@@ -134,6 +136,23 @@
 
   /* Guess input */
   .wa-guess-wrap { display:flex; flex-direction:column; gap:8px; margin:12px 0; }
+
+  /* Player warning in lobby */
+  .player-warning {
+    padding: 10px 14px; border-radius: 10px; font-size: 13px; font-weight: 700;
+    margin: 10px 0; text-align: center; border: 1px solid var(--border);
+    background: rgba(255,107,53,0.07); color: var(--muted);
+    transition: all 0.3s;
+  }
+  .player-warning.ready {
+    background: rgba(6,214,160,0.1); border-color: var(--green);
+    color: var(--green);
+  }
+  @keyframes wa-warn-flash {
+    0%,100% { transform: scale(1); background: rgba(255,107,53,0.07); }
+    25%,75% { transform: scale(1.03); background: rgba(255,107,53,0.18); border-color: var(--accent); color: var(--accent); }
+  }
+  .player-warning.flash { animation: wa-warn-flash 0.5s ease 3; }
   .wa-guess-input {
     width:100%; background:var(--surface); border:2px solid var(--accent);
     border-radius:10px; color:var(--text); font-family:'Bebas Neue',sans-serif;
@@ -184,8 +203,9 @@
   .wa-helper-btn {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: 20px; color: var(--muted); font-family: 'Nunito', sans-serif;
-    font-size: 12px; font-weight: 700; padding: 5px 12px;
+    font-size: 13px; font-weight: 700; padding: 10px 14px;
     cursor: pointer; transition: all 0.15s; text-align: left;
+    min-height: 44px; display: inline-flex; align-items: center;
   }
   .wa-helper-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(255,107,53,0.05); }
 
@@ -431,6 +451,8 @@
       </div>
     </div>
 
+    <div id="player-warning" class="player-warning" style="display:none;"></div>
+
     <div class="btn-row" id="lobby-btn-row">
       <button class="btn" onclick="startGame()" id="lobby-start-btn">🎮 <span id="lbl-start-btn">Rozpocznij grę</span></button>
       <button class="btn secondary" onclick="confirmGoHome()" id="lbl-leave-room">🚪 Wyjdź</button>
@@ -466,6 +488,7 @@
     <div id="wa-mystery-card" class="wa-mystery-card" style="display:none;">
       <div class="wa-mystery-icon wa-bounce">❓</div>
       <div class="wa-mystery-text" id="wa-mystery-text">KIM JESTEM?</div>
+      <div class="wa-mystery-hint" id="wa-mystery-hint" style="display:none;">💡 <span id="lbl-mystery-hint">Powiedz odpowiedź głośno → naciśnij ✅ poniżej</span> ↓</div>
     </div>
 
     <!-- Question hints (active player, togglable) -->
