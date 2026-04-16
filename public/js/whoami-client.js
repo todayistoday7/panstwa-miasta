@@ -990,6 +990,7 @@ function applyTranslations() {
   set('lbl-helper-title',   'helperTitle');
   set('lbl-guess-btn',      'guessBtn');
   set('lbl-i-got-it',       'iGotIt');
+  set('lbl-mystery-hint',   'mysteryHint');
   set('lbl-surrender-btn',  'surrenderBtn');
   set('lbl-next-turn',      'nextTurn');
   set('lbl-game-over',      'gameOver');

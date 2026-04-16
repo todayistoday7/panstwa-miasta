@@ -408,10 +408,10 @@
       <!-- Surrender always visible in both modes -->
       <button class="btn secondary" onclick="surrender()" style="width:100%;margin-top:4px;">🏳️ <span id="lbl-surrender-btn">Poddaję się</span></button>
     </div>
-  </div>
 
-    <!-- Skip — host only, outside guess-wrap so visible even when host is guessing -->
+    <!-- Skip — host only, inside screen-playing but outside wa-guess-wrap -->
     <button id="wa-skip-btn" class="btn secondary" onclick="skipCharacter()" style="width:100%;margin-top:4px;display:none;">⏭️ <span id="lbl-skip-btn">Pomiń postać</span></button>
+  </div>
 
   <!-- ══ SCREEN: TURN RESULT ══ -->
   <div id="screen-turn-result" class="screen">

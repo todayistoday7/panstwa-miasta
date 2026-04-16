@@ -1,312 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- ══ HOME ══ -->
   <url>
-    <loc>https://panstwamiastagra.com/?lang=pl</loc>
-    <lastmod>2026-04-05</lastmod>
+    <loc>https://panstwamiastagra.com/</loc>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/?lang=pl"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/?lang=en"/>
     <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/?lang=de"/>
     <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/?lang=sv"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/?lang=pl"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/games?lang=pl</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/games?lang=pl"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/games?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/games?lang=de"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/games?lang=sv"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/games?lang=pl"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/taboo?lang=pl</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/taboo?lang=pl"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/taboo?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/taboo?lang=de"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/taboo?lang=sv"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/taboo?lang=pl"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/dots?lang=pl</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/dots?lang=pl"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/dots?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/dots?lang=de"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/dots?lang=sv"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/dots?lang=pl"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/twotruth?lang=pl</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/twotruth?lang=pl"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/twotruth?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/twotruth?lang=de"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/twotruth?lang=sv"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/twotruth?lang=pl"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/hangman?lang=pl</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/hangman?lang=pl"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/hangman?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/hangman?lang=de"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/hangman?lang=sv"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/hangman?lang=pl"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/bingo?lang=pl</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/bingo?lang=pl"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/bingo?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/bingo?lang=de"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/bingo?lang=sv"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/bingo?lang=pl"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/rooms?lang=pl</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/rooms?lang=pl"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/rooms?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/rooms?lang=de"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/rooms?lang=sv"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/rooms?lang=pl"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/privacy?lang=pl</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.4</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/privacy?lang=pl"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/privacy?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/privacy?lang=pl"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/jak-grac</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/jak-grac"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/jak-grac/zakazane-slowa</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac/zakazane-slowa"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/jak-grac/zakazane-slowa"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/jak-grac/wisielec</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac/wisielec"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/jak-grac/wisielec"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/jak-grac/kropki-i-kreski</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac/kropki-i-kreski"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/jak-grac/kropki-i-kreski"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/jak-grac/dwie-prawdy-jedno-klamstwo</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac/dwie-prawdy-jedno-klamstwo"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/jak-grac/dwie-prawdy-jedno-klamstwo"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/how-to-play</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/how-to-play/forbidden-words</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play/forbidden-words"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play/forbidden-words"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/how-to-play/hangman</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play/hangman"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play/hangman"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/how-to-play/dots-and-boxes</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play/dots-and-boxes"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play/dots-and-boxes"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/how-to-play/two-truths-one-lie</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play/two-truths-one-lie"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play/two-truths-one-lie"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/wie-man-spielt</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/wie-man-spielt"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/wie-man-spielt"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/hur-man-spelar</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/hur-man-spelar"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/hur-man-spelar"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/kategorie</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/kategorie"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/kategorie"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/slowa</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/slowa"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/slowa"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/"/>
   </url>
 
-  <url>
-    <loc>https://panstwamiastagra.com/how-to-play/sketch-and-guess</loc>
-    <lastmod>2026-04-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play/sketch-and-guess"/>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac/szkicuj-i-zgaduj"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/wie-man-spielt/zeichnen-und-raten"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/hur-man-spelar/skissa-och-gissa"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play/sketch-and-guess"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/jak-grac/szkicuj-i-zgaduj</loc>
-    <lastmod>2026-04-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac/szkicuj-i-zgaduj"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/jak-grac/szkicuj-i-zgaduj"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/wie-man-spielt/zeichnen-und-raten</loc>
-    <lastmod>2026-04-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/wie-man-spielt/zeichnen-und-raten"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/wie-man-spielt/zeichnen-und-raten"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/hur-man-spelar/skissa-och-gissa</loc>
-    <lastmod>2026-04-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/hur-man-spelar/skissa-och-gissa"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/hur-man-spelar/skissa-och-gissa"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/drawing?lang=pl</loc>
-    <lastmod>2026-04-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/drawing?lang=pl"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/drawing?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/drawing?lang=de"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/drawing?lang=sv"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/drawing?lang=pl"/>
-  </url>
-
-  <!-- Dots & Boxes SEO landing pages -->
-  <url>
-    <loc>https://panstwamiastagra.com/kropki-i-kreski-online</loc>
-    <lastmod>2026-04-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/kropki-i-kreski-online"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/dots-and-boxes-online"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/punkte-und-linien-online"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/punkter-och-linjer-online"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/dots-and-boxes-online"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/dots-and-boxes-online</loc>
-    <lastmod>2026-04-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/dots-and-boxes-online"/>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/kropki-i-kreski-online"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/punkte-und-linien-online"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/punkter-och-linjer-online"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/dots-and-boxes-online"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/punkte-und-linien-online</loc>
-    <lastmod>2026-04-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/punkte-und-linien-online"/>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/kropki-i-kreski-online"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/dots-and-boxes-online"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/punkter-och-linjer-online"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/dots-and-boxes-online"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/punkter-och-linjer-online</loc>
-    <lastmod>2026-04-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/punkter-och-linjer-online"/>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/kropki-i-kreski-online"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/dots-and-boxes-online"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/punkte-und-linien-online"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/dots-and-boxes-online"/>
-  </url>
-  <!-- Games hub SEO pages -->
+  <!-- ══ GAMES HUB ══ -->
   <url>
     <loc>https://panstwamiastagra.com/gry</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/gry"/>
@@ -316,8 +28,19 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/games"/>
   </url>
   <url>
+    <loc>https://panstwamiastagra.com/games</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/games"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/gry"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/spiele"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/spel"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/games"/>
+  </url>
+  <url>
     <loc>https://panstwamiastagra.com/spiele</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/spiele"/>
@@ -328,7 +51,7 @@
   </url>
   <url>
     <loc>https://panstwamiastagra.com/spel</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/spel"/>
@@ -338,56 +61,115 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/games"/>
   </url>
 
-  <!-- Two Truths One Lie SEO landing pages -->
+  <!-- ══ PAŃSTWA MIASTA ══ -->
   <url>
-    <loc>https://panstwamiastagra.com/dwie-prawdy-jedno-klamstwo</loc>
-    <lastmod>2026-04-09</lastmod>
+    <loc>https://panstwamiastagra.com/</loc>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/dwie-prawdy-jedno-klamstwo"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/two-truths-one-lie"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zwei-wahrheiten-eine-luege"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/tva-sanningar-en-logn"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/two-truths-one-lie"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/two-truths-one-lie</loc>
-    <lastmod>2026-04-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/two-truths-one-lie"/>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/dwie-prawdy-jedno-klamstwo"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zwei-wahrheiten-eine-luege"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/tva-sanningar-en-logn"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/two-truths-one-lie"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/zwei-wahrheiten-eine-luege</loc>
-    <lastmod>2026-04-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zwei-wahrheiten-eine-luege"/>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/dwie-prawdy-jedno-klamstwo"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/two-truths-one-lie"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/tva-sanningar-en-logn"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/two-truths-one-lie"/>
-  </url>
-  <url>
-    <loc>https://panstwamiastagra.com/tva-sanningar-en-logn</loc>
-    <lastmod>2026-04-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/tva-sanningar-en-logn"/>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/dwie-prawdy-jedno-klamstwo"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/two-truths-one-lie"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zwei-wahrheiten-eine-luege"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/two-truths-one-lie"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/?lang=pl"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/?lang=sv"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/"/>
   </url>
 
-  <!-- Hangman SEO landing pages -->
+  <!-- ══ WHO AM I ══ -->
+  <url>
+    <loc>https://panstwamiastagra.com/kim-jestem</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/kim-jestem"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/who-am-i"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/wer-bin-ich"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/vem-ar-jag"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/who-am-i"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/who-am-i</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/who-am-i"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/kim-jestem"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/wer-bin-ich"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/vem-ar-jag"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/who-am-i"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/wer-bin-ich</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/wer-bin-ich"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/kim-jestem"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/who-am-i"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/vem-ar-jag"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/who-am-i"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/vem-ar-jag</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/vem-ar-jag"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/kim-jestem"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/who-am-i"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/wer-bin-ich"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/who-am-i"/>
+  </url>
+
+  <!-- ══ FORBIDDEN WORDS ══ -->
+  <url>
+    <loc>https://panstwamiastagra.com/zakazane-slowa</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/zakazane-slowa"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/forbidden-words"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/verbotene-woerter"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/forbjudna-ord"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/forbidden-words"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/forbidden-words</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/forbidden-words"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/zakazane-slowa"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/verbotene-woerter"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/forbjudna-ord"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/forbidden-words"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/verbotene-woerter</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/verbotene-woerter"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/zakazane-slowa"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/forbidden-words"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/forbjudna-ord"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/forbidden-words"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/forbjudna-ord</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/forbjudna-ord"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/zakazane-slowa"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/forbidden-words"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/verbotene-woerter"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/forbidden-words"/>
+  </url>
+
+  <!-- ══ HANGMAN ══ -->
   <url>
     <loc>https://panstwamiastagra.com/wisielec</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/wisielec"/>
@@ -398,7 +180,7 @@
   </url>
   <url>
     <loc>https://panstwamiastagra.com/hangman-online</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/hangman-online"/>
@@ -409,7 +191,7 @@
   </url>
   <url>
     <loc>https://panstwamiastagra.com/galgenmaennchen-online</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/galgenmaennchen-online"/>
@@ -420,7 +202,7 @@
   </url>
   <url>
     <loc>https://panstwamiastagra.com/hanga-gubbe-online</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/hanga-gubbe-online"/>
@@ -430,10 +212,102 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/hangman-online"/>
   </url>
 
-  <!-- Sketch & Guess SEO landing pages -->
+  <!-- ══ DOTS & BOXES ══ -->
+  <url>
+    <loc>https://panstwamiastagra.com/kropki-i-kreski-online</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/kropki-i-kreski-online"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/dots-and-boxes-online"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/punkte-und-linien-online"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/punkter-och-linjer-online"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/dots-and-boxes-online"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/dots-and-boxes-online</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/dots-and-boxes-online"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/kropki-i-kreski-online"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/punkte-und-linien-online"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/punkter-och-linjer-online"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/dots-and-boxes-online"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/punkte-und-linien-online</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/punkte-und-linien-online"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/kropki-i-kreski-online"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/dots-and-boxes-online"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/punkter-och-linjer-online"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/dots-and-boxes-online"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/punkter-och-linjer-online</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/punkter-och-linjer-online"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/kropki-i-kreski-online"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/dots-and-boxes-online"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/punkte-und-linien-online"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/dots-and-boxes-online"/>
+  </url>
+
+  <!-- ══ TWO TRUTHS 1 LIE ══ -->
+  <url>
+    <loc>https://panstwamiastagra.com/dwie-prawdy-jedno-klamstwo</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/dwie-prawdy-jedno-klamstwo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/two-truths-one-lie"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zwei-wahrheiten-eine-luege"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/tva-sanningar-en-logn"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/two-truths-one-lie"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/two-truths-one-lie</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/two-truths-one-lie"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/dwie-prawdy-jedno-klamstwo"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zwei-wahrheiten-eine-luege"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/tva-sanningar-en-logn"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/two-truths-one-lie"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/zwei-wahrheiten-eine-luege</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zwei-wahrheiten-eine-luege"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/dwie-prawdy-jedno-klamstwo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/two-truths-one-lie"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/tva-sanningar-en-logn"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/two-truths-one-lie"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/tva-sanningar-en-logn</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/tva-sanningar-en-logn"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/dwie-prawdy-jedno-klamstwo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/two-truths-one-lie"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zwei-wahrheiten-eine-luege"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/two-truths-one-lie"/>
+  </url>
+
+  <!-- ══ SKETCH & GUESS ══ -->
   <url>
     <loc>https://panstwamiastagra.com/szkicuj-i-zgaduj</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/szkicuj-i-zgaduj"/>
@@ -444,7 +318,7 @@
   </url>
   <url>
     <loc>https://panstwamiastagra.com/sketch-and-guess</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/sketch-and-guess"/>
@@ -455,7 +329,7 @@
   </url>
   <url>
     <loc>https://panstwamiastagra.com/zeichnen-und-raten</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/zeichnen-und-raten"/>
@@ -466,7 +340,7 @@
   </url>
   <url>
     <loc>https://panstwamiastagra.com/skissa-och-gissa</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/skissa-och-gissa"/>
@@ -476,58 +350,45 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/sketch-and-guess"/>
   </url>
 
-  <!-- Forbidden Words SEO landing pages -->
-  <url><loc>https://panstwamiastagra.com/zakazane-slowa</loc><lastmod>2026-04-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/zakazane-slowa"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/forbidden-words"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/verbotene-woerter"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/forbjudna-ord"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/forbidden-words"/>
-  </url>
-  <url><loc>https://panstwamiastagra.com/forbidden-words</loc><lastmod>2026-04-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/forbidden-words"/>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/zakazane-slowa"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/verbotene-woerter"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/forbjudna-ord"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/forbidden-words"/>
-  </url>
-  <url><loc>https://panstwamiastagra.com/verbotene-woerter</loc><lastmod>2026-04-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/verbotene-woerter"/>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/zakazane-slowa"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/forbidden-words"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/forbjudna-ord"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/forbidden-words"/>
-  </url>
-  <url><loc>https://panstwamiastagra.com/forbjudna-ord</loc><lastmod>2026-04-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/forbjudna-ord"/>
-    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/zakazane-slowa"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/forbidden-words"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/verbotene-woerter"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/forbidden-words"/>
-  </url>
-  <!-- Corporate Bingo SEO landing pages -->
-  <url><loc>https://panstwamiastagra.com/korporacyjne-bingo</loc><lastmod>2026-04-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
+  <!-- ══ CORPORATE BINGO ══ -->
+  <url>
+    <loc>https://panstwamiastagra.com/korporacyjne-bingo</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/korporacyjne-bingo"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/corporate-bingo"/>
     <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/unternehmens-bingo"/>
     <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/foretagsbingo"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/corporate-bingo"/>
   </url>
-  <url><loc>https://panstwamiastagra.com/corporate-bingo</loc><lastmod>2026-04-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
+  <url>
+    <loc>https://panstwamiastagra.com/corporate-bingo</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/corporate-bingo"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/korporacyjne-bingo"/>
     <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/unternehmens-bingo"/>
     <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/foretagsbingo"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/corporate-bingo"/>
   </url>
-  <url><loc>https://panstwamiastagra.com/unternehmens-bingo</loc><lastmod>2026-04-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
+  <url>
+    <loc>https://panstwamiastagra.com/unternehmens-bingo</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/unternehmens-bingo"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/korporacyjne-bingo"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/corporate-bingo"/>
     <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/foretagsbingo"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/corporate-bingo"/>
   </url>
-  <url><loc>https://panstwamiastagra.com/foretagsbingo</loc><lastmod>2026-04-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority>
+  <url>
+    <loc>https://panstwamiastagra.com/foretagsbingo</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/foretagsbingo"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/korporacyjne-bingo"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/corporate-bingo"/>
@@ -535,53 +396,141 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/corporate-bingo"/>
   </url>
 
-  <!-- How-to-play — missing pages added -->
-  <url><loc>https://panstwamiastagra.com/jak-grac/korporacyjne-bingo</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/how-to-play/corporate-bingo</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/wie-man-spielt/galgenmaennchen-online</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/wie-man-spielt/verbotene-woerter</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/wie-man-spielt/punkte-und-linien-online</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/wie-man-spielt/zwei-wahrheiten-eine-luege</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/wie-man-spielt/unternehmens-bingo</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/hur-man-spelar/hanga-gubbe-online</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/hur-man-spelar/forbjudna-ord</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/hur-man-spelar/punkter-och-linjer-online</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/hur-man-spelar/tva-sanningar-en-logn</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/hur-man-spelar/foretagsbingo</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <!-- ══ HOW-TO-PLAY — PL ══ -->
+  <url>
+    <loc>https://panstwamiastagra.com/jak-grac</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/wie-man-spielt"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/hur-man-spelar"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/jak-grac/kim-jestem</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac/kim-jestem"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play/who-am-i"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/wie-man-spielt/wer-bin-ich"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/hur-man-spelar/vem-ar-jag"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play/who-am-i"/>
+  </url>
+  <url><loc>https://panstwamiastagra.com/jak-grac/zakazane-slowa</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/jak-grac/wisielec</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/jak-grac/kropki-i-kreski</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/jak-grac/dwie-prawdy-jedno-klamstwo</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/jak-grac/szkicuj-i-zgaduj</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/jak-grac/korporacyjne-bingo</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
-  <!-- How-to-play pages — new additions -->
-  <url><loc>https://panstwamiastagra.com/jak-grac/korporacyjne-bingo</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/how-to-play/corporate-bingo</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/wie-man-spielt/galgenmaennchen-online</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/wie-man-spielt/verbotene-woerter</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/wie-man-spielt/punkte-und-linien-online</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/wie-man-spielt/zwei-wahrheiten-eine-luege</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/wie-man-spielt/unternehmens-bingo</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/hur-man-spelar/hanga-gubbe-online</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/hur-man-spelar/forbjudna-ord</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/hur-man-spelar/punkter-och-linjer-online</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/hur-man-spelar/tva-sanningar-en-logn</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/hur-man-spelar/foretagsbingo</loc><lastmod>2026-04-10</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <!-- ══ HOW-TO-PLAY — EN ══ -->
+  <url>
+    <loc>https://panstwamiastagra.com/how-to-play</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/wie-man-spielt"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/hur-man-spelar"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/how-to-play/who-am-i</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play/who-am-i"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac/kim-jestem"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/wie-man-spielt/wer-bin-ich"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/hur-man-spelar/vem-ar-jag"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play/who-am-i"/>
+  </url>
+  <url><loc>https://panstwamiastagra.com/how-to-play/forbidden-words</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/how-to-play/hangman</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/how-to-play/dots-and-boxes</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/how-to-play/two-truths-one-lie</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/how-to-play/sketch-and-guess</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/how-to-play/corporate-bingo</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
-  <!-- Blog Hub Pages -->
+  <!-- ══ HOW-TO-PLAY — DE ══ -->
+  <url>
+    <loc>https://panstwamiastagra.com/wie-man-spielt</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/wie-man-spielt"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/hur-man-spelar"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/wie-man-spielt/wer-bin-ich</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/wie-man-spielt/wer-bin-ich"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac/kim-jestem"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play/who-am-i"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/hur-man-spelar/vem-ar-jag"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play/who-am-i"/>
+  </url>
+  <url><loc>https://panstwamiastagra.com/wie-man-spielt/galgenmaennchen-online</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/wie-man-spielt/verbotene-woerter</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/wie-man-spielt/punkte-und-linien-online</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/wie-man-spielt/zwei-wahrheiten-eine-luege</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/wie-man-spielt/unternehmens-bingo</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/wie-man-spielt/zeichnen-und-raten</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- ══ HOW-TO-PLAY — SV ══ -->
+  <url>
+    <loc>https://panstwamiastagra.com/hur-man-spelar</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/hur-man-spelar"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/wie-man-spielt"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play"/>
+  </url>
+  <url>
+    <loc>https://panstwamiastagra.com/hur-man-spelar/vem-ar-jag</loc>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/hur-man-spelar/vem-ar-jag"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac/kim-jestem"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play/who-am-i"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/wie-man-spielt/wer-bin-ich"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play/who-am-i"/>
+  </url>
+  <url><loc>https://panstwamiastagra.com/hur-man-spelar/hanga-gubbe-online</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/hur-man-spelar/forbjudna-ord</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/hur-man-spelar/punkter-och-linjer-online</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/hur-man-spelar/tva-sanningar-en-logn</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/hur-man-spelar/foretagsbingo</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/hur-man-spelar/skissa-och-gissa</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- ══ UTILITY PAGES ══ -->
+  <url><loc>https://panstwamiastagra.com/rooms</loc><lastmod>2026-04-16</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>
+  <url><loc>https://panstwamiastagra.com/privacy</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://panstwamiastagra.com/kategorie</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/slowa</loc><lastmod>2026-04-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- ══ BLOG ══ -->
   <url><loc>https://panstwamiastagra.com/blog</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/blog/pl</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/blog/de</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://panstwamiastagra.com/blog/sv</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-
-  <!-- Blog Articles — EN -->
   <url><loc>https://panstwamiastagra.com/blog/fun-games-to-play-on-zoom</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://panstwamiastagra.com/blog/online-party-games-no-download</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-
-  <!-- Blog Articles — PL -->
   <url><loc>https://panstwamiastagra.com/blog/pl/gry-na-spotkania-online</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://panstwamiastagra.com/blog/pl/gry-integracyjne-dla-firm</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-
-  <!-- Blog Articles — DE -->
   <url><loc>https://panstwamiastagra.com/blog/de/spiele-fuer-videokonferenzen</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://panstwamiastagra.com/blog/de/online-partyspiele-kostenlos</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-
-  <!-- Blog Articles — SV -->
   <url><loc>https://panstwamiastagra.com/blog/sv/spel-att-spela-pa-distans</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://panstwamiastagra.com/blog/sv/roliga-spel-pa-zoom</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
 </urlset>

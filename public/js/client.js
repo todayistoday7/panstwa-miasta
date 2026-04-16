@@ -213,6 +213,22 @@ function renderLobby(data) {
 
   document.getElementById('settings-card').style.opacity = '1';
 
+  // Player warning
+  const _warn = document.getElementById('player-warning');
+  if (_warn) {
+    const _count = (data.players || []).filter(p => p.connected !== false).length;
+    const _min = 2;
+    _warn.style.display = 'block';
+    _warn.classList.remove('flash');
+    if (_count >= _min) {
+      _warn.classList.add('ready');
+      _warn.textContent = L.enoughPlayers ? L.enoughPlayers(_count) : '✅ ' + _count + ' players ready!';
+    } else {
+      _warn.classList.remove('ready');
+      _warn.textContent = L.waitingPlayers ? L.waitingPlayers(_count, _min) : 'Waiting for players... ' + _count + '/' + _min + ' joined.';
+    }
+  }
+
   // ── Settings UI: host renders once on first load, never from server again ──
   // Non-host always syncs from server (read-only display).
   if (_amHost) {
@@ -753,7 +769,18 @@ function joinRoom() {
   socket.emit('join_room', { name, code });
 }
 
-function startGame() { socket.emit('start_game', { code: roomCode }); }
+function startGame() {
+  if (!roomCode) return;
+  const _warn = document.getElementById('player-warning');
+  if (_warn && !_warn.classList.contains('ready')) {
+    _warn.classList.remove('flash');
+    void _warn.offsetWidth;
+    _warn.classList.add('flash');
+    setTimeout(() => _warn.classList.remove('flash'), 1600);
+    return;
+  }
+  socket.emit('start_game', { code: roomCode });
+}
 
 function drawLetter() {
   document.getElementById('draw-btn').disabled = true;
