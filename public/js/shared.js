@@ -233,7 +233,7 @@ function renderOtherGames(currentGame) {
     pl: { pm:'/państwa-miasta', taboo:'/zakazane-slowa', hangman:'/wisielec',
           dots:'/kropki-i-kreski-online', twotruth:'/dwie-prawdy-jedno-klamstwo',
           drawing:'/szkicuj-i-zgaduj', bingo:'/korporacyjne-bingo', whoami:'/kim-jestem' },
-    en: { pm:'/panstwa-miasta', taboo:'/forbidden-words', hangman:'/hangman-online',
+    en: { pm:'/countries-cities-game', taboo:'/forbidden-words', hangman:'/hangman-online',
           dots:'/dots-and-boxes-online', twotruth:'/two-truths-one-lie',
           drawing:'/sketch-and-guess', bingo:'/corporate-bingo', whoami:'/who-am-i' },
     de: { pm:'/panstwa-miasta', taboo:'/verbotene-woerter', hangman:'/galgenmaennchen-online',

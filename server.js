@@ -47,6 +47,9 @@ app.get('/wer-bin-ich',(req, res) => res.sendFile(path.join(__dirname, 'public/s
 app.get('/vem-ar-jag', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/vem-ar-jag.html')));
 app.get('/whoami',     (req, res) => res.redirect(301, '/who-am-i'));
 
+// ── Państwa Miasta — SEO pages (EN/DE/SV — PL stays on root /) ──
+app.get('/countries-cities-game', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/countries-cities-game.html')));
+
 // ── How-to-play pages — new additions ───────────────────────────
 app.get('/jak-grac/korporacyjne-bingo',          (req,res) => res.sendFile(path.join(__dirname,'public/jak-grac/korporacyjne-bingo.html')));
 app.get('/how-to-play/corporate-bingo',           (req,res) => res.sendFile(path.join(__dirname,'public/how-to-play/corporate-bingo.html')));
@@ -155,6 +158,10 @@ app.get('/blog/de',                                (req,res) => res.sendFile(pat
 app.get('/blog/sv',                                (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/index.html')));
 app.get('/blog/fun-games-to-play-on-zoom',         (req,res) => res.sendFile(path.join(__dirname,'public/blog/fun-games-to-play-on-zoom.html')));
 app.get('/blog/online-party-games-no-download',    (req,res) => res.sendFile(path.join(__dirname,'public/blog/online-party-games-no-download.html')));
+app.get('/blog/forbidden-words-examples',          (req,res) => res.sendFile(path.join(__dirname,'public/blog/forbidden-words-examples.html')));
+app.get('/blog/hard-hangman-words',                (req,res) => res.sendFile(path.join(__dirname,'public/blog/hard-hangman-words.html')));
+app.get('/blog/who-am-i-characters',              (req,res) => res.sendFile(path.join(__dirname,'public/blog/who-am-i-characters.html')));
+app.get('/blog/categories-countries-cities-game',  (req,res) => res.sendFile(path.join(__dirname,'public/blog/categories-countries-cities-game.html')));
 app.get('/blog/pl/gry-na-spotkania-online',        (req,res) => res.sendFile(path.join(__dirname,'public/blog/pl/gry-na-spotkania-online.html')));
 app.get('/blog/pl/gry-integracyjne-dla-firm',      (req,res) => res.sendFile(path.join(__dirname,'public/blog/pl/gry-integracyjne-dla-firm.html')));
 app.get('/blog/de/spiele-fuer-videokonferenzen',   (req,res) => res.sendFile(path.join(__dirname,'public/blog/de/spiele-fuer-videokonferenzen.html')));

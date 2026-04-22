@@ -2,7 +2,7 @@
 // CLIENT STATE
 // ═══════════════════════════════════════════════════════
 const socket = io();
-const _urlLangPM = new URLSearchParams(window.location.search).get('lang');
+const _urlLangPM = new URLSearchParams(window.location.search).get('lang') || window._forceLang;
 let lang = (LANGS[_urlLangPM] ? _urlLangPM : 'pl');
 let L = LANGS[lang];
 let myId = null;
@@ -625,6 +625,8 @@ function renderFinalScreen(data) {
         '<div class="lb-name">' + p.name + (p.id===myId?' (you)':'') + '</div>' +
         '<div class="lb-pts">' + p.total + '</div></div>';
     });
+
+  if (typeof renderOtherGames === 'function') renderOtherGames('pm');
 }
 
 // ─── CHALLENGE / VOTING ───────────────────────────────────────────────
