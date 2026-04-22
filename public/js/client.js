@@ -884,6 +884,8 @@ function applyTranslations() {
     'lbl-play-again-group':'playAgainGroup',
     'lbl-share-btn':'shareBtnLabel','lbl-share-game':'shareGameBtn','nav-share-btn':'shareInviteBtn',
     'lbl-home-rejoin-tip':'homeRejoinTip',
+    'lbl-rejoin-tip':'homeRejoinTip',
+    'lbl-share-room':'shareBtnLabel',
     'lbl-nav-home':'navHome','lbl-nav-all-games':'navAllGames','lbl-leave-room':'leaveRoom',
     'lbl-other-games':'otherGames',
   };
@@ -923,11 +925,54 @@ function applyTranslations() {
     'lbl-lobby-rules-title':'lobbyRulesTitle',
     'lbl-lobby-rule-1':'rule1', 'lbl-lobby-rule-2':'rule2', 'lbl-lobby-rule-3':'rule3',
     'lbl-lobby-rule-4':'rule4', 'lbl-lobby-rule-5':'rule5',
+    'lbl-discover-games':'discoverGames',
+    'lbl-discover-games-desc':'discoverGamesDesc',
   };
   for (const [id, key] of Object.entries(aboutMap)) {
     const el = document.getElementById(id);
     if (el && L[key]) el.textContent = L[key];
   }
+
+  // ── Update discover-games cards for current language ──
+  const discoverData = {
+    pl: [
+      { href:'/kim-jestem', name:'Kim Jestem?', players:'2-16 graczy' },
+      { href:'/zakazane-slowa', name:'Zakazane Słowa', players:'4-12 graczy' },
+      { href:'/wisielec', name:'Wisielec', players:'2-10 graczy' },
+      { href:'/szkicuj-i-zgaduj', name:'Szkicuj i Zgaduj', players:'3-10 graczy' },
+    ],
+    en: [
+      { href:'/who-am-i', name:'Who Am I?', players:'2-16 players' },
+      { href:'/forbidden-words', name:'Forbidden Words', players:'4-12 players' },
+      { href:'/hangman-online', name:'Hangman', players:'2-10 players' },
+      { href:'/sketch-and-guess', name:'Sketch & Guess', players:'3-10 players' },
+    ],
+    de: [
+      { href:'/wer-bin-ich', name:'Wer bin ich?', players:'2-16 Spieler' },
+      { href:'/verbotene-woerter', name:'Verbotene Wörter', players:'4-12 Spieler' },
+      { href:'/galgenmaennchen-online', name:'Galgenmännchen', players:'2-10 Spieler' },
+      { href:'/zeichnen-und-raten', name:'Zeichnen & Raten', players:'3-10 Spieler' },
+    ],
+    sv: [
+      { href:'/vem-ar-jag', name:'Vem är jag?', players:'2-16 spelare' },
+      { href:'/forbjudna-ord', name:'Förbjudna ord', players:'4-12 spelare' },
+      { href:'/hanga-gubbe-online', name:'Hänga gubbe', players:'2-10 spelare' },
+      { href:'/skissa-och-gissa', name:'Skissa & Gissa', players:'3-10 spelare' },
+    ],
+  };
+  const dg = discoverData[lang] || discoverData['pl'];
+  const allGamesLink = document.getElementById('lbl-seo-all-games');
+  if (allGamesLink) allGamesLink.href = '/games?lang=' + lang;
+  const allGamesLabel = document.getElementById('lbl-discover-all');
+  if (allGamesLabel) allGamesLabel.textContent = lang==='pl'?'Zobacz wszystkie gry →':lang==='de'?'Alle Spiele ansehen →':lang==='sv'?'Se alla spel →':'See all games →';
+  dg.forEach((g, i) => {
+    const link = document.getElementById('discover-game-' + (i+1));
+    const name = document.getElementById('discover-name-' + (i+1));
+    const players = document.getElementById('discover-players-' + (i+1));
+    if (link) link.href = g.href;
+    if (name) name.textContent = g.name;
+    if (players) players.textContent = g.players;
+  });
 }
 
 // ─── UTILS ───────────────────────────────────────────────

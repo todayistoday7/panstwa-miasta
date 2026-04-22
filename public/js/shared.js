@@ -236,10 +236,10 @@ function renderOtherGames(currentGame) {
     en: { pm:'/countries-cities-game', taboo:'/forbidden-words', hangman:'/hangman-online',
           dots:'/dots-and-boxes-online', twotruth:'/two-truths-one-lie',
           drawing:'/sketch-and-guess', bingo:'/corporate-bingo', whoami:'/who-am-i' },
-    de: { pm:'/panstwa-miasta', taboo:'/verbotene-woerter', hangman:'/galgenmaennchen-online',
+    de: { pm:'/laender-und-staedte', taboo:'/verbotene-woerter', hangman:'/galgenmaennchen-online',
           dots:'/punkte-und-linien-online', twotruth:'/zwei-wahrheiten-eine-luege',
           drawing:'/zeichnen-und-raten', bingo:'/unternehmens-bingo', whoami:'/wer-bin-ich' },
-    sv: { pm:'/panstwa-miasta', taboo:'/forbjudna-ord', hangman:'/hanga-gubbe-online',
+    sv: { pm:'/laender-och-staeder', taboo:'/forbjudna-ord', hangman:'/hanga-gubbe-online',
           dots:'/punkter-och-linjer-online', twotruth:'/tva-sanningar-en-logn',
           drawing:'/skissa-och-gissa', bingo:'/foretagsbingo', whoami:'/vem-ar-jag' },
   };

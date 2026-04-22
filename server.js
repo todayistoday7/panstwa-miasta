@@ -49,6 +49,8 @@ app.get('/whoami',     (req, res) => res.redirect(301, '/who-am-i'));
 
 // ── Państwa Miasta — SEO pages (EN/DE/SV — PL stays on root /) ──
 app.get('/countries-cities-game', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/countries-cities-game.html')));
+app.get('/laender-und-staedte',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/laender-und-staedte.html')));
+app.get('/laender-och-staeder',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/laender-och-staeder.html')));
 
 // ── How-to-play pages — new additions ───────────────────────────
 app.get('/jak-grac/korporacyjne-bingo',          (req,res) => res.sendFile(path.join(__dirname,'public/jak-grac/korporacyjne-bingo.html')));
