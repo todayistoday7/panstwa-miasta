@@ -101,7 +101,9 @@ function shareRoom(gameSlug, titleText) {
                   '/korporacyjne-bingo','/corporate-bingo',
                   '/unternehmens-bingo','/foretagsbingo',
                   '/kim-jestem','/who-am-i',
-                  '/wer-bin-ich','/vem-ar-jag'];
+                  '/wer-bin-ich','/vem-ar-jag',
+                  '/znajdz-pary','/find-pairs-online',
+                  '/paare-finden-online','/hitta-par-online'];
   var usePath = seoSlugs.indexOf(currentPath) >= 0
     ? currentPath
     : (gameSlug ? '/' + gameSlug : '/');

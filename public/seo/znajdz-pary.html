@@ -1,16 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Znajdź Pary / Find Pairs Online — Free Multiplayer Game</title>
-<meta name="description" content="Play Find Pairs / Znajdź Pary online free! Classic card matching memory game for 2-6 players. 6 emoji themes, 3 board sizes. Zagraj za darmo!">
-<meta property="og:title" content="Znajdź Pary — Find Pairs Online | Gra Karciana">
-<meta property="og:description" content="Zagraj w Znajdź Pary online za darmo! Classic card matching game, 2-6 players, multiple themes.">
-<meta property="og:url" content="https://panstwamiastagra.com/memory">
+<title>Znajdź Pary Online — Darmowa Gra Multiplayer | panstwamiastagra.com</title>
+<meta name="description" content="Zagraj w Znajdź Pary online za darmo! Klasyczna gra karciana dla 2-6 graczy. 6 motywów emoji, 3 rozmiary planszy. Bez rejestracji — stwórz pokój i zaproś znajomych.">
+<meta property="og:title" content="Znajdź Pary Online — Darmowa Gra Karciana Multiplayer">
+<meta property="og:description" content="Zagraj w Znajdź Pary online za darmo! Odkrywaj karty i szukaj pasujących par. 2-6 graczy, bez rejestracji.">
+<meta property="og:url" content="https://panstwamiastagra.com/znajdz-pary">
 <meta property="og:type" content="website">
-<meta property="og:locale" content="pl_PL">
-<meta property="og:locale:alternate" content="en_GB">
+<link rel="canonical" href="https://panstwamiastagra.com/znajdz-pary">
+<link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/znajdz-pary">
+<link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/find-pairs-online">
+<link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/paare-finden-online">
+<link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/hitta-par-online">
+<link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/find-pairs-online">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
@@ -19,65 +23,10 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="apple-touch-icon" href="/favicon.svg">
 <script async data-cfasync="false" src="https://www.googletagmanager.com/gtag/js?id=G-BJ79ZM6WPQ"></script>
-<script data-cfasync="false">
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-BJ79ZM6WPQ');
-</script>
-<link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/znajdz-pary">
-<link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/find-pairs-online">
-<link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/paare-finden-online">
-<link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/hitta-par-online">
-<link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/find-pairs-online">
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "VideoGame",
-  "name": "Znajdź Pary Online",
-  "alternateName": [
-    "Find Pairs Online",
-    "Paare finden",
-    "Hitta Par"
-  ],
-  "description": "Klasyczna gra karciana online. Odkrywaj karty i szukaj pasujących par. Classic Find Pairs memory card game free to play.",
-  "url": "https://panstwamiastagra.com/memory",
-  "applicationCategory": "Game",
-  "genre": [
-    "Card Game",
-    "Family Game",
-    "Multiplayer"
-  ],
-  "numberOfPlayers": {
-    "@type": "QuantitativeValue",
-    "minValue": 2,
-    "maxValue": 6
-  },
-  "isAccessibleForFree": true,
-  "inLanguage": [
-    "pl",
-    "en",
-    "de",
-    "sv"
-  ],
-  "playMode": "MultiPlayer",
-  "gamePlatform": "Web browser",
-  "publisher": {
-    "@type": "Organization",
-    "name": "panstwamiastagra.com",
-    "url": "https://panstwamiastagra.com"
-  },
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "PLN",
-    "availability": "https://schema.org/InStock"
-  }
-}
-</script>
+<script data-cfasync="false">window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BJ79ZM6WPQ');</script>
 </head>
 <body>
+
 
 <!-- CONFIRM LEAVE MODAL -->
 <div id="confirm-modal" class="modal-overlay" style="display:none;">
@@ -277,8 +226,62 @@
   <div id="other-games-strip"></div>
 </div>
 
+
+
+<script>window._forceLang = 'pl';</script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/shared.js"></script>
 <script src="/js/memory-client.js"></script>
+<script>
+window._seoLangUrls = {'pl':'/znajdz-pary', 'en':'/find-pairs-online', 'de':'/paare-finden-online', 'sv':'/hitta-par-online'};
+(function() {
+  var _origSetUiLang = null;
+  function _seoSetUiLang(code) {
+    var url = window._seoLangUrls[code];
+    if (url) {
+      window.location.href = url;
+    } else if (_origSetUiLang) {
+      _origSetUiLang(code);
+    }
+  }
+  var _attempts = 0;
+  function _tryOverride() {
+    if (typeof setUiLang === 'function' && setUiLang !== _seoSetUiLang) {
+      _origSetUiLang = setUiLang;
+      setUiLang = _seoSetUiLang;
+      window.setUiLang = _seoSetUiLang;
+      if (typeof buildLangBar === 'function') buildLangBar();
+    } else if (_attempts++ < 20) {
+      setTimeout(_tryOverride, 100);
+    }
+  }
+  _tryOverride();
+})();
+</script>
+
+<!-- SEO BOTTOM CONTENT -->
+<div style="max-width:780px;margin:0 auto;padding:32px 16px 16px;border-top:1px solid var(--border);margin-top:16px;">
+  <div style="margin-top:32px;">
+    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,48px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 10px;">Znajdź Pary Online</h1>
+    <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;"><strong style="color:var(--text);">Znajdź Pary</strong> to klasyczna gra karciana, w której odkrywasz karty i szukasz pasujących par — teraz dostępna online, za darmo, na każdym urządzeniu. Stwórz pokój, wyślij kod znajomym i zacznijcie grać w mniej niż minutę.</p>
+    <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;">Na zmianę odkrywajcie po dwie karty. Jeśli pasują — zatrzymujesz parę i grasz dalej. Jeśli nie — karty wracają na swoje miejsce. Gracz z <strong style="color:var(--text);">największą liczbą par wygrywa</strong>. Prosta zasada, wciągająca rozgrywka dla 2-6 graczy.</p>
+    <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;">Wybierz jeden z <strong style="color:var(--text);">6 motywów emoji</strong> — zwierzęta, jedzenie, natura, podróże, sport lub flagi — i jeden z 3 rozmiarów planszy (3×4, 4×4, 4×5). Idealny na <strong style="color:var(--text);">wieczory z rodziną</strong>, przerwy w pracy lub integrację zespołu.</p>
+    <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;">Działa na komputerach, tabletach i smartfonach. Bez instalacji — wystarczy link.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
+      <span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">🧩 2-6 graczy</span>
+      <span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">👶 Od 4 lat</span>
+      <span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">🆓 Za darmo</span>
+      <span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">📱 Działa na telefonie</span>
+      <span style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);">🎨 6 motywów emoji</span>
+    </div>
+  </div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;padding-top:16px;border-top:1px solid var(--border);">
+    <a href="/find-pairs-online" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🇬🇧 Find Pairs</a>
+    <a href="/paare-finden-online" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🇩🇪 Paare finden</a>
+    <a href="/hitta-par-online" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🇸🇪 Hitta Par</a>
+    <a href="/gry" style="color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;">🎮 Wszystkie gry</a>
+  </div>
+</div>
+
 </body>
 </html>

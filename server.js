@@ -40,7 +40,7 @@ app.get('/hangman',     (req, res) => res.sendFile(path.join(__dirname, 'public/
 app.get('/bingo',       (req, res) => res.sendFile(path.join(__dirname, 'public/bingo.html')));
 // DRAWING TELEPHONE — hidden until ready to launch
 app.get('/drawing',     (req, res) => res.sendFile(path.join(__dirname, 'public/drawing.html')));
-app.get('/memory',      (req, res) => res.sendFile(path.join(__dirname, 'public/memory.html')));
+// /memory is now a 301 redirect to SEO pages (see below)
 
 // ── Who Am I — SEO pages (not linked in nav yet) ────────────────
 app.get('/kim-jestem', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/kim-jestem.html')));
@@ -143,6 +143,12 @@ app.get('/dots-and-boxes-online',    (req, res) => res.sendFile(path.join(__dirn
 app.get('/punkte-und-linien-online', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/punkte-und-linien-online.html')));
 app.get('/punkter-och-linjer-online',(req, res) => res.sendFile(path.join(__dirname, 'public/seo/punkter-och-linjer-online.html')));
 
+// ── SEO Landing Pages — Find Pairs ──────────────────────────────
+app.get('/znajdz-pary',          (req, res) => res.sendFile(path.join(__dirname, 'public/seo/znajdz-pary.html')));
+app.get('/find-pairs-online',    (req, res) => res.sendFile(path.join(__dirname, 'public/seo/find-pairs-online.html')));
+app.get('/paare-finden-online',  (req, res) => res.sendFile(path.join(__dirname, 'public/seo/paare-finden-online.html')));
+app.get('/hitta-par-online',     (req, res) => res.sendFile(path.join(__dirname, 'public/seo/hitta-par-online.html')));
+
 // ── SEO Games Hub Pages ───────────────────────────────────────────
 app.get('/gry',    (req, res) => res.sendFile(path.join(__dirname, 'public/seo/gry.html')));
 app.get('/spiele', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/spiele.html')));
@@ -153,6 +159,12 @@ app.get('/dots', (req, res) => {
   const lang = req.query.lang || 'en';
   const map = { pl:'/kropki-i-kreski-online', de:'/punkte-und-linien-online', sv:'/punkter-och-linjer-online' };
   res.redirect(301, map[lang] || '/dots-and-boxes-online');
+});
+
+app.get('/memory', (req, res) => {
+  const lang = req.query.lang || 'en';
+  const map = { pl:'/znajdz-pary', de:'/paare-finden-online', sv:'/hitta-par-online' };
+  res.redirect(301, map[lang] || '/find-pairs-online');
 });
 
 // ── Blog Routes ───────────────────────────────────────────────
