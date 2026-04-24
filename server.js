@@ -19,6 +19,7 @@ const hangman    = require('./routes/hangman');
 const bingo      = require('./routes/bingo');
 const drawing    = require('./routes/drawing');
 const whoami     = require('./routes/whoami');
+const memory     = require('./routes/memory');
 const lobbyHub   = require('./routes/lobby');
 const admin      = require('./routes/admin');
 
@@ -39,6 +40,7 @@ app.get('/hangman',     (req, res) => res.sendFile(path.join(__dirname, 'public/
 app.get('/bingo',       (req, res) => res.sendFile(path.join(__dirname, 'public/bingo.html')));
 // DRAWING TELEPHONE — hidden until ready to launch
 app.get('/drawing',     (req, res) => res.sendFile(path.join(__dirname, 'public/drawing.html')));
+app.get('/memory',      (req, res) => res.sendFile(path.join(__dirname, 'public/memory.html')));
 
 // ── Who Am I — SEO pages (not linked in nav yet) ────────────────
 app.get('/kim-jestem', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/kim-jestem.html')));
@@ -283,6 +285,7 @@ admin.init(() => {
   try { rooms.dots     = require('./routes/dots').getDotsRooms      ? require('./routes/dots').getDotsRooms()      : []; } catch(e){ rooms.dots=[]; }
   try { rooms.hangman  = require('./routes/hangman').getHangRooms   ? require('./routes/hangman').getHangRooms()   : []; } catch(e){ rooms.hangman=[]; }
   try { rooms.twotruth = require('./routes/twotruth').getTTRooms    ? require('./routes/twotruth').getTTRooms()    : []; } catch(e){ rooms.twotruth=[]; }
+  try { rooms.memory   = require('./routes/memory').memRooms        ? require('./routes/memory').memRooms            : []; } catch(e){ rooms.memory=[]; }
   return rooms;
 });
 app.use('/admin', admin.router);
@@ -414,6 +417,7 @@ io.on('connection', (socket) => {
   bingo.register(io, socket);
   drawing.register(io, socket);
   whoami.register(io, socket);
+  memory.register(io, socket);
 });
 
 // ─── START ───────────────────────────────────────────────

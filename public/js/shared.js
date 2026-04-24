@@ -400,8 +400,14 @@ function initVisibilityToggle() {
 
   var SUPPORTED_LANGS = ['pl','en','de','sv'];
   function getLang() {
+    var path = window.location.pathname;
+    var pathLang = path.match(/\/blog\/(pl|de|sv)\//) ? path.match(/\/blog\/(pl|de|sv)\//)[1] :
+                   path.match(/\/(gry|jak-grac)/) ? 'pl' :
+                   path.match(/\/(spiele|wie-man-spielt)/) ? 'de' :
+                   path.match(/\/(spel|hur-man-spelar)/) ? 'sv' : null;
     var raw = (new URLSearchParams(window.location.search).get('lang')) ||
               (window._forceLang) ||
+              pathLang ||
               (navigator.language || '').slice(0, 2) || 'pl';
     return SUPPORTED_LANGS.indexOf(raw) !== -1 ? raw : 'pl';
   }
@@ -936,7 +942,12 @@ window._buildFooterLangBtns = function() {
   };
 
   function getLang() {
-    var p = new URLSearchParams(window.location.search).get('lang') || window._forceLang;
+    var path = window.location.pathname;
+    var pathLang = path.match(/\/blog\/(pl|de|sv)\//) ? path.match(/\/blog\/(pl|de|sv)\//)[1] :
+                   path.match(/\/(gry|jak-grac)/) ? 'pl' :
+                   path.match(/\/(spiele|wie-man-spielt)/) ? 'de' :
+                   path.match(/\/(spel|hur-man-spelar)/) ? 'sv' : null;
+    var p = new URLSearchParams(window.location.search).get('lang') || window._forceLang || pathLang;
     return (p && LABELS[p]) ? p : 'pl';
   }
 
