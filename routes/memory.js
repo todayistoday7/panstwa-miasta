@@ -156,6 +156,7 @@ function register(io, socket) {
     if (!room || socket.id !== room.hostId || room.state.phase !== 'lobby') return;
     if (settings.boardSize) room.settings.boardSize = settings.boardSize;
     if (settings.theme) room.settings.theme = settings.theme;
+    if (settings.maxPlayers && [2,3,4,5,6].includes(settings.maxPlayers)) room.settings.maxPlayers = settings.maxPlayers;
     if (typeof settings.isPublic === 'boolean') room.isPublic = settings.isPublic;
     lobby.announce('memory', room);
     emitMemState(io, room);

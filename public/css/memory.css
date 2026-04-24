@@ -1,0 +1,206 @@
+/* ══ FIND PAIRS / MEMORY STYLES ══ */
+
+/* ─── BOARD ───────────────────────────────────────────── */
+.mem-board {
+  display: grid;
+  gap: 8px;
+  padding: 8px 16px;
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto;
+}
+.mem-board.size-12 { grid-template-columns: repeat(3, 1fr); }
+.mem-board.size-16 { grid-template-columns: repeat(4, 1fr); }
+.mem-board.size-20 { grid-template-columns: repeat(4, 1fr); }
+
+.mem-card-wrap { aspect-ratio: 1; perspective: 600px; }
+.mem-card {
+  width: 100%; height: 100%;
+  position: relative; cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.4s ease;
+}
+.mem-card.flipped  { transform: rotateY(180deg); }
+.mem-card.matched  { transform: rotateY(180deg); pointer-events: none; }
+.mem-card.matched .mem-back { opacity: 0.45; }
+.mem-card.wrong .mem-back   { border-color: var(--danger); }
+
+.mem-face {
+  position: absolute; width: 100%; height: 100%;
+  backface-visibility: hidden; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--border);
+}
+.mem-front {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+}
+.mem-front::after {
+  content: '?';
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  color: rgba(255,255,255,0.4);
+}
+.mem-back {
+  background: var(--card);
+  transform: rotateY(180deg);
+  font-size: clamp(28px, 8vw, 48px);
+}
+
+@keyframes mem-shake {
+  0%,100% { transform: rotateY(180deg) translateX(0); }
+  25%     { transform: rotateY(180deg) translateX(-5px); }
+  75%     { transform: rotateY(180deg) translateX(5px); }
+}
+@keyframes mem-pop {
+  0%   { transform: rotateY(180deg) scale(1); }
+  50%  { transform: rotateY(180deg) scale(1.1); }
+  100% { transform: rotateY(180deg) scale(1); }
+}
+.mem-card.wrong   .mem-back { animation: mem-shake 0.4s ease; }
+.mem-card.matched .mem-back { animation: mem-pop 0.3s ease; }
+
+/* ─── TURN BAR (pills) ───────────────────────────────── */
+.mem-turn-bar {
+  max-width: 520px; width: 100%;
+  margin: 0 auto; padding: 8px 16px;
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+}
+.mem-player-pill {
+  padding: 6px 14px; border-radius: 20px;
+  font-size: 13px; font-weight: 900;
+  border: 2px solid var(--border);
+  background: var(--card); color: var(--muted);
+  transition: all 0.3s;
+}
+.mem-player-pill.active {
+  border-color: var(--accent);
+  background: rgba(255,107,53,0.1);
+  color: var(--accent);
+  animation: pulse-pill 1.5s ease infinite;
+}
+.mem-player-pill .pill-score {
+  font-family: 'Bebas Neue', sans-serif;
+  margin-left: 6px;
+  font-size: 16px; letter-spacing: 1px;
+}
+
+@keyframes pulse-pill {
+  0%,100% { box-shadow: 0 0 0 0 rgba(255,107,53,0.3); }
+  50%     { box-shadow: 0 0 0 6px rgba(255,107,53,0); }
+}
+
+/* ─── GAME INFO ROW ───────────────────────────────────── */
+.mem-game-info {
+  max-width: 520px; width: 100%;
+  padding: 4px 16px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.mem-pairs-left {
+  font-size: 13px; font-weight: 700; color: var(--muted);
+}
+.mem-turn-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px; letter-spacing: 2px; color: var(--accent2);
+}
+
+/* ─── THEME & SIZE SELECTORS ─────────────────────────── */
+.mem-theme-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 8px; margin: 8px 0 16px;
+}
+.mem-theme-btn {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 10px 8px;
+  text-align: center; cursor: pointer;
+  transition: all 0.2s;
+  font-size: 12px; font-weight: 700; color: var(--muted);
+}
+.mem-theme-btn:hover { border-color: var(--accent); }
+.mem-theme-btn.active {
+  border-color: var(--accent);
+  background: rgba(255,107,53,0.1);
+  color: var(--accent);
+}
+.mem-theme-btn .tp {
+  font-size: 18px; display: block;
+  margin-bottom: 2px; letter-spacing: 2px;
+}
+
+.mem-size-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 8px; margin: 8px 0 16px;
+}
+.mem-size-btn {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 12px;
+  text-align: center; cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px; letter-spacing: 2px; color: var(--muted);
+}
+.mem-size-btn:hover { border-color: var(--accent); }
+.mem-size-btn.active {
+  border-color: var(--accent);
+  background: rgba(255,107,53,0.1);
+  color: var(--accent);
+}
+.mem-size-btn span {
+  display: block;
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px; font-weight: 700;
+}
+
+/* ─── FINAL SCREEN ────────────────────────────────────── */
+.mem-final-players { max-width: 400px; margin: 0 auto 20px; }
+.mem-final-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; margin-bottom: 8px;
+}
+.mem-final-row.winner {
+  border-color: var(--accent2);
+  background: rgba(255,209,102,0.08);
+}
+.mem-final-name { font-weight: 900; font-size: 15px; }
+.mem-final-score {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px; letter-spacing: 2px; color: var(--accent2);
+}
+
+/* ─── HOME DEMO ANIMATION ────────────────────────────── */
+.mem-demo-board {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 6px; max-width: 180px; margin: 0 auto;
+}
+.mem-demo-card {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  transition: all 0.4s ease;
+}
+.mem-demo-card.face-down {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: transparent;
+}
+.mem-demo-card.face-down::after {
+  content: '?';
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  color: rgba(255,255,255,0.35);
+}
+.mem-demo-card.face-up {
+  background: var(--card);
+  border: 2px solid var(--border);
+}
+.mem-demo-card.matched {
+  background: rgba(6,214,160,0.12);
+  border: 2px solid rgba(6,214,160,0.4);
+}
+
+@keyframes mem-demo-flip {
+  0%   { transform: rotateY(0); }
+  50%  { transform: rotateY(90deg); }
+  100% { transform: rotateY(0); }
+}
