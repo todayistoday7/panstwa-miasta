@@ -273,6 +273,32 @@ const ROOMS_LANGS = {
     langHang:       'Galgenmännchen',
     langTt:         '2 Wahrheiten 1 Lüge',
   },
+  sv: {
+    pageTitle:      'Aktiva Rum',
+    pageSubtitle:   'Gå med i ett offentligt spel eller skapa ditt eget',
+    expPublicTitle: 'Offentligt rum',
+    expPublicDesc:  'synligt här med kod. Klicka för att gå med — bra sätt att träffa nya spelare!',
+    expPrivateTitle:'Privat rum',
+    expPrivateDesc: 'synligt här, men utan kod och värdnamn. Du kan bara gå med om du har koden från värden.',
+    expTip:         'Denna sida visar bara rum som väntar på spelare. Pågående spel visas inte.',
+    roomsLabel:     ' aktiva rum',
+    refresh:        '↻ Uppdatera',
+    join:           'Gå med →',
+    players:        (n,m) => `${n}/${m} spelare`,
+    emptyTitle:     'Inga aktiva rum',
+    emptyDesc:      'Ingen har öppnat ett offentligt rum än.\nSkapa ditt eget!',
+    emptyBtn:       '🎮 Skapa rum',
+    loading:        'Laddar...',
+    private:        'Privat',
+    privateHost:    'Värd dold',
+    hosted:         'Värd:',
+    allGames:       'Alla spel',
+    langPm:         'Länder & Städer',
+    langTaboo:      'Förbjudna ord',
+    langDots:       'Punkter & Linjer',
+    langHang:       'Hänga gubbe',
+    langTt:         '2 Sanningar 1 Lögn',
+  },
 };
 
 var lang = (new URLSearchParams(window.location.search).get('lang') || 'pl');
@@ -284,7 +310,7 @@ function buildLangBar() {
   if (!bar) return;
   bar.innerHTML = Object.keys(ROOMS_LANGS).map(code =>
     '<button class="lang-btn' + (code === lang ? ' active' : '') + '" onclick="setLang(\'' + code + '\')">' +
-    (code === 'pl' ? '🇵🇱 PL' : code === 'en' ? '🇬🇧 EN' : '🇩🇪 DE') + '</button>'
+    (code === 'pl' ? '🇵🇱 PL' : code === 'en' ? '🇬🇧 EN' : code === 'de' ? '🇩🇪 DE' : '🇸🇪 SV') + '</button>'
   ).join('');
 }
 

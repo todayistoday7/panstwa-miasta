@@ -178,6 +178,10 @@ app.get('/blog/de/wer-bin-ich-charaktere',         (req,res) => res.sendFile(pat
 app.get('/blog/de/kategorien-stadt-land-fluss',    (req,res) => res.sendFile(path.join(__dirname,'public/blog/de/kategorien-stadt-land-fluss.html')));
 app.get('/blog/sv/spel-att-spela-pa-distans',      (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/spel-att-spela-pa-distans.html')));
 app.get('/blog/sv/roliga-spel-pa-zoom',            (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/roliga-spel-pa-zoom.html')));
+app.get('/blog/sv/forbjudna-ord-exempel',          (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/forbjudna-ord-exempel.html')));
+app.get('/blog/sv/svara-ord-hanga-gubbe',          (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/svara-ord-hanga-gubbe.html')));
+app.get('/blog/sv/vem-ar-jag-karaktarer',          (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/vem-ar-jag-karaktarer.html')));
+app.get('/blog/sv/kategorier-lansen-staden',       (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/kategorier-lansen-staden.html')));
 
 app.get('/rooms',       (req, res) => res.sendFile(path.join(__dirname, 'public/rooms.html')));
 app.get('/privacy',     (req, res) => res.sendFile(path.join(__dirname, 'public/privacy.html')));
