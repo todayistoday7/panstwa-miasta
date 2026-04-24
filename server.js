@@ -173,6 +173,9 @@ app.get('/blog/pl/kategorie-panstwa-miasta',       (req,res) => res.sendFile(pat
 app.get('/blog/de/spiele-fuer-videokonferenzen',   (req,res) => res.sendFile(path.join(__dirname,'public/blog/de/spiele-fuer-videokonferenzen.html')));
 app.get('/blog/de/online-partyspiele-kostenlos',   (req,res) => res.sendFile(path.join(__dirname,'public/blog/de/online-partyspiele-kostenlos.html')));
 app.get('/blog/de/verbotene-woerter-beispiele',    (req,res) => res.sendFile(path.join(__dirname,'public/blog/de/verbotene-woerter-beispiele.html')));
+app.get('/blog/de/schwere-galgenmaennchen-woerter',(req,res) => res.sendFile(path.join(__dirname,'public/blog/de/schwere-galgenmaennchen-woerter.html')));
+app.get('/blog/de/wer-bin-ich-charaktere',         (req,res) => res.sendFile(path.join(__dirname,'public/blog/de/wer-bin-ich-charaktere.html')));
+app.get('/blog/de/kategorien-stadt-land-fluss',    (req,res) => res.sendFile(path.join(__dirname,'public/blog/de/kategorien-stadt-land-fluss.html')));
 app.get('/blog/sv/spel-att-spela-pa-distans',      (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/spel-att-spela-pa-distans.html')));
 app.get('/blog/sv/roliga-spel-pa-zoom',            (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/roliga-spel-pa-zoom.html')));
 
