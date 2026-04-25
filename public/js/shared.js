@@ -677,7 +677,9 @@ window._buildFooterLangBtns = function() {
           dots:    '/jak-grac/kropki-i-kreski',
           tt:      '/jak-grac/dwie-prawdy-jedno-klamstwo',
           drawing: '/jak-grac/szkicuj-i-zgaduj',
-          bingo:   '/jak-grac/korporacyjne-bingo' }
+          bingo:   '/jak-grac/korporacyjne-bingo',
+          whoami:  '/kim-jestem',
+          memory:  '/jak-grac/znajdz-pary' }
       : lp === 'de'
       ? { pm:      '/wie-man-spielt',
           tabu:    '/wie-man-spielt/verbotene-woerter',
@@ -685,7 +687,9 @@ window._buildFooterLangBtns = function() {
           dots:    '/wie-man-spielt/punkte-und-linien-online',
           tt:      '/wie-man-spielt/zwei-wahrheiten-eine-luege',
           drawing: '/wie-man-spielt/zeichnen-und-raten',
-          bingo:   '/wie-man-spielt/unternehmens-bingo' }
+          bingo:   '/wie-man-spielt/unternehmens-bingo',
+          whoami:  '/wer-bin-ich',
+          memory:  '/wie-man-spielt/memo-spiel' }
       : lp === 'sv'
       ? { pm:      '/hur-man-spelar',
           tabu:    '/hur-man-spelar/forbjudna-ord',
@@ -693,14 +697,18 @@ window._buildFooterLangBtns = function() {
           dots:    '/hur-man-spelar/punkter-och-linjer-online',
           tt:      '/hur-man-spelar/tva-sanningar-en-logn',
           drawing: '/hur-man-spelar/skissa-och-gissa',
-          bingo:   '/hur-man-spelar/foretagsbingo' }
+          bingo:   '/hur-man-spelar/foretagsbingo',
+          whoami:  '/vem-ar-jag',
+          memory:  '/hur-man-spelar/memo-spel' }
       : { pm:      '/how-to-play',
           tabu:    '/how-to-play/forbidden-words',
           hang:    '/how-to-play/hangman',
           dots:    '/how-to-play/dots-and-boxes',
           tt:      '/how-to-play/two-truths-one-lie',
           drawing: '/how-to-play/sketch-and-guess',
-          bingo:   '/how-to-play/corporate-bingo' };
+          bingo:   '/how-to-play/corporate-bingo',
+          whoami:  '/who-am-i',
+          memory:  '/how-to-play/find-pairs' };
 
     var L = {
       pl: { games:'Gry', rules:'Zasady gry', about:'O grze',
@@ -717,6 +725,8 @@ window._buildFooterLangBtns = function() {
             howto_tt:'Jak grać — Dwie Prawdy',
             howto_drawing:'Jak grać — Szkicuj i Zgaduj',
             howto_bingo:'Jak grać — Korporacyjne Bingo',
+            howto_whoami:'Jak grać — Kim Jestem?',
+            howto_memory:'Jak grać — Znajdź Pary',
             home:'Strona główna', words:'Słowa na literę', bug:'🐛 Zgłoś błąd' },
       en: { games:'Games', rules:'Rules', about:'About',
             cats:'Categories', tagline:'Free online multiplayer games for friends and family',
@@ -731,7 +741,9 @@ window._buildFooterLangBtns = function() {
             howto_dots:'How to play — Dots & Boxes',
             howto_tt:'How to play — 2 Truths 1 Lie',
             howto_drawing:'How to play — Sketch & Guess',
-            howto_bingo:'How to play — Corporate Bingo', home:'Home', blog:'Blog', words:'Words by letter', bug:'🐛 Report a Bug' },
+            howto_bingo:'How to play — Corporate Bingo',
+            howto_whoami:'How to play — Who Am I?',
+            howto_memory:'How to play — Find Pairs', home:'Home', blog:'Blog', words:'Words by letter', bug:'🐛 Report a Bug' },
       de: { games:'Spiele', rules:'Regeln', about:'Über',
             cats:'Kategorien', tagline:'Kostenlose Multiplayer-Spiele online',
             privacy:'Datenschutz',
@@ -746,6 +758,8 @@ window._buildFooterLangBtns = function() {
             howto_tt:'Spielregeln — 2 Wahrheiten 1 Lüge',
             howto_drawing:'Spielregeln — Zeichnen & Raten',
             howto_bingo:'Spielregeln — Unternehmens-Bingo',
+            howto_whoami:'Spielregeln — Wer bin ich?',
+            howto_memory:'Spielregeln — Memo-Spiel',
             blog:'Blog', words:'Wörter nach Buchstabe', bug:'🐛 Fehler melden' },
       sv: { games:'Spel', rules:'Regler', about:'Om',
             cats:'Kategorier', tagline:'Gratis multiplayer-spel online för vänner och familj',
@@ -761,6 +775,8 @@ window._buildFooterLangBtns = function() {
             howto_tt:'Spelregler — 2 Sanningar 1 Lögn',
             howto_drawing:'Spelregler — Skissa & Gissa',
             howto_bingo:'Spelregler — Företagsbingo',
+            howto_whoami:'Spelregler — Vem är jag?',
+            howto_memory:'Spelregler — Memo-spel',
             blog:'Blog', words:'Ord per bokstav', bug:'🐛 Rapportera fel' },
     };
     var t = L[lp] || L['en'];
@@ -793,6 +809,8 @@ window._buildFooterLangBtns = function() {
             '<a href="' + rulesLinks.tt   + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_tt   + '</a>' +
             '<a href="' + rulesLinks.drawing + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + (t.howto_drawing||'How to play — Sketch & Guess') + '</a>' +
             '<a href="' + rulesLinks.bingo + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + (t.howto_bingo||'How to play — Corporate Bingo') + '</a>' +
+            '<a href="' + rulesLinks.whoami + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + (t.howto_whoami||'How to play — Who Am I?') + '</a>' +
+            '<a href="' + rulesLinks.memory + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + (t.howto_memory||'How to play — Find Pairs') + '</a>' +
           '</div>' +
         '</div>' +
         '<div>' +

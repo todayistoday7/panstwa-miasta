@@ -566,4 +566,10 @@
   <url><loc>https://panstwamiastagra.com/blog/de/kostenlose-spiele-fuer-kinder-und-familien</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://panstwamiastagra.com/blog/sv/gratis-spel-for-barn-och-familjer</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
 
+  <!-- ══ HOW TO PLAY — FIND PAIRS / MEMO ══ -->
+  <url><loc>https://panstwamiastagra.com/jak-grac/znajdz-pary</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/how-to-play/find-pairs</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/wie-man-spielt/memo-spiel</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://panstwamiastagra.com/hur-man-spelar/memo-spel</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
 </urlset>

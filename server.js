@@ -67,6 +67,11 @@ app.get('/jak-grac/kim-jestem',              (req,res) => res.sendFile(path.join
 app.get('/how-to-play/who-am-i',             (req,res) => res.sendFile(path.join(__dirname,'public/how-to-play/who-am-i.html')));
 app.get('/wie-man-spielt/wer-bin-ich',       (req,res) => res.sendFile(path.join(__dirname,'public/wie-man-spielt/wer-bin-ich.html')));
 app.get('/hur-man-spelar/vem-ar-jag',        (req,res) => res.sendFile(path.join(__dirname,'public/hur-man-spelar/vem-ar-jag.html')));
+// ── How-to-play — Find Pairs / Memo ──
+app.get('/jak-grac/znajdz-pary',             (req,res) => res.sendFile(path.join(__dirname,'public/jak-grac/znajdz-pary.html')));
+app.get('/how-to-play/find-pairs',           (req,res) => res.sendFile(path.join(__dirname,'public/how-to-play/find-pairs.html')));
+app.get('/wie-man-spielt/memo-spiel',        (req,res) => res.sendFile(path.join(__dirname,'public/wie-man-spielt/memo-spiel.html')));
+app.get('/hur-man-spelar/memo-spel',         (req,res) => res.sendFile(path.join(__dirname,'public/hur-man-spelar/memo-spel.html')));
 app.get('/hur-man-spelar/hanga-gubbe-online',     (req,res) => res.sendFile(path.join(__dirname,'public/hur-man-spelar/hanga-gubbe-online.html')));
 app.get('/hur-man-spelar/forbjudna-ord',          (req,res) => res.sendFile(path.join(__dirname,'public/hur-man-spelar/forbjudna-ord.html')));
 app.get('/hur-man-spelar/punkter-och-linjer-online',(req,res) => res.sendFile(path.join(__dirname,'public/hur-man-spelar/punkter-och-linjer-online.html')));

@@ -118,7 +118,7 @@ const LANGS = {
   },
   de: {
     name: '🇩🇪 DE',
-    gameTitle:    'PAARE FINDEN',
+    gameTitle:    'MEMO-SPIEL',
     subtitle:     'Online-Kartenspiel · 2-6 Spieler',
     createRoom:   'Raum erstellen',  joinRoom:    'Raum beitreten',
     yourName:     'Dein Name',       joinName:    'Dein Name',
@@ -167,7 +167,7 @@ const LANGS = {
   },
   sv: {
     name: '🇸🇪 SV',
-    gameTitle:    'HITTA PAR',
+    gameTitle:    'MEMO-SPEL',
     subtitle:     'Online multiplayer · 2-6 spelare',
     createRoom:   'Skapa rum',       joinRoom:    'Gå med i rum',
     yourName:     'Ditt namn',       joinName:    'Ditt namn',
