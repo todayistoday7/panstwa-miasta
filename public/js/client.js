@@ -940,24 +940,28 @@ function applyTranslations() {
       { href:'/zakazane-slowa', name:'Zakazane Słowa', players:'4-12 graczy' },
       { href:'/wisielec', name:'Wisielec', players:'2-10 graczy' },
       { href:'/szkicuj-i-zgaduj', name:'Szkicuj i Zgaduj', players:'3-10 graczy' },
+      { href:'/znajdz-pary', name:'Znajdź Pary', players:'2-6 graczy' },
     ],
     en: [
       { href:'/who-am-i', name:'Who Am I?', players:'2-16 players' },
       { href:'/forbidden-words', name:'Forbidden Words', players:'4-12 players' },
       { href:'/hangman-online', name:'Hangman', players:'2-10 players' },
       { href:'/sketch-and-guess', name:'Sketch & Guess', players:'3-10 players' },
+      { href:'/find-pairs-online', name:'Find Pairs', players:'2-6 players' },
     ],
     de: [
       { href:'/wer-bin-ich', name:'Wer bin ich?', players:'2-16 Spieler' },
       { href:'/verbotene-woerter', name:'Verbotene Wörter', players:'4-12 Spieler' },
       { href:'/galgenmaennchen-online', name:'Galgenmännchen', players:'2-10 Spieler' },
       { href:'/zeichnen-und-raten', name:'Zeichnen & Raten', players:'3-10 Spieler' },
+      { href:'/paare-finden-online', name:'Paare finden', players:'2-6 Spieler' },
     ],
     sv: [
       { href:'/vem-ar-jag', name:'Vem är jag?', players:'2-16 spelare' },
       { href:'/forbjudna-ord', name:'Förbjudna ord', players:'4-12 spelare' },
       { href:'/hanga-gubbe-online', name:'Hänga gubbe', players:'2-10 spelare' },
       { href:'/skissa-och-gissa', name:'Skissa & Gissa', players:'3-10 spelare' },
+      { href:'/hitta-par-online', name:'Hitta Par', players:'2-6 spelare' },
     ],
   };
   const dg = discoverData[lang] || discoverData['pl'];

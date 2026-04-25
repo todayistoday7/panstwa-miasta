@@ -198,6 +198,7 @@ function renderOtherGames(currentGame) {
       drawing: { name: 'Szkicuj i Zgaduj', icon: '🎨' },
       bingo:   { name: 'Korporacyjne Bingo', icon: '🎯' },
       whoami:  { name: 'Kim Jestem?',    icon: '❓' },
+      memory:  { name: 'Znajdź Pary',    icon: '🧩' },
     }},
     en: { title: 'You might also enjoy:', games: {
       pm:      { name: 'Countries & Cities', icon: '🌍' },
@@ -208,6 +209,7 @@ function renderOtherGames(currentGame) {
       drawing: { name: 'Sketch & Guess',     icon: '🎨' },
       bingo:   { name: 'Corporate Bingo',    icon: '🎯' },
       whoami:  { name: 'Who Am I?',          icon: '❓' },
+      memory:  { name: 'Find Pairs',          icon: '🧩' },
     }},
     de: { title: 'Das könnte dir gefallen:', games: {
       pm:      { name: 'Länder & Städte',      icon: '🌍' },
@@ -218,6 +220,7 @@ function renderOtherGames(currentGame) {
       drawing: { name: 'Zeichnen & Raten',     icon: '🎨' },
       bingo:   { name: 'Unternehmens-Bingo',   icon: '🎯' },
       whoami:  { name: 'Wer bin ich?',         icon: '❓' },
+      memory:  { name: 'Paare finden',         icon: '🧩' },
     }},
     sv: { title: 'Du kanske gillar:', games: {
       pm:      { name: 'Länder & Städer',    icon: '🌍' },
@@ -228,29 +231,34 @@ function renderOtherGames(currentGame) {
       drawing: { name: 'Skissa & Gissa',     icon: '🎨' },
       bingo:   { name: 'Företagsbingo',      icon: '🎯' },
       whoami:  { name: 'Vem är jag?',        icon: '❓' },
+      memory:  { name: 'Hitta Par',          icon: '🧩' },
     }},
   };
 
   var urls = {
     pl: { pm:'/państwa-miasta', taboo:'/zakazane-slowa', hangman:'/wisielec',
           dots:'/kropki-i-kreski-online', twotruth:'/dwie-prawdy-jedno-klamstwo',
-          drawing:'/szkicuj-i-zgaduj', bingo:'/korporacyjne-bingo', whoami:'/kim-jestem' },
+          drawing:'/szkicuj-i-zgaduj', bingo:'/korporacyjne-bingo', whoami:'/kim-jestem',
+          memory:'/znajdz-pary' },
     en: { pm:'/countries-cities-game', taboo:'/forbidden-words', hangman:'/hangman-online',
           dots:'/dots-and-boxes-online', twotruth:'/two-truths-one-lie',
-          drawing:'/sketch-and-guess', bingo:'/corporate-bingo', whoami:'/who-am-i' },
+          drawing:'/sketch-and-guess', bingo:'/corporate-bingo', whoami:'/who-am-i',
+          memory:'/find-pairs-online' },
     de: { pm:'/laender-und-staedte', taboo:'/verbotene-woerter', hangman:'/galgenmaennchen-online',
           dots:'/punkte-und-linien-online', twotruth:'/zwei-wahrheiten-eine-luege',
-          drawing:'/zeichnen-und-raten', bingo:'/unternehmens-bingo', whoami:'/wer-bin-ich' },
+          drawing:'/zeichnen-und-raten', bingo:'/unternehmens-bingo', whoami:'/wer-bin-ich',
+          memory:'/paare-finden-online' },
     sv: { pm:'/laender-och-staeder', taboo:'/forbjudna-ord', hangman:'/hanga-gubbe-online',
           dots:'/punkter-och-linjer-online', twotruth:'/tva-sanningar-en-logn',
-          drawing:'/skissa-och-gissa', bingo:'/foretagsbingo', whoami:'/vem-ar-jag' },
+          drawing:'/skissa-och-gissa', bingo:'/foretagsbingo', whoami:'/vem-ar-jag',
+          memory:'/hitta-par-online' },
   };
 
   var L2 = labels[lng] || labels['en'];
   var U  = urls[lng]   || urls['en'];
 
   // All games except the current one, pick 3 varied ones
-  var all = ['pm','taboo','hangman','dots','twotruth','drawing','bingo','whoami'];
+  var all = ['pm','taboo','hangman','dots','twotruth','drawing','bingo','whoami','memory'];
   var others = all.filter(function(g) { return g !== currentGame; });
   // Always show the same 3 for a given current game (deterministic, varied)
   var picks = others.slice(0, 3);
@@ -379,22 +387,22 @@ function initVisibilityToggle() {
           cats:'Kategorie', howto_drawing:'Jak grać — Szkicuj i Zgaduj', home:'Strona główna', blog:'Blog', words:'Słowa na literę',
           sg:'Gry', sr:'Zasady', sm:'Więcej',
           gpm:'Państwa-Miasta', gtaboo:'Zakazane Słowa',
-          ghang:'Wisielec', gdots:'Kropki i Kreski', gtt:'Dwie Prawdy Jedno Kłamstwo', gbingo:'Korporacyjne Bingo', gdrawing:'Szkicuj i Zgaduj', gwhoami:'Kim Jestem?' },
+          ghang:'Wisielec', gdots:'Kropki i Kreski', gtt:'Dwie Prawdy Jedno Kłamstwo', gbingo:'Korporacyjne Bingo', gdrawing:'Szkicuj i Zgaduj', gwhoami:'Kim Jestem?', gmemory:'Znajdź Pary' },
     en: { home:'Home', games:'All Games', rooms:'Live Rooms', privacy:'Privacy', bug:'🐛 Report a Bug', rules:'Game Rules',
           cats:'Categories', words:'Words by Letter',
           sg:'Games', sr:'Rules', sm:'More',
           gpm:'Countries & Cities', gtaboo:'Forbidden Words',
-          ghang:'Hangman', gdots:'Dots & Boxes', gtt:'2 Truths 1 Lie', gbingo:'Corporate Bingo', gdrawing:'Sketch & Guess', gwhoami:'Who Am I?' },
+          ghang:'Hangman', gdots:'Dots & Boxes', gtt:'2 Truths 1 Lie', gbingo:'Corporate Bingo', gdrawing:'Sketch & Guess', gwhoami:'Who Am I?', gmemory:'Find Pairs' },
     de: { home:'Startseite', games:'Alle Spiele', rooms:'Aktive Räume', privacy:'Datenschutz', bug:'🐛 Fehler melden', rules:'Spielregeln',
           cats:'Kategorien', howto_drawing:'Spielregeln — Zeichnen & Raten', home:'Startseite', words:'Wörter nach Buchstabe',
           sg:'Spiele', sr:'Regeln', sm:'Mehr',
           gpm:'Länder & Städte', gtaboo:'Verbotene Wörter',
-          ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge', gbingo:'Unternehmens-Bingo', gdrawing:'Zeichnen & Raten', gwhoami:'Wer bin ich?' },
+          ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge', gbingo:'Unternehmens-Bingo', gdrawing:'Zeichnen & Raten', gwhoami:'Wer bin ich?', gmemory:'Paare finden' },
     sv: { home:'Startsida', games:'Alla spel', rooms:'Aktiva rum', privacy:'Integritetspolicy', bug:'🐛 Rapportera fel', rules:'Spelregler',
           cats:'Kategorier', howto_drawing:'Spelregler — Skissa & Gissa', home:'Startsida', words:'Ord per bokstav',
           sg:'Spel', sr:'Regler', sm:'Mer',
           gpm:'Länder & Städer', gtaboo:'Förbjudna ord',
-          ghang:'Hänga gubbe', gdots:'Punkter & Linjer', gtt:'2 Sanningar 1 Lögn', gbingo:'Företagsbingo', gdrawing:'Skissa & Gissa', gwhoami:'Vem är jag?',
+          ghang:'Hänga gubbe', gdots:'Punkter & Linjer', gtt:'2 Sanningar 1 Lögn', gbingo:'Företagsbingo', gdrawing:'Skissa & Gissa', gwhoami:'Vem är jag?', gmemory:'Hitta Par',
           privacy:'Integritetspolicy' },
   };
 
@@ -487,6 +495,7 @@ function initVisibilityToggle() {
       '<a href="' + (lang==='pl'?'/korporacyjne-bingo':lang==='de'?'/unternehmens-bingo':lang==='sv'?'/foretagsbingo':'/corporate-bingo') + '"><span class="gb-ico">🎯</span>' + (t.gbingo||'Corporate Bingo') + '</a>' +
       '<a href="' + (lang==='pl'?'/szkicuj-i-zgaduj':lang==='de'?'/zeichnen-und-raten':lang==='sv'?'/skissa-och-gissa':'/sketch-and-guess') + '"><span class="gb-ico">🎨</span>' + (t.gdrawing||'Sketch & Guess') + '</a>' +
       '<a href="' + (lang==='pl'?'/kim-jestem':lang==='de'?'/wer-bin-ich':lang==='sv'?'/vem-ar-jag':'/who-am-i') + '"><span class="gb-ico">❓</span>' + (t.gwhoami||'Who Am I?') + '</a>' +
+      '<a href="' + (lang==='pl'?'/znajdz-pary':lang==='de'?'/paare-finden-online':lang==='sv'?'/hitta-par-online':'/find-pairs-online') + '"><span class="gb-ico">🧩</span>' + (t.gmemory||'Find Pairs') + '</a>' +
       '<a href="/rooms' + ql + '"><span class="gb-ico">🔴</span>' + (t.rooms||'Live Rooms') + '</a>' +
       '<div class="gb-div"></div>' +
       '<div class="gb-sec">' + t.sr + '</div>' +
@@ -611,6 +620,7 @@ window._rebuildBurger = function(newLang) {
     '<a href="' + (newLang==='pl'?'/korporacyjne-bingo':newLang==='de'?'/unternehmens-bingo':newLang==='sv'?'/foretagsbingo':'/corporate-bingo') + '"><span class="gb-ico">🎯</span>' + (t.gbingo||'Corporate Bingo') + '</a>' +
     '<a href="' + (newLang==='pl'?'/szkicuj-i-zgaduj':newLang==='de'?'/zeichnen-und-raten':newLang==='sv'?'/skissa-och-gissa':'/sketch-and-guess') + '"><span class="gb-ico">🎨</span>' + (t.gdrawing||'Sketch & Guess') + '</a>' +
     '<a href="' + (newLang==='pl'?'/kim-jestem':newLang==='de'?'/wer-bin-ich':newLang==='sv'?'/vem-ar-jag':'/who-am-i') + '"><span class="gb-ico">❓</span>' + (t.gwhoami||'Who Am I?') + '</a>' +
+    '<a href="' + (newLang==='pl'?'/znajdz-pary':newLang==='de'?'/paare-finden-online':newLang==='sv'?'/hitta-par-online':'/find-pairs-online') + '"><span class="gb-ico">🧩</span>' + (t.gmemory||'Find Pairs') + '</a>' +
     '<a href="/rooms' + ql + '"><span class="gb-ico">🔴</span>' + (t.rooms||'Live Rooms') + '</a>' +
     '<div class="gb-div"></div>' +
     '<div class="gb-sec">' + t.sr + '</div>' +

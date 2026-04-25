@@ -297,7 +297,7 @@ admin.init(() => {
   try { rooms.dots     = require('./routes/dots').getDotsRooms      ? require('./routes/dots').getDotsRooms()      : []; } catch(e){ rooms.dots=[]; }
   try { rooms.hangman  = require('./routes/hangman').getHangRooms   ? require('./routes/hangman').getHangRooms()   : []; } catch(e){ rooms.hangman=[]; }
   try { rooms.twotruth = require('./routes/twotruth').getTTRooms    ? require('./routes/twotruth').getTTRooms()    : []; } catch(e){ rooms.twotruth=[]; }
-  try { rooms.memory   = require('./routes/memory').memRooms        ? require('./routes/memory').memRooms            : []; } catch(e){ rooms.memory=[]; }
+  try { rooms.memory   = require('./routes/memory').getMemRooms     ? require('./routes/memory').getMemRooms()     : []; } catch(e){ rooms.memory=[]; }
   return rooms;
 });
 app.use('/admin', admin.router);

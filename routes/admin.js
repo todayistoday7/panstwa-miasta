@@ -271,7 +271,7 @@ router.get('/rooms', requireAuth, (req, res) => {
       totalPlayers += connected.length;
       const phase = room.state && room.state.phase || 'unknown';
       const color = phaseColors[phase] || 'blue';
-      const gameNames = { pm:'Państwa-Miasta', taboo:'Forbidden Words', dots:'Dots & Boxes', hangman:'Hangman', twotruth:'2 Truths 1 Lie' };
+      const gameNames = { pm:'Państwa-Miasta', taboo:'Forbidden Words', dots:'Dots & Boxes', hangman:'Hangman', twotruth:'2 Truths 1 Lie', memory:'Find Pairs' };
 
       const playerChips = room.players.map(p =>
         `<span class="player-chip ${p.connected!==false?'connected':''}">${escapeHtml(p.name)}</span>`

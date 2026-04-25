@@ -67,6 +67,7 @@ function makeMemRoom(hostId, settings) {
 
 function getMemRoom(code) { return memRooms[code]; }
 function getMemRoomCount() { return Object.keys(memRooms).length; }
+function getMemRooms() { return Object.values(memRooms); }
 
 function emitMemState(io, room) {
   // Send board state — hide emoji of unflipped/unmatched cards
@@ -308,4 +309,4 @@ function register(io, socket) {
   });
 }
 
-module.exports = { register, getMemRoom, getMemRoomCount, memRooms };
+module.exports = { register, getMemRoom, getMemRoomCount, getMemRooms, memRooms };
