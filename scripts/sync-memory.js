@@ -20,8 +20,8 @@ const SEO_DIR = path.join(ROOT, 'public/seo');
 const SEO_PAGES = [
   { file: 'znajdz-pary.html',       lang: 'pl' },
   { file: 'find-pairs-online.html',  lang: 'en' },
-  { file: 'paare-finden-online.html',lang: 'de' },
-  { file: 'hitta-par-online.html',   lang: 'sv' },
+  { file: 'memo-spiel-online.html',lang: 'de' },
+  { file: 'memo-spel-online.html',   lang: 'sv' },
 ];
 
 // ── Extract game engine from master ──────────────────────────────

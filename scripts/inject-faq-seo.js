@@ -83,8 +83,8 @@ const FAQ_DATA = {
       { q: 'Wie viele Spieler braucht man?', a: '2 bis 16 Spieler. Perfekt für Familienabende, Partys und Teambuilding.' },
     ]
   },
-  'paare-finden-online.html': {
-    lang: 'de', game: 'Paare finden',
+  'memo-spiel-online.html': {
+    lang: 'de', game: 'Memo-Spiel',
     faqs: [
       { q: 'Was ist Paare finden?', a: 'Ein klassisches Kartenspiel für Kinder und Familien. Decke abwechselnd zwei Karten auf und finde passende Paare — wer die meisten Paare sammelt, gewinnt.' },
       { q: 'Ist es kostenlos?', a: 'Ja, komplett kostenlos auf panstwamiastagra.com — ohne Anmeldung, ohne Download.' },
@@ -165,8 +165,8 @@ const FAQ_DATA = {
       { q: 'Hur många spelare behövs?', a: '2 till 16 spelare. Perfekt för familjekvällar, fester och teambuilding.' },
     ]
   },
-  'hitta-par-online.html': {
-    lang: 'sv', game: 'Hitta Par',
+  'memo-spel-online.html': {
+    lang: 'sv', game: 'Memo-spel',
     faqs: [
       { q: 'Vad är Hitta Par?', a: 'Ett klassiskt kortspel för barn och familjer. Vänd två kort i taget och hitta matchande par — den som samlar flest par vinner.' },
       { q: 'Är det gratis?', a: 'Ja, helt gratis på panstwamiastagra.com — utan registrering, utan nedladdning.' },

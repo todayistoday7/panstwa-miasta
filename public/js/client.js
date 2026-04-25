@@ -954,14 +954,14 @@ function applyTranslations() {
       { href:'/verbotene-woerter', name:'Verbotene Wörter', players:'4-12 Spieler' },
       { href:'/galgenmaennchen-online', name:'Galgenmännchen', players:'2-10 Spieler' },
       { href:'/zeichnen-und-raten', name:'Zeichnen & Raten', players:'3-10 Spieler' },
-      { href:'/paare-finden-online', name:'Paare finden', players:'2-6 Spieler' },
+      { href:'/memo-spiel-online', name:'Memo-Spiel', players:'2-6 Spieler' },
     ],
     sv: [
       { href:'/vem-ar-jag', name:'Vem är jag?', players:'2-16 spelare' },
       { href:'/forbjudna-ord', name:'Förbjudna ord', players:'4-12 spelare' },
       { href:'/hanga-gubbe-online', name:'Hänga gubbe', players:'2-10 spelare' },
       { href:'/skissa-och-gissa', name:'Skissa & Gissa', players:'3-10 spelare' },
-      { href:'/hitta-par-online', name:'Hitta Par', players:'2-6 spelare' },
+      { href:'/memo-spel-online', name:'Memo-spel', players:'2-6 spelare' },
     ],
   };
   const dg = discoverData[lang] || discoverData['pl'];

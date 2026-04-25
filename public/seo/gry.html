@@ -204,7 +204,7 @@
       bingo:     { title: 'Unternehmens-Bingo', desc: 'Spiel während langweiliger Meetings! Markiere Unternehmensfloskeln wenn du sie hörst — wer zuerst eine Reihe voll hat, gewinnt. Perfekt für Büro-Meetings und Team-Events!', players: '2-50 Spieler', tag1: 'Teambuilding', age: 'ab 16 Jahren', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
       drawing:   { title: 'Zeichnen & Raten', desc: 'Zeichne Wörter, rate Zeichnungen — und sieh wie Nachrichten komisch entstellt werden! Keine Punkte, nur Spaß und Lachen. Perfekt für Parties und Teambuilding.', players: '4-10 Spieler', tag1: 'Eisbrecher', age: 'ab 8 Jahren', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
       whoami:    { title: 'Wer bin ich?', desc: 'Klassisches Ratespiel online! Errate deine geheime Figur durch Ja/Nein-Fragen. Perfekt für Parties, Familienabende und Teambuilding.', players: '2-16 Spieler', tag1: 'Eisbrecher', age: 'ab 8 Jahren', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
-      memory:    { title: 'Paare finden', desc: 'Klassisches Kartenspiel online! Decke Karten auf und finde passende Paare. 6 Emoji-Themen, 3 Spielfeldgrößen. Perfekt für Familienabende und Freunde.', players: '2-6 Spieler', tag1: 'Familie', age: 'ab 4 Jahren', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
+      memory:    { title: 'Memo-Spiel', desc: 'Klassisches Kartenspiel online! Decke Karten auf und finde passende Paare. 6 Emoji-Themen, 3 Spielfeldgrößen. Perfekt für Familienabende und Freunde.', players: '2-6 Spieler', tag1: 'Familie', age: 'ab 4 Jahren', play: '🎮 Jetzt spielen', coming: 'DEMNÄCHST' },
     },
     sv: {
       pm:        { title: 'Länder & Städer', desc: 'Klassiskt sällskapsspel online! Fyll i länder, städer, djur och mer med en slumpmässig bokstav — snabbare än alla andra!', players: '2-12 spelare', tag1: 'Sällskapsspel', age: 'från 7 år', play: '🎮 Spela nu', coming: 'SNART' },
@@ -215,7 +215,7 @@
       bingo:     { title: 'Företagsbingo', desc: 'Spela under tråkiga möten! Markera företagsfraser när du hör dem — den som fyller en rad först vinner. Perfekt för kontorsmöten och teamevents!', players: '2-50 spelare', tag1: 'Teambuilding', age: 'från 16 år', play: '🎮 Spela nu', coming: 'SNART' },
       drawing:   { title: 'Skissa & Gissa', desc: 'Rita ord, gissa teckningar — och se hur meddelanden blir roligt förvrängda! Inga poäng, ren kul och skratt. Perfekt för fester och teambuilding.', players: '4-10 spelare', tag1: 'Isbrytare', age: 'från 8 år', play: '🎮 Spela nu', coming: 'SNART' },
       whoami:    { title: 'Vem är jag?', desc: 'Klassiskt sällskapsspel online! Lista ut din hemliga karaktär genom att ställa ja/nej-frågor. Perfekt för fester, familjekväller och teambuilding.', players: '2-16 spelare', tag1: 'Isbrytare', age: 'från 8 år', play: '🎮 Spela nu', coming: 'SNART' },
-      memory:    { title: 'Hitta Par', desc: 'Klassiskt kortspel online! Vänd kort och hitta matchande par. 6 emoji-teman, 3 spelplansstorlekar. Perfekt för familjespelkvällar och vänner.', players: '2-6 spelare', tag1: 'Familj', age: 'från 4 år', play: '🎮 Spela nu', coming: 'SNART' },
+      memory:    { title: 'Memo-spel', desc: 'Klassiskt kortspel online! Vänd kort och hitta matchande par. 6 emoji-teman, 3 spelplansstorlekar. Perfekt för familjespelkvällar och vänner.', players: '2-6 spelare', tag1: 'Familj', age: 'från 4 år', play: '🎮 Spela nu', coming: 'SNART' },
     },
   };
 
@@ -261,7 +261,7 @@
       card('/bingo', '🎯', g.bingo ? g.bingo.title : 'Corporate Bingo', g.bingo ? g.bingo.desc : '', g.bingo ? g.bingo.players : '2-50', 'PL/EN/DE/SV', g.bingo ? g.bingo.tag1 : 'Team building', false, g.bingo ? g.bingo.play : '🎮 Play now', l, g.bingo ? g.bingo.age : '16+') +
       card('/drawing', '🎨', g.drawing ? g.drawing.title : 'Sketch & Guess', g.drawing ? g.drawing.desc : '', g.drawing ? g.drawing.players : '4-10', 'PL/EN/DE/SV', g.drawing ? g.drawing.tag1 : 'Ice breaker', false, g.drawing ? g.drawing.play : '🎮 Play now', l, g.drawing ? g.drawing.age : '8+') +
       card(l==='pl'?'/kim-jestem':l==='de'?'/wer-bin-ich':l==='sv'?'/vem-ar-jag':'/who-am-i', '❓', g.whoami ? g.whoami.title : 'Who Am I?', g.whoami ? g.whoami.desc : '', g.whoami ? g.whoami.players : '2-16', 'PL/EN/DE/SV', g.whoami ? g.whoami.tag1 : 'Ice breaker', false, g.whoami ? g.whoami.play : '🎮 Play now', l, g.whoami ? g.whoami.age : '8+') +
-      card(l==='pl'?'/znajdz-pary':l==='de'?'/paare-finden-online':l==='sv'?'/hitta-par-online':'/find-pairs-online', '🧩', g.memory ? g.memory.title : 'Find Pairs', g.memory ? g.memory.desc : '', g.memory ? g.memory.players : '2-6', 'PL/EN/DE/SV', g.memory ? g.memory.tag1 : 'Family', false, g.memory ? g.memory.play : '🎮 Play now', l, g.memory ? g.memory.age : '4+');
+      card(l==='pl'?'/znajdz-pary':l==='de'?'/memo-spiel-online':l==='sv'?'/memo-spel-online':'/find-pairs-online', '🧩', g.memory ? g.memory.title : 'Find Pairs', g.memory ? g.memory.desc : '', g.memory ? g.memory.players : '2-6', 'PL/EN/DE/SV', g.memory ? g.memory.tag1 : 'Family', false, g.memory ? g.memory.play : '🎮 Play now', l, g.memory ? g.memory.age : '4+');
   }
 
   function card(href, icon, title, desc, players, lang_tag, tag1, comingSoon, btnLabel, l, age) {

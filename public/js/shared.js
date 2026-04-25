@@ -103,7 +103,7 @@ function shareRoom(gameSlug, titleText) {
                   '/kim-jestem','/who-am-i',
                   '/wer-bin-ich','/vem-ar-jag',
                   '/znajdz-pary','/find-pairs-online',
-                  '/paare-finden-online','/hitta-par-online'];
+                  '/memo-spiel-online','/memo-spel-online'];
   var usePath = seoSlugs.indexOf(currentPath) >= 0
     ? currentPath
     : (gameSlug ? '/' + gameSlug : '/');
@@ -220,7 +220,7 @@ function renderOtherGames(currentGame) {
       drawing: { name: 'Zeichnen & Raten',     icon: '🎨' },
       bingo:   { name: 'Unternehmens-Bingo',   icon: '🎯' },
       whoami:  { name: 'Wer bin ich?',         icon: '❓' },
-      memory:  { name: 'Paare finden',         icon: '🧩' },
+      memory:  { name: 'Memo-Spiel',         icon: '🧩' },
     }},
     sv: { title: 'Du kanske gillar:', games: {
       pm:      { name: 'Länder & Städer',    icon: '🌍' },
@@ -231,7 +231,7 @@ function renderOtherGames(currentGame) {
       drawing: { name: 'Skissa & Gissa',     icon: '🎨' },
       bingo:   { name: 'Företagsbingo',      icon: '🎯' },
       whoami:  { name: 'Vem är jag?',        icon: '❓' },
-      memory:  { name: 'Hitta Par',          icon: '🧩' },
+      memory:  { name: 'Memo-spel',          icon: '🧩' },
     }},
   };
 
@@ -247,11 +247,11 @@ function renderOtherGames(currentGame) {
     de: { pm:'/stadt-land-fluss-online', taboo:'/verbotene-woerter', hangman:'/galgenmaennchen-online',
           dots:'/punkte-und-linien-online', twotruth:'/zwei-wahrheiten-eine-luege',
           drawing:'/zeichnen-und-raten', bingo:'/unternehmens-bingo', whoami:'/wer-bin-ich',
-          memory:'/paare-finden-online' },
+          memory:'/memo-spiel-online' },
     sv: { pm:'/laender-och-staeder', taboo:'/forbjudna-ord', hangman:'/hanga-gubbe-online',
           dots:'/punkter-och-linjer-online', twotruth:'/tva-sanningar-en-logn',
           drawing:'/skissa-och-gissa', bingo:'/foretagsbingo', whoami:'/vem-ar-jag',
-          memory:'/hitta-par-online' },
+          memory:'/memo-spel-online' },
   };
 
   var L2 = labels[lng] || labels['en'];
@@ -397,12 +397,12 @@ function initVisibilityToggle() {
           cats:'Kategorien', howto_drawing:'Spielregeln — Zeichnen & Raten', home:'Startseite', words:'Wörter nach Buchstabe',
           sg:'Spiele', sr:'Regeln', sm:'Mehr',
           gpm:'Stadt Land Fluss', gtaboo:'Verbotene Wörter',
-          ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge', gbingo:'Unternehmens-Bingo', gdrawing:'Zeichnen & Raten', gwhoami:'Wer bin ich?', gmemory:'Paare finden' },
+          ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge', gbingo:'Unternehmens-Bingo', gdrawing:'Zeichnen & Raten', gwhoami:'Wer bin ich?', gmemory:'Memo-Spiel' },
     sv: { home:'Startsida', games:'Alla spel', rooms:'Aktiva rum', privacy:'Integritetspolicy', bug:'🐛 Rapportera fel', rules:'Spelregler',
           cats:'Kategorier', howto_drawing:'Spelregler — Skissa & Gissa', home:'Startsida', words:'Ord per bokstav',
           sg:'Spel', sr:'Regler', sm:'Mer',
           gpm:'Länder & Städer', gtaboo:'Förbjudna ord',
-          ghang:'Hänga gubbe', gdots:'Punkter & Linjer', gtt:'2 Sanningar 1 Lögn', gbingo:'Företagsbingo', gdrawing:'Skissa & Gissa', gwhoami:'Vem är jag?', gmemory:'Hitta Par',
+          ghang:'Hänga gubbe', gdots:'Punkter & Linjer', gtt:'2 Sanningar 1 Lögn', gbingo:'Företagsbingo', gdrawing:'Skissa & Gissa', gwhoami:'Vem är jag?', gmemory:'Memo-spel',
           privacy:'Integritetspolicy' },
   };
 
@@ -495,7 +495,7 @@ function initVisibilityToggle() {
       '<a href="' + (lang==='pl'?'/korporacyjne-bingo':lang==='de'?'/unternehmens-bingo':lang==='sv'?'/foretagsbingo':'/corporate-bingo') + '"><span class="gb-ico">🎯</span>' + (t.gbingo||'Corporate Bingo') + '</a>' +
       '<a href="' + (lang==='pl'?'/szkicuj-i-zgaduj':lang==='de'?'/zeichnen-und-raten':lang==='sv'?'/skissa-och-gissa':'/sketch-and-guess') + '"><span class="gb-ico">🎨</span>' + (t.gdrawing||'Sketch & Guess') + '</a>' +
       '<a href="' + (lang==='pl'?'/kim-jestem':lang==='de'?'/wer-bin-ich':lang==='sv'?'/vem-ar-jag':'/who-am-i') + '"><span class="gb-ico">❓</span>' + (t.gwhoami||'Who Am I?') + '</a>' +
-      '<a href="' + (lang==='pl'?'/znajdz-pary':lang==='de'?'/paare-finden-online':lang==='sv'?'/hitta-par-online':'/find-pairs-online') + '"><span class="gb-ico">🧩</span>' + (t.gmemory||'Find Pairs') + '</a>' +
+      '<a href="' + (lang==='pl'?'/znajdz-pary':lang==='de'?'/memo-spiel-online':lang==='sv'?'/memo-spel-online':'/find-pairs-online') + '"><span class="gb-ico">🧩</span>' + (t.gmemory||'Find Pairs') + '</a>' +
       '<a href="/rooms' + ql + '"><span class="gb-ico">🔴</span>' + (t.rooms||'Live Rooms') + '</a>' +
       '<div class="gb-div"></div>' +
       '<div class="gb-sec">' + t.sr + '</div>' +
@@ -620,7 +620,7 @@ window._rebuildBurger = function(newLang) {
     '<a href="' + (newLang==='pl'?'/korporacyjne-bingo':newLang==='de'?'/unternehmens-bingo':newLang==='sv'?'/foretagsbingo':'/corporate-bingo') + '"><span class="gb-ico">🎯</span>' + (t.gbingo||'Corporate Bingo') + '</a>' +
     '<a href="' + (newLang==='pl'?'/szkicuj-i-zgaduj':newLang==='de'?'/zeichnen-und-raten':newLang==='sv'?'/skissa-och-gissa':'/sketch-and-guess') + '"><span class="gb-ico">🎨</span>' + (t.gdrawing||'Sketch & Guess') + '</a>' +
     '<a href="' + (newLang==='pl'?'/kim-jestem':newLang==='de'?'/wer-bin-ich':newLang==='sv'?'/vem-ar-jag':'/who-am-i') + '"><span class="gb-ico">❓</span>' + (t.gwhoami||'Who Am I?') + '</a>' +
-    '<a href="' + (newLang==='pl'?'/znajdz-pary':newLang==='de'?'/paare-finden-online':newLang==='sv'?'/hitta-par-online':'/find-pairs-online') + '"><span class="gb-ico">🧩</span>' + (t.gmemory||'Find Pairs') + '</a>' +
+    '<a href="' + (newLang==='pl'?'/znajdz-pary':newLang==='de'?'/memo-spiel-online':newLang==='sv'?'/memo-spel-online':'/find-pairs-online') + '"><span class="gb-ico">🧩</span>' + (t.gmemory||'Find Pairs') + '</a>' +
     '<a href="/rooms' + ql + '"><span class="gb-ico">🔴</span>' + (t.rooms||'Live Rooms') + '</a>' +
     '<div class="gb-div"></div>' +
     '<div class="gb-sec">' + t.sr + '</div>' +
@@ -709,7 +709,7 @@ window._buildFooterLangBtns = function() {
             gpm:'Państwa-Miasta', gtaboo:'Zakazane Słowa',
             ghang:'Wisielec', gdots:'Kropki i Kreski', gtt:'Dwie Prawdy Jedno Kłamstwo',
             gbingo:'Korporacyjne Bingo',
-            gdrawing:'Szkicuj i Zgaduj', rooms:'Aktywne pokoje',
+            gdrawing:'Szkicuj i Zgaduj', gwhoami:'Kim Jestem?', gmemory:'Znajdź Pary', rooms:'Aktywne pokoje',
             howto_pm:'Jak grać — Państwa-Miasta',
             howto_tabu:'Jak grać — Zakazane Słowa',
             howto_hang:'Jak grać — Wisielec',
@@ -724,7 +724,7 @@ window._buildFooterLangBtns = function() {
             gpm:'Countries & Cities', gtaboo:'Forbidden Words',
             ghang:'Hangman', gdots:'Dots & Boxes', gtt:'2 Truths 1 Lie',
             gbingo:'Corporate Bingo',
-            gdrawing:'Sketch & Guess', rooms:'Live Rooms',
+            gdrawing:'Sketch & Guess', gwhoami:'Who Am I?', gmemory:'Find Pairs', rooms:'Live Rooms',
             howto_pm:'How to play — Countries & Cities',
             howto_tabu:'How to play — Forbidden Words',
             howto_hang:'How to play — Hangman',
@@ -738,7 +738,7 @@ window._buildFooterLangBtns = function() {
             gpm:'Stadt Land Fluss', gtaboo:'Verbotene Wörter',
             ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge',
             gbingo:'Unternehmens-Bingo',
-            gdrawing:'Zeichnen & Raten', rooms:'Aktive Räume',
+            gdrawing:'Zeichnen & Raten', gwhoami:'Wer bin ich?', gmemory:'Memo-Spiel', rooms:'Aktive Räume',
             howto_pm:'Spielregeln — Stadt Land Fluss',
             howto_tabu:'Spielregeln — Verbotene Wörter',
             howto_hang:'Spielregeln — Galgenmännchen',
@@ -753,7 +753,7 @@ window._buildFooterLangBtns = function() {
             gpm:'Länder & Städer', gtaboo:'Förbjudna ord',
             ghang:'Hänga gubbe', gdots:'Punkter & Linjer', gtt:'2 Sanningar 1 Lögn',
             gbingo:'Företagsbingo',
-            gdrawing:'Skissa & Gissa', rooms:'Aktiva rum',
+            gdrawing:'Skissa & Gissa', gwhoami:'Vem är jag?', gmemory:'Memo-spel', rooms:'Aktiva rum',
             howto_pm:'Spelregler — Länder & Städer',
             howto_tabu:'Spelregler — Förbjudna ord',
             howto_hang:'Spelregler — Hänga gubbe',
@@ -777,6 +777,8 @@ window._buildFooterLangBtns = function() {
             '<a href="' + (footerLang==='pl'?'/dwie-prawdy-jedno-klamstwo':footerLang==='de'?'/zwei-wahrheiten-eine-luege':footerLang==='sv'?'/tva-sanningar-en-logn':'/two-truths-one-lie') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🤥 ' + t.gtt + '</a>' +
             '<a href="' + (footerLang==='pl'?'/korporacyjne-bingo':footerLang==='de'?'/unternehmens-bingo':footerLang==='sv'?'/foretagsbingo':'/corporate-bingo') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎯 ' + (t.gbingo||'Corporate Bingo') + '</a>' +
             '<a href="' + (footerLang==='pl'?'/szkicuj-i-zgaduj':footerLang==='de'?'/zeichnen-und-raten':footerLang==='sv'?'/skissa-och-gissa':'/sketch-and-guess') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎨 ' + (t.gdrawing||'Sketch & Guess') + '</a>' +
+            '<a href="' + (footerLang==='pl'?'/kim-jestem':footerLang==='de'?'/wer-bin-ich':footerLang==='sv'?'/vem-ar-jag':'/who-am-i') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">❓ ' + (t.gwhoami||'Who Am I?') + '</a>' +
+            '<a href="' + (footerLang==='pl'?'/znajdz-pary':footerLang==='de'?'/memo-spiel-online':footerLang==='sv'?'/memo-spel-online':'/find-pairs-online') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🧩 ' + (t.gmemory||'Find Pairs') + '</a>' +
             '<a href="/games?lang=' + footerLang + '" style="color:var(--accent);font-size:13px;font-weight:700;text-decoration:none;">→ ' + t.games + '</a>' +
             '<a href="/rooms?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔴 ' + (t.rooms||'Live Rooms') + '</a>' +
           '</div>' +

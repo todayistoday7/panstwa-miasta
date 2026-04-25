@@ -147,8 +147,10 @@ app.get('/punkter-och-linjer-online',(req, res) => res.sendFile(path.join(__dirn
 // ── SEO Landing Pages — Find Pairs ──────────────────────────────
 app.get('/znajdz-pary',          (req, res) => res.sendFile(path.join(__dirname, 'public/seo/znajdz-pary.html')));
 app.get('/find-pairs-online',    (req, res) => res.sendFile(path.join(__dirname, 'public/seo/find-pairs-online.html')));
-app.get('/paare-finden-online',  (req, res) => res.sendFile(path.join(__dirname, 'public/seo/paare-finden-online.html')));
-app.get('/hitta-par-online',     (req, res) => res.sendFile(path.join(__dirname, 'public/seo/hitta-par-online.html')));
+app.get('/memo-spiel-online',    (req, res) => res.sendFile(path.join(__dirname, 'public/seo/memo-spiel-online.html')));
+app.get('/memo-spel-online',     (req, res) => res.sendFile(path.join(__dirname, 'public/seo/memo-spel-online.html')));
+app.get('/paare-finden-online',  (req, res) => res.redirect(301, '/memo-spiel-online'));
+app.get('/hitta-par-online',     (req, res) => res.redirect(301, '/memo-spel-online'));
 
 // ── SEO Games Hub Pages ───────────────────────────────────────────
 app.get('/gry',    (req, res) => res.sendFile(path.join(__dirname, 'public/seo/gry.html')));
@@ -164,7 +166,7 @@ app.get('/dots', (req, res) => {
 
 app.get('/memory', (req, res) => {
   const lang = req.query.lang || 'en';
-  const map = { pl:'/znajdz-pary', de:'/paare-finden-online', sv:'/hitta-par-online' };
+  const map = { pl:'/znajdz-pary', de:'/memo-spiel-online', sv:'/memo-spel-online' };
   res.redirect(301, map[lang] || '/find-pairs-online');
 });
 
