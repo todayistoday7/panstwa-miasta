@@ -23,7 +23,7 @@ const SEO_DIR = path.join(ROOT, 'public/seo');
 // Only non-PL languages — Polish stays on root /
 const SEO_PAGES = [
   { file: 'countries-cities-game.html', lang: 'en' },
-  { file: 'laender-und-staedte.html', lang: 'de' },
+  { file: 'stadt-land-fluss-online.html', lang: 'de' },
   { file: 'laender-och-staeder.html', lang: 'sv' },
 ];
 

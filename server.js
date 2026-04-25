@@ -51,7 +51,8 @@ app.get('/whoami',     (req, res) => res.redirect(301, '/who-am-i'));
 
 // ── Państwa Miasta — SEO pages (EN/DE/SV — PL stays on root /) ──
 app.get('/countries-cities-game', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/countries-cities-game.html')));
-app.get('/laender-und-staedte',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/laender-und-staedte.html')));
+app.get('/stadt-land-fluss-online', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/stadt-land-fluss-online.html')));
+app.get('/laender-und-staedte', (req, res) => res.redirect(301, '/stadt-land-fluss-online'));
 app.get('/laender-och-staeder',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/laender-och-staeder.html')));
 
 // ── How-to-play pages — new additions ───────────────────────────
@@ -196,6 +197,11 @@ app.get('/blog/sv/forbjudna-ord-exempel',          (req,res) => res.sendFile(pat
 app.get('/blog/sv/svara-ord-hanga-gubbe',          (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/svara-ord-hanga-gubbe.html')));
 app.get('/blog/sv/vem-ar-jag-karaktarer',          (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/vem-ar-jag-karaktarer.html')));
 app.get('/blog/sv/kategorier-lansen-staden',       (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/kategorier-lansen-staden.html')));
+// ── Family/Kids games blog posts ──
+app.get('/blog/free-games-for-kids-and-families',            (req,res) => res.sendFile(path.join(__dirname,'public/blog/free-games-for-kids-and-families.html')));
+app.get('/blog/pl/darmowe-gry-dla-dzieci-i-rodzin',         (req,res) => res.sendFile(path.join(__dirname,'public/blog/pl/darmowe-gry-dla-dzieci-i-rodzin.html')));
+app.get('/blog/de/kostenlose-spiele-fuer-kinder-und-familien',(req,res) => res.sendFile(path.join(__dirname,'public/blog/de/kostenlose-spiele-fuer-kinder-und-familien.html')));
+app.get('/blog/sv/gratis-spel-for-barn-och-familjer',       (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/gratis-spel-for-barn-och-familjer.html')));
 
 app.get('/rooms',       (req, res) => res.sendFile(path.join(__dirname, 'public/rooms.html')));
 app.get('/privacy',     (req, res) => res.sendFile(path.join(__dirname, 'public/privacy.html')));
@@ -231,7 +237,7 @@ app.get('/share', (req, res) => {
   const siteUrl = 'https://panstwamiastagra.com';
 
   const titles = {
-    pm:       { pl: 'Państwa-Miasta', en: 'Countries & Cities', de: 'Länder & Städte', fr: 'Pays & Villes', es: 'Países & Ciudades' },
+    pm:       { pl: 'Państwa-Miasta', en: 'Countries & Cities', de: 'Stadt Land Fluss', fr: 'Pays & Villes', es: 'Países & Ciudades' },
     taboo:    { pl: 'Zakazane Słowa', en: 'Forbidden Words', de: 'Verbotene Wörter', fr: 'Mots Interdits', es: 'Palabras Prohibidas' },
     dots:     { pl: 'Kropki i Kreski', en: 'Dots & Boxes', de: 'Punkte & Linien', fr: 'Points & Lignes', es: 'Puntos & Líneas' },
     twotruth: { pl: 'Dwie Prawdy Jedno Kłamstwo', en: '2 Truths 1 Lie', de: '2 Wahrheiten 1 Lüge', fr: '2 Vérités 1 Mensonge', es: '2 Verdades 1 Mentira' },
