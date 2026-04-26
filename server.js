@@ -209,6 +209,11 @@ app.get('/blog/free-games-for-kids-and-families',            (req,res) => res.se
 app.get('/blog/pl/darmowe-gry-dla-dzieci-i-rodzin',         (req,res) => res.sendFile(path.join(__dirname,'public/blog/pl/darmowe-gry-dla-dzieci-i-rodzin.html')));
 app.get('/blog/de/kostenlose-spiele-fuer-kinder-und-familien',(req,res) => res.sendFile(path.join(__dirname,'public/blog/de/kostenlose-spiele-fuer-kinder-und-familien.html')));
 app.get('/blog/sv/gratis-spel-for-barn-och-familjer',       (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/gratis-spel-for-barn-och-familjer.html')));
+// ── DE/SV SEO blog posts — Stadt Land Fluss, Unterricht, Sällskapsspel, Klassrum ──
+app.get('/blog/de/stadt-land-fluss-online-spielen',         (req,res) => res.sendFile(path.join(__dirname,'public/blog/de/stadt-land-fluss-online-spielen.html')));
+app.get('/blog/de/kostenlose-spiele-fuer-den-unterricht',   (req,res) => res.sendFile(path.join(__dirname,'public/blog/de/kostenlose-spiele-fuer-den-unterricht.html')));
+app.get('/blog/sv/basta-gratis-sallskapsspel-online',       (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/basta-gratis-sallskapsspel-online.html')));
+app.get('/blog/sv/spel-for-klassrummet',                    (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/spel-for-klassrummet.html')));
 
 app.get('/rooms',       (req, res) => res.sendFile(path.join(__dirname, 'public/rooms.html')));
 app.get('/privacy',     (req, res) => res.sendFile(path.join(__dirname, 'public/privacy.html')));
