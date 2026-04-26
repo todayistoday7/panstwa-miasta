@@ -977,18 +977,42 @@ function applyTranslations() {
     if (name) name.textContent = g.name;
     if (players) players.textContent = g.players;
   });
-  // Printable link
-  var pmPrintable = {
-    pl: { text: '📄 Pobierz kartę do druku', hint: '(zalecany druk poziomy)', url: '/downloads/panstwa-miasta-karta-do-druku.html' },
-    en: { text: '📄 Download print & play sheet', hint: '(landscape print recommended)', url: '/downloads/countries-cities-print-and-play.html' },
-    de: { text: '📄 Druckvorlage herunterladen', hint: '(Querformat empfohlen)', url: '/downloads/stadt-land-fluss-druckvorlage.html' },
-    sv: { text: '📄 Ladda ner utskriftsmall', hint: '(liggande format rekommenderas)', url: '/downloads/stad-land-utskrift.html' },
+  // Offline / Print section
+  var pmOffline = {
+    pl: {
+      title: '🖨️ Wersja offline',
+      text: 'Opcja gry całkowicie offline jest również możliwa. Po prostu wydrukuj kartę do gry (polecamy druk poziomy) i graj z rodziną, znajomymi, a jeżeli jesteś nauczycielem — ze swoimi uczniami podczas luźniejszych zajęć.',
+      btn: 'Pobierz kartę do druku',
+      url: '/downloads/panstwa-miasta-karta-do-druku.html',
+    },
+    en: {
+      title: '🖨️ Offline version',
+      text: 'Want to play completely offline? Just print the game sheet (we recommend landscape mode) and play with family, friends, or if you\'re a teacher — with your students during a fun classroom break.',
+      btn: 'Download print & play sheet',
+      url: '/downloads/countries-cities-print-and-play.html',
+    },
+    de: {
+      title: '🖨️ Offline-Version',
+      text: 'Du kannst auch komplett offline spielen. Einfach die Spielvorlage ausdrucken (am besten im Querformat) und mit Familie, Freunden oder — falls du Lehrer bist — mit deinen Schülern in einer lockeren Unterrichtsstunde spielen.',
+      btn: 'Druckvorlage herunterladen',
+      url: '/downloads/stadt-land-fluss-druckvorlage.html',
+    },
+    sv: {
+      title: '🖨️ Offlineversion',
+      text: 'Vill du spela helt offline? Skriv bara ut spelkortet (vi rekommenderar liggande format) och spela med familj, vänner, eller om du är lärare — med dina elever under en rolig lektion.',
+      btn: 'Ladda ner utskriftsmall',
+      url: '/downloads/stad-land-utskrift.html',
+    },
   };
-  var pp = pmPrintable[lang] || pmPrintable['pl'];
-  var ppLink = document.getElementById('pm-printable-href');
-  var ppHint = document.getElementById('pm-printable-hint');
-  if (ppLink) { ppLink.href = pp.url; ppLink.textContent = pp.text; }
-  if (ppHint) ppHint.textContent = pp.hint;
+  var po = pmOffline[lang] || pmOffline['pl'];
+  var poTitle = document.getElementById('pm-offline-title');
+  var poText = document.getElementById('pm-offline-text');
+  var poBtn = document.getElementById('pm-offline-btn');
+  var poHref = document.getElementById('pm-offline-href');
+  if (poTitle) poTitle.textContent = po.title;
+  if (poText) poText.textContent = po.text;
+  if (poBtn) poBtn.textContent = po.btn;
+  if (poHref) poHref.href = po.url;
 }
 
 // ─── UTILS ───────────────────────────────────────────────
