@@ -45,6 +45,9 @@ const LANGS = {
     rule2:        'Na zmianę rysuj kreskę między dwiema sąsiednimi kropkami',
     rule3:        'Narysuj ostatnią krawędź kwadratu — zdobywasz punkt i grasz dalej!',
     rule4:        'Gracz z największą liczbą pól wygrywa',
+    printableText: '📄 Pobierz kartę do druku',
+    printableLandscape: '(zalecany druk poziomy)',
+    printableUrl: '/downloads/kropki-i-kreski-do-druku.html',
     yourTurn:     'Twoja kolej!',
     theirTurn:    (n) => `Kolej gracza ${n}`,
     gameOver:     'Koniec gry!',
@@ -92,6 +95,9 @@ const LANGS = {
     rule2:        'Take turns drawing a line between two adjacent dots',
     rule3:        'Complete the 4th side of a box to claim it and go again!',
     rule4:        'The player with the most boxes wins',
+    printableText: '📄 Download print & play sheet',
+    printableLandscape: '(landscape print recommended)',
+    printableUrl: '/downloads/dots-and-boxes-print-and-play.html',
     yourTurn:     'Your turn!',
     theirTurn:    (n) => `${n}'s turn`,
     gameOver:     'Game Over!',
@@ -139,6 +145,9 @@ const LANGS = {
     rule2:        'Zeichne abwechselnd eine Linie zwischen zwei benachbarten Punkten',
     rule3:        'Schließe die 4. Seite eines Feldes ab — du bekommst einen Punkt und spielst weiter!',
     rule4:        'Der Spieler mit den meisten Feldern gewinnt',
+    printableText: '📄 Druckvorlage herunterladen',
+    printableLandscape: '(Querformat empfohlen)',
+    printableUrl: '/downloads/kaesekastchen-druckvorlage.html',
     yourTurn:     'Du bist dran!',
     theirTurn:    (n) => `${n} ist dran`,
     gameOver:     'Spiel vorbei!',
@@ -186,6 +195,9 @@ const LANGS = {
     rule2:        'Ta turvis och rita en linje mellan två angränsande punkter',
     rule3:        'Slutför den 4:e sidan av en ruta — du får en poäng och spelar igen!',
     rule4:        'Spelaren med flest rutor vinner',
+    printableText: '📄 Ladda ner utskriftsmall',
+    printableLandscape: '(liggande format rekommenderas)',
+    printableUrl: '/downloads/punkter-och-linjer-utskrift.html',
     yourTurn:     'Din tur!',
     theirTurn:    (n) => `${n}s tur`,
     gameOver:     'Spelet är slut!',
@@ -892,6 +904,14 @@ function applyTranslations() {
     [1,2,3,5].forEach((n, i) => {
       if (rndSel.options[i]) rndSel.options[i].text = n + ' ' + rd;
     });
+  }
+  // Printable link
+  var pLink = document.getElementById('printable-href');
+  var pEl = document.getElementById('printable-link');
+  if (pLink && L.printableUrl) {
+    pLink.href = L.printableUrl;
+    pLink.textContent = L.printableText;
+    pEl.querySelector('span').textContent = L.printableLandscape;
   }
 }
 

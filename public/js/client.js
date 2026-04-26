@@ -977,6 +977,18 @@ function applyTranslations() {
     if (name) name.textContent = g.name;
     if (players) players.textContent = g.players;
   });
+  // Printable link
+  var pmPrintable = {
+    pl: { text: '📄 Pobierz kartę do druku', hint: '(zalecany druk poziomy)', url: '/downloads/panstwa-miasta-karta-do-druku.html' },
+    en: { text: '📄 Download print & play sheet', hint: '(landscape print recommended)', url: '/downloads/countries-cities-print-and-play.html' },
+    de: { text: '📄 Druckvorlage herunterladen', hint: '(Querformat empfohlen)', url: '/downloads/stadt-land-fluss-druckvorlage.html' },
+    sv: { text: '📄 Ladda ner utskriftsmall', hint: '(liggande format rekommenderas)', url: '/downloads/stad-land-utskrift.html' },
+  };
+  var pp = pmPrintable[lang] || pmPrintable['pl'];
+  var ppLink = document.getElementById('pm-printable-href');
+  var ppHint = document.getElementById('pm-printable-hint');
+  if (ppLink) { ppLink.href = pp.url; ppLink.textContent = pp.text; }
+  if (ppHint) ppHint.textContent = pp.hint;
 }
 
 // ─── UTILS ───────────────────────────────────────────────
