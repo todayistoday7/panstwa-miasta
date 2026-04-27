@@ -45,9 +45,10 @@ const LANGS = {
     rule2:        'Na zmianę rysuj kreskę między dwiema sąsiednimi kropkami',
     rule3:        'Narysuj ostatnią krawędź kwadratu — zdobywasz punkt i grasz dalej!',
     rule4:        'Gracz z największą liczbą pól wygrywa',
-    printableText: '📄 Pobierz kartę do druku',
-    printableLandscape: '(zalecany druk poziomy)',
-    printableUrl: '/downloads/kropki-i-kreski-do-druku.html',
+    offlineTitle: '🖨️ Wersja offline',
+    offlineText:  'Chcesz zagrać bez internetu? Wydrukuj gotową kartę do gry (najlepiej w trybie poziomym) i graj z rodziną, przyjaciółmi, a jeśli jesteś nauczycielem — z uczniami na lekcji, wycieczce czy przerwie.',
+    offlineBtn:   'Pobierz kartę do druku',
+    offlineUrl:   '/downloads/kropki-i-kreski-do-druku.html',
     yourTurn:     'Twoja kolej!',
     theirTurn:    (n) => `Kolej gracza ${n}`,
     gameOver:     'Koniec gry!',
@@ -95,9 +96,10 @@ const LANGS = {
     rule2:        'Take turns drawing a line between two adjacent dots',
     rule3:        'Complete the 4th side of a box to claim it and go again!',
     rule4:        'The player with the most boxes wins',
-    printableText: '📄 Download print & play sheet',
-    printableLandscape: '(landscape print recommended)',
-    printableUrl: '/downloads/dots-and-boxes-print-and-play.html',
+    offlineTitle: '🖨️ Offline version',
+    offlineText:  'Want to play completely offline? Just print the game sheet (we recommend landscape mode) and play with family, friends, or if you\'re a teacher — with your students during a fun classroom break.',
+    offlineBtn:   'Download print & play sheet',
+    offlineUrl:   '/downloads/dots-and-boxes-print-and-play.html',
     yourTurn:     'Your turn!',
     theirTurn:    (n) => `${n}'s turn`,
     gameOver:     'Game Over!',
@@ -145,9 +147,10 @@ const LANGS = {
     rule2:        'Zeichne abwechselnd eine Linie zwischen zwei benachbarten Punkten',
     rule3:        'Schließe die 4. Seite eines Feldes ab — du bekommst einen Punkt und spielst weiter!',
     rule4:        'Der Spieler mit den meisten Feldern gewinnt',
-    printableText: '📄 Druckvorlage herunterladen',
-    printableLandscape: '(Querformat empfohlen)',
-    printableUrl: '/downloads/kaesekastchen-druckvorlage.html',
+    offlineTitle: '🖨️ Offline-Version',
+    offlineText:  'Du kannst auch komplett offline spielen. Einfach die Spielvorlage ausdrucken (am besten im Querformat) und mit Familie, Freunden oder — falls du Lehrer bist — mit deinen Schülern in einer lockeren Unterrichtsstunde spielen.',
+    offlineBtn:   'Druckvorlage herunterladen',
+    offlineUrl:   '/downloads/kaesekastchen-druckvorlage.html',
     yourTurn:     'Du bist dran!',
     theirTurn:    (n) => `${n} ist dran`,
     gameOver:     'Spiel vorbei!',
@@ -195,9 +198,10 @@ const LANGS = {
     rule2:        'Ta turvis och rita en linje mellan två angränsande punkter',
     rule3:        'Slutför den 4:e sidan av en ruta — du får en poäng och spelar igen!',
     rule4:        'Spelaren med flest rutor vinner',
-    printableText: '📄 Ladda ner utskriftsmall',
-    printableLandscape: '(liggande format rekommenderas)',
-    printableUrl: '/downloads/punkter-och-linjer-utskrift.html',
+    offlineTitle: '🖨️ Offlineversion',
+    offlineText:  'Vill du spela helt offline? Skriv bara ut spelkortet (vi rekommenderar liggande format) och spela med familj, vänner, eller om du är lärare — med dina elever under en rolig lektion.',
+    offlineBtn:   'Ladda ner utskriftsmall',
+    offlineUrl:   '/downloads/punkter-och-linjer-utskrift.html',
     yourTurn:     'Din tur!',
     theirTurn:    (n) => `${n}s tur`,
     gameOver:     'Spelet är slut!',
@@ -905,14 +909,15 @@ function applyTranslations() {
       if (rndSel.options[i]) rndSel.options[i].text = n + ' ' + rd;
     });
   }
-  // Printable link
-  var pLink = document.getElementById('printable-href');
-  var pEl = document.getElementById('printable-link');
-  if (pLink && L.printableUrl) {
-    pLink.href = L.printableUrl;
-    pLink.textContent = L.printableText;
-    pEl.querySelector('span').textContent = L.printableLandscape;
-  }
+  // Offline / Print section
+  var doTitle = document.getElementById('dots-offline-title');
+  var doText = document.getElementById('dots-offline-text');
+  var doBtn = document.getElementById('dots-offline-btn');
+  var doHref = document.getElementById('dots-offline-href');
+  if (doTitle) doTitle.textContent = L.offlineTitle;
+  if (doText) doText.textContent = L.offlineText;
+  if (doBtn) doBtn.textContent = L.offlineBtn;
+  if (doHref) doHref.href = L.offlineUrl;
 }
 
 // ─── SVG HELPER ──────────────────────────────────────────────────
