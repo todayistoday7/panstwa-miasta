@@ -893,6 +893,43 @@ function applyTranslations() {
     const el = document.getElementById(id);
     if (el && L[key]) el.textContent = L[key];
   }
+
+  // Offline / Print section — placed early to ensure it runs
+  var pmOffline = {
+    pl: {
+      title: '🖨️ Wersja offline',
+      text: 'Chcesz zagrać bez internetu? Wydrukuj gotową kartę do gry (najlepiej w trybie poziomym) i graj z rodziną, przyjaciółmi, a jeśli jesteś nauczycielem — z uczniami na lekcji, wycieczce czy przerwie.',
+      btn: 'Pobierz kartę do druku',
+      url: '/downloads/panstwa-miasta-karta-do-druku.html',
+    },
+    en: {
+      title: '🖨️ Offline version',
+      text: 'Want to play completely offline? Just print the game sheet (we recommend landscape mode) and play with family, friends, or if you\'re a teacher — with your students during a fun classroom break.',
+      btn: 'Download print & play sheet',
+      url: '/downloads/countries-cities-print-and-play.html',
+    },
+    de: {
+      title: '🖨️ Offline-Version',
+      text: 'Du kannst auch komplett offline spielen. Einfach die Spielvorlage ausdrucken (am besten im Querformat) und mit Familie, Freunden oder — falls du Lehrer bist — mit deinen Schülern in einer lockeren Unterrichtsstunde spielen.',
+      btn: 'Druckvorlage herunterladen',
+      url: '/downloads/stadt-land-fluss-druckvorlage.html',
+    },
+    sv: {
+      title: '🖨️ Offlineversion',
+      text: 'Vill du spela helt offline? Skriv bara ut spelkortet (vi rekommenderar liggande format) och spela med familj, vänner, eller om du är lärare — med dina elever under en rolig lektion.',
+      btn: 'Ladda ner utskriftsmall',
+      url: '/downloads/stad-land-utskrift.html',
+    },
+  };
+  var po = pmOffline[lang] || pmOffline['pl'];
+  var poTitle = document.getElementById('pm-offline-title');
+  var poText = document.getElementById('pm-offline-text');
+  var poBtn = document.getElementById('pm-offline-btn');
+  var poHref = document.getElementById('pm-offline-href');
+  if (poTitle) poTitle.textContent = po.title;
+  if (poText) poText.textContent = po.text;
+  if (poBtn) poBtn.textContent = po.btn;
+  if (poHref) poHref.href = po.url;
   // Keep the hub link in sync with the current language
   const hubLink = document.getElementById('lbl-other-games');
   // Update SEO rules link to correct language
@@ -977,42 +1014,6 @@ function applyTranslations() {
     if (name) name.textContent = g.name;
     if (players) players.textContent = g.players;
   });
-  // Offline / Print section
-  var pmOffline = {
-    pl: {
-      title: '🖨️ Wersja offline',
-      text: 'Opcja gry całkowicie offline jest również możliwa. Po prostu wydrukuj kartę do gry (polecamy druk poziomy) i graj z rodziną, znajomymi, a jeżeli jesteś nauczycielem — ze swoimi uczniami podczas luźniejszych zajęć.',
-      btn: 'Pobierz kartę do druku',
-      url: '/downloads/panstwa-miasta-karta-do-druku.html',
-    },
-    en: {
-      title: '🖨️ Offline version',
-      text: 'Want to play completely offline? Just print the game sheet (we recommend landscape mode) and play with family, friends, or if you\'re a teacher — with your students during a fun classroom break.',
-      btn: 'Download print & play sheet',
-      url: '/downloads/countries-cities-print-and-play.html',
-    },
-    de: {
-      title: '🖨️ Offline-Version',
-      text: 'Du kannst auch komplett offline spielen. Einfach die Spielvorlage ausdrucken (am besten im Querformat) und mit Familie, Freunden oder — falls du Lehrer bist — mit deinen Schülern in einer lockeren Unterrichtsstunde spielen.',
-      btn: 'Druckvorlage herunterladen',
-      url: '/downloads/stadt-land-fluss-druckvorlage.html',
-    },
-    sv: {
-      title: '🖨️ Offlineversion',
-      text: 'Vill du spela helt offline? Skriv bara ut spelkortet (vi rekommenderar liggande format) och spela med familj, vänner, eller om du är lärare — med dina elever under en rolig lektion.',
-      btn: 'Ladda ner utskriftsmall',
-      url: '/downloads/stad-land-utskrift.html',
-    },
-  };
-  var po = pmOffline[lang] || pmOffline['pl'];
-  var poTitle = document.getElementById('pm-offline-title');
-  var poText = document.getElementById('pm-offline-text');
-  var poBtn = document.getElementById('pm-offline-btn');
-  var poHref = document.getElementById('pm-offline-href');
-  if (poTitle) poTitle.textContent = po.title;
-  if (poText) poText.textContent = po.text;
-  if (poBtn) poBtn.textContent = po.btn;
-  if (poHref) poHref.href = po.url;
 }
 
 // ─── UTILS ───────────────────────────────────────────────
