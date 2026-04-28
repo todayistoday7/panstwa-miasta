@@ -261,6 +261,12 @@
   }
   if (!T[lang]) lang = 'pl';
 
+
+  // ─── FILTER DATA (must be before applyLang) ───
+  var FILTER_LABELS = {"pl": {"all": "Wszystkie", "family": "Rodzinne", "kids4": "Dzieci 4+", "party": "Impreza", "classroom": "Szko\u0142a", "team-event": "Firmowe", "ice-breaker": "Na start"}, "en": {"all": "All", "family": "Family", "kids4": "Kids 4+", "party": "Party", "classroom": "Classroom", "team-event": "Team event", "ice-breaker": "Ice breaker"}, "de": {"all": "Alle", "family": "Familie", "kids4": "Kinder 4+", "party": "Party", "classroom": "Unterricht", "team-event": "Teambuilding", "ice-breaker": "Eisbrecher"}, "sv": {"all": "Alla", "family": "Familj", "kids4": "Barn 4+", "party": "Fest", "classroom": "Skola", "team-event": "Teambuilding", "ice-breaker": "Isbrytare"}};
+  var GAME_TAGS = {"pm": "family classroom", "taboo": "party team-event", "twotruth": "party team-event ice-breaker", "dots": "family kids4 classroom", "hangman": "family classroom", "bingo": "team-event", "drawing": "party team-event ice-breaker", "whoami": "family party classroom ice-breaker", "memory": "family kids4 classroom"};
+  var activeFilter = 'all';
+
   function renderCards(l) {
     var g = GAMES[l] || GAMES['pl'];
     document.getElementById('games-grid').innerHTML =
@@ -538,12 +544,6 @@
 <script>window._forceLang = "de";
 
   // ─── FILTER ───
-  var FILTER_LABELS = {"pl": {"all": "Wszystkie", "family": "Rodzinne", "kids4": "Dzieci 4+", "party": "Impreza", "classroom": "Szko\u0142a", "team-event": "Firmowe", "ice-breaker": "Na start"}, "en": {"all": "All", "family": "Family", "kids4": "Kids 4+", "party": "Party", "classroom": "Classroom", "team-event": "Team event", "ice-breaker": "Ice breaker"}, "de": {"all": "Alle", "family": "Familie", "kids4": "Kinder 4+", "party": "Party", "classroom": "Unterricht", "team-event": "Teambuilding", "ice-breaker": "Eisbrecher"}, "sv": {"all": "Alla", "family": "Familj", "kids4": "Barn 4+", "party": "Fest", "classroom": "Skola", "team-event": "Teambuilding", "ice-breaker": "Isbrytare"}};
-
-  var GAME_TAGS = {"pm": "family classroom", "taboo": "party team-event", "twotruth": "party team-event ice-breaker", "dots": "family kids4 classroom", "hangman": "family classroom", "bingo": "team-event", "drawing": "party team-event ice-breaker", "whoami": "family party classroom ice-breaker", "memory": "family kids4 classroom"};
-
-  var activeFilter = 'all';
-
   function buildFilterPills(l) {
     var fl = FILTER_LABELS[l] || FILTER_LABELS['en'];
     var container = document.getElementById('filter-pills');
