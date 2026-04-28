@@ -116,6 +116,14 @@
   }
   .game-tag.icebreaker { background:rgba(255,107,53,0.1); border-color:rgba(255,107,53,0.35); color:var(--accent); }
   .game-tag.integration { background:rgba(255,209,102,0.1); border-color:rgba(255,209,102,0.35); color:var(--accent2); }
+
+  /* ─── FILTER PILLS ─── */
+  .filter-row { display:flex; gap:8px; flex-wrap:wrap; margin:16px 0 4px; }
+  .filter-pill { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:6px 14px; font-size:12px; font-weight:700; color:var(--muted); cursor:pointer; transition:all 0.2s; white-space:nowrap; user-select:none; }
+  .filter-pill:hover { border-color:var(--accent); color:var(--accent); }
+  .filter-pill.active { background:var(--accent); border-color:var(--accent); color:white; }
+  .game-card { transition: opacity 0.25s, transform 0.25s; }
+  .game-card.filter-hidden { opacity:0; transform:scale(0.95); pointer-events:none; position:absolute; visibility:hidden; }
 </style>
 <link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/gry">
 <link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/games">
@@ -149,6 +157,9 @@
     <p id="hub-subtitle">Zaproś znajomych i razem świetnie się bawcie — albo dołącz do otwartego pokoju i poznaj nowych graczy! Śmiej się, rywalizuj i spędź czas jakiego jeszcze nie było.</p>
   </div>
 
+  
+  <div id="filter-pills" class="filter-row"></div>
+  <div id="filter-no-results" style="display:none;text-align:center;padding:40px 20px;color:var(--muted);font-weight:700;font-size:14px;"></div>
   <div id="games-grid" class="games-grid">
   </div>
 
@@ -253,19 +264,20 @@
   function renderCards(l) {
     var g = GAMES[l] || GAMES['pl'];
     document.getElementById('games-grid').innerHTML =
-      card('/', '🌍', g.pm.title || 'Państwa-Miasta', g.pm.desc, g.pm.players, 'PL/EN/DE/SV', g.pm.tag1, false, g.pm.play, l, g.pm.age) +
-      card('/taboo', '🎭', g.taboo.title || 'Zakazane Słowa', g.taboo.desc, g.taboo.players, 'PL/EN/DE/SV', g.taboo.tag1, false, g.taboo.play, l, g.taboo.age) +
-      card('/twotruth', '🤥', g.twotruth.title || '2 Truths 1 Lie', g.twotruth.desc, g.twotruth.players, 'PL/EN/DE/SV', g.twotruth.tag1, false, g.twotruth.play, l, g.twotruth.age) +
-      card('/dots', '🔵', g.dots.title || 'Dots & Boxes', g.dots.desc, g.dots.players, 'PL/EN/DE/SV', g.dots.tag1, false, g.dots.play, l, g.dots.age) +
-      card('/hangman', '🪢', g.hangman.title || 'Hangman', g.hangman.desc, g.hangman.players, 'PL/EN/DE/SV', g.hangman.tag1, false, g.hangman.play, l, g.hangman.age) +
-      card('/bingo', '🎯', g.bingo ? g.bingo.title : 'Corporate Bingo', g.bingo ? g.bingo.desc : '', g.bingo ? g.bingo.players : '2-50', 'PL/EN/DE/SV', g.bingo ? g.bingo.tag1 : 'Team building', false, g.bingo ? g.bingo.play : '🎮 Play now', l, g.bingo ? g.bingo.age : '16+') +
-      card('/drawing', '🎨', g.drawing ? g.drawing.title : 'Sketch & Guess', g.drawing ? g.drawing.desc : '', g.drawing ? g.drawing.players : '4-10', 'PL/EN/DE/SV', g.drawing ? g.drawing.tag1 : 'Ice breaker', false, g.drawing ? g.drawing.play : '🎮 Play now', l, g.drawing ? g.drawing.age : '8+') +
-      card(l==='pl'?'/kim-jestem':l==='de'?'/wer-bin-ich':l==='sv'?'/vem-ar-jag':'/who-am-i', '❓', g.whoami ? g.whoami.title : 'Who Am I?', g.whoami ? g.whoami.desc : '', g.whoami ? g.whoami.players : '2-16', 'PL/EN/DE/SV', g.whoami ? g.whoami.tag1 : 'Ice breaker', false, g.whoami ? g.whoami.play : '🎮 Play now', l, g.whoami ? g.whoami.age : '8+') +
-      card(l==='pl'?'/znajdz-pary':l==='de'?'/memo-spiel-online':l==='sv'?'/memo-spel-online':'/find-pairs-online', '🧩', g.memory ? g.memory.title : 'Find Pairs', g.memory ? g.memory.desc : '', g.memory ? g.memory.players : '2-6', 'PL/EN/DE/SV', g.memory ? g.memory.tag1 : 'Family', false, g.memory ? g.memory.play : '🎮 Play now', l, g.memory ? g.memory.age : '4+');
+      card('/', '🌍', g.pm.title || 'Państwa-Miasta', g.pm.desc, g.pm.players, 'PL/EN/DE/SV', g.pm.tag1, false, g.pm.play, l, g.pm.age, 'family classroom') +
+      card('/taboo', '🎭', g.taboo.title || 'Zakazane Słowa', g.taboo.desc, g.taboo.players, 'PL/EN/DE/SV', g.taboo.tag1, false, g.taboo.play, l, g.taboo.age, 'party team-event') +
+      card('/twotruth', '🤥', g.twotruth.title || '2 Truths 1 Lie', g.twotruth.desc, g.twotruth.players, 'PL/EN/DE/SV', g.twotruth.tag1, false, g.twotruth.play, l, g.twotruth.age, 'party team-event ice-breaker') +
+      card('/dots', '🔵', g.dots.title || 'Dots & Boxes', g.dots.desc, g.dots.players, 'PL/EN/DE/SV', g.dots.tag1, false, g.dots.play, l, g.dots.age, 'family kids4 classroom') +
+      card('/hangman', '🪢', g.hangman.title || 'Hangman', g.hangman.desc, g.hangman.players, 'PL/EN/DE/SV', g.hangman.tag1, false, g.hangman.play, l, g.hangman.age, 'family classroom') +
+      card('/bingo', '🎯', g.bingo ? g.bingo.title : 'Corporate Bingo', g.bingo ? g.bingo.desc : '', g.bingo ? g.bingo.players : '2-50', 'PL/EN/DE/SV', g.bingo ? g.bingo.tag1 : 'Team building', false, g.bingo ? g.bingo.play : '🎮 Play now', l, g.bingo ? g.bingo.age : '16+', 'team-event') +
+      card('/drawing', '🎨', g.drawing ? g.drawing.title : 'Sketch & Guess', g.drawing ? g.drawing.desc : '', g.drawing ? g.drawing.players : '4-10', 'PL/EN/DE/SV', g.drawing ? g.drawing.tag1 : 'Ice breaker', false, g.drawing ? g.drawing.play : '🎮 Play now', l, g.drawing ? g.drawing.age : '8+', 'party team-event ice-breaker') +
+      card(l==='pl'?'/kim-jestem':l==='de'?'/wer-bin-ich':l==='sv'?'/vem-ar-jag':'/who-am-i', '❓', g.whoami ? g.whoami.title : 'Who Am I?', g.whoami ? g.whoami.desc : '', g.whoami ? g.whoami.players : '2-16', 'PL/EN/DE/SV', g.whoami ? g.whoami.tag1 : 'Ice breaker', false, g.whoami ? g.whoami.play : '🎮 Play now', l, g.whoami ? g.whoami.age : '8+', 'family party classroom ice-breaker') +
+      card(l==='pl'?'/znajdz-pary':l==='de'?'/memo-spiel-online':l==='sv'?'/memo-spel-online':'/find-pairs-online', '🧩', g.memory ? g.memory.title : 'Find Pairs', g.memory ? g.memory.desc : '', g.memory ? g.memory.players : '2-6', 'PL/EN/DE/SV', g.memory ? g.memory.tag1 : 'Family', false, g.memory ? g.memory.play : '🎮 Play now', l, g.memory ? g.memory.age : '4+', 'family kids4 classroom');
   }
 
-  function card(href, icon, title, desc, players, lang_tag, tag1, comingSoon, btnLabel, l, age) {
-    var wrap_open  = comingSoon ? '<div class="game-card coming-soon">' : '<a href="' + href + '?lang=' + l + '" class="game-card">';
+  function card(href, icon, title, desc, players, lang_tag, tag1, comingSoon, btnLabel, l, age, filterTags) {
+    var ft = filterTags ? ' data-tags="' + filterTags + '"' : '';
+    var wrap_open  = comingSoon ? '<div class="game-card coming-soon"' + ft + '>' : '<a href="' + href + '?lang=' + l + '" class="game-card"' + ft + '>';
     var wrap_close = comingSoon ? '</div>' : '</a>';
     var t1lower = (tag1 || '').toLowerCase();
     var t1class = (t1lower.indexOf('ice') !== -1 || t1lower.indexOf('brise') !== -1 || t1lower.indexOf('eisbrecher') !== -1 || t1lower.indexOf('rompe') !== -1)
@@ -520,6 +532,45 @@
 })();
 </script>
 <script src="/js/shared.js"></script>
-<script>window._forceLang = "pl";</script>
+<script>window._forceLang = "pl";
+
+  // ─── FILTER ───
+  var FILTER_LABELS = {"pl": {"all": "Wszystkie", "family": "Rodzinne", "kids4": "Dzieci 4+", "party": "Impreza", "classroom": "Szko\u0142a", "team-event": "Firmowe", "ice-breaker": "Na start"}, "en": {"all": "All", "family": "Family", "kids4": "Kids 4+", "party": "Party", "classroom": "Classroom", "team-event": "Team event", "ice-breaker": "Ice breaker"}, "de": {"all": "Alle", "family": "Familie", "kids4": "Kinder 4+", "party": "Party", "classroom": "Unterricht", "team-event": "Teambuilding", "ice-breaker": "Eisbrecher"}, "sv": {"all": "Alla", "family": "Familj", "kids4": "Barn 4+", "party": "Fest", "classroom": "Skola", "team-event": "Teambuilding", "ice-breaker": "Isbrytare"}};
+
+  var GAME_TAGS = {"pm": "family classroom", "taboo": "party team-event", "twotruth": "party team-event ice-breaker", "dots": "family kids4 classroom", "hangman": "family classroom", "bingo": "team-event", "drawing": "party team-event ice-breaker", "whoami": "family party classroom ice-breaker", "memory": "family kids4 classroom"};
+
+  var activeFilter = 'all';
+
+  function buildFilterPills(l) {
+    var fl = FILTER_LABELS[l] || FILTER_LABELS['en'];
+    var container = document.getElementById('filter-pills');
+    if (!container) return;
+    var order = ['all','family','kids4','party','classroom','team-event','ice-breaker'];
+    container.innerHTML = order.map(function(tag) {
+      return '<button class="filter-pill' + (tag === activeFilter ? ' active' : '') + '" data-filter="' + tag + '" onclick="applyFilter(\'' + tag + '\')">' + fl[tag] + '</button>';
+    }).join('');
+  }
+
+  function applyFilter(tag) {
+    activeFilter = tag;
+    document.querySelectorAll('.filter-pill').forEach(function(p) {
+      p.classList.toggle('active', p.dataset.filter === tag);
+    });
+    document.querySelectorAll('.game-card').forEach(function(card) {
+      var cardTags = (card.dataset.tags || '').split(' ');
+      var show = tag === 'all' || cardTags.indexOf(tag) !== -1;
+      card.classList.toggle('filter-hidden', !show);
+    });
+    // Re-layout grid after hiding
+    var grid = document.getElementById('games-grid');
+    if (grid) {
+      var visible = grid.querySelectorAll('.game-card:not(.filter-hidden)');
+      // No results message
+      var noResults = document.getElementById('filter-no-results');
+      if (noResults) noResults.style.display = visible.length === 0 ? 'block' : 'none';
+    }
+  }
+
+</script>
 </body>
 </html>
