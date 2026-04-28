@@ -377,7 +377,7 @@
     }).join('');
   }
 
-  function applyFilter(tag) {
+  window.applyFilter = function(tag) {
     activeFilter = tag;
     document.querySelectorAll('.filter-pill').forEach(function(p) {
       p.classList.toggle('active', p.dataset.filter === tag);
