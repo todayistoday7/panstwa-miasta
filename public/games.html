@@ -323,6 +323,8 @@
     if (homeLink) homeLink.href = '/?lang=' + l;
     if (rulesLink) rulesLink.href = nl.rulesHref;
     renderCards(l);
+    buildFilterPills(l);
+    if (activeFilter !== "all") applyFilter(activeFilter);
     var _hubUrls = {pl:'/gry', en:'/games', de:'/spiele', sv:'/spel'};
     if (_hubUrls[l] && window.location.pathname !== _hubUrls[l]) {
       window.location.href = _hubUrls[l];
