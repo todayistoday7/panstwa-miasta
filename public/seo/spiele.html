@@ -366,6 +366,37 @@
   });
   document.querySelector('.container').insertBefore(bar, document.querySelector('.container').firstChild);
 
+
+  function buildFilterPills(l) {
+    var fl = FILTER_LABELS[l] || FILTER_LABELS['en'];
+    var container = document.getElementById('filter-pills');
+    if (!container) return;
+    var order = ['all','family','kids4','party','classroom','team-event','ice-breaker'];
+    container.innerHTML = order.map(function(tag) {
+      return '<button class="filter-pill' + (tag === activeFilter ? ' active' : '') + '" data-filter="' + tag + '" onclick="applyFilter(\'' + tag + '\')">' + fl[tag] + '</button>';
+    }).join('');
+  }
+
+  function applyFilter(tag) {
+    activeFilter = tag;
+    document.querySelectorAll('.filter-pill').forEach(function(p) {
+      p.classList.toggle('active', p.dataset.filter === tag);
+    });
+    document.querySelectorAll('.game-card').forEach(function(card) {
+      var cardTags = (card.dataset.tags || '').split(' ');
+      var show = tag === 'all' || cardTags.indexOf(tag) !== -1;
+      card.classList.toggle('filter-hidden', !show);
+    });
+    // Re-layout grid after hiding
+    var grid = document.getElementById('games-grid');
+    if (grid) {
+      var visible = grid.querySelectorAll('.game-card:not(.filter-hidden)');
+      // No results message
+      var noResults = document.getElementById('filter-no-results');
+      if (noResults) noResults.style.display = visible.length === 0 ? 'block' : 'none';
+    }
+  }
+
   applyLang(lang);
 })();
 </script>
@@ -544,35 +575,9 @@
 <script>window._forceLang = "de";
 
   // ─── FILTER ───
-  function buildFilterPills(l) {
-    var fl = FILTER_LABELS[l] || FILTER_LABELS['en'];
-    var container = document.getElementById('filter-pills');
-    if (!container) return;
-    var order = ['all','family','kids4','party','classroom','team-event','ice-breaker'];
-    container.innerHTML = order.map(function(tag) {
-      return '<button class="filter-pill' + (tag === activeFilter ? ' active' : '') + '" data-filter="' + tag + '" onclick="applyFilter(\'' + tag + '\')">' + fl[tag] + '</button>';
-    }).join('');
-  }
 
-  function applyFilter(tag) {
-    activeFilter = tag;
-    document.querySelectorAll('.filter-pill').forEach(function(p) {
-      p.classList.toggle('active', p.dataset.filter === tag);
-    });
-    document.querySelectorAll('.game-card').forEach(function(card) {
-      var cardTags = (card.dataset.tags || '').split(' ');
-      var show = tag === 'all' || cardTags.indexOf(tag) !== -1;
-      card.classList.toggle('filter-hidden', !show);
-    });
-    // Re-layout grid after hiding
-    var grid = document.getElementById('games-grid');
-    if (grid) {
-      var visible = grid.querySelectorAll('.game-card:not(.filter-hidden)');
-      // No results message
-      var noResults = document.getElementById('filter-no-results');
-      if (noResults) noResults.style.display = visible.length === 0 ? 'block' : 'none';
-    }
-  }
+
+
 
 </script>
 </body>
