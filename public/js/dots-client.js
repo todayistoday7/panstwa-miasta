@@ -4,6 +4,8 @@
 'use strict';
 
 const socket = io();
+window._gameSocket = socket;
+var _prevPlayerCount = 0;
 const _urlLang = new URLSearchParams(window.location.search).get('lang');
 let lang     = (window._forceLang && ['pl','en','de','sv'].includes(window._forceLang))
                ? window._forceLang
@@ -45,6 +47,7 @@ const LANGS = {
     rule2:        'Na zmianę rysuj kreskę między dwiema sąsiednimi kropkami',
     rule3:        'Narysuj ostatnią krawędź kwadratu — zdobywasz punkt i grasz dalej!',
     rule4:        'Gracz z największą liczbą pól wygrywa',
+    nudge: '👋 Szturchnij', nudgeSent: '✓ Wysłano!',
     offlineTitle: '🖨️ Wersja offline',
     offlineText:  'Chcesz zagrać bez internetu? Wydrukuj gotową kartę do gry i graj z rodziną, przyjaciółmi, a jeśli jesteś nauczycielem — z uczniami na lekcji, wycieczce czy przerwie.',
     offlineBtn:   'Pobierz kartę do druku',
@@ -96,6 +99,7 @@ const LANGS = {
     rule2:        'Take turns drawing a line between two adjacent dots',
     rule3:        'Complete the 4th side of a box to claim it and go again!',
     rule4:        'The player with the most boxes wins',
+    nudge: '👋 Nudge', nudgeSent: '✓ Sent!',
     offlineTitle: '🖨️ Offline version',
     offlineText:  'Want to play completely offline? Just print the game sheet and play with family, friends, or if you\'re a teacher — with your students during a fun classroom break.',
     offlineBtn:   'Download print & play sheet',
@@ -147,6 +151,7 @@ const LANGS = {
     rule2:        'Zeichne abwechselnd eine Linie zwischen zwei benachbarten Punkten',
     rule3:        'Schließe die 4. Seite eines Feldes ab — du bekommst einen Punkt und spielst weiter!',
     rule4:        'Der Spieler mit den meisten Feldern gewinnt',
+    nudge: '👋 Anstupsen', nudgeSent: '✓ Gesendet!',
     offlineTitle: '🖨️ Offline-Version',
     offlineText:  'Du kannst auch komplett offline spielen. Einfach die Spielvorlage ausdrucken und mit Familie, Freunden oder — falls du Lehrer bist — mit deinen Schülern in einer lockeren Unterrichtsstunde spielen.',
     offlineBtn:   'Druckvorlage herunterladen',
@@ -198,6 +203,7 @@ const LANGS = {
     rule2:        'Ta turvis och rita en linje mellan två angränsande punkter',
     rule3:        'Slutför den 4:e sidan av en ruta — du får en poäng och spelar igen!',
     rule4:        'Spelaren med flest rutor vinner',
+    nudge: '👋 Puffa', nudgeSent: '✓ Skickat!',
     offlineTitle: '🖨️ Offlineversion',
     offlineText:  'Vill du spela helt offline? Skriv bara ut spelkortet och spela med familj, vänner, eller om du är lärare — med dina elever under en rolig lektion.',
     offlineBtn:   'Ladda ner utskriftsmall',
@@ -395,6 +401,13 @@ function applyState(data) {
 // ─── LOBBY ───────────────────────────────────────────────────────
 function renderLobby(data) {
   const { players, settings, hostId } = data;
+  // Notify on new player join
+  var connectedCount = players.filter(function(p) { return p.connected !== false; }).length;
+  if (connectedCount > _prevPlayerCount && _prevPlayerCount > 0 && typeof window._onPlayerJoined === "function") {
+    var newest = players[players.length - 1];
+    window._onPlayerJoined(newest ? newest.name : "?");
+  }
+  _prevPlayerCount = connectedCount;
   const isHost = myId === hostId;
   const connected = players.filter(p => p.connected !== false);
   // Show rejoin tip with correct translation
@@ -436,6 +449,12 @@ function renderLobby(data) {
   if (warn) {
     warn.style.display   = connected.length < 2 ? 'block' : 'none';
     warn.textContent     = L.needPlayers;
+  }
+
+  // Nudge button
+  var nudgeContainer = document.getElementById('lobby-players');
+  if (nudgeContainer && typeof window._buildNudgeButton === 'function') {
+    window._buildNudgeButton(nudgeContainer, roomCode, myName || '', { nudge: L.nudge, nudgeSent: L.nudgeSent });
   }
 
   const gridSel = document.getElementById('settings-grid');

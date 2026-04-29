@@ -4,6 +4,8 @@
 'use strict';
 
 const socket = io();
+window._gameSocket = socket;
+var _prevPlayerCount = 0;
 const _urlLang = new URLSearchParams(window.location.search).get('lang');
 let lang      = (window._forceLang && ['pl','en','de','sv'].includes(window._forceLang))
                ? window._forceLang
@@ -39,6 +41,7 @@ const LANGS = {
     rule1:          'Stwórz pokój — 3 do 20 graczy',
     rule2:          'Każda runda jeden gracz pisze 3 zdania o sobie',
     rule3:          '2 są prawdziwe, 1 jest kłamstwem — Ty decydujesz które!',
+    nudge: '👋 Szturchnij', nudgeSent: '✓ Wysłano!',
     rule4:          'Wszyscy głosują które zdanie to kłamstwo',
     rule5:          'Trafne odgadnięcie = 1pkt · Każda oszukana osoba = 1pkt dla Ciebie',
     yourTurnWrite:  '✍️ TWOJA KOLEJ — napisz swoje zdania!',
@@ -105,6 +108,7 @@ const LANGS = {
     rule1:          'Create a room — 3 to 20 players',
     rule2:          'Each round one player writes 3 statements about themselves',
     rule3:          '2 are true, 1 is a lie — you choose which!',
+    nudge: '👋 Nudge', nudgeSent: '✓ Sent!',
     rule4:          'Everyone votes which statement they think is the lie',
     rule5:          'Correct guess = 1pt · Each person you fool = 1pt for you',
     yourTurnWrite:  '✍️ YOUR TURN — write your statements!',
@@ -171,6 +175,7 @@ const LANGS = {
     rule1:          'Erstelle einen Raum — 3 bis 20 Spieler',
     rule2:          'Jede Runde schreibt ein Spieler 3 Aussagen über sich',
     rule3:          '2 sind wahr, 1 ist eine Lüge — du entscheidest welche!',
+    nudge: '👋 Anstupsen', nudgeSent: '✓ Gesendet!',
     rule4:          'Alle stimmen ab, welche Aussage die Lüge ist',
     rule5:          'Richtig geraten = 1 Pkt · Jede getäuschte Person = 1 Pkt für dich',
     yourTurnWrite:  '✍️ DU BIST DRAN — schreibe deine Aussagen!',
@@ -237,6 +242,7 @@ const LANGS = {
     rule1:          'Skapa ett rum — 3 till 20 spelare',
     rule2:          'Varje runda skriver en spelare 3 påståenden om sig själv',
     rule3:          '2 är sanna, 1 är en lögn — du väljer vilken!',
+    nudge: '👋 Puffa', nudgeSent: '✓ Skickat!',
     rule4:          'Alla röstar om vilket påstående som är lögnen',
     rule5:          'Rätt gissning = 1 poäng · Varje person du lurar = 1 poäng för dig',
     yourTurnWrite:  '✍️ DIN TUR — skriv dina påståenden!',
@@ -340,6 +346,13 @@ function applyState(data) {
 // ─── LOBBY ───────────────────────────────────────────────────────
 function renderLobby(data) {
   const { players, settings, hostId } = data;
+  // Notify on new player join
+  var connectedCount = players.filter(function(p) { return p.connected !== false; }).length;
+  if (connectedCount > _prevPlayerCount && _prevPlayerCount > 0 && typeof window._onPlayerJoined === "function") {
+    var newest = players[players.length - 1];
+    window._onPlayerJoined(newest ? newest.name : "?");
+  }
+  _prevPlayerCount = connectedCount;
   const isHost    = myId === hostId;
   // Show all players - connected and temporarily disconnected
   const connected = players.filter(p => p.connected !== false);
@@ -377,6 +390,12 @@ function renderLobby(data) {
   if (warn) {
     warn.style.display = connected.length < 3 ? 'block' : 'none';
     warn.textContent = L.needPlayers || 'Need at least 3 players to start';
+  }
+
+  // Nudge button
+  var nudgeContainer = document.getElementById('lobby-players');
+  if (nudgeContainer && typeof window._buildNudgeButton === 'function') {
+    window._buildNudgeButton(nudgeContainer, roomCode, myName || '', { nudge: L.nudge, nudgeSent: L.nudgeSent });
   }
   // Enable/disable start button based on connected count
   var startBtn = document.getElementById('lbl-start-btn');

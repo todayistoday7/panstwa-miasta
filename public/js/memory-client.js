@@ -4,6 +4,8 @@
 'use strict';
 
 const socket = io();
+window._gameSocket = socket;
+var _prevPlayerCount = 0;
 const _urlLang = new URLSearchParams(window.location.search).get('lang');
 let lang     = (window._forceLang && ['pl','en','de','sv'].includes(window._forceLang))
                ? window._forceLang
@@ -45,6 +47,7 @@ const LANGS = {
     rule2:        'Na zmianę odkrywajcie po dwie karty, szukając pasujących par',
     rule3:        'Znalazłeś parę? Zatrzymujesz ją i grasz dalej!',
     rule4:        'Gracz z największą liczbą par wygrywa',
+    nudge: '👋 Szturchnij', nudgeSent: '✓ Wysłano!',
     yourTurn:     'Twoja kolej!',
     theirTurn:    (n) => `Kolej gracza ${n}`,
     gameOver:     'Koniec gry!',
@@ -94,6 +97,7 @@ const LANGS = {
     rule2:        'Take turns flipping two cards to find matching pairs',
     rule3:        'Find a pair? Keep the cards and go again!',
     rule4:        'The player with the most pairs wins',
+    nudge: '👋 Nudge', nudgeSent: '✓ Sent!',
     yourTurn:     'Your turn!',
     theirTurn:    (n) => `${n}'s turn`,
     gameOver:     'Game Over!',
@@ -143,6 +147,7 @@ const LANGS = {
     rule2:        'Deckt abwechselnd zwei Karten auf und sucht nach passenden Paaren',
     rule3:        'Paar gefunden? Behalte die Karten und spiele weiter!',
     rule4:        'Der Spieler mit den meisten Paaren gewinnt',
+    nudge: '👋 Anstupsen', nudgeSent: '✓ Gesendet!',
     yourTurn:     'Du bist dran!',
     theirTurn:    (n) => `${n} ist dran`,
     gameOver:     'Spiel vorbei!',
@@ -192,6 +197,7 @@ const LANGS = {
     rule2:        'Turas om att vända två kort för att hitta matchande par',
     rule3:        'Hittade du ett par? Behåll korten och spela vidare!',
     rule4:        'Spelaren med flest par vinner',
+    nudge: '👋 Puffa', nudgeSent: '✓ Skickat!',
     yourTurn:     'Din tur!',
     theirTurn:    (n) => `${n}s tur`,
     gameOver:     'Spelet slut!',
@@ -315,6 +321,12 @@ function renderLobby(data) {
   if (warn) {
     warn.style.display   = connected.length < 2 ? 'block' : 'none';
     warn.textContent     = L.needPlayers;
+  }
+
+  // Nudge button
+  var nudgeContainer = document.getElementById('lobby-players');
+  if (nudgeContainer && typeof window._buildNudgeButton === 'function') {
+    window._buildNudgeButton(nudgeContainer, roomCode, myName || '', { nudge: L.nudge, nudgeSent: L.nudgeSent });
   }
 
   // Settings (host only)

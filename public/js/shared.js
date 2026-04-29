@@ -1134,3 +1134,240 @@ window._buildFooterLangBtns = function() {
   }
 })();
 
+
+// ═══════════════════════════════════════════════════════
+// NUDGE + TAB NOTIFICATION SYSTEM
+// ═══════════════════════════════════════════════════════
+(function() {
+  var _origTitle = document.title;
+  var _flashTimer = null;
+  var _nudgeCooldown = false;
+  var _isTabActive = true;
+  var _flashQueue = [];
+
+  // ── Tab visibility tracking ──
+  document.addEventListener('visibilitychange', function() {
+    _isTabActive = !document.hidden;
+    if (_isTabActive) {
+      // Stop flashing when user returns
+      _stopFlash();
+    }
+  });
+
+  function _stopFlash() {
+    if (_flashTimer) {
+      clearInterval(_flashTimer);
+      _flashTimer = null;
+    }
+    document.title = _origTitle;
+    _flashQueue = [];
+  }
+
+  function _flashTitle(msg) {
+    if (_isTabActive) return; // Don't flash if user is already looking
+    _stopFlash(); // Clear any existing flash
+    var show = true;
+    _flashTimer = setInterval(function() {
+      document.title = show ? msg : _origTitle;
+      show = !show;
+    }, 800);
+    // Auto-stop after 15 seconds
+    setTimeout(function() { _stopFlash(); }, 15000);
+  }
+
+  // ── Nudge toast ──
+  function _showNudgeToast(msg) {
+    var existing = document.getElementById('nudge-toast');
+    if (existing) existing.remove();
+
+    var toast = document.createElement('div');
+    toast.id = 'nudge-toast';
+    toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--accent);color:white;padding:12px 24px;border-radius:12px;font-weight:800;font-size:14px;z-index:9999;max-width:90vw;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.3);animation:nudgeBounce 0.4s ease;';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 4000);
+  }
+
+  // ── Inject nudge animation CSS ──
+  var style = document.createElement('style');
+  style.textContent = '@keyframes nudgeBounce{0%{transform:translateX(-50%) scale(0.8);opacity:0}50%{transform:translateX(-50%) scale(1.05)}100%{transform:translateX(-50%) scale(1);opacity:1}} .nudge-btn{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 16px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;transition:all 0.2s;} .nudge-btn:hover{border-color:var(--accent);color:var(--accent);} .nudge-btn:disabled{opacity:0.4;cursor:not-allowed;} .nudge-btn:active{transform:scale(0.95);}';
+  document.head.appendChild(style);
+
+  // ── Nudge button builder ──
+  // Call from game client's renderLobby to add nudge button
+  window._buildNudgeButton = function(containerEl, roomCode, myName, translations) {
+    if (!containerEl) return;
+    var t = translations || {};
+    var btnText = t.nudge || '👋 Nudge';
+    var cooldownText = t.nudgeSent || '✓ Sent!';
+
+    // Remove existing button if re-rendering
+    var existing = containerEl.querySelector('.nudge-btn');
+    if (existing) existing.remove();
+
+    var btn = document.createElement('button');
+    btn.className = 'nudge-btn';
+    btn.textContent = btnText;
+    btn.onclick = function() {
+      if (_nudgeCooldown) return;
+      _nudgeCooldown = true;
+
+      // Send nudge via socket
+      if (typeof io !== 'undefined') {
+        var socket = window._gameSocket || (typeof window.socket !== 'undefined' ? window.socket : null);
+        if (socket) socket.emit('nudge', { code: roomCode, name: myName });
+      }
+
+      // Show sent state
+      btn.textContent = cooldownText;
+      btn.disabled = true;
+
+      // Reset after 30 seconds
+      setTimeout(function() {
+        _nudgeCooldown = false;
+        btn.textContent = btnText;
+        btn.disabled = false;
+      }, 30000);
+    };
+
+    containerEl.appendChild(btn);
+  };
+
+  // ── Listen for nudge events ──
+  // Attach to socket when available
+  function _attachNudgeListener() {
+    var socket = window._gameSocket || (typeof window.socket !== 'undefined' ? window.socket : null);
+    if (!socket) {
+      // Retry — socket might not be ready yet
+      setTimeout(_attachNudgeListener, 500);
+      return;
+    }
+    if (socket._nudgeListenerAttached) return;
+    socket._nudgeListenerAttached = true;
+
+    socket.on('nudge_received', function(data) {
+      var name = data.name || '?';
+      _flashTitle('👋 ' + name + '!');
+      // Check if I'm the host — look for a player element that has both host-badge and you-badge
+      var amHost = false;
+      document.querySelectorAll('.lobby-player, .pname').forEach(function(el) {
+        if (el.querySelector('.host-badge') && el.querySelector('.you-badge')) amHost = true;
+        if (el.innerHTML && el.innerHTML.indexOf('host-badge') !== -1 && el.innerHTML.indexOf('you-badge') !== -1) amHost = true;
+      });
+      // Fallback: check if any element has both badges as siblings
+      if (!amHost) {
+        var youBadge = document.querySelector('.you-badge');
+        if (youBadge) {
+          var parent = youBadge.parentElement;
+          if (parent && parent.querySelector('.host-badge')) amHost = true;
+        }
+      }
+      if (amHost) {
+        _showHostResponsePrompt(name);
+      } else {
+        _showNudgeToast('👋 ' + name + ' is ready to play!');
+      }
+    });
+
+    socket.on('host_response_received', function(data) {
+      var name = data.name || '?';
+      var msg = data.message || '';
+      _showNudgeToast(msg);
+    });
+  }
+
+  // ── Listen for player join — flash tab for host ──
+  window._onPlayerJoined = function(playerName) {
+    _flashTitle('👋 ' + playerName + ' joined!');
+    if (!_isTabActive) {
+      _showNudgeToast('👋 ' + playerName + ' joined the room!');
+    }
+  };
+
+  // ── Host response prompt ──
+  var _hostResponseTranslations = {
+    pl: { title: '👋 {name} czeka!', soon: '✅ Zaraz zaczynamy!', waiting: '⏳ Czekamy na więcej graczy' },
+    en: { title: '👋 {name} is ready!', soon: '✅ Starting soon!', waiting: '⏳ Waiting for more players' },
+    de: { title: '👋 {name} ist bereit!', soon: '✅ Gleich geht\'s los!', waiting: '⏳ Warten auf mehr Spieler' },
+    sv: { title: '👋 {name} är redo!', soon: '✅ Startar snart!', waiting: '⏳ Väntar på fler spelare' },
+  };
+
+  function _getHostLang() {
+    if (typeof lang !== 'undefined' && lang) return lang;
+    if (window._forceLang) return window._forceLang;
+    return 'en';
+  }
+
+  function _showHostResponsePrompt(playerName) {
+    var existing = document.getElementById('nudge-toast');
+    if (existing) existing.remove();
+
+    var hl = _getHostLang();
+    var t = _hostResponseTranslations[hl] || _hostResponseTranslations['en'];
+
+    var toast = document.createElement('div');
+    toast.id = 'nudge-toast';
+    toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--card);border:2px solid var(--accent);color:var(--text);padding:14px 20px;border-radius:14px;font-weight:700;font-size:13px;z-index:9999;max-width:92vw;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,0.3);animation:nudgeBounce 0.4s ease;';
+
+    var title = document.createElement('div');
+    title.textContent = t.title.replace('{name}', playerName);
+    title.style.cssText = 'margin-bottom:10px;font-size:15px;font-weight:800;';
+    toast.appendChild(title);
+
+    var btnWrap = document.createElement('div');
+    btnWrap.style.cssText = 'display:flex;gap:8px;justify-content:center;flex-wrap:wrap;';
+
+    var soonBtn = document.createElement('button');
+    soonBtn.textContent = t.soon;
+    soonBtn.style.cssText = 'background:var(--accent);color:white;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;';
+    soonBtn.onclick = function() {
+      _sendHostResponse(t.soon);
+      toast.remove();
+    };
+
+    var waitBtn = document.createElement('button');
+    waitBtn.textContent = t.waiting;
+    waitBtn.style.cssText = 'background:var(--surface);color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;';
+    waitBtn.onclick = function() {
+      _sendHostResponse(t.waiting);
+      toast.remove();
+    };
+
+    btnWrap.appendChild(soonBtn);
+    btnWrap.appendChild(waitBtn);
+    toast.appendChild(btnWrap);
+    document.body.appendChild(toast);
+
+    // Auto-dismiss after 15 seconds if no response
+    setTimeout(function() { if (document.getElementById('nudge-toast') === toast) toast.remove(); }, 15000);
+  }
+
+  function _sendHostResponse(message) {
+    var socket = window._gameSocket || (typeof window.socket !== 'undefined' ? window.socket : null);
+    if (!socket) return;
+    // Get room code from the nav display or URL
+    var codeEl = document.getElementById('nav-room-code') || document.getElementById('lobby-code');
+    var code = '';
+    if (codeEl) code = codeEl.textContent.trim();
+    if (!code) {
+      var match = window.location.search.match(/code=([A-Z0-9]+)/i);
+      if (match) code = match[1];
+    }
+    // Try getting from game state
+    if (!code && typeof roomCode !== 'undefined') code = roomCode;
+
+    var name = '';
+    var nameEl = document.querySelector('.you-badge');
+    if (nameEl && nameEl.parentElement) name = nameEl.parentElement.textContent.replace(nameEl.textContent, '').trim();
+    if (!name && typeof myName !== 'undefined') name = myName;
+
+    socket.emit('host_response', { code: code, name: name, message: message });
+  }
+
+  // Init listener
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', _attachNudgeListener);
+  } else {
+    _attachNudgeListener();
+  }
+})();

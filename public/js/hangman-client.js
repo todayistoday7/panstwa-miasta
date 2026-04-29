@@ -5,6 +5,8 @@ window._gameSlug = 'hangman';
 'use strict';
 
 const socket = io();
+window._gameSocket = socket;
+var _prevPlayerCount = 0;
 const _urlLang = new URLSearchParams(window.location.search).get('lang');
 let lang      = (window._forceLang && ['pl','en','de','sv'].includes(window._forceLang))
                ? window._forceLang
@@ -41,6 +43,7 @@ const LANGS = {
     rule2:             'Każda runda jeden gracz wymyśla tajne słowo — reszta zgaduje',
     rule3:             'Klikaj litery — 7 błędów i wisielec gotowy!',
     rule4:             'Możesz zgadnąć całe słowo — błąd to natychmiastowa przegrana!',
+    nudge: '👋 Szturchnij', nudgeSent: '✓ Wysłano!',
     rule5:             'Każdy kolejno wymyśla słowo. Gracz z największą liczbą wygranych wygrywa.',
     createDisclaimer:  'Stwórz pokój otwarty lub prywatny. Zaproś znajomych — otrzymasz kod pokoju, który przekażesz innym graczom.',
     joinDisclaimer: 'Masz kod od znajomego lub z listy otwartych pokoi? Wpisz go tutaj i graj razem!',
@@ -112,6 +115,7 @@ const LANGS = {
     rule2:             'Each round one player picks a secret word — everyone else guesses',
     rule3:             'Tap letters to guess — 7 wrong guesses and the hangman is complete!',
     rule4:             'You can also guess the full word — but wrong = instant loss!',
+    nudge: '👋 Nudge', nudgeSent: '✓ Sent!',
     rule5:             'Everyone takes a turn picking. Most wins at the end takes the game.',
     createDisclaimer:  "Create a public or private room. Invite friends — you'll get a room code to share with other players.",
     joinDisclaimer: 'Have a code from a friend or from the Live Rooms page? Enter it here and join the game!',
@@ -185,6 +189,7 @@ const LANGS = {
     rule2:             'Jede Runde wählt ein Spieler ein geheimes Wort — alle anderen raten',
     rule3:             'Buchstaben antippen — 7 Fehler und das Galgenmännchen ist fertig!',
     rule4:             'Du kannst auch das ganze Wort raten — falsch = sofortige Niederlage!',
+    nudge: '👋 Anstupsen', nudgeSent: '✓ Gesendet!',
     rule5:             'Jeder ist einmal dran. Wer am Ende die meisten Siege hat, gewinnt.',
     createDisclaimer:  'Erstelle einen öffentlichen oder privaten Raum. Lade Freunde ein — du bekommst einen Code zum Teilen.',
     joinDisclaimer: 'Hast du einen Code von einem Freund oder von der Seite mit offenen Räumen? Gib ihn hier ein und spiel mit!',
@@ -256,6 +261,7 @@ const LANGS = {
     rule2:             'Varje runda väljer en spelare ett hemligt ord — alla andra gissar',
     rule3:             'Tryck på bokstäver — 7 fel och gubben hänger!',
     rule4:             'Du kan gissa hela ordet — fel = omedelbar förlust!',
+    nudge: '👋 Puffa', nudgeSent: '✓ Skickat!',
     rule5:             'Alla tar tur på att välja. Den med flest vinster vinner.',
     createDisclaimer:  'Skapa ett offentligt eller privat rum. Bjud in vänner — du får en kod att dela.',
     joinDisclaimer: 'Har du en kod från en vän eller från sidan med aktiva rum? Skriv in den här och gå med i spelet!',
@@ -456,6 +462,13 @@ function applyState(data) {
 // ─── LOBBY ───────────────────────────────────────────────────────
 function renderLobby(data) {
   const { players, settings, hostId } = data;
+  // Notify on new player join
+  var connectedCount = players.filter(function(p) { return p.connected !== false; }).length;
+  if (connectedCount > _prevPlayerCount && _prevPlayerCount > 0 && typeof window._onPlayerJoined === "function") {
+    var newest = players[players.length - 1];
+    window._onPlayerJoined(newest ? newest.name : "?");
+  }
+  _prevPlayerCount = connectedCount;
   const isHost    = myId === hostId;
   const connected = players.filter(p => p.connected !== false);
 
@@ -474,6 +487,12 @@ function renderLobby(data) {
 
   const warn = document.getElementById('player-warning');
   if (warn) { warn.style.display = connected.length < 2 ? 'block' : 'none'; warn.textContent = L.needPlayers; }
+
+  // Nudge button
+  var nudgeContainer = document.getElementById('lobby-players');
+  if (nudgeContainer && typeof window._buildNudgeButton === 'function') {
+    window._buildNudgeButton(nudgeContainer, roomCode, myName || '', { nudge: L.nudge, nudgeSent: L.nudgeSent });
+  }
 
   // Lang pills
   const pillsEl = document.getElementById('lobby-lang-pills');

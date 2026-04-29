@@ -2,6 +2,8 @@
 // TABOO CLIENT — Team Mode v2 (bug fixes)
 // ═══════════════════════════════════════════════════════
 const socket = io();
+window._gameSocket = socket;
+var _prevPlayerCount = 0;
 const _urlLang = new URLSearchParams(window.location.search).get('lang');
 let lang = (window._forceLang && ['pl','en','de','sv'].includes(window._forceLang))
            ? window._forceLang
@@ -41,6 +43,7 @@ const LANGS_TABOO = {
     rule1: 'Minimum 4 graczy — losowy podział na 2 drużyny',
     rule2: 'Opisujący z Drużyny A — jego drużyna zgaduje',
     rule3: 'Sędzia z Drużyny B — łapie zakazane słowa',
+    nudge: '👋 Szturchnij', nudgeSent: '✓ Wysłano!',
     rule4: 'Zgadnięte słowo = +1 dla drużyny · Zakazane słowo = +1 dla drużyny przeciwnej',
     rule5: 'Drużyny zmieniają się rolami co rundę',
     rule6: 'Wygrywa drużyna z największą liczbą punktów!',
@@ -93,6 +96,7 @@ const LANGS_TABOO = {
     rule1: 'Minimum 4 players — randomly split into 2 teams',
     rule2: 'Describer from Team A — their own team guesses',
     rule3: 'Referee from Team B — catches forbidden words',
+    nudge: '👋 Nudge', nudgeSent: '✓ Sent!',
     rule4: 'Correct guess = +1 for your team · Forbidden word caught = +1 for opposing team',
     rule5: 'Teams swap roles every turn',
     rule6: 'Team with the most points wins!',
@@ -144,6 +148,7 @@ const LANGS_TABOO = {
     rule1: 'Mindestens 4 Spieler — zufällig in 2 Teams aufgeteilt',
     rule2: 'Beschreiber aus Team A — sein eigenes Team rät',
     rule3: 'Schiedsrichter aus Team B — achtet auf verbotene Wörter',
+    nudge: '👋 Anstupsen', nudgeSent: '✓ Gesendet!',
     rule4: 'Richtiges Raten = +1 für dein Team · Verbotenes Wort = +1 für das gegnerische Team',
     rule5: 'Teams tauschen jede Runde die Rollen',
     rule6: 'Das Team mit den meisten Punkten gewinnt!',
@@ -192,6 +197,7 @@ const LANGS_TABOO = {
     rule1: 'Minst 4 spelare — slumpmässigt uppdelade i 2 lag',
     rule2: 'Beskrivaren från Lag A — deras eget lag gissar',
     rule3: 'Domaren från Lag B — fångar förbjudna ord',
+    nudge: '👋 Puffa', nudgeSent: '✓ Skickat!',
     rule4: 'Rätt gissning = +1 för ditt lag · Förbjudet ord = +1 för motståndarlaget',
     rule5: 'Lagen byter roller varje runda',
     rule6: 'Laget med flest poäng vinner!',
@@ -342,7 +348,13 @@ function renderLobby(data) {
     if (playerCount < 4) {
       warn.style.display = 'block';
       warn.textContent = L.minPlayers + ' (' + L.playersJoined(playerCount) + ')';
-    } else {
+    }
+
+  // Nudge button
+  var nudgeContainer = document.getElementById('lobby-players');
+  if (nudgeContainer && typeof window._buildNudgeButton === 'function') {
+    window._buildNudgeButton(nudgeContainer, roomCode, myName || '', { nudge: L.nudge, nudgeSent: L.nudgeSent });
+  } else {
       warn.style.display = 'block';
       warn.style.background = 'rgba(6,214,160,0.1)';
       warn.style.borderColor = 'var(--green)';

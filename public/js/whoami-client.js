@@ -4,6 +4,8 @@
 'use strict';
 
 const socket = io();
+window._gameSocket = socket;
+var _prevPlayerCount = 0;
 const _urlLang = new URLSearchParams(window.location.search).get('lang');
 let lang = (window._forceLang && ['pl','en','de','sv'].includes(window._forceLang))
            ? window._forceLang
@@ -108,6 +110,7 @@ const LANGS = {
     rule1:'Stwórz pokój i zaproś znajomych kodem',
     rule2:'Każdy gracz dostaje tajną postać — ale jej nie widzi!',
     rule3:'Zadawaj pytania by odgadnąć kim jesteś',
+    nudge: '👋 Szturchnij', nudgeSent: '✓ Wysłano!',
     rule4:'Odgadnięcie postaci = 1 punkt. Poddanie się = 0',
     hintsTitle:'💡 Sugerowane pytania',
     hints:[
@@ -170,6 +173,7 @@ const LANGS = {
     rule1:'Create a room and invite friends with the code',
     rule2:'Each player gets a secret character — but can\'t see it!',
     rule3:'Ask yes/no questions to figure out who you are',
+    nudge: '👋 Nudge', nudgeSent: '✓ Sent!',
     rule4:'Guess the character = 1 point. Surrender = 0',
     hintsTitle:'💡 Suggested questions',
     hints:[
@@ -232,6 +236,7 @@ const LANGS = {
     rule1:'Erstelle einen Raum und lade Freunde mit dem Code ein',
     rule2:'Jeder Spieler bekommt eine geheime Person — sieht sie aber nicht!',
     rule3:'Stelle Ja/Nein-Fragen um herauszufinden wer du bist',
+    nudge: '👋 Anstupsen', nudgeSent: '✓ Gesendet!',
     rule4:'Richtig geraten = 1 Punkt. Aufgeben = 0',
     hintsTitle:'💡 Fragenvorschläge',
     hints:[
@@ -294,6 +299,7 @@ const LANGS = {
     rule1:'Skapa ett rum och bjud in vänner med koden',
     rule2:'Varje spelare får en hemlig person — men ser den inte!',
     rule3:'Ställ ja/nej-frågor för att lista ut vem du är',
+    nudge: '👋 Puffa', nudgeSent: '✓ Skickat!',
     rule4:'Rätt gissning = 1 poäng. Ge upp = 0',
     hintsTitle:'💡 Föreslagna frågor',
     hints:[
@@ -414,7 +420,13 @@ function renderLobby(data) {
     if (count >= min) {
       warn.classList.add('ready');
       warn.textContent = L.enoughPlayers ? L.enoughPlayers(count) : '✅ ' + count + ' players ready!';
-    } else {
+    }
+
+  // Nudge button
+  var nudgeContainer = document.getElementById('lobby-players');
+  if (nudgeContainer && typeof window._buildNudgeButton === 'function') {
+    window._buildNudgeButton(nudgeContainer, roomCode, myName || '', { nudge: L.nudge, nudgeSent: L.nudgeSent });
+  } else {
       warn.classList.remove('ready');
       warn.textContent = L.waitingPlayers ? L.waitingPlayers(count, min) : 'Waiting for players... ' + count + '/' + min + ' joined.';
     }

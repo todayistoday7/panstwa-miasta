@@ -2,6 +2,8 @@
 // CLIENT STATE
 // ═══════════════════════════════════════════════════════
 const socket = io();
+window._gameSocket = socket;
+var _prevPlayerCount = 0;
 const _urlLangPM = new URLSearchParams(window.location.search).get('lang') || window._forceLang;
 let lang = (LANGS[_urlLangPM] ? _urlLangPM : 'pl');
 let L = LANGS[lang];
@@ -181,6 +183,13 @@ var _settingsInitialized = false;
 
 function renderLobby(data) {
   const { players, settings } = data;
+  // Notify on new player join
+  var connectedCount = players.filter(function(p) { return p.connected !== false; }).length;
+  if (connectedCount > _prevPlayerCount && _prevPlayerCount > 0 && typeof window._onPlayerJoined === "function") {
+    var newest = players[players.length - 1];
+    window._onPlayerJoined(newest ? newest.name : "?");
+  }
+  _prevPlayerCount = connectedCount;
   const _amHost = players.find(p => p.isHost) && players.find(p => p.isHost).id === socket.id;
 
   // ── Always update: player list and visibility ─────────────────

@@ -448,6 +448,14 @@ io.on('connection', (socket) => {
   drawing.register(io, socket);
   whoami.register(io, socket);
   memory.register(io, socket);
+
+  // ── Global nudge system ──
+  socket.on('nudge', ({ code, name }) => {
+    if (code) socket.to(code).emit('nudge_received', { name: name || '?' });
+  });
+  socket.on('host_response', ({ code, name, message }) => {
+    if (code) socket.to(code).emit('host_response_received', { name: name || '?', message: message || '' });
+  });
 });
 
 // ─── START ───────────────────────────────────────────────
