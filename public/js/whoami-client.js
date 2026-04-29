@@ -423,16 +423,16 @@ function renderLobby(data) {
     if (count >= min) {
       warn.classList.add('ready');
       warn.textContent = L.enoughPlayers ? L.enoughPlayers(count) : '✅ ' + count + ' players ready!';
+    } else {
+      warn.classList.remove('ready');
+      warn.textContent = L.waitingPlayers ? L.waitingPlayers(count, min) : 'Waiting for players... ' + count + '/' + min + ' joined.';
     }
+  }
 
   // Nudge button
   var nudgeContainer = document.getElementById('nudge-container');
   if (nudgeContainer && typeof window._buildNudgeButton === 'function') {
     window._buildNudgeButton(nudgeContainer, roomCode, myName || '', { nudge: L.nudge, nudgeSent: L.nudgeSent });
-  } else {
-      warn.classList.remove('ready');
-      warn.textContent = L.waitingPlayers ? L.waitingPlayers(count, min) : 'Waiting for players... ' + count + '/' + min + ' joined.';
-    }
   }
 
   // Settings display

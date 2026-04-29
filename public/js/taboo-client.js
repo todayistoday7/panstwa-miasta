@@ -351,19 +351,19 @@ function renderLobby(data) {
     if (playerCount < 4) {
       warn.style.display = 'block';
       warn.textContent = L.minPlayers + ' (' + L.playersJoined(playerCount) + ')';
-    }
-
-  // Nudge button
-  var nudgeContainer = document.getElementById('nudge-container');
-  if (nudgeContainer && typeof window._buildNudgeButton === 'function') {
-    window._buildNudgeButton(nudgeContainer, roomCode, myName || '', { nudge: L.nudge, nudgeSent: L.nudgeSent });
-  } else {
+    } else {
       warn.style.display = 'block';
       warn.style.background = 'rgba(6,214,160,0.1)';
       warn.style.borderColor = 'var(--green)';
       warn.style.color = 'var(--green)';
       warn.textContent = '✓ ' + L.playersJoined(playerCount);
     }
+  }
+
+  // Nudge button
+  var nudgeContainer = document.getElementById('nudge-container');
+  if (nudgeContainer && typeof window._buildNudgeButton === 'function') {
+    window._buildNudgeButton(nudgeContainer, roomCode, myName || '', { nudge: L.nudge, nudgeSent: L.nudgeSent });
   }
 
   document.getElementById('settings-rounds').value = settings.rounds || 5;

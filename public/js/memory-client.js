@@ -289,6 +289,7 @@ function renderLobby(data) {
   var settings = data.settings || {};
   var connected = players.filter(function(p) { return p.connected !== false; });
   var isHost = data.hostId === myId;
+  window._amHost = isHost;
 
   // Room code display
   var codeEl = document.getElementById('room-code-display');
