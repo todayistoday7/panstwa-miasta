@@ -677,6 +677,12 @@ function renderFinal(data) {
   document.getElementById('lbl-go-home').textContent = L.goHome;
 
   if (typeof renderOtherGames === 'function') renderOtherGames('twotruth');
+
+  // Post-game reactions
+  var reactionEl = document.getElementById('reaction-container');
+  if (reactionEl && typeof window._buildReactionBar === 'function') {
+    window._buildReactionBar(reactionEl, roomCode, myName || '');
+  }
 }
 
 // ─── MINI SCOREBOARD (shown during writing phase for non-active) ──

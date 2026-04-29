@@ -452,6 +452,12 @@ function renderFinal(state) {
   if (remBtn) remBtn.style.display = (state.hostId === myId) ? 'block' : 'none';
 
   if (typeof renderOtherGames === 'function') renderOtherGames('memory');
+
+  // Post-game reactions
+  var reactionEl = document.getElementById('reaction-container');
+  if (reactionEl && typeof window._buildReactionBar === 'function') {
+    window._buildReactionBar(reactionEl, roomCode, myName || '');
+  }
 }
 
 // ─── ACTIONS ─────────────────────────────────────────────────────

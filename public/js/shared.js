@@ -1362,3 +1362,123 @@ window._buildFooterLangBtns = function() {
     _attachNudgeListener();
   }
 })();
+
+// ═══════════════════════════════════════════════════════
+// POST-GAME REACTIONS
+// ═══════════════════════════════════════════════════════
+(function() {
+  var _reactionSent = false;
+
+  var REACTION_LABELS = {
+    pl: [
+      { emoji: '👏', text: 'Dobra gra!' },
+      { emoji: '😂', text: 'Super zabawa!' },
+      { emoji: '🔥', text: 'Gotowy na rewanż!' },
+      { emoji: '👋', text: 'Dzięki!' },
+    ],
+    en: [
+      { emoji: '👏', text: 'GG!' },
+      { emoji: '😂', text: 'That was fun!' },
+      { emoji: '🔥', text: 'Ready for rematch!' },
+      { emoji: '👋', text: 'Thanks!' },
+    ],
+    de: [
+      { emoji: '👏', text: 'Gut gespielt!' },
+      { emoji: '😂', text: 'Hat Spaß gemacht!' },
+      { emoji: '🔥', text: 'Bereit für Revanche!' },
+      { emoji: '👋', text: 'Danke!' },
+    ],
+    sv: [
+      { emoji: '👏', text: 'Bra spelat!' },
+      { emoji: '😂', text: 'Kul!' },
+      { emoji: '🔥', text: 'Redo för revansch!' },
+      { emoji: '👋', text: 'Tack!' },
+    ],
+  };
+
+  // Inject CSS for reactions
+  var rStyle = document.createElement('style');
+  rStyle.textContent = '.reaction-bar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid var(--border);} .reaction-btn{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;transition:all 0.2s;} .reaction-btn:hover{border-color:var(--accent);color:var(--accent);transform:scale(1.05);} .reaction-btn:active{transform:scale(0.95);} .reaction-btn.sent{background:var(--accent);color:white;border-color:var(--accent);pointer-events:none;} @keyframes reactionFloat{0%{opacity:1;transform:translateY(0) scale(1)}70%{opacity:1;transform:translateY(-60px) scale(1.2)}100%{opacity:0;transform:translateY(-100px) scale(0.8)}} .reaction-float{position:fixed;left:50%;transform:translateX(-50%);bottom:30%;font-size:28px;z-index:99999;pointer-events:none;animation:reactionFloat 2s ease-out forwards;text-align:center;} .reaction-float .rf-name{font-size:11px;font-weight:800;color:var(--accent);white-space:nowrap;}';
+  document.head.appendChild(rStyle);
+
+  // Build reaction buttons
+  window._buildReactionBar = function(containerEl, roomCode, myName) {
+    if (!containerEl) return;
+    _reactionSent = false;
+
+    // Detect language
+    var rl = 'en';
+    if (typeof lang !== 'undefined' && lang) rl = lang;
+    else if (window._forceLang) rl = window._forceLang;
+    var reactions = REACTION_LABELS[rl] || REACTION_LABELS['en'];
+
+    // Remove existing bar if re-rendering
+    var existing = containerEl.querySelector('.reaction-bar');
+    if (existing) existing.remove();
+
+    var bar = document.createElement('div');
+    bar.className = 'reaction-bar';
+
+    reactions.forEach(function(r) {
+      var btn = document.createElement('button');
+      btn.className = 'reaction-btn';
+      btn.textContent = r.emoji + ' ' + r.text;
+      btn.onclick = function() {
+        if (_reactionSent) return;
+        _reactionSent = true;
+
+        // Send reaction via socket
+        var socket = window._gameSocket || (typeof window.socket !== 'undefined' ? window.socket : null);
+        if (socket) {
+          socket.emit('game_reaction', { code: roomCode, name: myName, emoji: r.emoji, text: r.text });
+        }
+
+        // Mark as sent
+        bar.querySelectorAll('.reaction-btn').forEach(function(b) {
+          if (b === btn) {
+            b.classList.add('sent');
+          } else {
+            b.style.opacity = '0.3';
+            b.style.pointerEvents = 'none';
+          }
+        });
+      };
+      bar.appendChild(btn);
+    });
+
+    containerEl.appendChild(bar);
+  };
+
+  // Show floating reaction from other players
+  function _showFloatingReaction(emoji, name) {
+    var float = document.createElement('div');
+    float.className = 'reaction-float';
+    float.innerHTML = '<div>' + emoji + '</div><div class="rf-name">' + name + '</div>';
+    // Random horizontal position
+    var xOffset = (Math.random() * 40 - 20);
+    float.style.left = 'calc(50% + ' + xOffset + 'px)';
+    document.body.appendChild(float);
+    setTimeout(function() { float.remove(); }, 2200);
+  }
+
+  // Listen for reactions
+  function _attachReactionListener() {
+    var socket = window._gameSocket || (typeof window.socket !== 'undefined' ? window.socket : null);
+    if (!socket) {
+      setTimeout(_attachReactionListener, 500);
+      return;
+    }
+    if (socket._reactionListenerAttached) return;
+    socket._reactionListenerAttached = true;
+
+    socket.on('game_reaction_received', function(data) {
+      _showFloatingReaction(data.emoji || '👏', data.name || '?');
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', _attachReactionListener);
+  } else {
+    _attachReactionListener();
+  }
+})();

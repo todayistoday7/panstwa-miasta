@@ -794,6 +794,12 @@ function renderFinal(data) {
   ).join('');
 
   if (typeof renderOtherGames === 'function') renderOtherGames('whoami');
+
+  // Post-game reactions
+  var reactionEl = document.getElementById('reaction-container');
+  if (reactionEl && typeof window._buildReactionBar === 'function') {
+    window._buildReactionBar(reactionEl, roomCode, myName || '');
+  }
 }
 
 // ── UI Actions ────────────────────────────────────────────────────

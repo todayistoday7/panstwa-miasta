@@ -456,6 +456,9 @@ io.on('connection', (socket) => {
   socket.on('host_response', ({ code, name, message }) => {
     if (code) socket.to(code).emit('host_response_received', { name: name || '?', message: message || '' });
   });
+  socket.on('game_reaction', ({ code, name, emoji, text }) => {
+    if (code) io.to(code).emit('game_reaction_received', { name: name || '?', emoji: emoji || '👏', text: text || '' });
+  });
 });
 
 // ─── START ───────────────────────────────────────────────

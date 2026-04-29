@@ -715,6 +715,12 @@ function renderFinal(data) {
   if (playBtn) { playBtn.style.display = myId === data.hostId ? 'inline-flex' : 'none'; }
 
   if (typeof renderOtherGames === 'function') renderOtherGames('hangman');
+
+  // Post-game reactions
+  var reactionEl = document.getElementById('reaction-container');
+  if (reactionEl && typeof window._buildReactionBar === 'function') {
+    window._buildReactionBar(reactionEl, roomCode, myName || '');
+  }
 }
 
 // ─── SHARED RENDERERS ────────────────────────────────────────────

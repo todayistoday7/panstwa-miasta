@@ -593,6 +593,12 @@ function renderFinal(data) {
   document.getElementById('lbl-share').textContent     = L.shareResults;
 
   if (typeof renderOtherGames === 'function') renderOtherGames('taboo');
+
+  // Post-game reactions
+  var reactionEl = document.getElementById('reaction-container');
+  if (reactionEl && typeof window._buildReactionBar === 'function') {
+    window._buildReactionBar(reactionEl, roomCode, myName || '');
+  }
 }
 
 // ─── ACTIONS ─────────────────────────────────────────────────────
