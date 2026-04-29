@@ -191,6 +191,7 @@ function renderLobby(data) {
   }
   _prevPlayerCount = connectedCount;
   const _amHost = players.find(p => p.isHost) && players.find(p => p.isHost).id === socket.id;
+  window._amHost = _amHost;
 
   // ── Always update: player list and visibility ─────────────────
   const togWrap = document.getElementById('visibility-toggle');

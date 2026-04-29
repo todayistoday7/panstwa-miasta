@@ -1182,10 +1182,10 @@ window._buildFooterLangBtns = function() {
 
     var toast = document.createElement('div');
     toast.id = 'nudge-toast';
-    toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--accent);color:white;padding:12px 24px;border-radius:12px;font-weight:800;font-size:14px;z-index:9999;max-width:90vw;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.3);animation:nudgeBounce 0.4s ease;';
+    toast.style.cssText = 'position:fixed!important;top:20px!important;left:50%!important;transform:translateX(-50%)!important;background:var(--accent);color:white;padding:12px 24px;border-radius:12px;font-weight:800;font-size:14px;z-index:99999!important;max-width:90vw;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.3);animation:nudgeBounce 0.4s ease;';
     toast.textContent = msg;
     document.body.appendChild(toast);
-    setTimeout(function() { toast.remove(); }, 4000);
+    setTimeout(function() { toast.remove(); }, 8000);
   }
 
   // ── Inject nudge animation CSS ──
@@ -1248,31 +1248,20 @@ window._buildFooterLangBtns = function() {
     socket.on('nudge_received', function(data) {
       var name = data.name || '?';
       _flashTitle('👋 ' + name + '!');
-      // Check if I'm the host — look for a player element that has both host-badge and you-badge
-      var amHost = false;
-      document.querySelectorAll('.lobby-player, .pname').forEach(function(el) {
-        if (el.querySelector('.host-badge') && el.querySelector('.you-badge')) amHost = true;
-        if (el.innerHTML && el.innerHTML.indexOf('host-badge') !== -1 && el.innerHTML.indexOf('you-badge') !== -1) amHost = true;
-      });
-      // Fallback: check if any element has both badges as siblings
-      if (!amHost) {
-        var youBadge = document.querySelector('.you-badge');
-        if (youBadge) {
-          var parent = youBadge.parentElement;
-          if (parent && parent.querySelector('.host-badge')) amHost = true;
-        }
-      }
-      if (amHost) {
+      // Check if I'm the host using global flag set by game client
+      if (window._amHost) {
         _showHostResponsePrompt(name);
       } else {
-        _showNudgeToast('👋 ' + name + ' is ready to play!');
+        var hl = _getHostLang();
+        var readyMsgs = { pl: '👋 ' + name + ' jest gotowy!', en: '👋 ' + name + ' is ready to play!', de: '👋 ' + name + ' ist spielbereit!', sv: '👋 ' + name + ' är redo att spela!' };
+        _showNudgeToast(readyMsgs[hl] || readyMsgs['en']);
       }
     });
 
     socket.on('host_response_received', function(data) {
       var name = data.name || '?';
       var msg = data.message || '';
-      _showNudgeToast(msg);
+      _showNudgeToast(name + ': ' + msg);
     });
   }
 
@@ -1280,7 +1269,9 @@ window._buildFooterLangBtns = function() {
   window._onPlayerJoined = function(playerName) {
     _flashTitle('👋 ' + playerName + ' joined!');
     if (!_isTabActive) {
-      _showNudgeToast('👋 ' + playerName + ' joined the room!');
+      var hl = _getHostLang();
+      var joinMsgs = { pl: '👋 ' + playerName + ' dołączył!', en: '👋 ' + playerName + ' joined the room!', de: '👋 ' + playerName + ' ist beigetreten!', sv: '👋 ' + playerName + ' gick med!' };
+      _showNudgeToast(joinMsgs[hl] || joinMsgs['en']);
     }
   };
 
@@ -1338,8 +1329,8 @@ window._buildFooterLangBtns = function() {
     toast.appendChild(btnWrap);
     document.body.appendChild(toast);
 
-    // Auto-dismiss after 15 seconds if no response
-    setTimeout(function() { if (document.getElementById('nudge-toast') === toast) toast.remove(); }, 15000);
+    // Auto-dismiss after 30 seconds if no response
+    setTimeout(function() { if (document.getElementById('nudge-toast') === toast) toast.remove(); }, 30000);
   }
 
   function _sendHostResponse(message) {

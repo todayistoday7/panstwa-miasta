@@ -409,6 +409,7 @@ function renderLobby(data) {
   }
   _prevPlayerCount = connectedCount;
   const isHost = myId === hostId;
+  window._amHost = isHost;
   const connected = players.filter(p => p.connected !== false);
   // Show rejoin tip with correct translation
   var rejoinTip = document.getElementById('rejoin-tip');

@@ -354,6 +354,7 @@ function renderLobby(data) {
   }
   _prevPlayerCount = connectedCount;
   const isHost    = myId === hostId;
+  window._amHost = isHost;
   // Show all players - connected and temporarily disconnected
   const connected = players.filter(p => p.connected !== false);
   const allPlayers = players; // use all for display, grey out disconnected

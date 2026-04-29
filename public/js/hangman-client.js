@@ -470,6 +470,7 @@ function renderLobby(data) {
   }
   _prevPlayerCount = connectedCount;
   const isHost    = myId === hostId;
+  window._amHost = isHost;
   const connected = players.filter(p => p.connected !== false);
 
   const el = document.getElementById('lobby-players');

@@ -368,6 +368,7 @@ socket.on('whoami_error', ({ msg }) => { showError(msg); });
 socket.on('whoami_state', (data) => {
   roomState = data;
   isHost = data.hostId === myId;
+  window._amHost = isHost;
   applyState(data);
 });
 
