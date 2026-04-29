@@ -354,7 +354,7 @@ function renderLobby(data) {
     }
 
   // Nudge button
-  var nudgeContainer = document.getElementById('lobby-teams');
+  var nudgeContainer = document.getElementById('nudge-container');
   if (nudgeContainer && typeof window._buildNudgeButton === 'function') {
     window._buildNudgeButton(nudgeContainer, roomCode, myName || '', { nudge: L.nudge, nudgeSent: L.nudgeSent });
   } else {
