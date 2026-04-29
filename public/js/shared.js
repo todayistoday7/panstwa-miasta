@@ -1415,6 +1415,21 @@ window._buildFooterLangBtns = function() {
     // Remove existing bar if re-rendering
     var existing = containerEl.querySelector('.reaction-bar');
     if (existing) existing.remove();
+    var existingLabel = containerEl.querySelector('.reaction-label');
+    if (existingLabel) existingLabel.remove();
+
+    // Label above buttons
+    var REACTION_HEADING = {
+      pl: 'Wyślij krótką wiadomość do graczy',
+      en: 'Send a quick message to other players',
+      de: 'Sende eine kurze Nachricht an die Spieler',
+      sv: 'Skicka ett kort meddelande till spelarna',
+    };
+    var label = document.createElement('p');
+    label.className = 'reaction-label';
+    label.textContent = REACTION_HEADING[rl] || REACTION_HEADING['en'];
+    label.style.cssText = 'text-align:center;font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:12px;';
+    containerEl.appendChild(label);
 
     var bar = document.createElement('div');
     bar.className = 'reaction-bar';
