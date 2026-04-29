@@ -511,6 +511,7 @@ function doGoHome() { closeConfirm(); goHome(); }
 socket.on('connect', function() { myId = socket.id; });
 
 socket.on('mem_room_created', function(data) {
+    window._amHost = true; // nudge: I created the room
   roomCode = data.code;
   document.getElementById('room-code-display').textContent = data.code;
   buildThemeGrid();

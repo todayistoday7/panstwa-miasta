@@ -347,6 +347,7 @@ socket.on('connect', () => {
 
 socket.on('whoami_created', ({ code }) => {
   roomCode = code; isHost = true;
+  window._amHost = true; // nudge: I created the room
   window._whoamiMyName = myName;
   sessionStorage.setItem('whoami_code', code);
   sessionStorage.setItem('whoami_name', myName);
@@ -356,6 +357,7 @@ socket.on('whoami_created', ({ code }) => {
 
 socket.on('whoami_joined', ({ code }) => {
   roomCode = code;
+  window._amHost = false; // nudge: I joined someone else's room
   window._whoamiMyName = myName;
   sessionStorage.setItem('whoami_code', code);
   sessionStorage.setItem('whoami_name', myName);

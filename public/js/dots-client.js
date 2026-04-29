@@ -348,6 +348,7 @@ socket.on('connect', () => {
 });
 
 socket.on('dots_room_created', ({ code }) => {
+    window._amHost = true;
   _settingsInitDots = false;
   _ga('room_created', { game:'dots', language:lang });
   roomCode = code; roomState = null;
@@ -358,7 +359,9 @@ socket.on('dots_room_created', ({ code }) => {
   var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
 });
 
-socket.on('dots_room_joined', ({ code }) => {
+socket.on('dots_room_joined', ({
+    code }) => {
+    window._amHost = false;
   _settingsInitDots = false;
   _ga('room_joined', { game:'dots', language:lang });
   roomCode = code; roomState = null;

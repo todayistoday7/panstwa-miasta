@@ -36,6 +36,7 @@ socket.on('connect', () => {
 });
 
 socket.on('room_created', ({ code }) => {
+  window._amHost = true;
   _settingsInitialized = false;
   sessionStorage.setItem('pm_code', code); sessionStorage.setItem('pm_name', myName);
   var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
@@ -47,6 +48,7 @@ socket.on('room_created', ({ code }) => {
 });
 
 socket.on('room_joined', ({ code, isHost: h }) => {
+  window._amHost = false;
   sessionStorage.setItem('pm_code', code); sessionStorage.setItem('pm_name', myName);
   var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   _ga('room_joined', { game:'panstwa_miasta', language:lang });
@@ -237,6 +239,12 @@ function renderLobby(data) {
       _warn.classList.remove('ready');
       _warn.textContent = L.waitingPlayers ? L.waitingPlayers(_count, _min) : 'Waiting for players... ' + _count + '/' + _min + ' joined.';
     }
+  }
+
+  // Nudge button
+  var nudgeContainer = document.getElementById('lobby-players');
+  if (nudgeContainer && typeof window._buildNudgeButton === 'function') {
+    window._buildNudgeButton(nudgeContainer, roomCode, myName || '', { nudge: L.nudge || '👋 Nudge', nudgeSent: L.nudgeSent || '✓ Sent!' });
   }
 
   // ── Settings UI: host renders once on first load, never from server again ──

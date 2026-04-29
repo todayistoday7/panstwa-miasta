@@ -305,6 +305,7 @@ socket.on('connect', () => {
 });
 
 socket.on('tt_room_created', ({ code }) => {
+    window._amHost = true;
   _settingsInitTT = false;
   var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   _ga('room_created', { game:'two_truths', language:lang });
@@ -315,7 +316,9 @@ socket.on('tt_room_created', ({ code }) => {
   showScreen('screen-lobby');
 });
 
-socket.on('tt_room_joined', ({ code }) => {
+socket.on('tt_room_joined', ({
+    code }) => {
+    window._amHost = false;
   _settingsInitTT = false;
   var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   _ga('room_joined', { game:'two_truths', language:lang });

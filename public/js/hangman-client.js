@@ -424,6 +424,7 @@ socket.on('connect', () => {
 });
 
 socket.on('hang_room_created', ({ code }) => {
+    window._amHost = true;
   _settingsInitHang = false;
   var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   _ga('room_created', { game:'hangman', language:lang });
@@ -434,7 +435,9 @@ socket.on('hang_room_created', ({ code }) => {
   showScreen('screen-lobby');
 });
 
-socket.on('hang_room_joined', ({ code }) => {
+socket.on('hang_room_joined', ({
+    code }) => {
+    window._amHost = false;
   _settingsInitHang = false;
   var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   _ga('room_joined', { game:'hangman', language:lang });

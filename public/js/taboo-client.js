@@ -255,6 +255,7 @@ socket.on('connect', () => {
   }});
 
 socket.on('taboo_room_created', ({ code }) => {
+    window._amHost = true;
   _settingsInitTaboo = false;
   var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   _ga('room_created', { game:'taboo', language:lang });
@@ -266,7 +267,9 @@ socket.on('taboo_room_created', ({ code }) => {
   showScreen('screen-lobby');
 });
 
-socket.on('taboo_room_joined', ({ code }) => {
+socket.on('taboo_room_joined', ({
+    code }) => {
+    window._amHost = false;
   _settingsInitTaboo = false;
   var rt=document.getElementById('rejoin-tip'); if(rt) rt.style.display='block';
   _ga('room_joined', { game:'taboo', language:lang });
