@@ -499,6 +499,7 @@
     <div class="card">
       <h3 id="lbl-players-title">Gracze w pokoju</h3>
       <div id="lobby-players" class="lobby-players"></div>
+        <div id="nudge-container" style="text-align:center;margin-top:10px;"></div>
     </div>
 
     <p class="need-players-msg" id="need-players-msg" style="display:none;" id="lbl-need-players">
@@ -562,7 +563,8 @@
 
   <!-- ══ FINAL ══ -->
   <div id="screen-final" class="screen">
-    <div class="final-banner" id="final-banner"></div>
+    <div class="final-banner" id="final-banner">    <div id="reaction-container" style="max-width:500px;margin:0 auto;"></div>
+  </div>
     <div id="final-results" style="width:100%;"></div>
     <button class="btn btn-green" id="play-again-btn" onclick="playAgain()" style="display:none;width:100%;max-width:300px;">
       <span id="lbl-play-again">🔄 Zagraj jeszcze raz</span>
