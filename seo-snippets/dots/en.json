@@ -1,0 +1,22 @@
+{
+  "lang": "en",
+  "htmlLang": "en",
+  "title": "Dots and Boxes Online — Free Multiplayer Game | panstwamiastagra.com",
+  "description": "Play Dots and Boxes online free! Classic strategy game for 2-4 players. No registration needed — create a room and invite friends in 30 seconds.",
+  "canonical": "https://panstwamiastagra.com/dots-and-boxes-online",
+  "ogUrl": "https://panstwamiastagra.com/dots-and-boxes-online",
+  "hreflang": {
+    "pl": "https://panstwamiastagra.com/kropki-i-kreski-online",
+    "en": "https://panstwamiastagra.com/dots-and-boxes-online",
+    "de": "https://panstwamiastagra.com/punkte-und-linien-online",
+    "sv": "https://panstwamiastagra.com/punkter-och-linjer-online",
+    "x-default": "https://panstwamiastagra.com/dots-and-boxes-online"
+  },
+  "seoLangUrls": {
+    "pl": "/kropki-i-kreski-online",
+    "en": "/dots-and-boxes-online",
+    "de": "/punkte-und-linien-online",
+    "sv": "/punkter-och-linjer-online"
+  },
+  "bottomContent": "<div style=\"margin-top:32px;\">\n    <h1 style=\"font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,48px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 10px;\">Dots and Boxes Online</h1>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\"><strong style=\"color:var(--text);\">Dots and Boxes</strong> is a classic strategy game — now playable online with friends, family or your team, for free, on any device. Create a room, share the code and start playing in under a minute.</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Take turns drawing lines between dots on the grid. Complete the fourth side of a box to claim it and take another turn. The player with the <strong style=\"color:var(--text);\">most boxes at the end wins</strong>. Simple enough for kids from age 5, strategic enough to keep adults hooked.</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">It works just as well for a family game night as it does for a <strong style=\"color:var(--text);\">remote team ice breaker</strong>. Because there are no words — just lines and dots — it's a perfect fit for international and multicultural teams. No language barrier, no complicated rules to explain. A quick game takes 5-10 minutes, making it ideal for a coffee break during a video call or a warm-up before a workshop.</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;\">Works on desktop, tablet and mobile. No download, no signup — just share a link.</p>\n        <div style=\"background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;\">\n      <h3 style=\"font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent2);margin-bottom:8px;\">🖨️ Offline version</h3>\n      <p style=\"color:var(--muted);font-size:13px;line-height:1.7;font-weight:600;margin-bottom:12px;\">Want to play completely offline? Just print the game sheet and play with family, friends, or if you're a teacher — with your students during a fun classroom break.</p>\n      <a href=\"/downloads/dots-and-boxes-print-and-play.html\" target=\"_blank\" class=\"btn secondary\" style=\"text-decoration:none;font-size:13px;padding:10px 20px;\">📄 Download print & play sheet</a>\n    </div>\n</div>"
+}

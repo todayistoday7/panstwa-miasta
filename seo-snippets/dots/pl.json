@@ -1,0 +1,22 @@
+{
+  "lang": "pl",
+  "htmlLang": "pl",
+  "title": "Kropki i Kreski Online — Darmowa Gra Multiplayer | panstwamiastagra.com",
+  "description": "Zagraj w Kropki i Kreski online za darmo! Klasyczna gra strategiczna dla 2-4 graczy. Bez rejestracji, bez opłat — stwórz pokój i zaproś znajomych w 30 sekund.",
+  "canonical": "https://panstwamiastagra.com/kropki-i-kreski-online",
+  "ogUrl": "https://panstwamiastagra.com/kropki-i-kreski-online",
+  "hreflang": {
+    "pl": "https://panstwamiastagra.com/kropki-i-kreski-online",
+    "en": "https://panstwamiastagra.com/dots-and-boxes-online",
+    "de": "https://panstwamiastagra.com/punkte-und-linien-online",
+    "sv": "https://panstwamiastagra.com/punkter-och-linjer-online",
+    "x-default": "https://panstwamiastagra.com/dots-and-boxes-online"
+  },
+  "seoLangUrls": {
+    "pl": "/kropki-i-kreski-online",
+    "en": "/dots-and-boxes-online",
+    "de": "/punkte-und-linien-online",
+    "sv": "/punkter-och-linjer-online"
+  },
+  "bottomContent": "<div style=\"margin-top:32px;\">\n    <h1 style=\"font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,48px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 10px;\">Kropki i Kreski Online</h1>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\"><strong style=\"color:var(--text);\">Kropki i Kreski</strong> to klasyczna gra strategiczna, którą teraz możesz rozegrać online z przyjaciółmi, rodziną lub zespołem — za darmo, bez rejestracji, z dowolnego urządzenia. Wystarczy stworzyć pokój, udostępnić kod i zaczynać!</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Rysuj kreski między kropkami na planszy. Zamknij czwarty bok kwadratu i zdobądź pole — i graj dalej! Gracz z największą liczbą pól na koniec wygrywa. Prosta zasada, wciągająca rozgrywka dla <strong style=\"color:var(--text);\">2-4 graczy od 5 roku życia</strong>.</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Gra sprawdza się równie dobrze na rodzinnym wieczorze z dziećmi, jak i jako <strong style=\"color:var(--text);\">gra integracyjna dla zespołów pracujących zdalnie</strong>. Brak bariery językowej sprawia, że świetnie sprawdza się w międzynarodowych i wielokulturowych grupach — nie trzeba znać języka, żeby grać.</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;\">Działa na komputerach, tabletach i smartfonach. Bez instalacji — wystarczy link.</p>\n    <div style=\"background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;\">\n      <h3 style=\"font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent2);margin-bottom:8px;\">🖨️ Wersja offline</h3>\n      <p style=\"color:var(--muted);font-size:13px;line-height:1.7;font-weight:600;margin-bottom:12px;\">Chcesz zagrać bez internetu? Wydrukuj gotową kartę do gry i graj z rodziną, przyjaciółmi, a jeśli jesteś nauczycielem — z uczniami na lekcji, wycieczce czy przerwie.</p>\n      <a href=\"/downloads/kropki-i-kreski-do-druku.html\" target=\"_blank\" class=\"btn secondary\" style=\"text-decoration:none;font-size:13px;padding:10px 20px;\">📄 Pobierz kartę do druku</a>\n    </div>\n</div>"
+}

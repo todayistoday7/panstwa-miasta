@@ -105,10 +105,10 @@ app.get('/bingo', (req, res) => {
 });
 
 // ── SEO Landing Pages — Sketch & Guess ──────────────────────────
-app.get('/szkicuj-i-zgaduj',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/szkicuj-i-zgaduj.html')));
-app.get('/sketch-and-guess',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/sketch-and-guess.html')));
-app.get('/zeichnen-und-raten', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/zeichnen-und-raten.html')));
-app.get('/skissa-och-gissa',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/skissa-och-gissa.html')));
+app.get('/szkicuj-i-zgaduj',   seoInject('drawing', 'pl'));
+app.get('/sketch-and-guess',   seoInject('drawing', 'en'));
+app.get('/zeichnen-und-raten', seoInject('drawing', 'de'));
+app.get('/skissa-och-gissa',   seoInject('drawing', 'sv'));
 
 // Legacy redirect
 app.get('/drawing', (req, res) => {
@@ -144,10 +144,17 @@ app.get('/twotruth', (req, res) => {
 });
 
 // ── SEO Landing Pages — Dots & Boxes ─────────────────────────────
-app.get('/kropki-i-kreski-online',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/kropki-i-kreski-online.html')));
-app.get('/dots-and-boxes-online',    (req, res) => res.sendFile(path.join(__dirname, 'public/seo/dots-and-boxes-online.html')));
-app.get('/punkte-und-linien-online', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/punkte-und-linien-online.html')));
-app.get('/punkter-och-linjer-online',(req, res) => res.sendFile(path.join(__dirname, 'public/seo/punkter-och-linjer-online.html')));
+// Dots SEO pages — Option B: server-side injection from dots.html + snippets
+// Old static routes (kept for rollback):
+// app.get('/kropki-i-kreski-online',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/kropki-i-kreski-online.html')));
+// app.get('/dots-and-boxes-online',    (req, res) => res.sendFile(path.join(__dirname, 'public/seo/dots-and-boxes-online.html')));
+// app.get('/punkte-und-linien-online', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/punkte-und-linien-online.html')));
+// app.get('/punkter-och-linjer-online',(req, res) => res.sendFile(path.join(__dirname, 'public/seo/punkter-och-linjer-online.html')));
+const seoInject = require('./seo-inject');
+app.get('/kropki-i-kreski-online',    seoInject('dots', 'pl'));
+app.get('/dots-and-boxes-online',     seoInject('dots', 'en'));
+app.get('/punkte-und-linien-online',  seoInject('dots', 'de'));
+app.get('/punkter-och-linjer-online', seoInject('dots', 'sv'));
 
 // ── SEO Landing Pages — Find Pairs ──────────────────────────────
 app.get('/znajdz-pary',          (req, res) => res.sendFile(path.join(__dirname, 'public/seo/znajdz-pary.html')));

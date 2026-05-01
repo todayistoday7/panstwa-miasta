@@ -1,0 +1,22 @@
+{
+  "lang": "de",
+  "htmlLang": "de",
+  "title": "Käsekästchen / Punkte und Linien Online — Kostenloses Strategiespiel | panstwamiastagra.com",
+  "description": "Käsekästchen online spielen — kostenlos! Das beliebte Punkte-und-Linien-Strategiespiel für 2-4 Spieler. Perfekt für Kinder und Familien — ohne Anmeldung, direkt im Browser.",
+  "canonical": "https://panstwamiastagra.com/punkte-und-linien-online",
+  "ogUrl": "https://panstwamiastagra.com/punkte-und-linien-online",
+  "hreflang": {
+    "pl": "https://panstwamiastagra.com/kropki-i-kreski-online",
+    "en": "https://panstwamiastagra.com/dots-and-boxes-online",
+    "de": "https://panstwamiastagra.com/punkte-und-linien-online",
+    "sv": "https://panstwamiastagra.com/punkter-och-linjer-online",
+    "x-default": "https://panstwamiastagra.com/dots-and-boxes-online"
+  },
+  "seoLangUrls": {
+    "pl": "/kropki-i-kreski-online",
+    "en": "/dots-and-boxes-online",
+    "de": "/punkte-und-linien-online",
+    "sv": "/punkter-och-linjer-online"
+  },
+  "bottomContent": "<div style=\"margin-top:32px;\">\n    <h1 style=\"font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,48px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 10px;\">Käsekästchen Online</h1>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Wer hat als Kind nicht <strong style=\"color:var(--text);\">Käsekästchen</strong> gespielt? Punkte verbinden, Kästchen schließen, Punkte kassieren — das Schulhof-Spiel gibt's jetzt auch online. Kostenlos, direkt im Browser, ohne Anmeldung. Einfach einen Raum erstellen, den Code an Freunde schicken und loslegen.</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Die Regeln kennt jeder: Abwechselnd zieht ihr eine Linie zwischen zwei Punkten. Wer die <strong style=\"color:var(--text);\">vierte Seite eines Kästchens</strong> schließt, bekommt es — und darf gleich nochmal ziehen. Wer am Ende die meisten Kästchen hat, gewinnt. Klingt simpel, hat aber erstaunlich viel Strategie: Eine falsch gesetzte Linie kann dem Gegner gleich eine ganze Reihe schenken.</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Perfekt für den <strong style=\"color:var(--text);\">Familienspielabend</strong> — Kinder ab 5 verstehen die Regeln sofort, und Erwachsene werden überrascht sein, wie taktisch es werden kann. Da man keine Wörter braucht, funktioniert Käsekästchen auch super in <strong style=\"color:var(--text);\">internationalen Gruppen</strong> ohne Sprachbarriere. Eine Runde dauert 5-10 Minuten — passt perfekt in die Kaffeepause.</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;\">Läuft auf Handy, Tablet und Computer. Kein Download, kein Konto — einfach Link teilen und spielen.</p>\n        <div style=\"background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;\">\n      <h3 style=\"font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent2);margin-bottom:8px;\">🖨️ Offline-Version</h3>\n      <p style=\"color:var(--muted);font-size:13px;line-height:1.7;font-weight:600;margin-bottom:12px;\">Du kannst auch komplett offline spielen. Einfach die Spielvorlage ausdrucken und mit Familie, Freunden oder — falls du Lehrer bist — mit deinen Schülern in einer lockeren Unterrichtsstunde spielen.</p>\n      <a href=\"/downloads/kaesekastchen-druckvorlage.html\" target=\"_blank\" class=\"btn secondary\" style=\"text-decoration:none;font-size:13px;padding:10px 20px;\">📄 Druckvorlage herunterladen</a>\n    </div>\n</div>"
+}

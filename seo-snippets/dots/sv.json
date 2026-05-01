@@ -1,0 +1,22 @@
+{
+  "lang": "sv",
+  "htmlLang": "sv",
+  "title": "Punkter och Linjer Online — Gratis Multiplayer-Spel | panstwamiastagra.com",
+  "description": "Spela Punkter och Linjer online gratis! Klassiskt strategispel för 2-4 spelare. Ingen registrering — skapa ett rum och bjud in vänner på 30 sekunder.",
+  "canonical": "https://panstwamiastagra.com/punkter-och-linjer-online",
+  "ogUrl": "https://panstwamiastagra.com/punkter-och-linjer-online",
+  "hreflang": {
+    "pl": "https://panstwamiastagra.com/kropki-i-kreski-online",
+    "en": "https://panstwamiastagra.com/dots-and-boxes-online",
+    "de": "https://panstwamiastagra.com/punkte-und-linien-online",
+    "sv": "https://panstwamiastagra.com/punkter-och-linjer-online",
+    "x-default": "https://panstwamiastagra.com/dots-and-boxes-online"
+  },
+  "seoLangUrls": {
+    "pl": "/kropki-i-kreski-online",
+    "en": "/dots-and-boxes-online",
+    "de": "/punkte-und-linien-online",
+    "sv": "/punkter-och-linjer-online"
+  },
+  "bottomContent": "<div style=\"margin-top:32px;\">\n    <h1 style=\"font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,48px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 10px;\">Punkter och Linjer Online</h1>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\"><strong style=\"color:var(--text);\">Punkter och Linjer</strong> är ett klassiskt strategispel — nu spelbart online med vänner, familjen eller jobblaget, helt gratis, på vilken enhet som helst. Skapa ett rum, dela koden och sätt igång på under en minut.</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Spelare ritar turvis en linje mellan två angränsande punkter. Den som ritar den fjärde sidan av en ruta tar den och får spela igen. Spelaren med <strong style=\"color:var(--text);\">flest rutor vinner</strong>. Enkla regler som barn från 5 år förstår — men tillräckligt strategiskt för att hålla vuxna engagerade.</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Spelet passar lika bra för en <strong style=\"color:var(--text);\">familjekväll med barnen</strong> som för <strong style=\"color:var(--text);\">teambuilding i ett distansteam</strong>. Eftersom spelet inte kräver något språk — bara punkter och linjer — fungerar det utmärkt i internationella och mångkulturella grupper. Inga språkhinder, inga krångliga regler att förklara. En snabb omgång tar 5-10 minuter och passar perfekt som paus under ett videomöte eller som uppvärmning innan en workshop.</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;\">Fungerar på dator, surfplatta och mobil. Ingen nedladdning, ingen inloggning — dela bara länken.</p>\n        <div style=\"background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;\">\n      <h3 style=\"font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent2);margin-bottom:8px;\">🖨️ Offlineversion</h3>\n      <p style=\"color:var(--muted);font-size:13px;line-height:1.7;font-weight:600;margin-bottom:12px;\">Vill du spela helt offline? Skriv bara ut spelkortet och spela med familj, vänner, eller om du är lärare — med dina elever under en rolig lektion.</p>\n      <a href=\"/downloads/punkter-och-linjer-utskrift.html\" target=\"_blank\" class=\"btn secondary\" style=\"text-decoration:none;font-size:13px;padding:10px 20px;\">📄 Ladda ner utskriftsmall</a>\n    </div>\n</div>"
+}
