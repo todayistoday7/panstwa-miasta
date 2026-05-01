@@ -105,6 +105,7 @@ app.get('/bingo', (req, res) => {
 });
 
 // ── SEO Landing Pages — Sketch & Guess ──────────────────────────
+const seoInject = require('./seo-inject');
 app.get('/szkicuj-i-zgaduj',   seoInject('drawing', 'pl'));
 app.get('/sketch-and-guess',   seoInject('drawing', 'en'));
 app.get('/zeichnen-und-raten', seoInject('drawing', 'de'));
@@ -150,7 +151,6 @@ app.get('/twotruth', (req, res) => {
 // app.get('/dots-and-boxes-online',    (req, res) => res.sendFile(path.join(__dirname, 'public/seo/dots-and-boxes-online.html')));
 // app.get('/punkte-und-linien-online', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/punkte-und-linien-online.html')));
 // app.get('/punkter-och-linjer-online',(req, res) => res.sendFile(path.join(__dirname, 'public/seo/punkter-och-linjer-online.html')));
-const seoInject = require('./seo-inject');
 app.get('/kropki-i-kreski-online',    seoInject('dots', 'pl'));
 app.get('/dots-and-boxes-online',     seoInject('dots', 'en'));
 app.get('/punkte-und-linien-online',  seoInject('dots', 'de'));
