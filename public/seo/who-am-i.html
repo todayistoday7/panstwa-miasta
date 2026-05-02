@@ -369,12 +369,7 @@
       <div id="wa-hints-list"></div>
     </div>
 
-    <!-- Helper questions — active player, chat mode, shown ABOVE chat -->
-    <div id="wa-helper-area" style="display:none;margin:6px 0;">
-      <div class="wa-helper-label" id="lbl-helper-title">💡 Quick questions</div>
-      <div id="wa-helper-btns" class="wa-helper-grid"></div>
-    </div>
-
+    <!-- Guess section: voice mode = button, chat mode = text input -->
     <!-- Chat (chat mode) — framed, labelled, sticky input -->
     <div id="wa-chat-wrap" style="display:none;">
       <div id="wa-q-count" class="wa-q-count"></div>
@@ -392,7 +387,6 @@
       <div id="wa-vote-wrap" style="display:none;"></div>
     </div>
 
-    <!-- Guess section: voice mode = button, chat mode = text input -->
     <div id="wa-guess-wrap" class="wa-guess-wrap" style="display:none;">
       <!-- Voice mode: just "I got it" button -->
       <div id="wa-voice-guess" style="display:none;">
@@ -408,6 +402,12 @@
       </div>
       <!-- Surrender always visible in both modes -->
       <button class="btn secondary" onclick="surrender()" style="width:100%;margin-top:4px;">🏳️ <span id="lbl-surrender-btn">Poddaję się</span></button>
+    </div>
+
+    <!-- Helper questions — active player, chat mode -->
+    <div id="wa-helper-area" style="display:none;margin:6px 0;">
+      <div class="wa-helper-label" id="lbl-helper-title">💡 Quick questions</div>
+      <div id="wa-helper-btns" class="wa-helper-grid"></div>
     </div>
 
     <!-- Skip — host only, inside screen-playing but outside wa-guess-wrap -->
@@ -431,8 +431,7 @@
     <div style="text-align:center;padding-top:20px;">
       <div style="font-size:52px;">🏆</div>
       <h2 id="lbl-game-over" style="font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:2px;color:var(--accent2);">Koniec gry!</h2>
-        <div id="reaction-container" style="max-width:500px;margin:0 auto;"></div>
-  </div>
+    </div>
     <div id="final-scores" class="wa-scores" style="margin:20px 0;"></div>
     <div class="btn-row">
       <button class="btn" onclick="rematch()" id="lbl-play-again">🔄 Zagraj ponownie</button>
@@ -441,6 +440,7 @@
   </div>
 
 
+  <div id="reaction-container" style="max-width:500px;margin:0 auto;"></div>
   <div id="other-games-strip"></div>
 </div>
 

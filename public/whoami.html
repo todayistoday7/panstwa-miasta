@@ -497,12 +497,7 @@
       <div id="wa-hints-list"></div>
     </div>
 
-    <!-- Helper questions — active player, chat mode, shown ABOVE chat -->
-    <div id="wa-helper-area" style="display:none;margin:6px 0;">
-      <div class="wa-helper-label" id="lbl-helper-title">💡 Quick questions</div>
-      <div id="wa-helper-btns" class="wa-helper-grid"></div>
-    </div>
-
+    <!-- Guess section: voice mode = button, chat mode = text input -->
     <!-- Chat (chat mode) — framed, labelled, sticky input -->
     <div id="wa-chat-wrap" style="display:none;">
       <div id="wa-q-count" class="wa-q-count"></div>
@@ -520,7 +515,6 @@
       <div id="wa-vote-wrap" style="display:none;"></div>
     </div>
 
-    <!-- Guess section: voice mode = button, chat mode = text input -->
     <div id="wa-guess-wrap" class="wa-guess-wrap" style="display:none;">
       <!-- Voice mode: just "I got it" button -->
       <div id="wa-voice-guess" style="display:none;">
@@ -536,6 +530,12 @@
       </div>
       <!-- Surrender always visible in both modes -->
       <button class="btn secondary" onclick="surrender()" style="width:100%;margin-top:4px;">🏳️ <span id="lbl-surrender-btn">Poddaję się</span></button>
+    </div>
+
+    <!-- Helper questions — active player, chat mode -->
+    <div id="wa-helper-area" style="display:none;margin:6px 0;">
+      <div class="wa-helper-label" id="lbl-helper-title">💡 Quick questions</div>
+      <div id="wa-helper-btns" class="wa-helper-grid"></div>
     </div>
 
     <!-- Skip — host only, inside screen-playing but outside wa-guess-wrap -->
