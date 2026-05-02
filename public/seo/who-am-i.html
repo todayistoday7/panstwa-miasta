@@ -363,30 +363,7 @@
       <div class="wa-mystery-hint" id="wa-mystery-hint" style="display:none;">💡 <span id="lbl-mystery-hint">Podaj odpowiedź → następnie naciśnij ✅ poniżej ↓</span></div>
     </div>
 
-    <!-- Question hints (active player, togglable) -->
-    <div id="wa-hints" class="wa-hints" style="display:none;">
-      <div class="wa-hints-title" id="lbl-hints-title">💡 Sugerowane pytania</div>
-      <div id="wa-hints-list"></div>
-    </div>
-
     <!-- Guess section: voice mode = button, chat mode = text input -->
-    <!-- Chat (chat mode) — framed, labelled, sticky input -->
-    <div id="wa-chat-wrap" style="display:none;">
-      <div id="wa-q-count" class="wa-q-count"></div>
-      <div class="wa-chat-frame">
-        <div class="wa-chat-label" id="lbl-chat-title">💬 Questions & Answers</div>
-        <div id="wa-chat" class="wa-chat"></div>
-        <!-- Question input sticky at bottom of chat frame -->
-        <div id="wa-q-input-wrap" class="wa-q-sticky" style="display:none;">
-          <div class="wa-q-wrap">
-            <input type="text" id="wa-q-input" class="wa-q-input" maxlength="120" placeholder="Ask a question..."/>
-            <button class="btn" onclick="sendQuestion()" style="padding:10px 16px;">➤</button>
-          </div>
-        </div>
-      </div>
-      <div id="wa-vote-wrap" style="display:none;"></div>
-    </div>
-
     <div id="wa-guess-wrap" class="wa-guess-wrap" style="display:none;">
       <!-- Voice mode: just "I got it" button -->
       <div id="wa-voice-guess" style="display:none;">
@@ -402,6 +379,29 @@
       </div>
       <!-- Surrender always visible in both modes -->
       <button class="btn secondary" onclick="surrender()" style="width:100%;margin-top:4px;">🏳️ <span id="lbl-surrender-btn">Poddaję się</span></button>
+    </div>
+
+    <!-- Question hints (active player, togglable) -->
+    <div id="wa-hints" class="wa-hints" style="display:none;">
+      <div class="wa-hints-title" id="lbl-hints-title">💡 Sugerowane pytania</div>
+      <div id="wa-hints-list"></div>
+    </div>
+
+    <!-- Chat (chat mode) — framed, labelled, sticky input -->
+    <div id="wa-chat-wrap" style="display:none;">
+      <div id="wa-q-count" class="wa-q-count"></div>
+      <div class="wa-chat-frame">
+        <div class="wa-chat-label" id="lbl-chat-title">💬 Questions & Answers</div>
+        <div id="wa-chat" class="wa-chat"></div>
+        <!-- Question input sticky at bottom of chat frame -->
+        <div id="wa-q-input-wrap" class="wa-q-sticky" style="display:none;">
+          <div class="wa-q-wrap">
+            <input type="text" id="wa-q-input" class="wa-q-input" maxlength="120" placeholder="Ask a question..."/>
+            <button class="btn" onclick="sendQuestion()" style="padding:10px 16px;">➤</button>
+          </div>
+        </div>
+      </div>
+      <div id="wa-vote-wrap" style="display:none;"></div>
     </div>
 
     <!-- Helper questions — active player, chat mode -->
