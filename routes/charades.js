@@ -291,7 +291,8 @@ function register(io, socket) {
     };
     socket.join(code);
     socket.emit('charades_room_created', { code });
-    broadcastState(io, rooms[code]);
+    // Small delay to ensure client processes room_created before state arrives
+    setTimeout(() => broadcastState(io, rooms[code]), 50);
   });
   
   socket.on('charades_join', ({ code, name }) => {
@@ -309,7 +310,7 @@ function register(io, socket) {
     room.players.push(player);
     socket.join(code);
     socket.emit('charades_room_joined', { code });
-    broadcastState(io, room);
+    setTimeout(() => broadcastState(io, room), 50);
   });
   
   socket.on('charades_move_team', ({ code, playerId, team }) => {
