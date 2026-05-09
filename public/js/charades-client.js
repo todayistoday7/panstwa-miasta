@@ -281,7 +281,7 @@ const LANGS = {
     players: 'Gracze',
     nudge: '👋 Szturchnij', nudgeSent: '✓ Wysłano!',
     shareText: 'Zagraj ze mną w Kalambury! 🎭\nKod: {code}\n{url}',
-    skipTurn: '⏭️ Pomiń turę',
+    nextRound: '➡️ Następna runda',
     waitForTeam: 'Drużyna przeciwna pokazuje...',
   },
   en: {
@@ -309,7 +309,7 @@ const LANGS = {
     players: 'Players',
     nudge: '👋 Nudge', nudgeSent: '✓ Sent!',
     shareText: 'Join my Charades game! 🎭\nCode: {code}\n{url}',
-    skipTurn: '⏭️ Skip turn',
+    nextRound: '➡️ Next Round',
     waitForTeam: 'Other team is acting...',
   },
   de: {
@@ -337,7 +337,7 @@ const LANGS = {
     players: 'Spieler',
     nudge: '👋 Anstupsen', nudgeSent: '✓ Gesendet!',
     shareText: 'Spiel Scharade mit! 🎭\nCode: {code}\n{url}',
-    skipTurn: '⏭️ Runde überspringen',
+    nextRound: '➡️ Nächste Runde',
     waitForTeam: 'Das andere Team zeigt...',
   },
   sv: {
@@ -365,7 +365,7 @@ const LANGS = {
     players: 'Spelare',
     nudge: '👋 Puffa', nudgeSent: '✓ Skickat!',
     shareText: 'Spela Charader med oss! 🎭\nKod: {code}\n{url}',
-    skipTurn: '⏭️ Hoppa över',
+    nextRound: '➡️ Nästa runda',
     waitForTeam: 'Andra laget visar...',
   },
 };
@@ -522,6 +522,28 @@ function renderLobby(data) {
     renderPills('diff-pills', [
       {key:'kids',label:L.diffKids},{key:'family',label:L.diffFamily},{key:'adults',label:L.diffAdults},
     ], data.settings.difficulty, function(v) { socket.emit('charades_update_settings', {code:roomCode,settings:{difficulty:v}}); });
+
+    renderPills('rounds-pills', [
+      {key:6,label:'6'},{key:10,label:'10'},{key:14,label:'14'},{key:20,label:'20'},
+    ], data.settings.rounds, function(v) { socket.emit('charades_update_settings', {code:roomCode,settings:{rounds:parseInt(v)}}); });
+
+    renderPills('timer-pills', [
+      {key:30,label:'30s'},{key:60,label:'60s'},{key:90,label:'90s'},
+    ], data.settings.timerSecs, function(v) { socket.emit('charades_update_settings', {code:roomCode,settings:{timerSecs:parseInt(v)}}); });
+  }
+  
+  // Lobby rules translation
+  var rulesTitle = document.getElementById('lbl-lobby-rules');
+  if (rulesTitle) rulesTitle.textContent = lang === 'pl' ? 'Jak grać' : lang === 'de' ? 'Spielanleitung' : lang === 'sv' ? 'Hur man spelar' : 'How to play';
+  var lobbySteps = document.querySelectorAll('#lobby-rules-steps .rule-step p');
+  var lobbyStepTexts = {
+    pl: ['Podzielcie się na 2 drużyny','Każdą rundę jeden gracz widzi tajne hasło','Pokaż je gestem — bez słów, bez wskazywania!','Twoja drużyna krzyczy odpowiedzi — kliknij ✅ gdy zgadną','Każde prawidłowe hasło = 1 punkt dla drużyny'],
+    en: ['Split into 2 teams','Each round, one player sees a secret word','Act it out — no sounds, no pointing!','Your team shouts guesses — tap ✅ when they get it','Each correct guess = 1 point for your team'],
+    de: ['Teilt euch in 2 Teams auf','Jede Runde sieht ein Spieler ein geheimes Wort','Stelle es dar — keine Geräusche, kein Zeigen!','Dein Team ruft Antworten — tippe ✅ wenn sie es haben','Jede richtige Antwort = 1 Punkt fürs Team'],
+    sv: ['Dela upp i 2 lag','Varje runda ser en spelare ett hemligt ord','Visa det — inga ljud, inget pekande!','Ditt lag ropar gissningar — tryck ✅ när de gissar rätt','Varje rätt gissning = 1 poäng för laget'],
+  };
+  if (lobbySteps.length === 5 && lobbyStepTexts[lang]) {
+    lobbySteps.forEach(function(el, i) { el.textContent = lobbyStepTexts[lang][i]; });
   }
   
   // Start button
@@ -543,6 +565,9 @@ function renderPills(containerId, items, active, onClick) {
 // ── PLAYING ──
 function renderPlaying(data) {
   var isActor = data.actorId === myId;
+  // Hide next round button during acting
+  var nextBtn = document.getElementById('next-round-btn');
+  if (nextBtn) nextBtn.style.display = 'none';
   var myPlayer = data.players.find(function(p) { return p.id === myId; });
   var myTeam = myPlayer ? myPlayer.team : null;
   var isMyTeamActing = data.actorTeam === myTeam;
@@ -632,7 +657,6 @@ function renderPlaying(data) {
   }
   
   // Skip turn — host only
-  var skipBtn = document.getElementById('skip-turn-btn');
   if (skipBtn) skipBtn.style.display = window._amHost ? '' : 'none';
 }
 
@@ -666,8 +690,14 @@ function renderTurnEnd(data) {
   if (actorBtns) actorBtns.style.display = 'none';
   var waitMsg = document.getElementById('wait-message');
   if (waitMsg) waitMsg.style.display = 'none';
-  var skipBtn = document.getElementById('skip-turn-btn');
-  if (skipBtn) skipBtn.style.display = 'none';
+  
+  // Show Next Round button for host
+  var nextBtn = document.getElementById('next-round-btn');
+  if (nextBtn) {
+    nextBtn.style.display = window._amHost ? '' : 'none';
+    var nextLabel = document.getElementById('lbl-next-round');
+    if (nextLabel) nextLabel.textContent = lang === 'pl' ? 'Następna runda' : lang === 'de' ? 'Nächste Runde' : lang === 'sv' ? 'Nästa runda' : 'Next Round';
+  }
   
   clearInterval(window._timerInterval);
   var timerText = document.getElementById('timer-text');
@@ -738,7 +768,7 @@ function joinRoom() {
 function startGame() { socket.emit('charades_start', { code: roomCode }); }
 function actorCorrect() { socket.emit('charades_correct', { code: roomCode }); }
 function actorPass() { socket.emit('charades_pass', { code: roomCode }); }
-function skipTurn() { socket.emit('charades_skip_turn', { code: roomCode }); }
+function nextRound() { socket.emit('charades_next_round', { code: roomCode }); }
 function playAgain() { socket.emit('charades_play_again', { code: roomCode }); }
 function goHome() { window.location.href = '/?lang=' + lang; }
 window.movePlayer = function(id, team) { socket.emit('charades_move_team', { code: roomCode, playerId: id, team: team }); };

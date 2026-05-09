@@ -170,9 +170,25 @@
       <div id="cat-pills" class="pills"></div>
       <label class="field-label" style="margin-top:12px;" id="lbl-difficulty">Difficulty</label>
       <div id="diff-pills" class="pills"></div>
+      <label class="field-label" style="margin-top:12px;" id="lbl-rounds">Rounds</label>
+      <div id="rounds-pills" class="pills"></div>
+      <label class="field-label" style="margin-top:12px;" id="lbl-timer">Timer</label>
+      <div id="timer-pills" class="pills"></div>
     </div>
     <div class="btn-row" style="margin-top:16px;">
       <button class="btn" id="start-btn" onclick="startGame()" style="display:none;"><span id="lbl-start">🎬 Start</span></button>
+    </div>
+
+    <!-- Rules in lobby -->
+    <div class="card" style="margin-top:16px;">
+      <h3 id="lbl-lobby-rules" style="color:var(--accent2);">How to play</h3>
+      <div class="rules-steps" id="lobby-rules-steps">
+        <div class="rule-step"><div class="step-num">1</div><p>Split into 2 teams</p></div>
+        <div class="rule-step"><div class="step-num">2</div><p>Each round, one player sees a secret word</p></div>
+        <div class="rule-step"><div class="step-num">3</div><p>Act it out — no sounds, no pointing!</p></div>
+        <div class="rule-step"><div class="step-num">4</div><p>Your team shouts guesses — tap ✅ when they get it</p></div>
+        <div class="rule-step"><div class="step-num">5</div><p>Each correct guess = 1 point for your team</p></div>
+      </div>
     </div>
   </div>
 
@@ -189,7 +205,8 @@
     <div class="word-card" id="word-card" style="display:none;"></div>
     <div class="actor-buttons" id="actor-buttons" style="display:none;"></div>
     <div class="wait-message" id="wait-message" style="display:none;"></div>
-    <button class="btn secondary" id="skip-turn-btn" onclick="skipTurn()" style="display:none;width:100%;margin-top:8px;">⏭️ Skip turn</button>
+    <button class="btn" id="next-round-btn" onclick="nextRound()" style="display:none;width:100%;margin-top:12px;">➡️ <span id="lbl-next-round">Next Round</span></button>
+    
   </div>
 
   <!-- ══ FINAL ══ -->

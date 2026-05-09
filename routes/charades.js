@@ -238,8 +238,7 @@ function startTurn(io, room) {
       room.state.lastResult = 'timeout';
       room.state.phase = 'turn_end';
       broadcastState(io, room);
-      // Auto-advance after 4 seconds
-      setTimeout(() => endRound(io, room), 4000);
+      // Host clicks "Next Round" to continue
     }
   }, room.settings.timerSecs * 1000);
 }
@@ -387,16 +386,13 @@ function register(io, socket) {
     broadcastState(io, room);
   });
   
-  // Host skips the turn entirely
-  socket.on('charades_skip_turn', ({ code }) => {
+  // Host clicks "Next Round" to advance
+  socket.on('charades_next_round', ({ code }) => {
     const room = rooms[code];
-    if (!room || socket.id !== room.hostId || room.state.phase !== 'acting') return;
-    clearTimeout(room.state.timer);
-    room.state.lastWord = room.state.word;
-    room.state.lastResult = 'timeout';
-    room.state.phase = 'turn_end';
-    broadcastState(io, room);
-    setTimeout(() => endRound(io, room), 4000);
+    if (!room || socket.id !== room.hostId) return;
+    if (room.state.phase === 'turn_end') {
+      endRound(io, room);
+    }
   });
   
   socket.on('charades_play_again', ({ code }) => {
@@ -441,7 +437,7 @@ function register(io, socket) {
             room.state.phase = 'turn_end';
             room.state.lastResult = 'timeout';
             broadcastState(io, room);
-            setTimeout(() => endRound(io, room), 3000);
+            // Host clicks Next Round to continue
           } else {
             broadcastState(io, room);
           }
