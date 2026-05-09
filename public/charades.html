@@ -86,23 +86,27 @@
 </head>
 <body>
 <div class="container">
-  <div class="nav-top">
-    <a href="/" class="logo">
-      <img src="/favicon.svg" alt="" class="logo-icon">
-      <span class="logo-text">panstwamiastagra.com</span>
-    </a>
-    <div class="burger-wrap" id="burger-wrap">
-      <button class="burger-btn" id="burger-btn" aria-label="Menu">☰</button>
+  <header>
+    <div class="logo-wrap">
+      <div class="logo-globe">
+        <svg viewBox="0 0 80 80" width="52" height="52" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="40" cy="40" r="34" fill="none" stroke="#ff6b35" stroke-width="2.5"/>
+          <text x="40" y="48" text-anchor="middle" fill="#ff6b35" font-size="32" font-weight="900" font-family="Nunito">🎭</text>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <h1 id="game-title">KALAMBURY</h1>
+        <p id="game-subtitle">Team game · 2–12 players</p>
+      </div>
     </div>
-  </div>
-  <div id="burger-menu" class="burger-menu" style="display:none;"></div>
+  </header>
   <div id="lang-bar" class="lang-bar"></div>
 
   <!-- ══ HOME ══ -->
   <div id="screen-home" class="screen active">
     <div style="display:flex;gap:10px;margin-bottom:16px;">
-      <a href="/" class="nav-home-btn" style="text-decoration:none;">🏠 Home</a>
-      <a href="/games" class="nav-home-btn" style="text-decoration:none;">🎮 All Games</a>
+      <a href="/" class="nav-home-btn" style="text-decoration:none;">🏠 <span class="lbl-nav-home-dup">Home</span></a>
+      <a href="/games" class="nav-home-btn" style="text-decoration:none;">🎮 <span id="lbl-nav-all-games">All Games</span></a>
     </div>
     <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,7vw,52px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;margin-bottom:4px;" id="lbl-game-title">Kalambury</h1>
     <p style="text-align:center;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:20px;" id="lbl-game-subtitle">Team game · 2–12 players</p>

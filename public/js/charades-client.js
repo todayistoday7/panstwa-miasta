@@ -737,11 +737,16 @@ function applyTranslations() {
     'lbl-timer':'timer','lbl-rounds':'rounds',
     'lbl-start':'startGame','lbl-final-title':'finalTitle',
     'lbl-play-again':'playAgain','lbl-go-home':'goHome',
+    'game-title':'gameTitle','game-subtitle':'gameSubtitle',
   };
   for (var id in map) {
     var el = document.getElementById(id);
     if (el && L[map[id]]) el.textContent = L[map[id]];
   }
+  // Nav labels
+  document.querySelectorAll('.lbl-nav-home-dup').forEach(function(el) { el.textContent = lang === 'pl' ? 'Strona główna' : lang === 'de' ? 'Startseite' : lang === 'sv' ? 'Hem' : 'Home'; });
+  var allGames = document.getElementById('lbl-nav-all-games');
+  if (allGames) allGames.textContent = lang === 'pl' ? 'Wszystkie gry' : lang === 'de' ? 'Alle Spiele' : lang === 'sv' ? 'Alla spel' : 'All Games';
   var n1 = document.getElementById('create-name'); if (n1) n1.placeholder = L.enterName;
   var n2 = document.getElementById('join-name'); if (n2) n2.placeholder = L.enterName;
   var c1 = document.getElementById('join-code'); if (c1) c1.placeholder = L.enterCode;
