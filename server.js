@@ -20,6 +20,7 @@ const bingo      = require('./routes/bingo');
 const drawing    = require('./routes/drawing');
 const whoami     = require('./routes/whoami');
 const memory     = require('./routes/memory');
+const charades   = require('./routes/charades');
 const lobbyHub   = require('./routes/lobby');
 const admin      = require('./routes/admin');
 
@@ -182,6 +183,8 @@ app.get('/memory', (req, res) => {
   res.redirect(301, map[lang] || '/find-pairs-online');
 });
 
+app.get('/charades', (req, res) => res.sendFile(path.join(__dirname, 'public/charades.html')));
+
 // ── Blog Routes ───────────────────────────────────────────────
 app.get('/blog',                                   (req,res) => res.sendFile(path.join(__dirname,'public/blog/index.html')));
 app.get('/blog/pl',                                (req,res) => res.sendFile(path.join(__dirname,'public/blog/pl/index.html')));
@@ -323,6 +326,7 @@ admin.init(() => {
   try { rooms.hangman  = require('./routes/hangman').getHangRooms   ? require('./routes/hangman').getHangRooms()   : []; } catch(e){ rooms.hangman=[]; }
   try { rooms.twotruth = require('./routes/twotruth').getTTRooms    ? require('./routes/twotruth').getTTRooms()    : []; } catch(e){ rooms.twotruth=[]; }
   try { rooms.memory   = require('./routes/memory').getMemRooms     ? require('./routes/memory').getMemRooms()     : []; } catch(e){ rooms.memory=[]; }
+  try { rooms.charades = require('./routes/charades').getCharadesRooms ? require('./routes/charades').getCharadesRooms() : []; } catch(e){ rooms.charades=[]; }
   return rooms;
 });
 app.use('/admin', admin.router);
@@ -455,6 +459,7 @@ io.on('connection', (socket) => {
   drawing.register(io, socket);
   whoami.register(io, socket);
   memory.register(io, socket);
+  charades.register(io, socket);
 
   // ── Global nudge system ──
   socket.on('nudge', ({ code, name }) => {

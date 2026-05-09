@@ -455,6 +455,8 @@ function renderLobby(data) {
 function renderPlaying(data) {
   const activePlayer = data.players[data.currentIdx];
   const isActive = activePlayer && activePlayer.id === myId;
+  // Refresh host status from server data
+  if (data.hostId) isHost = data.hostId === myId;
   _votedThisTurn = false;
 
   // Turn banner
