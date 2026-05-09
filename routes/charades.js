@@ -166,38 +166,42 @@ function getTeamPlayers(room, team) {
 }
 
 function broadcastState(io, room) {
-  const connected = getConnected(room);
   const actor = room.state.actorId ? room.players.find(p => p.id === room.state.actorId) : null;
   
-  connected.forEach(p => {
-    const isActor = p.id === room.state.actorId;
-    io.to(p.id).emit('charades_state', {
-      phase: room.state.phase,
-      players: room.players.filter(pl => pl.connected).map(pl => ({
-        id: pl.id, name: pl.name, team: pl.team, connected: pl.connected,
-        isHost: pl.id === room.hostId,
-      })),
-      hostId: room.hostId,
-      teams: {
-        red: { score: room.state.scores.red, players: getTeamPlayers(room, 'red').map(pl => pl.name) },
-        blue: { score: room.state.scores.blue, players: getTeamPlayers(room, 'blue').map(pl => pl.name) },
-      },
-      actorId: room.state.actorId,
-      actorName: actor ? actor.name : '',
-      actorTeam: actor ? actor.team : null,
-      word: isActor ? room.state.word : null,
-      round: room.state.round,
-      totalRounds: room.settings.rounds,
-      timerEnd: room.state.timerEnd,
-      timerSecs: room.settings.timerSecs,
-      wordsThisTurn: room.state.wordsThisTurn || 0,
-      passesLeft: room.state.passesLeft,
-      lastWord: room.state.lastWord,
-      lastResult: room.state.lastResult, // 'correct', 'passed', 'timeout'
-      settings: room.settings,
-      isPublic: room.isPublic,
-    });
-  });
+  const baseState = {
+    phase: room.state.phase,
+    players: room.players.filter(pl => pl.connected).map(pl => ({
+      id: pl.id, name: pl.name, team: pl.team, connected: pl.connected,
+      isHost: pl.id === room.hostId,
+    })),
+    hostId: room.hostId,
+    teams: {
+      red: { score: room.state.scores.red, players: getTeamPlayers(room, 'red').map(pl => pl.name) },
+      blue: { score: room.state.scores.blue, players: getTeamPlayers(room, 'blue').map(pl => pl.name) },
+    },
+    actorId: room.state.actorId,
+    actorName: actor ? actor.name : '',
+    actorTeam: actor ? actor.team : null,
+    word: null,
+    round: room.state.round,
+    totalRounds: room.settings.rounds,
+    timerEnd: room.state.timerEnd,
+    timerSecs: room.settings.timerSecs,
+    wordsThisTurn: room.state.wordsThisTurn || 0,
+    passesLeft: room.state.passesLeft,
+    lastWord: room.state.lastWord,
+    lastResult: room.state.lastResult,
+    settings: room.settings,
+    isPublic: room.isPublic,
+  };
+
+  // Broadcast to everyone in the room (like Forbidden Words does)
+  io.to(room.code).emit('charades_state', baseState);
+
+  // Send the word privately to the actor only
+  if (room.state.actorId && room.state.word) {
+    io.to(room.state.actorId).emit('charades_state', { ...baseState, word: room.state.word });
+  }
 }
 
 function pickNextActor(room) {
