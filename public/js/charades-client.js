@@ -427,9 +427,9 @@ function applyState(data) {
 }
 
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(function(s) { s.style.display = 'none'; });
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); s.style.display = 'none'; });
   var el = document.getElementById(id);
-  if (el) el.style.display = '';
+  if (el) { el.classList.add('active'); el.style.display = 'block'; }
 }
 
 // ── LOBBY ──
