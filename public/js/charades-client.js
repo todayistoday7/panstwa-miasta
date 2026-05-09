@@ -280,7 +280,7 @@ const LANGS = {
     needTeams: 'Każda drużyna potrzebuje min. 1 gracza',
     players: 'Gracze',
     nudge: '👋 Szturchnij', nudgeSent: '✓ Wysłano!',
-    shareText: 'Dołącz do Kalamburów! 🎭\nKod: {code}\n{url}',
+    shareText: 'Zagraj ze mną w Kalambury! 🎭\nKod: {code}\n{url}',
     skipTurn: '⏭️ Pomiń turę',
     waitForTeam: 'Drużyna przeciwna pokazuje...',
   },
@@ -378,9 +378,22 @@ let roomCode = '', myName = '', myId = null;
 // ── Socket events ──
 socket.on('connect', () => {
   myId = socket.id;
+  // Auto-join from URL parameter (shared link)
+  const params = new URLSearchParams(window.location.search);
+  const joinCode = params.get('join');
+  if (joinCode && !roomCode) {
+    // Pre-fill the join code and show join section
+    var codeInput = document.getElementById('join-code');
+    if (codeInput) codeInput.value = joinCode;
+    return; // Don't auto-rejoin if we have a join code
+  }
+  // Auto-rejoin from session (only if no join code)
   const sc = sessionStorage.getItem('charades_code');
   const sn = sessionStorage.getItem('charades_name');
-  if (sc && sn && !roomCode) { myName = sn; socket.emit('charades_rejoin', { code: sc, name: sn }); }
+  if (sc && sn && !roomCode) {
+    myName = sn;
+    socket.emit('charades_rejoin', { code: sc, name: sn });
+  }
 });
 
 socket.on('charades_room_created', ({ code }) => {
@@ -406,6 +419,11 @@ socket.on('charades_room_joined', ({ code }) => {
 });
 
 socket.on('charades_error', ({ message }) => {
+  // Clear stale session if room no longer exists
+  if (message === 'Room not found') {
+    sessionStorage.removeItem('charades_code');
+    sessionStorage.removeItem('charades_name');
+  }
   var el = document.getElementById('home-error');
   if (el) { el.textContent = message; el.style.display = 'block'; setTimeout(function(){ el.style.display = 'none'; }, 3500); }
 });
@@ -780,7 +798,7 @@ function applyTranslations() {
 
 // Share
 function charadesShareRoom() {
-  var url = window.location.origin + '/charades?lang=' + lang;
+  var url = window.location.origin + '/charades?lang=' + lang + '&join=' + roomCode;
   var text = L.shareText.replace('{code}', roomCode).replace('{url}', url);
   if (navigator.share) {
     navigator.share({ title: L.gameTitle, text: text }).catch(function(){});
