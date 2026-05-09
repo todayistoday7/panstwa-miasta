@@ -384,12 +384,15 @@ socket.on('connect', () => {
 });
 
 socket.on('charades_room_created', ({ code }) => {
+  console.log('[CHARADES] Room created:', code);
   window._amHost = true;
   roomCode = code;
   sessionStorage.setItem('charades_code', code);
   sessionStorage.setItem('charades_name', myName);
   document.getElementById('room-code-display').textContent = code;
   showScreen('screen-lobby');
+  // Scroll to top so lobby is visible above burger nav
+  window.scrollTo(0, 0);
 });
 
 socket.on('charades_room_joined', ({ code }) => {
@@ -399,6 +402,7 @@ socket.on('charades_room_joined', ({ code }) => {
   sessionStorage.setItem('charades_name', myName);
   document.getElementById('room-code-display').textContent = code;
   showScreen('screen-lobby');
+  window.scrollTo(0, 0);
 });
 
 socket.on('charades_error', ({ message }) => {
@@ -407,6 +411,7 @@ socket.on('charades_error', ({ message }) => {
 });
 
 socket.on('charades_state', function(data) {
+  console.log('[CHARADES] State received:', data.phase, 'players:', data.players ? data.players.length : 0);
   if (data.hostId) window._amHost = data.hostId === myId;
   applyState(data);
 });
