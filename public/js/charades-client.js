@@ -733,6 +733,7 @@ function applyTranslations() {
   var map = {
     'lbl-game-title':'gameTitle','lbl-game-subtitle':'gameSubtitle',
     'lbl-create-room':'createRoom','lbl-join-room':'joinRoom',
+    'lbl-create-btn':'createRoom','lbl-join-btn':'joinRoom',
     'lbl-settings':'settings','lbl-category':'category','lbl-difficulty':'difficulty',
     'lbl-timer':'timer','lbl-rounds':'rounds',
     'lbl-start':'startGame','lbl-final-title':'finalTitle',
@@ -743,17 +744,37 @@ function applyTranslations() {
     var el = document.getElementById(id);
     if (el && L[map[id]]) el.textContent = L[map[id]];
   }
+  // Field labels
+  var yourNameLabel = lang === 'pl' ? 'Twoje imię' : lang === 'de' ? 'Dein Name' : lang === 'sv' ? 'Ditt namn' : 'Your name';
+  var roomCodeLabel = lang === 'pl' ? 'Kod pokoju' : lang === 'de' ? 'Raumcode' : lang === 'sv' ? 'Rumskod' : 'Room code';
+  var yn1 = document.getElementById('lbl-your-name-1'); if (yn1) yn1.textContent = yourNameLabel;
+  var yn2 = document.getElementById('lbl-your-name-2'); if (yn2) yn2.textContent = yourNameLabel;
+  var rc = document.getElementById('lbl-room-code'); if (rc) rc.textContent = roomCodeLabel;
   // Nav labels
   document.querySelectorAll('.lbl-nav-home-dup').forEach(function(el) { el.textContent = lang === 'pl' ? 'Strona główna' : lang === 'de' ? 'Startseite' : lang === 'sv' ? 'Hem' : 'Home'; });
   var allGames = document.getElementById('lbl-nav-all-games');
   if (allGames) allGames.textContent = lang === 'pl' ? 'Wszystkie gry' : lang === 'de' ? 'Alle Spiele' : lang === 'sv' ? 'Alla spel' : 'All Games';
+  // Input placeholders
   var n1 = document.getElementById('create-name'); if (n1) n1.placeholder = L.enterName;
   var n2 = document.getElementById('join-name'); if (n2) n2.placeholder = L.enterName;
   var c1 = document.getElementById('join-code'); if (c1) c1.placeholder = L.enterCode;
+  // How to play
+  var howToTitle = document.getElementById('lbl-how-to-play');
+  if (howToTitle) howToTitle.textContent = lang === 'pl' ? 'Jak grać' : lang === 'de' ? 'Spielanleitung' : lang === 'sv' ? 'Hur man spelar' : 'How to play';
+  var steps = document.querySelectorAll('.rule-step p');
+  var stepTexts = {
+    pl: ['Podzielcie się na 2 drużyny','Każdą rundę jeden gracz widzi tajne hasło','Pokaż je gestem — bez słów, bez wskazywania!','Twoja drużyna krzyczy odpowiedzi — kliknij ✅ gdy zgadną','Każde prawidłowe hasło = 1 punkt dla drużyny'],
+    en: ['Split into 2 teams','Each round, one player sees a secret word','Act it out — no sounds, no pointing!','Your team shouts guesses — tap ✅ when they get it','Each correct guess = 1 point for your team'],
+    de: ['Teilt euch in 2 Teams auf','Jede Runde sieht ein Spieler ein geheimes Wort','Stelle es dar — keine Geräusche, kein Zeigen!','Dein Team ruft Antworten — tippe ✅ wenn sie es haben','Jede richtige Antwort = 1 Punkt fürs Team'],
+    sv: ['Dela upp i 2 lag','Varje runda ser en spelare ett hemligt ord','Visa det — inga ljud, inget pekande!','Ditt lag ropar gissningar — tryck ✅ när de gissar rätt','Varje rätt gissning = 1 poäng för laget'],
+  };
+  if (steps.length === 5 && stepTexts[lang]) {
+    steps.forEach(function(el, i) { el.textContent = stepTexts[lang][i]; });
+  }
 }
 
 // Share
-function shareRoom() {
+function charadesShareRoom() {
   var url = window.location.origin + '/charades?lang=' + lang;
   var text = L.shareText.replace('{code}', roomCode).replace('{url}', url);
   if (navigator.share) {
