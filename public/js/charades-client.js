@@ -907,11 +907,20 @@ window.movePlayer = function(id, team) { socket.emit('charades_move_team', { cod
 
 // ── Language ──
 function setUiLang(code) {
+  // If we have SEO language URLs (injected by seo-inject), redirect to the correct page
+  if (window._seoLangUrls && window._seoLangUrls[code]) {
+    window.location.href = window._seoLangUrls[code];
+    return;
+  }
+  // Fallback for non-SEO pages (e.g. /charades?lang=pl)
+  var langUrls = { pl: '/kalambury', en: '/charades-online', de: '/scharade', sv: '/charader' };
+  if (langUrls[code]) {
+    window.location.href = langUrls[code];
+    return;
+  }
   lang = code; L = LANGS[code];
   document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.lang === code); });
   applyTranslations();
-  socket.emit('charades_update_settings', { code: roomCode, settings: { lang: code } });
-  history.replaceState(null, '', window.location.pathname + '?lang=' + code);
   if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
 }
 function applyTranslations() {
