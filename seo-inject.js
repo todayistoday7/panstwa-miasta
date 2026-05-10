@@ -43,6 +43,7 @@ const GAME_FILES = {
   memory: 'public/memory.html',
   bingo: 'public/bingo.html',
   drawing: 'public/drawing.html',
+  charades: 'public/charades.html',
 };
 
 function buildSeoPage(gameName, langCode) {

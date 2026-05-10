@@ -194,6 +194,7 @@
       drawing:   { title: 'Szkicuj i Zgaduj', desc: 'Narysuj hasło, odgadnij rysunek — i patrz jak w kilku rundach zmienia się nie do poznania! Bez rywalizacji, za to z dużą dawką humoru. Świetna gra na imprezę i spotkania firmowe.', players: '4-10 graczy', tag1: 'Ice breaker', age: 'od 8 lat', play: '🎮 Zagraj teraz', coming: 'WKRÓTCE' },
       whoami:    { title: 'Kim Jestem?', desc: 'Klasyczna gra towarzyska online! Odgadnij swoją tajną postać zadając pytania tak/nie. Idealna na imprezy, spotkania rodzinne i team building.', players: '2-16 graczy', tag1: 'Ice breaker', age: 'od 8 lat', play: '🎮 Zagraj teraz', coming: 'WKRÓTCE' },
       memory:    { title: 'Znajdź Pary', desc: 'Klasyczna gra karciana online! Odkrywaj karty i szukaj pasujących par. 6 motywów emoji, 3 rozmiary planszy. Idealna na wieczory z rodziną i spotkania ze znajomymi.', players: '2-6 graczy', tag1: 'Rodzinna', age: 'od 4 lat', play: '🎮 Zagraj teraz', coming: 'WKRÓTCE' },
+      charades:  { title: 'Kalambury', desc: 'Klasyczne kalambury online! Pokazuj hasła gestem, zgadujcie w drużynach. Tryb dla dzieci z emoji. Idealna gra na imprezę, wieczór z rodziną i integrację.', players: '2-12 graczy', tag1: 'Impreza', age: 'od 4 lat', play: '🎮 Zagraj teraz', coming: 'WKRÓTCE' },
     },
     en: {
       pm:        { title: 'Countries & Cities', desc: 'Fun ice breaker game for groups! Fill in countries, cities, animals and more starting with a random letter — faster than everyone else!', players: '2-12 players', tag1: 'Ice breaker', age: 'ages 7+', play: '🎮 Play now', coming: 'COMING SOON' },
@@ -264,7 +265,7 @@
 
   // ─── FILTER DATA (must be before applyLang) ───
   var FILTER_LABELS = {"pl": {"all": "Wszystkie", "family": "Rodzinne", "kids4": "Dzieci 4+", "party": "Impreza", "classroom": "Szko\u0142a", "team-event": "Firmowe", "ice-breaker": "Na start"}, "en": {"all": "All", "family": "Family", "kids4": "Kids 4+", "party": "Party", "classroom": "Classroom", "team-event": "Team event", "ice-breaker": "Ice breaker"}, "de": {"all": "Alle", "family": "Familie", "kids4": "Kinder 4+", "party": "Party", "classroom": "Unterricht", "team-event": "Teambuilding", "ice-breaker": "Eisbrecher"}, "sv": {"all": "Alla", "family": "Familj", "kids4": "Barn 4+", "party": "Fest", "classroom": "Skola", "team-event": "Teambuilding", "ice-breaker": "Isbrytare"}};
-  var GAME_TAGS = {"pm": "family classroom", "taboo": "party team-event", "twotruth": "party team-event ice-breaker", "dots": "family kids4 classroom", "hangman": "family classroom", "bingo": "team-event", "drawing": "party team-event ice-breaker", "whoami": "family party classroom ice-breaker", "memory": "family kids4 classroom"};
+  var GAME_TAGS = {"pm": "family classroom", "taboo": "party team-event", "twotruth": "party team-event ice-breaker", "dots": "family kids4 classroom", "hangman": "family classroom", "bingo": "team-event", "drawing": "party team-event ice-breaker", "whoami": "family party classroom ice-breaker", "memory": "family kids4 classroom", "charades": "party family kids4 team-event ice-breaker"};
   var activeFilter = 'all';
 
   function renderCards(l) {

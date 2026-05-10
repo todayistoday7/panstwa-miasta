@@ -1,0 +1,22 @@
+{
+  "lang": "pl",
+  "htmlLang": "pl",
+  "title": "Kalambury Online — Darmowa Gra Drużynowa | panstwamiastagra.com",
+  "description": "Zagraj w Kalambury online za darmo! Klasyczna gra drużynowa — pokazuj hasła gestem, zgadujcie w drużynach. Bez rejestracji, 2-12 graczy.",
+  "canonical": "https://panstwamiastagra.com/kalambury",
+  "ogUrl": "https://panstwamiastagra.com/kalambury",
+  "hreflang": {
+    "pl": "https://panstwamiastagra.com/kalambury",
+    "en": "https://panstwamiastagra.com/charades-online",
+    "de": "https://panstwamiastagra.com/scharade",
+    "sv": "https://panstwamiastagra.com/charader",
+    "x-default": "https://panstwamiastagra.com/charades-online"
+  },
+  "seoLangUrls": {
+    "pl": "/kalambury",
+    "en": "/charades-online",
+    "de": "/scharade",
+    "sv": "/charader"
+  },
+  "bottomContent": "\n<div style=\"margin-top:32px;\">\n    <h1 style=\"font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,48px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 10px;\">Kalambury Online</h1>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\"><strong style=\"color:var(--text);\">Kalambury</strong> to klasyczna gra towarzyska, w której pokazujesz hasła gestem — bez słów, bez dźwięków! Teraz możesz grać online z rodziną, znajomymi lub współpracownikami. Podzielcie się na dwie drużyny i rywalizujcie o miano najlepszych aktorów!</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Gra idealna na <strong style=\"color:var(--text);\">wieczór z rodziną</strong>, imprezę ze znajomymi, integrację firmową lub zabawę z dziećmi. Tryb dla dzieci zawiera proste hasła z emoji — nawet najmłodsi mogą grać!</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;\">7 kategorii, 3 poziomy trudności, gra dla 2-12 osób. Działa na telefonie, tablecie i komputerze — wystarczy link.</p>\n</div>\n"
+}

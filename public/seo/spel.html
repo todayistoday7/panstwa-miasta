@@ -226,6 +226,7 @@
       bingo:     { title: 'Företagsbingo', desc: 'Spela under tråkiga möten! Markera företagsfraser när du hör dem — den som fyller en rad först vinner. Perfekt för kontorsmöten och teamevents!', players: '2-50 spelare', tag1: 'Teambuilding', age: 'från 16 år', play: '🎮 Spela nu', coming: 'SNART' },
       drawing:   { title: 'Skissa & Gissa', desc: 'Rita ord, gissa teckningar — och se hur meddelanden blir roligt förvrängda! Inga poäng, ren kul och skratt. Perfekt för fester och teambuilding.', players: '4-10 spelare', tag1: 'Isbrytare', age: 'från 8 år', play: '🎮 Spela nu', coming: 'SNART' },
       memory:    { title: 'Memo-spel', desc: 'Klassiskt kortspel online! Vänd kort och hitta matchande par. 6 emoji-teman, 3 spelplansstorlekar. Perfekt för familjespelkvällar och vänner.', players: '2-6 spelare', tag1: 'Familj', age: 'från 4 år', play: '🎮 Spela nu', coming: 'SNART' },
+      charades:  { title: 'Charader', desc: 'Klassiska charader online! Visa ord med gester, gissa i lag. Barnläge med emoji-ledtrådar. Perfekt för fester, familjespelkvällar och teambuilding.', players: '2-12 spelare', tag1: 'Fest', age: 'från 4 år', play: '🎮 Spela nu', coming: 'SNART' },
       whoami:    { title: 'Vem är jag?', desc: 'Klassiskt sällskapsspel online! Lista ut din hemliga karaktär genom att ställa ja/nej-frågor. Perfekt för fester, familjekväller och teambuilding.', players: '2-16 spelare', tag1: 'Isbrytare', age: 'från 8 år', play: '🎮 Spela nu', coming: 'SNART' },
     },
   };
@@ -264,7 +265,7 @@
 
   // ─── FILTER DATA (must be before applyLang) ───
   var FILTER_LABELS = {"pl": {"all": "Wszystkie", "family": "Rodzinne", "kids4": "Dzieci 4+", "party": "Impreza", "classroom": "Szko\u0142a", "team-event": "Firmowe", "ice-breaker": "Na start"}, "en": {"all": "All", "family": "Family", "kids4": "Kids 4+", "party": "Party", "classroom": "Classroom", "team-event": "Team event", "ice-breaker": "Ice breaker"}, "de": {"all": "Alle", "family": "Familie", "kids4": "Kinder 4+", "party": "Party", "classroom": "Unterricht", "team-event": "Teambuilding", "ice-breaker": "Eisbrecher"}, "sv": {"all": "Alla", "family": "Familj", "kids4": "Barn 4+", "party": "Fest", "classroom": "Skola", "team-event": "Teambuilding", "ice-breaker": "Isbrytare"}};
-  var GAME_TAGS = {"pm": "family classroom", "taboo": "party team-event", "twotruth": "party team-event ice-breaker", "dots": "family kids4 classroom", "hangman": "family classroom", "bingo": "team-event", "drawing": "party team-event ice-breaker", "whoami": "family party classroom ice-breaker", "memory": "family kids4 classroom"};
+  var GAME_TAGS = {"pm": "family classroom", "taboo": "party team-event", "twotruth": "party team-event ice-breaker", "dots": "family kids4 classroom", "hangman": "family classroom", "bingo": "team-event", "drawing": "party team-event ice-breaker", "whoami": "family party classroom ice-breaker", "memory": "family kids4 classroom", "charades": "party family kids4 team-event ice-breaker"};
   var activeFilter = 'all';
 
   function renderCards(l) {
@@ -543,7 +544,7 @@
     var t = titles[currentLang] || titles['en'];
     if (titleEl) titleEl.textContent = t.label;
     var bases = {
-      pl: { pm:'/jak-grac', tabu:'/jak-grac/tabu', hang:'/jak-grac/wisielec', dots:'/jak-grac/kropki-i-kreski', tt:'/jak-grac/dwie-prawdy-jedno-klamstwo', drawing:'/jak-grac/szkicuj-i-zgaduj', memory:'/jak-grac/znajdz-pary' },
+      pl: { pm:'/jak-grac', tabu:'/jak-grac/tabu', hang:'/jak-grac/wisielec', dots:'/jak-grac/kropki-i-kreski', tt:'/jak-grac/dwie-prawdy-jedno-klamstwo', drawing:'/jak-grac/szkicuj-i-zgaduj', memory:'/jak-grac/znajdz-pary' }, charades:'/charader',
       en: { pm:'/how-to-play', tabu:'/how-to-play/taboo', hang:'/how-to-play/hangman', dots:'/how-to-play/dots-and-boxes', tt:'/how-to-play/two-truths-one-lie', drawing:'/how-to-play/sketch-and-guess', memory:'/how-to-play/find-pairs' },
       de: { pm:'/wie-man-spielt', tabu:'/wie-man-spielt/verbotene-woerter', hang:'/wie-man-spielt/galgenmaennchen', dots:'/wie-man-spielt/punkte-und-linien', tt:'/wie-man-spielt/zwei-wahrheiten-eine-luege', drawing:'/wie-man-spielt/zeichnen-und-raten', memory:'/wie-man-spielt/memo-spiel' },
       sv: { pm:'/hur-man-spelar', tabu:'/hur-man-spelar/forbjudna-ord', hang:'/hur-man-spelar/hanga-gubbe', dots:'/hur-man-spelar/punkter-och-linjer', tt:'/hur-man-spelar/tva-sanningar-en-logn', drawing:'/hur-man-spelar/skissa-och-gissa', memory:'/hur-man-spelar/memo-spel' },

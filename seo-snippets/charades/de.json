@@ -1,0 +1,22 @@
+{
+  "lang": "de",
+  "htmlLang": "de",
+  "title": "Scharade Online — Kostenloses Teamspiel | panstwamiastagra.com",
+  "description": "Scharade online spielen — kostenlos! Klassisches Teamspiel — Begriffe pantomimisch darstellen. Ohne Anmeldung, 2-12 Spieler.",
+  "canonical": "https://panstwamiastagra.com/scharade",
+  "ogUrl": "https://panstwamiastagra.com/scharade",
+  "hreflang": {
+    "pl": "https://panstwamiastagra.com/kalambury",
+    "en": "https://panstwamiastagra.com/charades-online",
+    "de": "https://panstwamiastagra.com/scharade",
+    "sv": "https://panstwamiastagra.com/charader",
+    "x-default": "https://panstwamiastagra.com/charades-online"
+  },
+  "seoLangUrls": {
+    "pl": "/kalambury",
+    "en": "/charades-online",
+    "de": "/scharade",
+    "sv": "/charader"
+  },
+  "bottomContent": "\n<div style=\"margin-top:32px;\">\n    <h1 style=\"font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,48px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 10px;\">Scharade Online</h1>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\"><strong style=\"color:var(--text);\">Scharade</strong> ist das klassische Partyspiel — stelle Begriffe pantomimisch dar, ohne zu sprechen oder zu zeigen! Jetzt online mit Freunden, Familie oder Kollegen spielen. Teilt euch in zwei Teams auf und tretet gegeneinander an!</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Perfekt für <strong style=\"color:var(--text);\">Familienabende</strong>, Partys, Teambuilding oder zum Spielen mit Kindern. Der Kindermodus enthält einfache Begriffe mit Emoji-Hinweisen!</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;\">7 Kategorien, 3 Schwierigkeitsstufen, 2-12 Spieler. Funktioniert auf Handy, Tablet und Computer.</p>\n</div>\n"
+}

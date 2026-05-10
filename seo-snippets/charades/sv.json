@@ -1,0 +1,22 @@
+{
+  "lang": "sv",
+  "htmlLang": "sv",
+  "title": "Charader Online — Gratis Lagspel | panstwamiastagra.com",
+  "description": "Spela Charader online gratis! Klassiskt lagspel — visa ord med gester, gissa i lag. Utan registrering, 2-12 spelare.",
+  "canonical": "https://panstwamiastagra.com/charader",
+  "ogUrl": "https://panstwamiastagra.com/charader",
+  "hreflang": {
+    "pl": "https://panstwamiastagra.com/kalambury",
+    "en": "https://panstwamiastagra.com/charades-online",
+    "de": "https://panstwamiastagra.com/scharade",
+    "sv": "https://panstwamiastagra.com/charader",
+    "x-default": "https://panstwamiastagra.com/charades-online"
+  },
+  "seoLangUrls": {
+    "pl": "/kalambury",
+    "en": "/charades-online",
+    "de": "/scharade",
+    "sv": "/charader"
+  },
+  "bottomContent": "\n<div style=\"margin-top:32px;\">\n    <h1 style=\"font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,48px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 10px;\">Charader Online</h1>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\"><strong style=\"color:var(--text);\">Charader</strong> är det klassiska sällskapsspelet där du visar ord med gester — inga ljud, inget pekande! Spela online med vänner, familj eller kollegor. Dela upp i två lag och tävla!</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Perfekt för <strong style=\"color:var(--text);\">familjespelkväll</strong>, fester, teambuilding eller att spela med barn. Barnläge har enkla ord med emoji-ledtrådar!</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;\">7 kategorier, 3 svårighetsgrader, 2-12 spelare. Fungerar på mobil, surfplatta och dator.</p>\n</div>\n"
+}

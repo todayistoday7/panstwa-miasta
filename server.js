@@ -183,7 +183,15 @@ app.get('/memory', (req, res) => {
   res.redirect(301, map[lang] || '/find-pairs-online');
 });
 
-app.get('/charades', (req, res) => res.sendFile(path.join(__dirname, 'public/charades.html')));
+app.get('/charades', (req, res) => {
+  const lang = req.query.lang || 'en';
+  const map = { pl:'/kalambury', de:'/scharade', sv:'/charader' };
+  res.redirect(301, map[lang] || '/charades-online');
+});
+app.get('/kalambury',       seoInject('charades', 'pl'));
+app.get('/charades-online', seoInject('charades', 'en'));
+app.get('/scharade',        seoInject('charades', 'de'));
+app.get('/charader',        seoInject('charades', 'sv'));
 
 // ── Blog Routes ───────────────────────────────────────────────
 app.get('/blog',                                   (req,res) => res.sendFile(path.join(__dirname,'public/blog/index.html')));
