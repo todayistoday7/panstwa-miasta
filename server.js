@@ -25,6 +25,7 @@ const lobbyHub   = require('./routes/lobby');
 const admin      = require('./routes/admin');
 
 const app = express();
+const seoInject = require('./seo-inject');
 app.use(compression());
 try {
   app.use(require('cookie-parser')());
@@ -106,7 +107,6 @@ app.get('/bingo', (req, res) => {
 });
 
 // ── SEO Landing Pages — Sketch & Guess ──────────────────────────
-const seoInject = require('./seo-inject');
 app.get('/szkicuj-i-zgaduj',   seoInject('drawing', 'pl'));
 app.get('/sketch-and-guess',   seoInject('drawing', 'en'));
 app.get('/zeichnen-und-raten', seoInject('drawing', 'de'));

@@ -551,6 +551,11 @@ socket.on('mem_state', function(state) {
 
 // ─── LANG BAR ────────────────────────────────────────────────────
 function setUiLang(code) {
+  // Redirect to SEO page if available (Option B)
+  if (window._seoLangUrls && window._seoLangUrls[code]) {
+    window.location.href = window._seoLangUrls[code];
+    return;
+  }
   lang = code; L = LANGS[code] || LANGS['en'];
   document.querySelectorAll('.lang-btn').forEach(function(b) {
     b.classList.toggle('active', b.textContent === LANGS[code].name);

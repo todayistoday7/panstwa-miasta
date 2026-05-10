@@ -716,6 +716,11 @@ function buildLangBar() {
 }
 
 function setUiLang(code) {
+  // Redirect to SEO page if available (Option B)
+  if (window._seoLangUrls && window._seoLangUrls[code]) {
+    window.location.href = window._seoLangUrls[code];
+    return;
+  }
   lang = code; L = LANGS_TABOO[code] || LANGS_TABOO['en'];
   document.querySelectorAll('.lang-btn').forEach(b =>
     b.classList.toggle('active', b.textContent === LANGS_TABOO[code].name));

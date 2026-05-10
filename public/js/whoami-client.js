@@ -952,6 +952,11 @@ function doGoHome() { closeConfirm(); goHome(); }
 
 // ── Language ──────────────────────────────────────────────────────
 function setUiLang(code) {
+  // Redirect to SEO page if available (Option B)
+  if (window._seoLangUrls && window._seoLangUrls[code]) {
+    window.location.href = window._seoLangUrls[code];
+    return;
+  }
   lang = code; L = LANGS[code] || LANGS['pl'];
   document.querySelectorAll('.lang-btn').forEach(b =>
     b.classList.toggle('active', b.textContent === LANGS[code].name));
