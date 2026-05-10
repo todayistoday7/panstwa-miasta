@@ -76,15 +76,13 @@ function emitTTState(io, room) {
     totalRounds:  getConnected(room).length, // one round per player
   };
 
-  // Active player sees lieIndex during writing phase
-  room.players.forEach(p => {
-    if (!p.connected) return;
-    const payload = { ...base };
-    if (p.id === base.activeId && room.state.phase === 'writing') {
-      payload.lieIndex = room.state.lieIndex; // remind them which they picked
-    }
-    io.to(p.id).emit('tt_state', payload);
-  });
+  // Broadcast base state to everyone
+  io.to(room.code).emit('tt_state', base);
+
+  // Send lieIndex privately to active player during writing phase
+  if (room.state.phase === 'writing' && base.activeId) {
+    io.to(base.activeId).emit('tt_state', { ...base, lieIndex: room.state.lieIndex });
+  }
 }
 
 function promoteTTHost(room) {

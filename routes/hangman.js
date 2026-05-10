@@ -104,14 +104,18 @@ function emitHangState(io, room) {
 
   room.players.forEach(p => {
     if (!p.connected) return;
-    const payload = { ...base };
-    // Only the picker knows the actual word (during picking/guessing phases)
+  });
+
+  // Broadcast base state to everyone (word hidden)
+  const basePayload = { ...base, word: null };
+  io.to(room.code).emit('hang_state', basePayload);
+
+  // Send word privately to players who should see it
+  room.players.forEach(p => {
+    if (!p.connected) return;
     if (p.id === (picker && picker.id) || room.state.phase === 'roundEnd' || room.state.phase === 'final') {
-      payload.word = room.state.word;
-    } else {
-      payload.word = null;
+      io.to(p.id).emit('hang_state', { ...base, word: room.state.word });
     }
-    io.to(p.id).emit('hang_state', payload);
   });
 }
 

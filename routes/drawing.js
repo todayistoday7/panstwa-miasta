@@ -55,11 +55,17 @@ function getConnected(room) {
 
 function emitState(io, room) {
   const connected = getConnected(room);
-  // Send personalised state to each player
-  connected.forEach(p => {
-    const state = buildStateForPlayer(room, p.id);
-    io.to(p.id).emit('drawing_state', state);
-  });
+  if (room.state.phase === 'lobby' || room.state.phase === 'final' || room.state.phase === 'reveal') {
+    // These phases have the same state for everyone — use room broadcast
+    const state = buildStateForPlayer(room, connected[0] ? connected[0].id : null);
+    io.to(room.code).emit('drawing_state', state);
+  } else {
+    // Playing phase — each player gets different content
+    connected.forEach(p => {
+      const state = buildStateForPlayer(room, p.id);
+      io.to(p.id).emit('drawing_state', state);
+    });
+  }
 }
 
 function buildStateForPlayer(room, playerId) {

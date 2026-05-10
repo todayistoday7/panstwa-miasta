@@ -57,7 +57,10 @@ function emitBingoState(io, room) {
       marked:    p.marked || [],
     })),
   };
-  // Each player gets their own card — emit individually
+  // Broadcast base state to everyone
+  io.to(room.code).emit('bingo_state', { ...state, myCard: null, myMarked: null });
+
+  // Send each player their own card privately
   room.players.forEach(p => {
     io.to(p.id).emit('bingo_state', {
       ...state,
