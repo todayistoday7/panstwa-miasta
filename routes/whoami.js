@@ -1010,38 +1010,48 @@ function makeWhoamiRoom(hostId, settings) {
 }
 
 function emitState(io, room) {
-  // Each player gets a slightly different state — active player doesn't see their character
+  // Build base state — character hidden for active player during playing phase
   const activePId = room.players[room.state.currentIdx]
     ? room.players[room.state.currentIdx].id : null;
 
-  room.players.forEach(p => {
-    const isActive = p.id === activePId;
-    const state = {
-      phase:         room.state.phase,
-      hostId:        room.hostId,
-      mode:          room.mode,
-      settings:      room.settings,
-      players:       room.players.map(pl => ({
-        id: pl.id, name: pl.name, score: pl.score, connected: pl.connected,
-      })),
-      currentIdx:    room.state.currentIdx,
-      activePlayerId: activePId,
-      // Active player sees no character during playing; everyone sees it on turn_result
-      // Send localised char name if available for this player's language
-      activeChar:    (isActive && room.state.phase === 'playing') ? null :
-                     (room.state.charByLang && room.state.charByLang[p.lang || 'en'] ?
-                      room.state.charByLang[p.lang || 'en'] : room.state.activeChar),
-      wikiSlug:      (isActive && room.state.phase === 'playing') ? null : room.state.wikiSlug,
-      questionCount: room.state.questionCount,
-      chat:          room.state.chat,
-      timerEnd:      room.state.timerEnd,
-      turnsLeft:     (room.settings.turnsEach * room.players.filter(p=>p.connected).length)
-                     - room.state.turnCount,
-      turnCount:     room.state.turnCount,
-      totalTurns:    room.settings.turnsEach * room.players.filter(p=>p.connected).length,
-    };
-    io.to(p.id).emit('whoami_state', state);
-  });
+  const baseState = {
+    phase:         room.state.phase,
+    hostId:        room.hostId,
+    mode:          room.mode,
+    settings:      room.settings,
+    players:       room.players.map(pl => ({
+      id: pl.id, name: pl.name, score: pl.score, connected: pl.connected,
+    })),
+    currentIdx:    room.state.currentIdx,
+    activePlayerId: activePId,
+    activeChar:    (room.state.phase === 'playing') ? null : room.state.activeChar,
+    wikiSlug:      (room.state.phase === 'playing') ? null : room.state.wikiSlug,
+    questionCount: room.state.questionCount,
+    chat:          room.state.chat,
+    timerEnd:      room.state.timerEnd,
+    turnsLeft:     (room.settings.turnsEach * room.players.filter(p=>p.connected).length)
+                   - room.state.turnCount,
+    turnCount:     room.state.turnCount,
+    totalTurns:    room.settings.turnsEach * room.players.filter(p=>p.connected).length,
+  };
+
+  // Broadcast to everyone in the room
+  io.to(room.code).emit('whoami_state', baseState);
+
+  // During playing phase, send character privately to non-active players
+  if (room.state.phase === 'playing') {
+    room.players.forEach(p => {
+      if (p.id !== activePId && p.connected) {
+        const charForLang = (room.state.charByLang && room.state.charByLang[p.lang || 'en'])
+          ? room.state.charByLang[p.lang || 'en'] : room.state.activeChar;
+        io.to(p.id).emit('whoami_state', {
+          ...baseState,
+          activeChar: charForLang,
+          wikiSlug: room.state.wikiSlug,
+        });
+      }
+    });
+  }
 }
 
 function startNextTurn(io, room) {

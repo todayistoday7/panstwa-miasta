@@ -19,9 +19,9 @@ function _ga(event_name, params) {
 
 // ─── SCREEN TRANSITIONS ──────────────────────────────────────────
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); s.style.display = 'none'; });
   const target = document.getElementById(id);
-  if (target) target.classList.add('active');
+  if (target) { target.classList.add('active'); target.style.display = 'block'; }
   const topNav = document.getElementById('top-nav');
   if (topNav) topNav.style.display = id === 'screen-home' ? 'none' : 'flex';
   const navCode = document.getElementById('nav-room-code');
