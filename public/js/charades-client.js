@@ -480,6 +480,7 @@ function renderLobby(data) {
         (p.isHost ? ' <span class="host-badge">' + L.hostBadge + '</span>' : '') +
       '</span>' +
       (isHost && p.id !== myId ? '<button class="move-btn" onclick="movePlayer(\'' + p.id + '\',\'' + (p.team === 'red' ? 'blue' : 'red') + '\')">' + (p.team === 'red' ? L.moveToBlue : L.moveToRed) + '</button>' : '') +
+      (p.id === myId ? '<button class="move-btn" onclick="movePlayer(\'' + p.id + '\',\'' + (p.team === 'red' ? 'blue' : 'red') + '\')">' + (p.team === 'red' ? L.moveToBlue : L.moveToRed) + '</button>' : '') +
     '</div>';
     if (p.team === 'red' && redEl) redEl.innerHTML += html;
     else if (blueEl) blueEl.innerHTML += html;
@@ -818,16 +819,19 @@ function applyTranslations() {
   // How to play
   var howToTitle = document.getElementById('lbl-how-to-play');
   if (howToTitle) howToTitle.textContent = lang === 'pl' ? 'Jak grać' : lang === 'de' ? 'Spielanleitung' : lang === 'sv' ? 'Hur man spelar' : 'How to play';
-  var steps = document.querySelectorAll('.rule-step p');
   var stepTexts = {
     pl: ['Podzielcie się na 2 drużyny','Każdą rundę jeden gracz widzi tajne hasło','Pokaż je gestem — bez słów, bez wskazywania!','Twoja drużyna krzyczy odpowiedzi — kliknij ✅ gdy zgadną','Każde prawidłowe hasło = 1 punkt dla drużyny'],
     en: ['Split into 2 teams','Each round, one player sees a secret word','Act it out — no sounds, no pointing!','Your team shouts guesses — tap ✅ when they get it','Each correct guess = 1 point for your team'],
     de: ['Teilt euch in 2 Teams auf','Jede Runde sieht ein Spieler ein geheimes Wort','Stelle es dar — keine Geräusche, kein Zeigen!','Dein Team ruft Antworten — tippe ✅ wenn sie es haben','Jede richtige Antwort = 1 Punkt fürs Team'],
     sv: ['Dela upp i 2 lag','Varje runda ser en spelare ett hemligt ord','Visa det — inga ljud, inget pekande!','Ditt lag ropar gissningar — tryck ✅ när de gissar rätt','Varje rätt gissning = 1 poäng för laget'],
   };
-  if (steps.length === 5 && stepTexts[lang]) {
-    steps.forEach(function(el, i) { el.textContent = stepTexts[lang][i]; });
-  }
+  // Translate home screen rules and lobby rules separately
+  ['#screen-home .rule-step p', '#lobby-rules-steps .rule-step p'].forEach(function(selector) {
+    var steps = document.querySelectorAll(selector);
+    if (steps.length === 5 && stepTexts[lang]) {
+      steps.forEach(function(el, i) { el.textContent = stepTexts[lang][i]; });
+    }
+  });
 }
 
 // Share

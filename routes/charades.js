@@ -324,7 +324,9 @@ function register(io, socket) {
   
   socket.on('charades_move_team', ({ code, playerId, team }) => {
     const room = rooms[code];
-    if (!room || socket.id !== room.hostId) return;
+    if (!room) return;
+    // Host can move anyone, players can move themselves
+    if (socket.id !== room.hostId && socket.id !== playerId) return;
     const player = room.players.find(p => p.id === playerId);
     if (player && (team === 'red' || team === 'blue')) {
       player.team = team;
