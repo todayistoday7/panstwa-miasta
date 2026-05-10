@@ -44,10 +44,10 @@ app.get('/drawing',     (req, res) => res.sendFile(path.join(__dirname, 'public/
 // /memory is now a 301 redirect to SEO pages (see below)
 
 // ── Who Am I — SEO pages (not linked in nav yet) ────────────────
-app.get('/kim-jestem', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/kim-jestem.html')));
-app.get('/who-am-i',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/who-am-i.html')));
-app.get('/wer-bin-ich',(req, res) => res.sendFile(path.join(__dirname, 'public/seo/wer-bin-ich.html')));
-app.get('/vem-ar-jag', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/vem-ar-jag.html')));
+app.get('/kim-jestem', seoInject('whoami', 'pl'));
+app.get('/who-am-i',   seoInject('whoami', 'en'));
+app.get('/wer-bin-ich',seoInject('whoami', 'de'));
+app.get('/vem-ar-jag', seoInject('whoami', 'sv'));
 app.get('/whoami',     (req, res) => res.redirect(301, '/who-am-i'));
 
 // ── Państwa Miasta — SEO pages (EN/DE/SV — PL stays on root /) ──
@@ -80,10 +80,10 @@ app.get('/hur-man-spelar/tva-sanningar-en-logn',  (req,res) => res.sendFile(path
 app.get('/hur-man-spelar/foretagsbingo',          (req,res) => res.sendFile(path.join(__dirname,'public/hur-man-spelar/foretagsbingo.html')));
 
 // ── SEO Landing Pages — Forbidden Words ─────────────────────────
-app.get('/zakazane-slowa',    (req, res) => res.sendFile(path.join(__dirname, 'public/seo/zakazane-slowa.html')));
-app.get('/forbidden-words',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/forbidden-words.html')));
-app.get('/verbotene-woerter', (req, res) => res.sendFile(path.join(__dirname, 'public/seo/verbotene-woerter.html')));
-app.get('/forbjudna-ord',     (req, res) => res.sendFile(path.join(__dirname, 'public/seo/forbjudna-ord.html')));
+app.get('/zakazane-slowa',    seoInject('taboo', 'pl'));
+app.get('/forbidden-words',   seoInject('taboo', 'en'));
+app.get('/verbotene-woerter', seoInject('taboo', 'de'));
+app.get('/forbjudna-ord',     seoInject('taboo', 'sv'));
 
 // Legacy redirect
 app.get('/taboo', (req, res) => {
@@ -93,10 +93,10 @@ app.get('/taboo', (req, res) => {
 });
 
 // ── SEO Landing Pages — Corporate Bingo ──────────────────────────
-app.get('/korporacyjne-bingo',  (req, res) => res.sendFile(path.join(__dirname, 'public/seo/korporacyjne-bingo.html')));
-app.get('/corporate-bingo',     (req, res) => res.sendFile(path.join(__dirname, 'public/seo/corporate-bingo.html')));
-app.get('/unternehmens-bingo',  (req, res) => res.sendFile(path.join(__dirname, 'public/seo/unternehmens-bingo.html')));
-app.get('/foretagsbingo',       (req, res) => res.sendFile(path.join(__dirname, 'public/seo/foretagsbingo.html')));
+app.get('/korporacyjne-bingo',  seoInject('bingo', 'pl'));
+app.get('/corporate-bingo',     seoInject('bingo', 'en'));
+app.get('/unternehmens-bingo',  seoInject('bingo', 'de'));
+app.get('/foretagsbingo',       seoInject('bingo', 'sv'));
 
 // Legacy redirect
 app.get('/bingo', (req, res) => {
@@ -120,10 +120,10 @@ app.get('/drawing', (req, res) => {
 });
 
 // ── SEO Landing Pages — Hangman ─────────────────────────────────
-app.get('/wisielec',                (req, res) => res.sendFile(path.join(__dirname, 'public/seo/wisielec.html')));
-app.get('/hangman-online',          (req, res) => res.sendFile(path.join(__dirname, 'public/seo/hangman-online.html')));
-app.get('/galgenmaennchen-online',  (req, res) => res.sendFile(path.join(__dirname, 'public/seo/galgenmaennchen-online.html')));
-app.get('/hanga-gubbe-online',      (req, res) => res.sendFile(path.join(__dirname, 'public/seo/hanga-gubbe-online.html')));
+app.get('/wisielec',                seoInject('hangman', 'pl'));
+app.get('/hangman-online',          seoInject('hangman', 'en'));
+app.get('/galgenmaennchen-online',  seoInject('hangman', 'de'));
+app.get('/hanga-gubbe-online',      seoInject('hangman', 'sv'));
 
 // Legacy redirect
 app.get('/hangman', (req, res) => {
@@ -133,10 +133,10 @@ app.get('/hangman', (req, res) => {
 });
 
 // ── SEO Landing Pages — Two Truths One Lie ──────────────────────
-app.get('/dwie-prawdy-jedno-klamstwo',  (req, res) => res.sendFile(path.join(__dirname, 'public/seo/dwie-prawdy-jedno-klamstwo.html')));
-app.get('/two-truths-one-lie',          (req, res) => res.sendFile(path.join(__dirname, 'public/seo/two-truths-one-lie.html')));
-app.get('/zwei-wahrheiten-eine-luege',  (req, res) => res.sendFile(path.join(__dirname, 'public/seo/zwei-wahrheiten-eine-luege.html')));
-app.get('/tva-sanningar-en-logn',       (req, res) => res.sendFile(path.join(__dirname, 'public/seo/tva-sanningar-en-logn.html')));
+app.get('/dwie-prawdy-jedno-klamstwo',  seoInject('twotruth', 'pl'));
+app.get('/two-truths-one-lie',          seoInject('twotruth', 'en'));
+app.get('/zwei-wahrheiten-eine-luege',  seoInject('twotruth', 'de'));
+app.get('/tva-sanningar-en-logn',       seoInject('twotruth', 'sv'));
 
 // Legacy redirect
 app.get('/twotruth', (req, res) => {
@@ -158,10 +158,10 @@ app.get('/punkte-und-linien-online',  seoInject('dots', 'de'));
 app.get('/punkter-och-linjer-online', seoInject('dots', 'sv'));
 
 // ── SEO Landing Pages — Find Pairs ──────────────────────────────
-app.get('/znajdz-pary',          (req, res) => res.sendFile(path.join(__dirname, 'public/seo/znajdz-pary.html')));
-app.get('/find-pairs-online',    (req, res) => res.sendFile(path.join(__dirname, 'public/seo/find-pairs-online.html')));
-app.get('/memo-spiel-online',    (req, res) => res.sendFile(path.join(__dirname, 'public/seo/memo-spiel-online.html')));
-app.get('/memo-spel-online',     (req, res) => res.sendFile(path.join(__dirname, 'public/seo/memo-spel-online.html')));
+app.get('/znajdz-pary',          seoInject('memory', 'pl'));
+app.get('/find-pairs-online',    seoInject('memory', 'en'));
+app.get('/memo-spiel-online',    seoInject('memory', 'de'));
+app.get('/memo-spel-online',     seoInject('memory', 'sv'));
 app.get('/paare-finden-online',  (req, res) => res.redirect(301, '/memo-spiel-online'));
 app.get('/hitta-par-online',     (req, res) => res.redirect(301, '/memo-spel-online'));
 

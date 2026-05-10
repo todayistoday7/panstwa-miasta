@@ -1,0 +1,22 @@
+{
+  "lang": "pl",
+  "htmlLang": "pl",
+  "title": "Kim Jestem? Online — Darmowa Gra Towarzyska | panstwamiastagra.com",
+  "description": "Zagraj w Kim Jestem? online za darmo! Odgadnij swoją tajną postać zadając pytania. Gra dla 2-16 graczy, idealna na spotkania i team building.",
+  "canonical": "https://panstwamiastagra.com/kim-jestem",
+  "ogUrl": "https://panstwamiastagra.com/kim-jestem",
+  "hreflang": {
+    "pl": "https://panstwamiastagra.com/kim-jestem",
+    "en": "https://panstwamiastagra.com/who-am-i",
+    "de": "https://panstwamiastagra.com/wer-bin-ich",
+    "sv": "https://panstwamiastagra.com/vem-ar-jag",
+    "x-default": "https://panstwamiastagra.com/who-am-i"
+  },
+  "seoLangUrls": {
+    "pl": "/kim-jestem",
+    "en": "/who-am-i",
+    "de": "/wer-bin-ich",
+    "sv": "/vem-ar-jag"
+  },
+  "bottomContent": ""
+}

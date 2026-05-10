@@ -1,0 +1,22 @@
+{
+  "lang": "en",
+  "htmlLang": "en",
+  "title": "Who Am I? Online — Free Party Guessing Game | panstwamiastagra.com",
+  "description": "Play Who Am I? online free! Guess your secret character by asking yes/no questions. Party game for 2-16 players, perfect for gatherings and team building.",
+  "canonical": "https://panstwamiastagra.com/who-am-i",
+  "ogUrl": "https://panstwamiastagra.com/who-am-i",
+  "hreflang": {
+    "pl": "https://panstwamiastagra.com/kim-jestem",
+    "en": "https://panstwamiastagra.com/who-am-i",
+    "de": "https://panstwamiastagra.com/wer-bin-ich",
+    "sv": "https://panstwamiastagra.com/vem-ar-jag",
+    "x-default": "https://panstwamiastagra.com/who-am-i"
+  },
+  "seoLangUrls": {
+    "pl": "/kim-jestem",
+    "en": "/who-am-i",
+    "de": "/wer-bin-ich",
+    "sv": "/vem-ar-jag"
+  },
+  "bottomContent": ""
+}

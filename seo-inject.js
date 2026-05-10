@@ -103,9 +103,18 @@ function buildSeoPage(gameName, langCode) {
   // Insert before </head>
   html = html.replace('</head>', hreflangTags + '</head>');
   
-  // 6. Inject _forceLang and _seoLangUrls before </body>
+  // 6. Inject _forceLang BEFORE game scripts so they can read it on init
+  const forceLangScript = `<script>window._forceLang = '${seo.lang}';</script>`;
+  // Insert before socket.io script (first script tag that loads game code)
+  if (html.includes('<script src="/socket.io')) {
+    html = html.replace('<script src="/socket.io', forceLangScript + '\n<script src="/socket.io');
+  } else {
+    // Fallback: insert before </body>
+    html = html.replace('</body>', forceLangScript + '\n</body>');
+  }
+
+  // 7. Inject _seoLangUrls and setUiLang override AFTER game scripts (before </body>)
   const seoScripts = `
-<script>window._forceLang = '${seo.lang}';</script>
 <script>
 window._seoLangUrls = ${JSON.stringify(seo.seoLangUrls)};
 (function() {

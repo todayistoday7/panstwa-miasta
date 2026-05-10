@@ -1,0 +1,22 @@
+{
+  "lang": "en",
+  "htmlLang": "en",
+  "title": "Find Pairs Online — Free Multiplayer Card Matching Game | panstwamiastagra.com",
+  "description": "Play Find Pairs online free! Classic card matching game for kids and families, 2-6 players. 6 emoji themes, 3 board sizes. Perfect family game night activity — no signup, works on any device.",
+  "canonical": "https://panstwamiastagra.com/find-pairs-online",
+  "ogUrl": "https://panstwamiastagra.com/find-pairs-online",
+  "hreflang": {
+    "pl": "https://panstwamiastagra.com/znajdz-pary",
+    "en": "https://panstwamiastagra.com/find-pairs-online",
+    "de": "https://panstwamiastagra.com/memo-spiel-online",
+    "sv": "https://panstwamiastagra.com/memo-spel-online",
+    "x-default": "https://panstwamiastagra.com/find-pairs-online"
+  },
+  "seoLangUrls": {
+    "pl": "/znajdz-pary",
+    "en": "/find-pairs-online",
+    "de": "/memo-spiel-online",
+    "sv": "/memo-spel-online"
+  },
+  "bottomContent": "<div style=\"margin-top:32px;\">\n    <h1 style=\"font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,48px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 10px;\">Find Pairs Online</h1>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\"><strong style=\"color:var(--text);\">Find Pairs</strong> is a classic card matching game — now playable online with friends, family or your team, for free, on any device. Create a room, share the code and start playing in under a minute.</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Take turns flipping two cards. If they match — you keep the pair and go again. If not — they flip back face down. The player with the <strong style=\"color:var(--text);\">most pairs at the end wins</strong>. Simple enough for kids from age 4, engaging enough to keep adults coming back.</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Choose from <strong style=\"color:var(--text);\">6 emoji themes</strong> — Animals, Food, Nature, Travel, Sports or Flags — and 3 board sizes (3×4, 4×4, 4×5). Perfect for <strong style=\"color:var(--text);\">family game nights</strong>, work breaks or remote team ice breakers.</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;\">Works on desktop, tablet and mobile. No download, no signup — just share a link.</p>\n    <div style=\"display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;\">\n      <span style=\"background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);\">🧩 2-6 players</span>\n      <span style=\"background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);\">👶 Ages 4+</span>\n      <span style=\"background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);\">🆓 Free to play</span>\n      <span style=\"background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);\">📱 Mobile friendly</span>\n      <span style=\"background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--muted);\">🎨 6 emoji themes</span>\n    </div>\n  </div>\n  <div style=\"display:flex;gap:12px;flex-wrap:wrap;padding-top:16px;border-top:1px solid var(--border);\">\n    <a href=\"/znajdz-pary\" style=\"color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;\">🇵🇱 Znajdź Pary</a>\n    <a href=\"/memo-spiel-online\" style=\"color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;\">🇩🇪 Memo-Spiel</a>\n    <a href=\"/memo-spel-online\" style=\"color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;\">🇸🇪 Memo-spel</a>\n    <a href=\"/games\" style=\"color:var(--muted);font-size:13px;font-weight:700;text-decoration:none;\">🎮 All Games</a>\n  </div>\n</div>"
+}

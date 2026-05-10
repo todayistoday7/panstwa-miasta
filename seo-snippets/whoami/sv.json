@@ -1,0 +1,22 @@
+{
+  "lang": "sv",
+  "htmlLang": "sv",
+  "title": "Vem är jag? Online — Gratis Sällskapsspel | panstwamiastagra.com",
+  "description": "Spela Vem är jag? online gratis! Gissa din hemliga person genom att ställa ja/nej-frågor. Sällskapsspel för 2-16 spelare, perfekt för sällskap och teambuilding.",
+  "canonical": "https://panstwamiastagra.com/vem-ar-jag",
+  "ogUrl": "https://panstwamiastagra.com/vem-ar-jag",
+  "hreflang": {
+    "pl": "https://panstwamiastagra.com/kim-jestem",
+    "en": "https://panstwamiastagra.com/who-am-i",
+    "de": "https://panstwamiastagra.com/wer-bin-ich",
+    "sv": "https://panstwamiastagra.com/vem-ar-jag",
+    "x-default": "https://panstwamiastagra.com/who-am-i"
+  },
+  "seoLangUrls": {
+    "pl": "/kim-jestem",
+    "en": "/who-am-i",
+    "de": "/wer-bin-ich",
+    "sv": "/vem-ar-jag"
+  },
+  "bottomContent": ""
+}

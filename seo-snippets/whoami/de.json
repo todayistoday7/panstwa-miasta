@@ -1,0 +1,22 @@
+{
+  "lang": "de",
+  "htmlLang": "de",
+  "title": "Wer bin ich? Online — Kostenloses Partyspiel | panstwamiastagra.com",
+  "description": "Wer bin ich? online spielen — kostenlos! Errate deine geheime Person durch Ja/Nein-Fragen. Partyspiel für 2-16 Spieler, perfekt für Treffen und Teambuilding.",
+  "canonical": "https://panstwamiastagra.com/wer-bin-ich",
+  "ogUrl": "https://panstwamiastagra.com/wer-bin-ich",
+  "hreflang": {
+    "pl": "https://panstwamiastagra.com/kim-jestem",
+    "en": "https://panstwamiastagra.com/who-am-i",
+    "de": "https://panstwamiastagra.com/wer-bin-ich",
+    "sv": "https://panstwamiastagra.com/vem-ar-jag",
+    "x-default": "https://panstwamiastagra.com/who-am-i"
+  },
+  "seoLangUrls": {
+    "pl": "/kim-jestem",
+    "en": "/who-am-i",
+    "de": "/wer-bin-ich",
+    "sv": "/vem-ar-jag"
+  },
+  "bottomContent": ""
+}
