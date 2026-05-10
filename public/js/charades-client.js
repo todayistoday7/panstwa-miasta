@@ -282,6 +282,7 @@ const LANGS = {
     nudge: '👋 Szturchnij', nudgeSent: '✓ Wysłano!',
     shareText: 'Zagraj ze mną w Kalambury! 🎭\nKod: {code}\n{url}',
     nextRound: '➡️ Następna runda',
+    lengthQuick: '⚡ Szybka (każdy pokazuje raz)', lengthStandard: '🎮 Standardowa (każdy pokazuje 2x)', lengthMarathon: '🏆 Maraton (każdy pokazuje 3x)', gameLength: 'Długość gry',
     waitForTeam: 'Drużyna przeciwna pokazuje...',
   },
   en: {
@@ -310,6 +311,7 @@ const LANGS = {
     nudge: '👋 Nudge', nudgeSent: '✓ Sent!',
     shareText: 'Join my Charades game! 🎭\nCode: {code}\n{url}',
     nextRound: '➡️ Next Round',
+    lengthQuick: '⚡ Quick (everyone acts once)', lengthStandard: '🎮 Standard (everyone acts twice)', lengthMarathon: '🏆 Marathon (everyone acts 3x)', gameLength: 'Game length',
     waitForTeam: 'Other team is acting...',
   },
   de: {
@@ -338,6 +340,7 @@ const LANGS = {
     nudge: '👋 Anstupsen', nudgeSent: '✓ Gesendet!',
     shareText: 'Spiel Scharade mit! 🎭\nCode: {code}\n{url}',
     nextRound: '➡️ Nächste Runde',
+    lengthQuick: '⚡ Kurz (jeder einmal)', lengthStandard: '🎮 Standard (jeder 2x)', lengthMarathon: '🏆 Marathon (jeder 3x)', gameLength: 'Spiellänge',
     waitForTeam: 'Das andere Team zeigt...',
   },
   sv: {
@@ -366,6 +369,7 @@ const LANGS = {
     nudge: '👋 Puffa', nudgeSent: '✓ Skickat!',
     shareText: 'Spela Charader med oss! 🎭\nKod: {code}\n{url}',
     nextRound: '➡️ Nästa runda',
+    lengthQuick: '⚡ Snabb (alla visar en gång)', lengthStandard: '🎮 Standard (alla visar 2 ggr)', lengthMarathon: '🏆 Maraton (alla visar 3 ggr)', gameLength: 'Spellängd',
     waitForTeam: 'Andra laget visar...',
   },
 };
@@ -523,9 +527,9 @@ function renderLobby(data) {
       {key:'kids',label:L.diffKids},{key:'family',label:L.diffFamily},{key:'adults',label:L.diffAdults},
     ], data.settings.difficulty, function(v) { socket.emit('charades_update_settings', {code:roomCode,settings:{difficulty:v}}); });
 
-    renderPills('rounds-pills', [
-      {key:6,label:'6'},{key:10,label:'10'},{key:14,label:'14'},{key:20,label:'20'},
-    ], data.settings.rounds, function(v) { socket.emit('charades_update_settings', {code:roomCode,settings:{rounds:parseInt(v)}}); });
+    renderPills('length-pills', [
+      {key:'quick',label:L.lengthQuick},{key:'standard',label:L.lengthStandard},{key:'marathon',label:L.lengthMarathon},
+    ], data.settings.gameLength, function(v) { socket.emit('charades_update_settings', {code:roomCode,settings:{gameLength:v}}); });
 
     renderPills('timer-pills', [
       {key:30,label:'30s'},{key:60,label:'60s'},{key:90,label:'90s'},
@@ -788,7 +792,7 @@ function applyTranslations() {
     'lbl-create-room':'createRoom','lbl-join-room':'joinRoom',
     'lbl-create-btn':'createRoom','lbl-join-btn':'joinRoom',
     'lbl-settings':'settings','lbl-category':'category','lbl-difficulty':'difficulty',
-    'lbl-timer':'timer','lbl-rounds':'rounds',
+    'lbl-timer':'timer','lbl-game-length':'gameLength',
     'lbl-start':'startGame','lbl-final-title':'finalTitle',
     'lbl-play-again':'playAgain','lbl-go-home':'goHome',
     'game-title':'gameTitle','game-subtitle':'gameSubtitle',

@@ -157,6 +157,12 @@ function pickWord(room) {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
+function getRounds(room) {
+  const playerCount = room.players.filter(p => p.connected).length;
+  const multiplier = room.settings.gameLength === 'quick' ? 1 : room.settings.gameLength === 'marathon' ? 3 : 2;
+  return Math.max(2, playerCount * multiplier);
+}
+
 function getConnected(room) {
   return room.players.filter(p => p.connected);
 }
@@ -184,7 +190,7 @@ function broadcastState(io, room) {
     actorTeam: actor ? actor.team : null,
     word: null,
     round: room.state.round,
-    totalRounds: room.settings.rounds,
+    totalRounds: getRounds(room),
     timerEnd: room.state.timerEnd,
     timerSecs: room.settings.timerSecs,
     wordsThisTurn: room.state.wordsThisTurn || 0,
@@ -248,7 +254,7 @@ function endRound(io, room) {
   // Switch teams
   room.state.currentTeam = room.state.currentTeam === 'red' ? 'blue' : 'red';
   
-  if (room.state.round > room.settings.rounds) {
+  if (room.state.round > getRounds(room)) {
     room.state.phase = 'final';
     clearTimeout(room.state.timer);
     broadcastState(io, room);
@@ -271,8 +277,8 @@ function register(io, socket) {
         lang: (settings && settings.lang) || 'pl',
         category: (settings && settings.category) || 'mixed',
         difficulty: (settings && settings.difficulty) || 'family',
+        gameLength: (settings && settings.gameLength) || 'standard', // quick, standard, marathon
         timerSecs: (settings && settings.timerSecs) || 60,
-        rounds: (settings && settings.rounds) || 10,
       },
       state: {
         phase: 'lobby',
@@ -333,7 +339,7 @@ function register(io, socket) {
     if (settings.category) room.settings.category = settings.category;
     if (settings.difficulty) room.settings.difficulty = settings.difficulty;
     if (settings.timerSecs) room.settings.timerSecs = Math.min(90, Math.max(30, settings.timerSecs));
-    if (settings.rounds) room.settings.rounds = Math.min(20, Math.max(4, settings.rounds));
+    if (settings.gameLength) room.settings.gameLength = settings.gameLength;
     if (settings.isPublic !== undefined) room.isPublic = settings.isPublic;
     broadcastState(io, room);
   });
