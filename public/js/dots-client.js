@@ -463,6 +463,14 @@ function renderLobby(data) {
 
   const gridSel = document.getElementById('settings-grid');
   const maxSel  = document.getElementById('settings-maxplayers');
+  
+  // Round tracking — shared by host and non-host branches
+  var roundBadge = document.getElementById('dots-round-badge');
+  var settingsCard = document.getElementById('lobby-settings-card');
+  var totalRounds = (settings && settings.totalRounds) || 1;
+  var roundsAccum = data.totalRoundsAccum || 0;
+  var isBetweenRounds = roundsAccum > 0 && roundsAccum < totalRounds;
+  
   if (isHost) {
     // Init selects once from server — host owns them after that
     if (!_settingsInitDots) {
@@ -477,10 +485,6 @@ function renderLobby(data) {
     document.getElementById('lobby-btn-row').style.display = 'flex';
     document.getElementById('waiting-msg').style.display   = 'none';
     // Show round progress if mid-game (returning between rounds)
-    var roundBadge = document.getElementById('dots-round-badge');
-    var totalRounds = (settings && settings.totalRounds) || 1;
-    var roundsAccum = data.totalRoundsAccum || 0;
-    var isBetweenRounds = roundsAccum > 0 && roundsAccum < totalRounds;
     if (roundBadge) {
       if (totalRounds > 1) {
         roundBadge.style.display = 'block';
@@ -491,7 +495,6 @@ function renderLobby(data) {
       }
     }
     // Between rounds: hide settings, show just "Start Next Round"
-    var settingsCard = document.getElementById('lobby-settings-card');
     var startBtn = document.getElementById('lobby-start-btn');
     if (isBetweenRounds) {
       if (settingsCard) settingsCard.style.display = 'none';

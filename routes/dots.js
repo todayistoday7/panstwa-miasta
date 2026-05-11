@@ -199,14 +199,27 @@ function register(io, socket) {
     const n = room.settings.gridSize;
     if (room._lobbyTimer) { clearTimeout(room._lobbyTimer); room._lobbyTimer = null; }
     lobby.remove(room.code);
+    
+    // Check if this is a between-rounds start (preserve counters) or fresh game
+    const isBetweenRounds = (room.state.totalRoundsAccum || 0) > 0 
+      && (room.state.totalRoundsAccum < (room.settings.totalRounds || 1));
+    
     room.state.phase         = 'playing';
     room.state.grid          = makeGrid(n);
     room.state.totalBoxes    = n * n;
     room.state.claimedBoxes  = 0;
     room.state.currentPlayer = room.players.find(p => p.connected).id;
-    room.state.roundsPlayed  = 1; // first round of this game session
-    room.state.totalRoundsAccum = 0; // tracks completed rounds
-    room.players.forEach(p => p.score = 0);
+    
+    if (!isBetweenRounds) {
+      // Fresh game — reset everything
+      room.state.roundsPlayed     = 1;
+      room.state.totalRoundsAccum = 0;
+      room.players.forEach(p => p.score = 0);
+    } else {
+      // Between rounds — keep scores and round counter
+      room.state.roundsPlayed = room.state.totalRoundsAccum + 1;
+    }
+    
     emitDotsState(io, room);
   });
 
