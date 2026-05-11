@@ -508,13 +508,46 @@ function renderLobby(data) {
     const roundsSelNH = document.getElementById('settings-rounds');
     if (roundsSelNH) { roundsSelNH.value = settings.totalRounds || 1; roundsSelNH.disabled = true; }
     document.getElementById('lobby-btn-row').style.display = 'none';
-    document.getElementById('waiting-msg').style.display   = 'block';
-    document.getElementById('waiting-msg').textContent     = L.waitingForHost;
+    var waitMsg = document.getElementById('waiting-msg');
+    if (isBetweenRounds) {
+      // Between rounds — show round info, hide settings
+      if (settingsCard) settingsCard.style.display = 'none';
+      if (waitMsg) {
+        waitMsg.style.display = 'block';
+        waitMsg.textContent = lang === 'pl' ? '⏳ Czekaj na następną rundę...'
+          : lang === 'de' ? '⏳ Warte auf nächste Runde...'
+          : lang === 'sv' ? '⏳ Väntar på nästa runda...'
+          : '⏳ Waiting for next round...';
+      }
+      if (roundBadge) {
+        roundBadge.style.display = 'block';
+        roundBadge.textContent = (lang === 'pl' ? 'Runda ' : 'Round ') +
+          (roundsAccum + 1) + ' / ' + totalRounds;
+      }
+    } else {
+      if (waitMsg) {
+        waitMsg.style.display = 'block';
+        waitMsg.textContent = L.waitingForHost;
+      }
+    }
   }
 }
 
 // ─── PLAYING: RENDER ─────────────────────────────────────────────
 function renderPlaying(data) {
+  // Show round badge during multi-round games
+  var playingRoundBadge = document.getElementById('dots-playing-round-badge');
+  if (playingRoundBadge) {
+    var tr = data.totalRounds || 1;
+    var ra = data.totalRoundsAccum || 0;
+    if (tr > 1) {
+      playingRoundBadge.style.display = 'block';
+      playingRoundBadge.textContent = (lang === 'pl' ? 'Runda ' : lang === 'de' ? 'Runde ' : lang === 'sv' ? 'Runda ' : 'Round ') +
+        (ra + 1) + ' / ' + tr;
+    } else {
+      playingRoundBadge.style.display = 'none';
+    }
+  }
   renderScoreboard(data);
   renderTurnBar(data);
   renderGrid(data);
