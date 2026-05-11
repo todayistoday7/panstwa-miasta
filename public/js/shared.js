@@ -18,6 +18,73 @@ function _ga(event_name, params) {
 'use strict';
 
 // ─── SCREEN TRANSITIONS ──────────────────────────────────────────
+
+// ─── UNIVERSAL SOCKET RECONNECT ──────────────────────────────────
+// When a socket reconnects (e.g. after mobile tab suspension),
+// it gets a new socket.id and is NOT in any Socket.io room.
+// This handler detects reconnection and re-emits the game's rejoin event.
+(function() {
+  // Map of sessionStorage key prefixes to rejoin event names
+  var GAME_REJOIN_MAP = {
+    'pm':       'group_rejoin',
+    'dots':     'dots_rejoin',
+    'hang':     'hang_rejoin',
+    'taboo':    'taboo_rejoin',
+    'tt':       'tt_rejoin',
+    'whoami':   'whoami_rejoin',
+    'bingo':    'bingo_rejoin',
+    'drawing':  'drawing_rejoin',
+    'mem':      'mem_rejoin',
+    'charades': 'charades_rejoin',
+  };
+  
+  var _reconnectAttempted = false;
+  
+  // Wait for game socket to be available, then attach reconnect handler
+  function _attachReconnect() {
+    var sock = window._gameSocket;
+    if (!sock) {
+      // Game hasn't created its socket yet — retry
+      if (!_reconnectAttempted) {
+        _reconnectAttempted = true;
+        setTimeout(_attachReconnect, 500);
+      }
+      return;
+    }
+    
+    // Fire on every connect (initial + reconnects)
+    sock.on('connect', function() {
+      // Check all games for saved session
+      for (var prefix in GAME_REJOIN_MAP) {
+        var code = sessionStorage.getItem(prefix + '_code');
+        var name = sessionStorage.getItem(prefix + '_name');
+        if (code && name) {
+          // Small delay to let game-specific connect handler run first
+          (function(evt, c, n) {
+            setTimeout(function() {
+              sock.emit(evt, { code: c, name: n });
+            }, 100);
+          })(GAME_REJOIN_MAP[prefix], code, name);
+          break; // Only rejoin one game per page
+        }
+      }
+    });
+    
+    // Keep-alive ping every 20 seconds to detect dead connections faster
+    setInterval(function() {
+      if (sock.connected) {
+        sock.emit('keep_alive');
+      }
+    }, 20000);
+  }
+  
+  // Start looking for the socket after DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { setTimeout(_attachReconnect, 200); });
+  } else {
+    setTimeout(_attachReconnect, 200);
+  }
+})();
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); s.style.display = 'none'; });
   const target = document.getElementById(id);

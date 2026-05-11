@@ -457,8 +457,11 @@ function register(io, socket) {
   socket.on('charades_rejoin', ({ code, name }) => {
     const room = rooms[code];
     if (!room) return socket.emit('charades_error', { message: 'Room not found' });
-    const existing = room.players.find(p => p.name === name && !p.connected);
+    const existing = room.players.find(p => p.name === name);
     if (existing) {
+      // Update socket ID and rejoin room
+      if (room.hostId === existing.id) room.hostId = socket.id;
+      if (room.state.actorId === existing.id) room.state.actorId = socket.id;
       existing.id = socket.id;
       existing.connected = true;
       socket.join(code);

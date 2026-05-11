@@ -346,6 +346,24 @@ function register(io, socket) {
     emitState(io, room);
   });
 
+  // ── Rejoin ──────────────────────────────────────────
+  socket.on('drawing_rejoin', ({ code, name }) => {
+    const room = drawingRooms[code];
+    if (!room) { socket.emit('drawing_error', { msg: 'Room expired.' }); return; }
+    const existing = room.players.find(p => p.name === name);
+    if (existing) {
+      if (room.hostId === existing.id) room.hostId = socket.id;
+      existing.id = socket.id;
+      existing.connected = true;
+    } else {
+      if (room.state.phase !== 'lobby') { socket.emit('drawing_error', { msg: 'Room already started.' }); return; }
+      room.players.push({ id: socket.id, name, connected: true });
+    }
+    socket.join(code);
+    socket.emit('drawing_room_joined', { code });
+    emitState(io, room);
+  });
+
   // ── Disconnect ───────────────────────────────────────
   socket.on('disconnect', () => {
     for (const [code, room] of Object.entries(drawingRooms)) {

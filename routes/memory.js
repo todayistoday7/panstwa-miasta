@@ -258,6 +258,25 @@ function register(io, socket) {
     emitMemState(io, room);
   });
 
+  // ─── REJOIN ──────────────────────────────────────────
+  socket.on('mem_rejoin', ({ code, name }) => {
+    const room = memRooms[code];
+    if (!room) { socket.emit('mem_error', { msg: 'Room expired.' }); return; }
+    const existing = room.players.find(p => p.name === name);
+    if (existing) {
+      if (room.hostId === existing.id) room.hostId = socket.id;
+      if (room.state.currentPlayer === existing.id) room.state.currentPlayer = socket.id;
+      existing.id = socket.id;
+      existing.connected = true;
+    } else {
+      if (room.state.phase !== 'lobby') { socket.emit('mem_error', { msg: 'Room already started.' }); return; }
+      room.players.push({ id: socket.id, name, connected: true, score: 0 });
+    }
+    socket.join(code);
+    socket.emit('mem_room_joined', { code });
+    emitMemState(io, room);
+  });
+
   // ─── DISCONNECT ──────────────────────────────────────
   socket.on('disconnect', () => {
     for (const code of Object.keys(memRooms)) {

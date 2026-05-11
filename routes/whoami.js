@@ -1144,10 +1144,12 @@ function register(io, socket) {
     if (!room) { socket.emit('whoami_error', { msg: 'Room expired.' }); return; }
     const existing = room.players.find(p => p.name === name);
     if (existing) {
-      if (room.hostId === existing.id) room.hostId = socket.id;
+      const oldId = existing.id;
+      if (room.hostId === oldId) room.hostId = socket.id;
+      // Update current player reference if this is the active player
       if (room.state.currentIdx < room.players.length &&
-          room.players[room.state.currentIdx].id === existing.id) {
-        // keep turn
+          room.players[room.state.currentIdx].id === oldId) {
+        room.players[room.state.currentIdx].id = socket.id;
       }
       existing.id = socket.id;
       existing.connected = true;

@@ -208,6 +208,24 @@ function register(io, socket) {
       emitBingoState(io, room);
     });
 
+    // ── Rejoin ──────────────────────────────────────────
+    socket.on('bingo_rejoin', ({ code, name }) => {
+      const room = bingoRooms[code];
+      if (!room) { socket.emit('bingo_error', { msg: 'Room expired.' }); return; }
+      const existing = room.players.find(p => p.name === name);
+      if (existing) {
+        if (room.hostId === existing.id) room.hostId = socket.id;
+        existing.id = socket.id;
+        existing.connected = true;
+      } else {
+        if (room.state.phase !== 'lobby') { socket.emit('bingo_error', { msg: 'Room already started.' }); return; }
+        room.players.push({ id: socket.id, name, connected: true, card: null, marked: [], bingo: false, markedCount: 0 });
+      }
+      socket.join(code);
+      socket.emit('bingo_room_joined', { code });
+      emitBingoState(io, room);
+    });
+
     // ── Disconnect ───────────────────────────────────────
     socket.on('disconnect', () => {
       for (const [code, room] of Object.entries(bingoRooms)) {
