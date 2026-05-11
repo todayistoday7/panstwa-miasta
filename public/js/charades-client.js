@@ -972,7 +972,9 @@ function applyTranslations() {
 
 // Share
 function charadesShareRoom() {
-  var url = window.location.origin + '/charades?lang=' + lang + '&join=' + roomCode;
+  var langUrls = { pl: '/kalambury', en: '/charades-online', de: '/scharade', sv: '/charader' };
+  var path = (window._seoLangUrls && window._seoLangUrls[lang]) || langUrls[lang] || '/kalambury';
+  var url = window.location.origin + path + '?join=' + roomCode;
   var text = L.shareText.replace('{code}', roomCode).replace('{url}', url);
   if (navigator.share) {
     navigator.share({ title: L.gameTitle, text: text }).catch(function(){});
