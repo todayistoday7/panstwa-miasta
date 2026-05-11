@@ -76,12 +76,16 @@ function emitTTState(io, room) {
     totalRounds:  getConnected(room).length, // one round per player
   };
 
-  // Broadcast base state to everyone
+  // Broadcast base state to everyone in the room
   io.to(room.code).emit('tt_state', base);
 
-  // Send lieIndex privately to active player during writing phase
+  // During writing phase, send lieIndex privately to active player
   if (room.state.phase === 'writing' && base.activeId) {
     io.to(base.activeId).emit('tt_state', { ...base, lieIndex: room.state.lieIndex });
+  }
+  // During voting phase, also send state directly to active player (they wrote the statements)
+  if (room.state.phase === 'voting' && base.activeId) {
+    io.to(base.activeId).emit('tt_state', base);
   }
 }
 

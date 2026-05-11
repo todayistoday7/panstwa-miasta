@@ -102,21 +102,17 @@ function emitHangState(io, room) {
     wordLength:     room.state.word ? room.state.word.length : null,
   };
 
-  room.players.forEach(p => {
-    if (!p.connected) return;
-  });
-
-  // Broadcast base state to everyone (word hidden)
-  const basePayload = { ...base, word: null };
-  io.to(room.code).emit('hang_state', basePayload);
-
-  // Send word privately to players who should see it
-  room.players.forEach(p => {
-    if (!p.connected) return;
-    if (p.id === (picker && picker.id) || room.state.phase === 'roundEnd' || room.state.phase === 'final') {
-      io.to(p.id).emit('hang_state', { ...base, word: room.state.word });
+  // During roundEnd and final, everyone sees the word
+  if (room.state.phase === 'roundEnd' || room.state.phase === 'final') {
+    io.to(room.code).emit('hang_state', { ...base, word: room.state.word });
+  } else {
+    // During picking/guessing, broadcast with word hidden
+    io.to(room.code).emit('hang_state', { ...base, word: null });
+    // Send word privately to the picker only
+    if (picker) {
+      io.to(picker.id).emit('hang_state', { ...base, word: room.state.word });
     }
-  });
+  }
 }
 
 function promoteHangHost(room) {
@@ -306,9 +302,12 @@ function register(io, socket) {
 
     room.state.roundsPlayed++;
     const connected = getConnected(room);
+    const totalRounds = room.settings.totalRounds > 0
+      ? room.settings.totalRounds
+      : connected.length;
 
-    if (room.state.roundsPlayed >= connected.length) {
-      // Everyone has had a turn — game over
+    if (room.state.roundsPlayed >= totalRounds) {
+      // All rounds played — game over
       room.state.phase = 'final';
       lobby.remove(room.code);
       emitHangState(io, room);
