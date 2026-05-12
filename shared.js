@@ -1,0 +1,1572 @@
+// ─── GA4 EVENT HELPER ────────────────────────────────────────────
+// Safe wrapper — fires only if gtag is loaded, never throws
+function _ga(event_name, params) {
+  try {
+    if (typeof gtag === 'function') {
+      gtag('event', event_name, params || {});
+    }
+  } catch(e) {}
+}
+// ════════════════════════════════════════════════════════
+// SHARED CLIENT UTILITIES
+// Included in all game HTML files.
+// Provides: showScreen, showError, showToast, copyRoomCode,
+//           shareRoom, confirmGoHome, buildLangBar
+// Each game must define: roomCode, roomState, lang, L,
+//           LANGS, doGoHome(), closeConfirm()
+// ════════════════════════════════════════════════════════
+'use strict';
+
+// ─── SCREEN TRANSITIONS ──────────────────────────────────────────
+
+// ─── UNIVERSAL SOCKET RECONNECT ──────────────────────────────────
+// When a socket reconnects (e.g. after mobile tab suspension),
+// it gets a new socket.id and is NOT in any Socket.io room.
+// This handler detects reconnection and re-emits the game's rejoin event.
+(function() {
+  // Map of sessionStorage key prefixes to rejoin event names
+  var GAME_REJOIN_MAP = {
+    'pm':       'group_rejoin',
+    'dots':     'dots_rejoin',
+    'hang':     'hang_rejoin',
+    'taboo':    'taboo_rejoin',
+    'tt':       'tt_rejoin',
+    'whoami':   'whoami_rejoin',
+    'bingo':    'bingo_rejoin',
+    'drawing':  'drawing_rejoin',
+    'mem':      'mem_rejoin',
+    'charades': 'charades_rejoin',
+  };
+  
+  var _reconnectAttempted = false;
+  
+  // Wait for game socket to be available, then attach reconnect handler
+  function _attachReconnect() {
+    var sock = window._gameSocket;
+    if (!sock) {
+      // Game hasn't created its socket yet — retry
+      if (!_reconnectAttempted) {
+        _reconnectAttempted = true;
+        setTimeout(_attachReconnect, 500);
+      }
+      return;
+    }
+    
+    // Fire on every connect (initial + reconnects)
+    sock.on('connect', function() {
+      // Check all games for saved session
+      for (var prefix in GAME_REJOIN_MAP) {
+        var code = sessionStorage.getItem(prefix + '_code');
+        var name = sessionStorage.getItem(prefix + '_name');
+        if (code && name) {
+          // Small delay to let game-specific connect handler run first
+          (function(evt, c, n) {
+            setTimeout(function() {
+              sock.emit(evt, { code: c, name: n });
+            }, 100);
+          })(GAME_REJOIN_MAP[prefix], code, name);
+          break; // Only rejoin one game per page
+        }
+      }
+    });
+    
+    // Keep-alive ping every 20 seconds to detect dead connections faster
+    setInterval(function() {
+      if (sock.connected) {
+        sock.emit('keep_alive');
+      }
+    }, 20000);
+  }
+  
+  // Start looking for the socket after DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { setTimeout(_attachReconnect, 200); });
+  } else {
+    setTimeout(_attachReconnect, 200);
+  }
+})();
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); s.style.display = 'none'; });
+  const target = document.getElementById(id);
+  if (target) { target.classList.add('active'); target.style.display = 'block'; }
+  const topNav = document.getElementById('top-nav');
+  if (topNav) topNav.style.display = id === 'screen-home' ? 'none' : 'flex';
+  const navCode = document.getElementById('nav-room-code');
+  if (navCode && typeof roomCode !== 'undefined' && roomCode)
+    navCode.textContent = roomCode;
+  const navShare = document.getElementById('nav-share-btn');
+  if (navShare)
+    navShare.style.display =
+      (typeof roomCode !== 'undefined' && roomCode && id !== 'screen-home') ? 'flex' : 'none';
+}
+
+// ─── ERROR / TOAST ────────────────────────────────────────────────
+function showError(msg) {
+  const box = document.getElementById('home-error');
+  if (!box) return;
+  box.textContent = msg; box.style.display = 'block';
+  clearTimeout(box._t);
+  box._t = setTimeout(() => box.style.display = 'none', 3500);
+}
+
+function clearHomeError() {
+  const b = document.getElementById('home-error');
+  if (b) b.style.display = 'none';
+}
+
+function showToast(msg, duration) {
+  let t = document.getElementById('shared-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'shared-toast';
+    t.style.cssText = [
+      'position:fixed','bottom:24px','left:50%','transform:translateX(-50%)',
+      'background:var(--card)','border:1px solid var(--border)','color:var(--text)',
+      'padding:10px 20px','border-radius:10px','font-weight:700','font-size:14px',
+      'z-index:9999','pointer-events:none','transition:opacity 0.3s',
+    ].join(';');
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.display = 'block';
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => {
+    t.style.opacity = '0';
+    setTimeout(() => t.style.display = 'none', 300);
+  }, duration || 3000);
+}
+
+// ─── ROOM CODE COPY ───────────────────────────────────────────────
+function copyRoomCode() {
+  // Delegates to shareRoom so all games copy the full joinable link
+  if (typeof roomCode === 'undefined' || !roomCode) return;
+  var gameSlug = window._gameSlug || '';
+  shareRoom(gameSlug);
+}
+
+// ─── SHARE ROOM ──────────────────────────────────────────────────
+// Always copies the full joinable link to clipboard.
+// gameSlug: 'taboo', 'dots', 'hangman', 'twotruth', or '' for PM
+function shareRoom(gameSlug, titleText) {
+  if (typeof roomCode === 'undefined' || !roomCode) return;
+  var currentLang = (typeof lang !== 'undefined' && lang) ||
+    (new URLSearchParams(window.location.search).get('lang')) ||
+    window._forceLang || 'pl';
+  // On SEO pages use the current page path instead of the generic slug
+  var currentPath = window.location.pathname;
+  var seoSlugs = ['/kropki-i-kreski-online','/dots-and-boxes-online',
+                  '/punkte-und-linien-online','/punkter-och-linjer-online',
+                  '/dwie-prawdy-jedno-klamstwo','/two-truths-one-lie',
+                  '/zwei-wahrheiten-eine-luege','/tva-sanningar-en-logn',
+                  '/wisielec','/hangman-online',
+                  '/galgenmaennchen-online','/hanga-gubbe-online',
+                  '/szkicuj-i-zgaduj','/sketch-and-guess',
+                  '/zeichnen-und-raten','/skissa-och-gissa',
+                  '/zakazane-slowa','/forbidden-words',
+                  '/verbotene-woerter','/forbjudna-ord',
+                  '/korporacyjne-bingo','/corporate-bingo',
+                  '/unternehmens-bingo','/foretagsbingo',
+                  '/kim-jestem','/who-am-i',
+                  '/wer-bin-ich','/vem-ar-jag',
+                  '/znajdz-pary','/find-pairs-online',
+                  '/memo-spiel-online','/memo-spel-online'];
+  var usePath = seoSlugs.indexOf(currentPath) >= 0
+    ? currentPath
+    : (gameSlug ? '/' + gameSlug : '/');
+  const url  = 'https://panstwamiastagra.com' + usePath + '?join=' + roomCode + '&lang=' + currentLang;
+  var shareLabels = {pl:'Dołącz do gry! Kod pokoju: ', en:'Join my game! Room code: ', de:'Tritt dem Spiel bei! Raumcode: ', sv:'Gå med i mitt spel! Rumskod: '};
+  var shareTitle = {pl:'Zagraj ze mną!', en:'Play with me!', de:'Spiel mit mir!', sv:'Spela med mig!'};
+  var copiedLabels = {pl:'🔗 Link skopiowany!', en:'🔗 Link copied!', de:'🔗 Link kopiert!', sv:'🔗 Länk kopierad!'};
+  var shareText = (shareLabels[currentLang] || shareLabels['en']) + roomCode + ' ' + url;
+  if (navigator.share) {
+    navigator.share({
+      title: shareTitle[currentLang] || shareTitle['en'],
+      text: shareText
+    }).catch(function() {
+      _copyText(url);
+      if (typeof showToast === 'function') showToast(copiedLabels[currentLang] || copiedLabels['en']);
+    });
+  } else {
+    _copyText(url);
+    if (typeof showToast === 'function') showToast(copiedLabels[currentLang] || copiedLabels['en']);
+  }
+}
+
+function _copyText(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).catch(() => _fallbackCopy(text));
+  } else {
+    _fallbackCopy(text);
+  }
+}
+
+function _fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0;';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+// ─── CONFIRM LEAVE MODAL ─────────────────────────────────────────
+// Expects confirm-modal, confirm-title, confirm-msg, confirm-yes, confirm-no in HTML
+// Games define their own L.leaveTitle, L.leaveMsg, L.confirmLeave, L.leaveYes, L.leaveNo
+function confirmGoHome() {
+  if (typeof roomCode === 'undefined' || !roomCode) {
+    if (typeof doGoHome === 'function') doGoHome();
+    return;
+  }
+  const inGame = typeof roomState !== 'undefined' && roomState &&
+                 roomState.phase !== 'lobby' && roomState.phase !== 'final';
+  const titleEl = document.getElementById('confirm-title');
+  const msgEl   = document.getElementById('confirm-msg');
+  const yesEl   = document.getElementById('confirm-yes');
+  const noEl    = document.getElementById('confirm-no');
+  if (titleEl && typeof L !== 'undefined') titleEl.textContent = L.leaveTitle  || 'Leave?';
+  if (msgEl   && typeof L !== 'undefined') msgEl.textContent   = inGame ? (L.leaveMsg || 'A game is in progress.') : (L.confirmLeave || 'Leave the room?');
+  if (yesEl   && typeof L !== 'undefined') yesEl.textContent   = L.leaveYes   || 'Yes, leave';
+  if (noEl    && typeof L !== 'undefined') noEl.textContent    = L.leaveNo    || 'Cancel';
+  const modal = document.getElementById('confirm-modal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeConfirm() {
+  const modal = document.getElementById('confirm-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+// ─── LANG BAR BUILDER ────────────────────────────────────────────
+// Expects LANGS object and setUiLang(code) to be defined by game
+function buildLangBar() {
+  const bar = document.getElementById('lang-bar');
+  if (!bar || typeof LANGS === 'undefined') return;
+  bar.innerHTML = Object.keys(LANGS).map(code =>
+    '<button class="lang-btn' + (code === (typeof lang !== 'undefined' ? lang : 'en') ? ' active' : '') +
+    '" onclick="setUiLang(\'' + code + '\')">' + LANGS[code].name + '</button>'
+  ).join('');
+}
+
+// ─── OTHER GAMES SUGGESTION ──────────────────────────────────────
+// Call at end of each game's final screen render, passing current game slug
+function renderOtherGames(currentGame) {
+  var el = document.getElementById('other-games-strip');
+  if (!el) return;
+
+  var lng = (typeof lang !== 'undefined' && lang) || window._forceLang || 'pl';
+
+  var labels = {
+    pl: { title: 'Inne polecane gry:', games: {
+      pm:      { name: 'Państwa-Miasta', icon: '🌍' },
+      taboo:   { name: 'Zakazane Słowa', icon: '🎭' },
+      hangman: { name: 'Wisielec',       icon: '🪢' },
+      dots:    { name: 'Kropki i Kreski',icon: '🔵' },
+      twotruth:{ name: '2 Prawdy 1 Kłamstwo', icon: '🤥' },
+      drawing: { name: 'Szkicuj i Zgaduj', icon: '🎨' },
+      bingo:   { name: 'Korporacyjne Bingo', icon: '🎯' },
+      whoami:  { name: 'Kim Jestem?',    icon: '❓' },
+      memory:  { name: 'Znajdź Pary',    icon: '🧩' },
+      charades:{ name: 'Kalambury',       icon: '🤫' },
+    }},
+    en: { title: 'You might also enjoy:', games: {
+      pm:      { name: 'Countries & Cities', icon: '🌍' },
+      taboo:   { name: 'Forbidden Words',    icon: '🎭' },
+      hangman: { name: 'Hangman',            icon: '🪢' },
+      dots:    { name: 'Dots & Boxes',       icon: '🔵' },
+      twotruth:{ name: '2 Truths 1 Lie',     icon: '🤥' },
+      drawing: { name: 'Sketch & Guess',     icon: '🎨' },
+      bingo:   { name: 'Corporate Bingo',    icon: '🎯' },
+      whoami:  { name: 'Who Am I?',          icon: '❓' },
+      memory:  { name: 'Find Pairs',          icon: '🧩' },
+      charades:{ name: 'Charades',        icon: '🤫' },
+    }},
+    de: { title: 'Das könnte dir gefallen:', games: {
+      pm:      { name: 'Stadt Land Fluss',      icon: '🌍' },
+      taboo:   { name: 'Verbotene Wörter',     icon: '🎭' },
+      hangman: { name: 'Galgenmännchen',       icon: '🪢' },
+      dots:    { name: 'Punkte & Linien',      icon: '🔵' },
+      twotruth:{ name: '2 Wahrheiten 1 Lüge', icon: '🤥' },
+      drawing: { name: 'Zeichnen & Raten',     icon: '🎨' },
+      bingo:   { name: 'Unternehmens-Bingo',   icon: '🎯' },
+      whoami:  { name: 'Wer bin ich?',         icon: '❓' },
+      memory:  { name: 'Memo-Spiel',         icon: '🧩' },
+      charades:{ name: 'Scharade',        icon: '🤫' },
+    }},
+    sv: { title: 'Du kanske gillar:', games: {
+      pm:      { name: 'Länder & Städer',    icon: '🌍' },
+      taboo:   { name: 'Förbjudna ord',      icon: '🎭' },
+      hangman: { name: 'Hänga gubbe',        icon: '🪢' },
+      dots:    { name: 'Punkter & Linjer',   icon: '🔵' },
+      twotruth:{ name: '2 Sanningar 1 Lögn', icon: '🤥' },
+      drawing: { name: 'Skissa & Gissa',     icon: '🎨' },
+      bingo:   { name: 'Företagsbingo',      icon: '🎯' },
+      whoami:  { name: 'Vem är jag?',        icon: '❓' },
+      memory:  { name: 'Memo-spel',          icon: '🧩' },
+      charades:{ name: 'Charader',        icon: '🤫' },
+    }},
+  };
+
+  var urls = {
+    pl: { pm:'/państwa-miasta', taboo:'/zakazane-slowa', hangman:'/wisielec',
+          dots:'/kropki-i-kreski-online', twotruth:'/dwie-prawdy-jedno-klamstwo',
+          drawing:'/szkicuj-i-zgaduj', bingo:'/korporacyjne-bingo', whoami:'/kim-jestem',
+          memory:'/znajdz-pary', charades:'/kalambury' },
+    en: { pm:'/countries-cities-game', taboo:'/forbidden-words', hangman:'/hangman-online',
+          dots:'/dots-and-boxes-online', twotruth:'/two-truths-one-lie',
+          drawing:'/sketch-and-guess', bingo:'/corporate-bingo', whoami:'/who-am-i',
+          memory:'/find-pairs-online', charades:'/charades-online' },
+    de: { pm:'/stadt-land-fluss-online', taboo:'/verbotene-woerter', hangman:'/galgenmaennchen-online',
+          dots:'/punkte-und-linien-online', twotruth:'/zwei-wahrheiten-eine-luege',
+          drawing:'/zeichnen-und-raten', bingo:'/unternehmens-bingo', whoami:'/wer-bin-ich',
+          memory:'/memo-spiel-online', charades:'/scharade' },
+    sv: { pm:'/laender-och-staeder', taboo:'/forbjudna-ord', hangman:'/hanga-gubbe-online',
+          dots:'/punkter-och-linjer-online', twotruth:'/tva-sanningar-en-logn',
+          drawing:'/skissa-och-gissa', bingo:'/foretagsbingo', whoami:'/vem-ar-jag',
+          memory:'/memo-spel-online', charades:'/charader' },
+  };
+
+  var L2 = labels[lng] || labels['en'];
+  var U  = urls[lng]   || urls['en'];
+
+  // All games except the current one, pick 3 varied ones
+  var all = ['pm','taboo','hangman','dots','twotruth','drawing','bingo','whoami','memory'];
+  var others = all.filter(function(g) { return g !== currentGame; });
+  // Always show the same 3 for a given current game (deterministic, varied)
+  var picks = others.slice(0, 3);
+
+  var html = '<div style="border-top:1px solid var(--border);margin-top:28px;padding-top:18px;text-align:center;">'
+    + '<p style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">'
+    + L2.title + '</p>'
+    + '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">';
+
+  picks.forEach(function(g) {
+    var info = L2.games[g];
+    var url  = U[g] || '/';
+    html += '<a href="' + url + '" style="display:flex;align-items:center;gap:6px;'
+      + 'background:var(--card);border:1px solid var(--border);border-radius:50px;'
+      + 'padding:8px 16px;text-decoration:none;color:var(--text);font-size:13px;'
+      + 'font-weight:700;transition:border-color 0.2s;">'
+      + '<span style="font-size:16px;">' + info.icon + '</span>'
+      + info.name + '</a>';
+  });
+
+  html += '</div></div>';
+  el.innerHTML = html;
+}
+
+// ─── URL JOIN CODE PRE-FILL ──────────────────────────────────────
+// Call on page load — reads ?join=XXXXX and pre-fills the join code input
+function prefillJoinCode() {
+  const params = new URLSearchParams(window.location.search);
+  const join   = params.get('join');
+  if (join) {
+    const el = document.getElementById('join-code');
+    if (el) el.value = join.toUpperCase();
+    // Scroll to join card
+    const joinCard = document.getElementById('join-name');
+    if (joinCard) joinCard.focus();
+  }
+}
+
+// ─── ROOM VISIBILITY TOGGLE ──────────────────────────────────────
+// Shared toggle for private/public rooms.
+// Each game's updateSettings() must read getIsPublic() and include it.
+var _isPublic = false;
+
+function getIsPublic() { return _isPublic; }
+
+function setVisibility(isPublic) {
+  _isPublic = !!isPublic;
+  var priv = document.getElementById('vis-private');
+  var pub  = document.getElementById('vis-public');
+  if (priv) priv.classList.toggle('active', !_isPublic);
+  if (pub)  pub.classList.toggle('active',   _isPublic);
+
+  // Show explanation hint
+  var hint = document.getElementById('lbl-vis-hint');
+  if (hint) {
+    var lang = (new URLSearchParams(window.location.search).get('lang')) || window._forceLang || 'pl';
+    var hints = {
+      pl: {
+        priv: '🔒 Prywatny — tylko osoby z Twoim kodem mogą dołączyć.',
+        pub:  '🌐 Publiczny — każdy może zobaczyć pokój na stronie /gry i dołączyć. Świetne do poznawania nowych graczy!',
+      },
+      en: {
+        priv: '🔒 Private — only people with your code can join.',
+        pub:  '🌐 Public — anyone can see your room on the /games page and join. Great way to meet new players!',
+      },
+      de: {
+        priv: '🔒 Privat — nur Personen mit deinem Code können beitreten.',
+        pub:  '🌐 Öffentlich — jeder kann deinen Raum auf der /spiele-Seite sehen. Toll um neue Spieler zu treffen!',
+      },
+      sv: {
+        priv: '🔒 Privat — bara personer med din kod kan gå med.',
+        pub:  '🌐 Offentligt — alla kan se ditt rum på /spel-sidan och gå med. Bra sätt att möta nya spelare!',
+      },
+    };
+    var t = hints[lang] || hints['pl'];
+    hint.textContent = _isPublic ? t.pub : t.priv;
+  }
+
+  if (typeof updateSettings === 'function') updateSettings();
+}
+
+// Keep toggleVisibility as alias for backward compat (not used in new HTML)
+function toggleVisibility() { setVisibility(!_isPublic); }
+
+function initVisibilityToggle() {
+  setVisibility(false); // default: private
+}
+
+// ─── GLOBAL BURGER MENU ──────────────────────────────────────────
+// Injected at top of every page that loads shared.js
+(function() {
+
+  var GB_CSS =
+    '.gb-wrap{margin-bottom:4px;}' +
+    '.gb-topbar{display:flex;align-items:center;justify-content:space-between;' +
+      'padding:10px 0 8px;border-bottom:1px solid var(--border);}' +
+    '.gb-logo{display:flex;align-items:center;gap:9px;text-decoration:none;}' +
+    '.gb-logo-text{font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:2px;' +
+      'background:linear-gradient(135deg,var(--accent),var(--accent2));' +
+      '-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}' +
+    '.gb-btn{display:flex;flex-direction:column;justify-content:center;gap:5px;' +
+      'background:none;border:1px solid var(--border);border-radius:8px;' +
+      'padding:7px 9px;cursor:pointer;transition:border-color 0.2s;flex-shrink:0;}' +
+    '.gb-btn:hover{border-color:var(--accent);}' +
+    '.gb-btn span{display:block;width:18px;height:2px;background:var(--muted);' +
+      'border-radius:2px;transition:all 0.22s;}' +
+    '.gb-btn.open span:nth-child(1){transform:translateY(7px) rotate(45deg);background:var(--accent);}' +
+    '.gb-btn.open span:nth-child(2){opacity:0;transform:scaleX(0);}' +
+    '.gb-btn.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);background:var(--accent);}' +
+    '.gb-nav{display:none;flex-direction:column;background:var(--card);' +
+      'border:1px solid var(--border);border-radius:14px;padding:10px;' +
+      'margin-top:6px;gap:2px;animation:gbSlide 0.18s ease;}' +
+    '.gb-nav.open{display:flex;}' +
+    '@keyframes gbSlide{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}' +
+    '.gb-sec{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;' +
+      'color:var(--muted);padding:7px 10px 3px;margin-top:2px;}' +
+    '.gb-sec:first-child{margin-top:0;}' +
+    '.gb-nav a{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;' +
+      'text-decoration:none;color:var(--text);font-size:13px;font-weight:700;transition:background 0.15s;}' +
+    '.gb-nav a:hover{background:var(--surface);color:var(--accent);}' +
+    '.gb-ico{font-size:17px;width:22px;text-align:center;flex-shrink:0;}' +
+    '.gb-div{height:1px;background:var(--border);margin:4px 6px;}';
+
+  var LABELS = {
+    pl: { home:'Strona główna', games:'Wszystkie gry', rooms:'Aktywne pokoje', privacy:'Prywatność', bug:'🐛 Zgłoś błąd', rules:'Zasady gier',
+          cats:'Kategorie', howto_drawing:'Jak grać — Szkicuj i Zgaduj', home:'Strona główna', blog:'Blog', words:'Słowa na literę',
+          sg:'Gry', sr:'Zasady', sm:'Więcej',
+          gpm:'Państwa-Miasta', gtaboo:'Zakazane Słowa',
+          ghang:'Wisielec', gdots:'Kropki i Kreski', gtt:'Dwie Prawdy Jedno Kłamstwo', gbingo:'Korporacyjne Bingo', gdrawing:'Szkicuj i Zgaduj', gwhoami:'Kim Jestem?', gmemory:'Znajdź Pary', gcharades:'Kalambury' },
+    en: { home:'Home', games:'All Games', rooms:'Live Rooms', privacy:'Privacy', bug:'🐛 Report a Bug', rules:'Game Rules',
+          cats:'Categories', words:'Words by Letter',
+          sg:'Games', sr:'Rules', sm:'More',
+          gpm:'Countries & Cities', gtaboo:'Forbidden Words',
+          ghang:'Hangman', gdots:'Dots & Boxes', gtt:'2 Truths 1 Lie', gbingo:'Corporate Bingo', gdrawing:'Sketch & Guess', gwhoami:'Who Am I?', gmemory:'Find Pairs', gcharades:'Charades' },
+    de: { home:'Startseite', games:'Alle Spiele', rooms:'Aktive Räume', privacy:'Datenschutz', bug:'🐛 Fehler melden', rules:'Spielregeln',
+          cats:'Kategorien', howto_drawing:'Spielregeln — Zeichnen & Raten', home:'Startseite', words:'Wörter nach Buchstabe',
+          sg:'Spiele', sr:'Regeln', sm:'Mehr',
+          gpm:'Stadt Land Fluss', gtaboo:'Verbotene Wörter',
+          ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge', gbingo:'Unternehmens-Bingo', gdrawing:'Zeichnen & Raten', gwhoami:'Wer bin ich?', gmemory:'Memo-Spiel', gcharades:'Scharade' },
+    sv: { home:'Startsida', games:'Alla spel', rooms:'Aktiva rum', privacy:'Integritetspolicy', bug:'🐛 Rapportera fel', rules:'Spelregler',
+          cats:'Kategorier', howto_drawing:'Spelregler — Skissa & Gissa', home:'Startsida', words:'Ord per bokstav',
+          sg:'Spel', sr:'Regler', sm:'Mer',
+          gpm:'Länder & Städer', gtaboo:'Förbjudna ord',
+          ghang:'Hänga gubbe', gdots:'Punkter & Linjer', gtt:'2 Sanningar 1 Lögn', gbingo:'Företagsbingo', gdrawing:'Skissa & Gissa', gwhoami:'Vem är jag?', gmemory:'Memo-spel', gcharades:'Charader',
+          privacy:'Integritetspolicy' },
+  };
+
+  window._gbLabels = LABELS;
+
+  var SUPPORTED_LANGS = ['pl','en','de','sv'];
+  function getLang() {
+    var path = window.location.pathname;
+    var pathLang = path.match(/\/blog\/(pl|de|sv)\//) ? path.match(/\/blog\/(pl|de|sv)\//)[1] :
+                   path.match(/\/(gry|jak-grac)/) ? 'pl' :
+                   path.match(/\/(spiele|wie-man-spielt)/) ? 'de' :
+                   path.match(/\/(spel|hur-man-spelar)/) ? 'sv' : null;
+    var raw = (new URLSearchParams(window.location.search).get('lang')) ||
+              (window._forceLang) ||
+              pathLang ||
+              (navigator.language || '').slice(0, 2) || 'pl';
+    return SUPPORTED_LANGS.indexOf(raw) !== -1 ? raw : 'pl';
+  }
+
+  function injectBurger() {
+    if (document.getElementById('gb-topbar')) return;
+
+    // Inject CSS
+    if (!document.getElementById('gb-style')) {
+      var st = document.createElement('style');
+      st.id = 'gb-style';
+      st.textContent = GB_CSS;
+      document.head.appendChild(st);
+    }
+
+    var lang     = getLang();
+    var t        = LABELS[lang] || LABELS['en'];
+    var ql       = '?lang=' + lang;
+    var ruleBase = lang === 'pl' ? '/jak-grac' :
+                   lang === 'de' ? '/wie-man-spielt' :
+                   lang === 'sv' ? '/hur-man-spelar' : '/how-to-play';
+
+    // ── Build topbar ─────────────────────────────────────────────
+    var topbar = document.createElement('div');
+    topbar.id = 'gb-topbar';
+    topbar.className = 'gb-topbar';
+
+    // Logo
+    var logo = document.createElement('a');
+    logo.className = 'gb-logo';
+    logo.href = '/' + ql;
+    logo.innerHTML =
+      '<svg viewBox="0 0 80 80" width="28" height="28" xmlns="http://www.w3.org/2000/svg">' +
+        '<circle cx="40" cy="40" r="34" fill="none" stroke="#ff6b35" stroke-width="3"/>' +
+        '<path d="M6 40 Q40 24 74 40" fill="none" stroke="rgba(255,107,53,0.4)" stroke-width="1.5"/>' +
+        '<path d="M6 40 Q40 56 74 40" fill="none" stroke="rgba(255,107,53,0.4)" stroke-width="1.5"/>' +
+        '<ellipse cx="40" cy="40" rx="17" ry="34" fill="none" stroke="rgba(255,107,53,0.4)" stroke-width="1.5"/>' +
+        '<circle cx="32" cy="22" r="4" fill="#06d6a0"/>' +
+        '<circle cx="55" cy="32" r="4" fill="#06d6a0"/>' +
+        '<circle cx="27" cy="50" r="4" fill="#06d6a0"/>' +
+      '</svg>' +
+      '<span class="gb-logo-text">panstwamiastagra.com</span>';
+
+    // Hamburger button
+    var btn = document.createElement('button');
+    btn.id = 'gb-toggle';
+    btn.className = 'gb-btn';
+    btn.setAttribute('aria-label', 'Menu');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.innerHTML = '<span></span><span></span><span></span>';
+    btn.onclick = function() {
+      var nav    = document.getElementById('gb-nav');
+      var isOpen = nav.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.setAttribute('aria-expanded', String(isOpen));
+    };
+
+    topbar.appendChild(logo);
+    topbar.appendChild(btn);
+
+    // ── Build nav ────────────────────────────────────────────────
+    var nav = document.createElement('nav');
+    nav.id = 'gb-nav';
+    nav.className = 'gb-nav';
+    nav.innerHTML =
+      '<div class="gb-sec">' + t.sg + '</div>' +
+      '<a href="/' + ql + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
+      '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
+      '<div class="gb-div"></div>' +
+      '<a href="/' + ql + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
+      '<a href="' + (lang==='pl'?'/zakazane-slowa':lang==='de'?'/verbotene-woerter':lang==='sv'?'/forbjudna-ord':'/forbidden-words') + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
+      '<a href="' + (lang==='pl'?'/wisielec':lang==='de'?'/galgenmaennchen-online':lang==='sv'?'/hanga-gubbe-online':'/hangman-online') + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
+      '<a href="' + (lang==='pl'?'/kropki-i-kreski-online':lang==='de'?'/punkte-und-linien-online':lang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
+      '<a href="' + (lang==='pl'?'/dwie-prawdy-jedno-klamstwo':lang==='de'?'/zwei-wahrheiten-eine-luege':lang==='sv'?'/tva-sanningar-en-logn':'/two-truths-one-lie') + '"><span class="gb-ico">🤥</span>' + t.gtt + '</a>' +
+      '<a href="' + (lang==='pl'?'/korporacyjne-bingo':lang==='de'?'/unternehmens-bingo':lang==='sv'?'/foretagsbingo':'/corporate-bingo') + '"><span class="gb-ico">🎯</span>' + (t.gbingo||'Corporate Bingo') + '</a>' +
+      '<a href="' + (lang==='pl'?'/szkicuj-i-zgaduj':lang==='de'?'/zeichnen-und-raten':lang==='sv'?'/skissa-och-gissa':'/sketch-and-guess') + '"><span class="gb-ico">🎨</span>' + (t.gdrawing||'Sketch & Guess') + '</a>' +
+      '<a href="' + (lang==='pl'?'/kim-jestem':lang==='de'?'/wer-bin-ich':lang==='sv'?'/vem-ar-jag':'/who-am-i') + '"><span class="gb-ico">❓</span>' + (t.gwhoami||'Who Am I?') + '</a>' +
+      '<a href="' + (lang==='pl'?'/znajdz-pary':lang==='de'?'/memo-spiel-online':lang==='sv'?'/memo-spel-online':'/find-pairs-online') + '"><span class="gb-ico">🧩</span>' + (t.gmemory||'Find Pairs') + '</a>' +
+      '<a href="' + (lang==='pl'?'/kalambury':lang==='de'?'/scharade':lang==='sv'?'/charader':'/charades-online') + '"><span class="gb-ico">🤫</span>' + (t.gcharades||'Charades') + '</a>' +
+      '<a href="/rooms' + ql + '"><span class="gb-ico">🔴</span>' + (t.rooms||'Live Rooms') + '</a>' +
+      '<div class="gb-div"></div>' +
+      '<div class="gb-sec">' + t.sr + '</div>' +
+      '<a href="' + ruleBase + '"><span class="gb-ico">📖</span>' + t.rules + '</a>' +
+      '<div class="gb-div"></div>' +
+      '<a href="/privacy' + ql + '"><span class="gb-ico">🔒</span>' + t.privacy + '</a>' +
+      '<a href="/blog' + (lang==='pl'?'/pl':lang==='de'?'/de':lang==='sv'?'/sv':'') + '" ><span class="gb-ico">✍️</span>' + (t.blog||'Blog') + '</a>' +
+      '<a href="#" onclick="event.preventDefault();openBugModal();" style="cursor:pointer;"><span class="gb-ico">🐛</span>' + (t.bug||'Report a Bug') + '</a>';
+
+    // ── Wrap and insert ──────────────────────────────────────────
+    var wrap = document.createElement('div');
+    wrap.className = 'gb-wrap';
+    wrap.appendChild(topbar);
+    wrap.appendChild(nav);
+
+    var container = document.querySelector('.container');
+    if (container) {
+      container.insertBefore(wrap, container.firstChild);
+    } else {
+      document.body.insertBefore(wrap, document.body.firstChild);
+    }
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      var n = document.getElementById('gb-nav');
+      var b = document.getElementById('gb-toggle');
+      if (n && n.classList.contains('open') && b &&
+          !n.contains(e.target) && !b.contains(e.target)) {
+        n.classList.remove('open');
+        b.classList.remove('open');
+        b.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectBurger);
+  } else {
+    injectBurger();
+  }
+
+})();
+
+// ─── ANNOUNCEMENT BANNER ─────────────────────────────────────────
+(function() {
+  function injectBanner(b) {
+    if (!b || !b.active || !b.text) return;
+    var cols = {
+      info:    { bg:'rgba(29,78,216,.15)',  border:'#1d4ed8', text:'#93c5fd' },
+      warning: { bg:'rgba(120,53,15,.15)',  border:'#92400e', text:'#fbbf24' },
+      success: { bg:'rgba(20,83,45,.15)',   border:'#14532d', text:'#86efac' },
+    };
+    var col = cols[b.type] || cols.info;
+    var el = document.createElement('div');
+    el.id = 'site-banner';
+    el.style.cssText = [
+      'width:100%', 'padding:10px 20px', 'text-align:center',
+      'font-size:13px', 'font-weight:700',
+      'background:' + col.bg,
+      'border-bottom:1px solid ' + col.border,
+      'color:' + col.text,
+      'position:relative', 'z-index:100',
+    ].join(';');
+    el.textContent = b.text;
+    var wrap = document.querySelector('.gb-wrap') || document.querySelector('.container') || document.body;
+    wrap.parentNode ? wrap.parentNode.insertBefore(el, wrap) : document.body.insertBefore(el, document.body.firstChild);
+  }
+
+  function loadBanner() {
+    fetch('/api/banner')
+      .then(function(r) { return r.json(); })
+      .then(injectBanner)
+      .catch(function() {});
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadBanner);
+  } else {
+    loadBanner();
+  }
+})();
+
+// Unified language switcher — same behaviour everywhere.
+// On game pages: calls setUiLang (translates in place + updates URL).
+// On SEO/static pages: navigates to same page with new lang param.
+window._switchLang = function(code) {
+  if (typeof setUiLang === 'function') {
+    setUiLang(code);
+  } else if (typeof setLang === 'function') {
+    setLang(code);
+  } else {
+    var url = new URL(window.location.href);
+    url.searchParams.set('lang', code);
+    window.location.href = url.toString();
+    return;
+  }
+  // Rebuild burger with new language
+  if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
+  // Refresh footer links and flags to match new language
+  if (typeof window._refreshFooter === 'function') window._refreshFooter();
+};
+
+// Rebuild burger nav in-place when language changes
+window._rebuildBurger = function(newLang) {
+  var nav = document.getElementById('gb-nav');
+  var logo = document.querySelector('.gb-logo');
+  if (!nav) return;
+  var t        = (window._gbLabels || {})[newLang] || (window._gbLabels || {})['en'] || {};
+  var ql       = '?lang=' + newLang;
+  var ruleBase = (newLang === 'pl') ? '/jak-grac' : '/how-to-play';
+  if (!t.home) return; // labels not loaded yet
+  nav.innerHTML =
+    '<div class="gb-sec">' + t.sg + '</div>' +
+    '<a href="/' + ql + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
+    '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
+    '<div class="gb-div"></div>' +
+    '<a href="/' + ql + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
+    '<a href="' + (newLang==='pl'?'/zakazane-slowa':newLang==='de'?'/verbotene-woerter':newLang==='sv'?'/forbjudna-ord':'/forbidden-words') + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
+    '<a href="' + (newLang==='pl'?'/wisielec':newLang==='de'?'/galgenmaennchen-online':newLang==='sv'?'/hanga-gubbe-online':'/hangman-online') + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
+    '<a href="' + (newLang==='pl'?'/kropki-i-kreski-online':newLang==='de'?'/punkte-und-linien-online':newLang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
+    '<a href="' + (newLang==='pl'?'/dwie-prawdy-jedno-klamstwo':newLang==='de'?'/zwei-wahrheiten-eine-luege':newLang==='sv'?'/tva-sanningar-en-logn':'/two-truths-one-lie') + '"><span class="gb-ico">🤥</span>' + t.gtt + '</a>' +
+    '<a href="' + (newLang==='pl'?'/korporacyjne-bingo':newLang==='de'?'/unternehmens-bingo':newLang==='sv'?'/foretagsbingo':'/corporate-bingo') + '"><span class="gb-ico">🎯</span>' + (t.gbingo||'Corporate Bingo') + '</a>' +
+    '<a href="' + (newLang==='pl'?'/szkicuj-i-zgaduj':newLang==='de'?'/zeichnen-und-raten':newLang==='sv'?'/skissa-och-gissa':'/sketch-and-guess') + '"><span class="gb-ico">🎨</span>' + (t.gdrawing||'Sketch & Guess') + '</a>' +
+    '<a href="' + (newLang==='pl'?'/kim-jestem':newLang==='de'?'/wer-bin-ich':newLang==='sv'?'/vem-ar-jag':'/who-am-i') + '"><span class="gb-ico">❓</span>' + (t.gwhoami||'Who Am I?') + '</a>' +
+    '<a href="' + (newLang==='pl'?'/znajdz-pary':newLang==='de'?'/memo-spiel-online':newLang==='sv'?'/memo-spel-online':'/find-pairs-online') + '"><span class="gb-ico">🧩</span>' + (t.gmemory||'Find Pairs') + '</a>' +
+    '<a href="' + (newLang==='pl'?'/kalambury':newLang==='de'?'/scharade':newLang==='sv'?'/charader':'/charades-online') + '"><span class="gb-ico">🤫</span>' + (t.gcharades||'Charades') + '</a>' +
+    '<a href="/rooms' + ql + '"><span class="gb-ico">🔴</span>' + (t.rooms||'Live Rooms') + '</a>' +
+    '<div class="gb-div"></div>' +
+    '<div class="gb-sec">' + t.sr + '</div>' +
+    '<a href="' + ruleBase + '"><span class="gb-ico">📖</span>' + t.rules + '</a>' +
+    '<div class="gb-div"></div>' +
+    '<a href="/blog' + (newLang==='pl'?'/pl':newLang==='de'?'/de':newLang==='sv'?'/sv':'') + '"><span class="gb-ico">✍️</span>' + (t.blog||'Blog') + '</a>' +
+    '<a href="/privacy' + ql + '"><span class="gb-ico">🔒</span>' + t.privacy + '</a>' +
+    '<a href="#" onclick="event.preventDefault();openBugModal();" style="cursor:pointer;"><span class="gb-ico">🐛</span>' + (t.bug||'Report a Bug') + '</a>';
+  // Update logo href
+  if (logo) logo.href = '/' + ql;
+};
+// Keep old name as alias so nothing breaks
+window._footerSetLang = window._switchLang;
+
+// Legacy — replaced by _refreshFooter
+window._buildFooterLangBtns = function() {
+  var el = document.getElementById('footer-lang-btns');
+  if (!el) return;
+  var langs = (typeof LANGS !== 'undefined')
+    ? Object.keys(LANGS).map(function(code) {
+        return { code: code, label: LANGS[code].name };
+      })
+    : [{code:'pl',label:'🇵🇱 PL'},{code:'en',label:'🇬🇧 EN'}];
+  el.innerHTML = langs.map(function(l) {
+    return '<button onclick="window._switchLang(\'' + l.code + '\')" ' +
+      'style="background:none;border:none;color:var(--muted);font-size:12px;' +
+      'cursor:pointer;font-family:Nunito,sans-serif;font-weight:700;padding:0 3px;">' +
+      l.label + '</button>';
+  }).join('');
+};
+// Run after everything is loaded
+
+// ─── SITE FOOTER ─────────────────────────────────────────────────
+// Injected into every game page automatically on DOMContentLoaded
+(function() {
+  function getFooterLang() {
+    // Use the live page lang variable if available, else URL param, else browser lang
+    if (typeof lang !== 'undefined' && lang) return lang;
+    var _raw = (new URLSearchParams(window.location.search).get('lang')) ||
+               (window._forceLang) ||
+               (navigator.language || '').slice(0,2) || 'pl';
+    return ['pl','en','de','sv'].indexOf(_raw) !== -1 ? _raw : 'pl';
+  }
+
+  function buildFooterHTML(footerLang) {
+    var lp = (footerLang === 'pl') ? 'pl' : (footerLang === 'de') ? 'de' : (footerLang === 'sv') ? 'sv' : 'en';
+    var ruleBase   = lp === 'pl' ? '/jak-grac' :
+                     lp === 'de' ? '/wie-man-spielt' :
+                     lp === 'sv' ? '/hur-man-spelar' : '/how-to-play';
+    var rulesLinks = lp === 'pl'
+      ? { pm:      '/jak-grac',
+          tabu:    '/jak-grac/zakazane-slowa',
+          hang:    '/jak-grac/wisielec',
+          dots:    '/jak-grac/kropki-i-kreski',
+          tt:      '/jak-grac/dwie-prawdy-jedno-klamstwo',
+          drawing: '/jak-grac/szkicuj-i-zgaduj',
+          bingo:   '/jak-grac/korporacyjne-bingo',
+          whoami:  '/kim-jestem',
+          memory:  '/jak-grac/znajdz-pary' }
+      : lp === 'de'
+      ? { pm:      '/wie-man-spielt',
+          tabu:    '/wie-man-spielt/verbotene-woerter',
+          hang:    '/wie-man-spielt/galgenmaennchen-online',
+          dots:    '/wie-man-spielt/punkte-und-linien-online',
+          tt:      '/wie-man-spielt/zwei-wahrheiten-eine-luege',
+          drawing: '/wie-man-spielt/zeichnen-und-raten',
+          bingo:   '/wie-man-spielt/unternehmens-bingo',
+          whoami:  '/wer-bin-ich',
+          memory:  '/wie-man-spielt/memo-spiel' }
+      : lp === 'sv'
+      ? { pm:      '/hur-man-spelar',
+          tabu:    '/hur-man-spelar/forbjudna-ord',
+          hang:    '/hur-man-spelar/hanga-gubbe-online',
+          dots:    '/hur-man-spelar/punkter-och-linjer-online',
+          tt:      '/hur-man-spelar/tva-sanningar-en-logn',
+          drawing: '/hur-man-spelar/skissa-och-gissa',
+          bingo:   '/hur-man-spelar/foretagsbingo',
+          whoami:  '/vem-ar-jag',
+          memory:  '/hur-man-spelar/memo-spel' }
+      : { pm:      '/how-to-play',
+          tabu:    '/how-to-play/forbidden-words',
+          hang:    '/how-to-play/hangman',
+          dots:    '/how-to-play/dots-and-boxes',
+          tt:      '/how-to-play/two-truths-one-lie',
+          drawing: '/how-to-play/sketch-and-guess',
+          bingo:   '/how-to-play/corporate-bingo',
+          whoami:  '/who-am-i',
+          memory:  '/how-to-play/find-pairs' };
+
+    var L = {
+      pl: { games:'Gry', rules:'Zasady gry', about:'O grze',
+            cats:'Kategorie', tagline:'Darmowe gry online dla znajomych i rodziny',
+            privacy:'Prywatność',
+            gpm:'Państwa-Miasta', gtaboo:'Zakazane Słowa',
+            ghang:'Wisielec', gdots:'Kropki i Kreski', gtt:'Dwie Prawdy Jedno Kłamstwo',
+            gbingo:'Korporacyjne Bingo',
+            gdrawing:'Szkicuj i Zgaduj', gwhoami:'Kim Jestem?', gmemory:'Znajdź Pary', gcharades:'Kalambury', rooms:'Aktywne pokoje',
+            howto_pm:'Jak grać — Państwa-Miasta',
+            howto_tabu:'Jak grać — Zakazane Słowa',
+            howto_hang:'Jak grać — Wisielec',
+            howto_dots:'Jak grać — Kropki i Kreski',
+            howto_tt:'Jak grać — Dwie Prawdy',
+            howto_drawing:'Jak grać — Szkicuj i Zgaduj',
+            howto_bingo:'Jak grać — Korporacyjne Bingo',
+            howto_whoami:'Jak grać — Kim Jestem?',
+            howto_memory:'Jak grać — Znajdź Pary',
+            home:'Strona główna', words:'Słowa na literę', bug:'🐛 Zgłoś błąd' },
+      en: { games:'Games', rules:'Rules', about:'About',
+            cats:'Categories', tagline:'Free online multiplayer games for friends and family',
+            privacy:'Privacy',
+            gpm:'Countries & Cities', gtaboo:'Forbidden Words',
+            ghang:'Hangman', gdots:'Dots & Boxes', gtt:'2 Truths 1 Lie',
+            gbingo:'Corporate Bingo',
+            gdrawing:'Sketch & Guess', gwhoami:'Who Am I?', gmemory:'Find Pairs', gcharades:'Charades', rooms:'Live Rooms',
+            howto_pm:'How to play — Countries & Cities',
+            howto_tabu:'How to play — Forbidden Words',
+            howto_hang:'How to play — Hangman',
+            howto_dots:'How to play — Dots & Boxes',
+            howto_tt:'How to play — 2 Truths 1 Lie',
+            howto_drawing:'How to play — Sketch & Guess',
+            howto_bingo:'How to play — Corporate Bingo',
+            howto_whoami:'How to play — Who Am I?',
+            howto_memory:'How to play — Find Pairs', home:'Home', blog:'Blog', words:'Words by letter', bug:'🐛 Report a Bug' },
+      de: { games:'Spiele', rules:'Regeln', about:'Über',
+            cats:'Kategorien', tagline:'Kostenlose Multiplayer-Spiele online',
+            privacy:'Datenschutz',
+            gpm:'Stadt Land Fluss', gtaboo:'Verbotene Wörter',
+            ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge',
+            gbingo:'Unternehmens-Bingo',
+            gdrawing:'Zeichnen & Raten', gwhoami:'Wer bin ich?', gmemory:'Memo-Spiel', rooms:'Aktive Räume',
+            howto_pm:'Spielregeln — Stadt Land Fluss',
+            howto_tabu:'Spielregeln — Verbotene Wörter',
+            howto_hang:'Spielregeln — Galgenmännchen',
+            howto_dots:'Spielregeln — Punkte & Linien',
+            howto_tt:'Spielregeln — 2 Wahrheiten 1 Lüge',
+            howto_drawing:'Spielregeln — Zeichnen & Raten',
+            howto_bingo:'Spielregeln — Unternehmens-Bingo',
+            howto_whoami:'Spielregeln — Wer bin ich?',
+            howto_memory:'Spielregeln — Memo-Spiel',
+            blog:'Blog', words:'Wörter nach Buchstabe', bug:'🐛 Fehler melden' },
+      sv: { games:'Spel', rules:'Regler', about:'Om',
+            cats:'Kategorier', tagline:'Gratis multiplayer-spel online för vänner och familj',
+            privacy:'Integritetspolicy',
+            gpm:'Länder & Städer', gtaboo:'Förbjudna ord',
+            ghang:'Hänga gubbe', gdots:'Punkter & Linjer', gtt:'2 Sanningar 1 Lögn',
+            gbingo:'Företagsbingo',
+            gdrawing:'Skissa & Gissa', gwhoami:'Vem är jag?', gmemory:'Memo-spel', rooms:'Aktiva rum',
+            howto_pm:'Spelregler — Länder & Städer',
+            howto_tabu:'Spelregler — Förbjudna ord',
+            howto_hang:'Spelregler — Hänga gubbe',
+            howto_dots:'Spelregler — Punkter & Linjer',
+            howto_tt:'Spelregler — 2 Sanningar 1 Lögn',
+            howto_drawing:'Spelregler — Skissa & Gissa',
+            howto_bingo:'Spelregler — Företagsbingo',
+            howto_whoami:'Spelregler — Vem är jag?',
+            howto_memory:'Spelregler — Memo-spel',
+            blog:'Blog', words:'Ord per bokstav', bug:'🐛 Rapportera fel' },
+    };
+    var t = L[lp] || L['en'];
+
+    return '<div style="max-width:980px;margin:0 auto;">' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:28px;margin-bottom:28px;">' +
+        '<div>' +
+          '<div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;">' + t.games + '</div>' +
+          '<div style="display:flex;flex-direction:column;gap:6px;">' +
+            '<a href="/?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🌍 ' + t.gpm + '</a>' +
+            '<a href="' + (footerLang==='pl'?'/zakazane-slowa':footerLang==='de'?'/verbotene-woerter':footerLang==='sv'?'/forbjudna-ord':'/forbidden-words') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎭 ' + t.gtaboo + '</a>' +
+            '<a href="' + (footerLang==='pl'?'/wisielec':footerLang==='de'?'/galgenmaennchen-online':footerLang==='sv'?'/hanga-gubbe-online':'/hangman-online') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🪢 ' + t.ghang + '</a>' +
+            '<a href="' + (footerLang==='pl'?'/kropki-i-kreski-online':footerLang==='de'?'/punkte-und-linien-online':footerLang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔵 ' + t.gdots + '</a>' +
+            '<a href="' + (footerLang==='pl'?'/dwie-prawdy-jedno-klamstwo':footerLang==='de'?'/zwei-wahrheiten-eine-luege':footerLang==='sv'?'/tva-sanningar-en-logn':'/two-truths-one-lie') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🤥 ' + t.gtt + '</a>' +
+            '<a href="' + (footerLang==='pl'?'/korporacyjne-bingo':footerLang==='de'?'/unternehmens-bingo':footerLang==='sv'?'/foretagsbingo':'/corporate-bingo') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎯 ' + (t.gbingo||'Corporate Bingo') + '</a>' +
+            '<a href="' + (footerLang==='pl'?'/szkicuj-i-zgaduj':footerLang==='de'?'/zeichnen-und-raten':footerLang==='sv'?'/skissa-och-gissa':'/sketch-and-guess') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎨 ' + (t.gdrawing||'Sketch & Guess') + '</a>' +
+            '<a href="' + (footerLang==='pl'?'/kim-jestem':footerLang==='de'?'/wer-bin-ich':footerLang==='sv'?'/vem-ar-jag':'/who-am-i') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">❓ ' + (t.gwhoami||'Who Am I?') + '</a>' +
+            '<a href="' + (footerLang==='pl'?'/znajdz-pary':footerLang==='de'?'/memo-spiel-online':footerLang==='sv'?'/memo-spel-online':'/find-pairs-online') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🧩 ' + (t.gmemory||'Find Pairs') + '</a>' +
+            '<a href="/games?lang=' + footerLang + '" style="color:var(--accent);font-size:13px;font-weight:700;text-decoration:none;">→ ' + t.games + '</a>' +
+            '<a href="/rooms?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔴 ' + (t.rooms||'Live Rooms') + '</a>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;">' + t.rules + '</div>' +
+          '<div style="display:flex;flex-direction:column;gap:6px;">' +
+            '<a href="' + rulesLinks.pm   + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_pm   + '</a>' +
+            '<a href="' + rulesLinks.tabu + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_tabu + '</a>' +
+            '<a href="' + rulesLinks.hang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_hang + '</a>' +
+            '<a href="' + rulesLinks.dots + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_dots + '</a>' +
+            '<a href="' + rulesLinks.tt   + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + t.howto_tt   + '</a>' +
+            '<a href="' + rulesLinks.drawing + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + (t.howto_drawing||'How to play — Sketch & Guess') + '</a>' +
+            '<a href="' + rulesLinks.bingo + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + (t.howto_bingo||'How to play — Corporate Bingo') + '</a>' +
+            '<a href="' + rulesLinks.whoami + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + (t.howto_whoami||'How to play — Who Am I?') + '</a>' +
+            '<a href="' + rulesLinks.memory + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + (t.howto_memory||'How to play — Find Pairs') + '</a>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;">' + t.about + '</div>' +
+          '<div style="display:flex;flex-direction:column;gap:6px;">' +
+            '<a href="/?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🏠 ' + (t.home||'Home') + '</a>' +
+            '<a href="/privacy" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔒 ' + t.privacy + '</a>' +
+            '<a href="/blog' + (footerLang==='pl'?'/pl':footerLang==='de'?'/de':footerLang==='sv'?'/sv':'') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">✍️ ' + (t.blog||'Blog') + '</a>' +
+            '<a href="#" onclick="event.preventDefault();if(typeof openBugModal===\'function\')openBugModal();" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;">' + (t.bug||'🐛 Report a Bug') + '</a>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="border-top:1px solid var(--border);padding-top:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">' +
+        '<span style="color:var(--muted);font-size:12px;font-weight:600;">© 2025 panstwamiastagra.com · ' + t.tagline + '</span>' +
+
+      '</div>' +
+    '</div>';
+  }
+
+  // Rebuild footer content whenever language changes
+  window._refreshFooter = function() {
+    var el = document.getElementById('site-footer');
+    if (el) el.innerHTML = buildFooterHTML(getFooterLang());
+  };
+
+  function injectFooter() {
+    if (document.getElementById('site-footer')) return;
+    var footer = document.createElement('div');
+    footer.id = 'site-footer';
+    footer.style.cssText = [
+      'border-top:1px solid var(--border)',
+      'margin-top:48px',
+      'padding:32px 16px 24px',
+      'background:var(--surface)',
+    ].join(';');
+    footer.innerHTML = buildFooterHTML(getFooterLang());
+    document.body.appendChild(footer);
+    // Rebuild after all scripts load so LANGS flags are correct
+    window.addEventListener('load', window._refreshFooter);
+  }
+  // ─── GDPR COOKIE BANNER ────────────────────────────────────────
+  function injectGDPR() {
+    if (localStorage.getItem('gdpr_consent')) return;
+    if (document.getElementById('gdpr-banner')) return;
+
+    var _rl = (new URLSearchParams(window.location.search).get('lang')) ||
+               (navigator.language || '').slice(0,2) || 'pl';
+    var lang = ['pl','en','de','sv'].indexOf(_rl) !== -1 ? _rl : 'pl';
+
+    var texts = {
+      pl: {
+        msg: 'Ta strona używa plików cookie do analizy ruchu (Google Analytics). Nie sprzedajemy danych. <a href="/privacy" style="color:var(--accent2)">Polityka prywatności</a>. Możesz zaakceptować lub odrzucić analitykę.',
+        accept: '✓ Akceptuję',
+        reject: 'Odrzucam',
+      },
+      en: {
+        msg: "This site uses cookies for traffic analytics (Google Analytics). We don't sell data. You can accept or decline analytics.",
+        accept: '✓ Accept',
+        reject: 'Decline',
+      },
+    };
+    var t = texts[lang] || texts['en'];
+
+    var banner = document.createElement('div');
+    banner.id = 'gdpr-banner';
+    banner.style.cssText = [
+      'position:fixed', 'bottom:0', 'left:0', 'right:0',
+      'background:var(--card)', 'border-top:2px solid var(--border)',
+      'padding:16px 20px', 'z-index:9999',
+      'display:flex', 'align-items:center', 'gap:12px', 'flex-wrap:wrap',
+      'box-shadow:0 -4px 24px rgba(0,0,0,0.3)',
+    ].join(';');
+
+    banner.innerHTML =
+      '<span style="flex:1;min-width:200px;font-size:13px;font-weight:600;color:var(--muted);">🍪 ' + t.msg + '</span>' +
+      '<button id="gdpr-accept" style="background:linear-gradient(135deg,var(--accent),#ff8c55);color:#fff;border:none;border-radius:8px;padding:9px 20px;font-family:Nunito,sans-serif;font-weight:800;font-size:13px;cursor:pointer;white-space:nowrap;">' + t.accept + '</button>' +
+      '<button id="gdpr-reject" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:9px 16px;font-family:Nunito,sans-serif;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;">' + t.reject + '</button>';
+
+    document.body.appendChild(banner);
+
+    document.getElementById('gdpr-accept').onclick = function() {
+      localStorage.setItem('gdpr_consent', 'accepted');
+      banner.remove();
+    };
+    document.getElementById('gdpr-reject').onclick = function() {
+      localStorage.setItem('gdpr_consent', 'rejected');
+      // Disable GA if rejected
+      window['ga-disable-G-BJ79ZM6WPQ'] = true;
+      banner.remove();
+    };
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { injectFooter(); injectGDPR(); });
+  } else {
+    injectFooter(); injectGDPR();
+  }
+})();
+
+// ─── BUG REPORT BUTTON + MODAL ───────────────────────────────────
+(function() {
+  var GAME_NAMES = {
+    '/':          'Państwa-Miasta',
+    '/taboo':     'Forbidden Words',
+    '/dots':      'Dots & Boxes',
+    '/hangman':   'Hangman',
+    '/twotruth':  '2 Truths 1 Lie',
+    '/bingo':     'Corporate Bingo',
+    '/drawing':   'Sketch & Guess',
+  };
+
+  var LABELS = {
+    pl: {
+      btn:         '🐛',
+      title:       'Zgłoś błąd',
+      game:        'Gra',
+      desc:        'Co się wydarzyło?',
+      descHint:    'Opisz błąd jak najdokładniej...',
+      email:       'Twój email (opcjonalnie)',
+      emailHint:   'Jeśli chcesz otrzymać odpowiedź',
+      send:        'Wyślij zgłoszenie',
+      cancel:      'Anuluj',
+      sending:     'Wysyłanie...',
+      thanks:      '✓ Dziękujemy! Przyjrzeliśmy się temu.',
+      errorShort:  'Opisz błąd bardziej szczegółowo (min. 20 znaków).',
+      errorFail:   'Coś poszło nie tak. Spróbuj ponownie.',
+      errorLimit:  'Za dużo zgłoszeń. Spróbuj ponownie za godzinę.',
+    },
+    en: {
+      btn:         '🐛',
+      title:       'Report a Bug',
+      game:        'Game',
+      desc:        'What happened?',
+      descHint:    'Describe the bug as clearly as possible...',
+      email:       'Your email (optional)',
+      emailHint:   "If you'd like us to follow up",
+      send:        'Send Report',
+      cancel:      'Cancel',
+      sending:     'Sending...',
+      thanks:      "✓ Thanks! We'll look into it.",
+      errorShort:  'Please describe the bug in more detail (min 20 characters).',
+      errorFail:   'Something went wrong. Please try again.',
+      errorLimit:  'Too many reports. Please try again in an hour.',
+    },
+    de: {
+      btn:         '🐛',
+      title:       'Fehler melden',
+      game:        'Spiel',
+      desc:        'Was ist passiert?',
+      descHint:    'Beschreibe den Fehler so genau wie möglich...',
+      email:       'Deine E-Mail (optional)',
+      emailHint:   'Falls wir uns melden sollen',
+      send:        'Bericht senden',
+      cancel:      'Abbrechen',
+      sending:     'Senden...',
+      thanks:      '✓ Danke! Wir schauen uns das an.',
+      errorShort:  'Bitte beschreibe den Fehler genauer (min. 20 Zeichen).',
+      errorFail:   'Etwas ist schiefgelaufen. Bitte versuche es erneut.',
+      errorLimit:  'Zu viele Meldungen. Bitte versuche es in einer Stunde erneut.',
+    },
+  };
+
+  function getLang() {
+    var path = window.location.pathname;
+    var pathLang = path.match(/\/blog\/(pl|de|sv)\//) ? path.match(/\/blog\/(pl|de|sv)\//)[1] :
+                   path.match(/\/(gry|jak-grac)/) ? 'pl' :
+                   path.match(/\/(spiele|wie-man-spielt)/) ? 'de' :
+                   path.match(/\/(spel|hur-man-spelar)/) ? 'sv' : null;
+    var p = new URLSearchParams(window.location.search).get('lang') || window._forceLang || pathLang;
+    return (p && LABELS[p]) ? p : 'pl';
+  }
+
+  function getGame() {
+    var path = window.location.pathname.replace(/\/+$/, '') || '/';
+    return GAME_NAMES[path] || 'Other';
+  }
+
+  function injectBugButton() {
+    if (document.getElementById('bug-report-btn')) return;
+
+    var lang = getLang();
+    var t = LABELS[lang] || LABELS['pl'];
+
+    // Modal overlay only — button is in burger menu and footer
+    var overlay = document.createElement('div');
+    overlay.id = 'bug-modal-overlay';
+    overlay.style.cssText = [
+      'position:fixed', 'inset:0', 'z-index:9000',
+      'background:rgba(0,0,0,.6)', 'display:none',
+      'align-items:center', 'justify-content:center', 'padding:16px',
+    ].join(';');
+    overlay.onclick = function(e) {
+      if (e.target === overlay) closeBugModal();
+    };
+
+    overlay.innerHTML =
+      '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;' +
+        'padding:24px;width:100%;max-width:420px;font-family:Nunito,sans-serif;">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">' +
+          '<h3 style="font-size:16px;font-weight:800;color:var(--text);" id="bug-modal-title">' + t.title + '</h3>' +
+          '<button onclick="closeBugModal()" style="background:none;border:none;color:var(--muted);' +
+            'font-size:20px;cursor:pointer;padding:0 4px;">×</button>' +
+        '</div>' +
+        // Honeypot — hidden from humans
+        '<input type="text" id="bug-honeypot" name="website" style="display:none;" tabindex="-1" autocomplete="off"/>' +
+        '<label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;' +
+          'letter-spacing:.5px;color:var(--muted);margin-bottom:6px;" id="bug-lbl-game">' + t.game + '</label>' +
+        '<select id="bug-game" style="width:100%;background:var(--bg);border:1px solid var(--border);' +
+          'color:var(--text);border-radius:8px;padding:8px 10px;font-size:13px;' +
+          'font-family:Nunito,sans-serif;font-weight:700;outline:none;margin-bottom:12px;">' +
+          '<option>Państwa-Miasta</option>' +
+          '<option>Forbidden Words</option>' +
+          '<option>Dots &amp; Boxes</option>' +
+          '<option>Hangman</option>' +
+          '<option>2 Truths 1 Lie</option>' +
+          '<option>Corporate Bingo</option>' +
+          '<option>Other</option>' +
+        '</select>' +
+        '<label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;' +
+          'letter-spacing:.5px;color:var(--muted);margin-bottom:6px;" id="bug-lbl-desc">' + t.desc + '</label>' +
+        '<textarea id="bug-desc" rows="4" placeholder="' + t.descHint + '" ' +
+          'style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);' +
+          'border-radius:8px;padding:8px 10px;font-size:13px;font-family:Nunito,sans-serif;' +
+          'font-weight:600;outline:none;resize:vertical;margin-bottom:12px;"></textarea>' +
+        '<label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;' +
+          'letter-spacing:.5px;color:var(--muted);margin-bottom:6px;" id="bug-lbl-email">' + t.email + '</label>' +
+        '<input type="email" id="bug-email" placeholder="' + t.emailHint + '" ' +
+          'style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);' +
+          'border-radius:8px;padding:8px 10px;font-size:13px;font-family:Nunito,sans-serif;' +
+          'font-weight:600;outline:none;margin-bottom:16px;"/>' +
+        '<div id="bug-error" style="display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);' +
+          'border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;color:#fca5a5;margin-bottom:12px;"></div>' +
+        '<div style="display:flex;gap:10px;">' +
+          '<button id="bug-submit-btn" onclick="submitBugReport()" ' +
+            'style="flex:1;background:linear-gradient(135deg,var(--accent),#ff8c55);color:#fff;border:none;' +
+            'border-radius:8px;padding:10px;font-size:13px;font-weight:800;cursor:pointer;' +
+            'font-family:Nunito,sans-serif;" id="bug-lbl-send">' + t.send + '</button>' +
+          '<button onclick="closeBugModal()" ' +
+            'style="background:var(--surface);border:1px solid var(--border);color:var(--muted);' +
+            'border-radius:8px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;' +
+            'font-family:Nunito,sans-serif;" id="bug-lbl-cancel">' + t.cancel + '</button>' +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(overlay);
+
+    // Pre-select current game
+    var sel = document.getElementById('bug-game');
+    if (sel) {
+      var game = getGame();
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].text === game) { sel.selectedIndex = i; break; }
+      }
+    }
+  }
+
+  window.openBugModal = function() {
+    var overlay = document.getElementById('bug-modal-overlay');
+    if (overlay) {
+      overlay.style.display = 'flex';
+      var desc = document.getElementById('bug-desc');
+      if (desc) { desc.value = ''; desc.focus(); }
+      var err = document.getElementById('bug-error');
+      if (err) err.style.display = 'none';
+      var btn = document.getElementById('bug-submit-btn');
+      var lang = getLang();
+      var t = LABELS[lang] || LABELS['pl'];
+      if (btn) btn.textContent = t.send;
+    }
+  };
+
+  window.closeBugModal = function() {
+    var overlay = document.getElementById('bug-modal-overlay');
+    if (overlay) overlay.style.display = 'none';
+  };
+
+  window.submitBugReport = function() {
+    var lang = getLang();
+    var t = LABELS[lang] || LABELS['pl'];
+    var desc  = (document.getElementById('bug-desc')  || {}).value || '';
+    var email = (document.getElementById('bug-email') || {}).value || '';
+    var game  = (document.getElementById('bug-game')  || {}).value || getGame();
+    var honey = (document.getElementById('bug-honeypot') || {}).value || '';
+    var btn   = document.getElementById('bug-submit-btn');
+    var err   = document.getElementById('bug-error');
+
+    if (desc.trim().length < 20) {
+      if (err) { err.textContent = t.errorShort; err.style.display = 'block'; }
+      return;
+    }
+    if (err) err.style.display = 'none';
+    if (btn) btn.textContent = t.sending;
+
+    fetch('/api/bug-report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ game: game, description: desc, email: email, website: honey }),
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.ok) {
+        if (btn) btn.textContent = t.thanks;
+        setTimeout(function() { window.closeBugModal(); }, 2000);
+      } else {
+        var msg = data.error || t.errorFail;
+        if (msg.indexOf('Too many') > -1 || msg.indexOf('Za dużo') > -1) msg = t.errorLimit;
+        if (err) { err.textContent = msg; err.style.display = 'block'; }
+        if (btn) btn.textContent = t.send;
+      }
+    })
+    .catch(function() {
+      if (err) { err.textContent = t.errorFail; err.style.display = 'block'; }
+      if (btn) btn.textContent = t.send;
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectBugButton);
+  } else {
+    injectBugButton();
+  }
+})();
+
+
+// ═══════════════════════════════════════════════════════
+// NUDGE + TAB NOTIFICATION SYSTEM
+// ═══════════════════════════════════════════════════════
+(function() {
+  var _origTitle = document.title;
+  var _flashTimer = null;
+  var _nudgeCooldown = false;
+  var _isTabActive = true;
+  var _flashQueue = [];
+
+  // ── Tab visibility tracking ──
+  document.addEventListener('visibilitychange', function() {
+    _isTabActive = !document.hidden;
+    if (_isTabActive) {
+      // Stop flashing when user returns
+      _stopFlash();
+    }
+  });
+
+  function _stopFlash() {
+    if (_flashTimer) {
+      clearInterval(_flashTimer);
+      _flashTimer = null;
+    }
+    document.title = _origTitle;
+    _flashQueue = [];
+  }
+
+  function _flashTitle(msg) {
+    if (_isTabActive) return; // Don't flash if user is already looking
+    _stopFlash(); // Clear any existing flash
+    var show = true;
+    _flashTimer = setInterval(function() {
+      document.title = show ? msg : _origTitle;
+      show = !show;
+    }, 800);
+    // Auto-stop after 15 seconds
+    setTimeout(function() { _stopFlash(); }, 15000);
+  }
+
+  // ── Nudge toast ──
+  function _showNudgeToast(msg) {
+    var existing = document.getElementById('nudge-toast');
+    if (existing) existing.remove();
+
+    var toast = document.createElement('div');
+    toast.id = 'nudge-toast';
+    toast.style.cssText = 'position:fixed!important;top:20px!important;left:50%!important;transform:translateX(-50%)!important;background:var(--accent);color:white;padding:12px 24px;border-radius:12px;font-weight:800;font-size:14px;z-index:99999!important;max-width:90vw;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.3);animation:nudgeBounce 0.4s ease;';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 8000);
+  }
+
+  // ── Inject nudge animation CSS ──
+  var style = document.createElement('style');
+  style.textContent = '@keyframes nudgeBounce{0%{transform:translateX(-50%) scale(0.8);opacity:0}50%{transform:translateX(-50%) scale(1.05)}100%{transform:translateX(-50%) scale(1);opacity:1}} .nudge-btn{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 16px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;transition:all 0.2s;} .nudge-btn:hover{border-color:var(--accent);color:var(--accent);} .nudge-btn:disabled{opacity:0.4;cursor:not-allowed;} .nudge-btn:active{transform:scale(0.95);}';
+  document.head.appendChild(style);
+
+  // ── Nudge button builder ──
+  // Call from game client's renderLobby to add nudge button
+  window._buildNudgeButton = function(containerEl, roomCode, myName, translations) {
+    if (!containerEl) return;
+    var t = translations || {};
+    var btnText = t.nudge || '👋 Nudge';
+    var cooldownText = t.nudgeSent || '✓ Sent!';
+
+    // Remove existing button if re-rendering
+    var existing = containerEl.querySelector('.nudge-btn');
+    if (existing) existing.remove();
+
+    var btn = document.createElement('button');
+    btn.className = 'nudge-btn';
+    btn.textContent = btnText;
+    btn.onclick = function() {
+      if (_nudgeCooldown) return;
+      _nudgeCooldown = true;
+
+      // Send nudge via socket
+      if (typeof io !== 'undefined') {
+        var socket = window._gameSocket || (typeof window.socket !== 'undefined' ? window.socket : null);
+        if (socket) socket.emit('nudge', { code: roomCode, name: myName });
+      }
+
+      // Show sent state
+      btn.textContent = cooldownText;
+      btn.disabled = true;
+
+      // Reset after 30 seconds
+      setTimeout(function() {
+        _nudgeCooldown = false;
+        btn.textContent = btnText;
+        btn.disabled = false;
+      }, 30000);
+    };
+
+    containerEl.appendChild(btn);
+  };
+
+  // ── Listen for nudge events ──
+  // Attach to socket when available
+  function _attachNudgeListener() {
+    var socket = window._gameSocket || (typeof window.socket !== 'undefined' ? window.socket : null);
+    if (!socket) {
+      // Retry — socket might not be ready yet
+      setTimeout(_attachNudgeListener, 500);
+      return;
+    }
+    if (socket._nudgeListenerAttached) return;
+    socket._nudgeListenerAttached = true;
+
+    socket.on('nudge_received', function(data) {
+      var name = data.name || '?';
+      _flashTitle('👋 ' + name + '!');
+      // Check if I'm the host using global flag set by game client
+      if (window._amHost) {
+        _showHostResponsePrompt(name);
+      } else {
+        var hl = _getHostLang();
+        var readyMsgs = { pl: '👋 ' + name + ' jest gotowy!', en: '👋 ' + name + ' is ready to play!', de: '👋 ' + name + ' ist spielbereit!', sv: '👋 ' + name + ' är redo att spela!' };
+        _showNudgeToast(readyMsgs[hl] || readyMsgs['en']);
+      }
+    });
+
+    socket.on('host_response_received', function(data) {
+      var name = data.name || '?';
+      var msg = data.message || '';
+      _showNudgeToast(name + ': ' + msg);
+    });
+  }
+
+  // ── Listen for player join — flash tab for host ──
+  window._onPlayerJoined = function(playerName) {
+    _flashTitle('👋 ' + playerName + ' joined!');
+    if (!_isTabActive) {
+      var hl = _getHostLang();
+      var joinMsgs = { pl: '👋 ' + playerName + ' dołączył!', en: '👋 ' + playerName + ' joined the room!', de: '👋 ' + playerName + ' ist beigetreten!', sv: '👋 ' + playerName + ' gick med!' };
+      _showNudgeToast(joinMsgs[hl] || joinMsgs['en']);
+    }
+  };
+
+  // ── Host response prompt ──
+  var _hostResponseTranslations = {
+    pl: { title: '👋 {name} czeka!', soon: '✅ Zaraz zaczynamy!', waiting: '⏳ Czekamy na więcej graczy' },
+    en: { title: '👋 {name} is ready!', soon: '✅ Starting soon!', waiting: '⏳ Waiting for more players' },
+    de: { title: '👋 {name} ist bereit!', soon: '✅ Gleich geht\'s los!', waiting: '⏳ Warten auf mehr Spieler' },
+    sv: { title: '👋 {name} är redo!', soon: '✅ Startar snart!', waiting: '⏳ Väntar på fler spelare' },
+  };
+
+  function _getHostLang() {
+    if (typeof lang !== 'undefined' && lang) return lang;
+    if (window._forceLang) return window._forceLang;
+    return 'en';
+  }
+
+  function _showHostResponsePrompt(playerName) {
+    var existing = document.getElementById('nudge-toast');
+    if (existing) existing.remove();
+
+    var hl = _getHostLang();
+    var t = _hostResponseTranslations[hl] || _hostResponseTranslations['en'];
+
+    var toast = document.createElement('div');
+    toast.id = 'nudge-toast';
+    toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--card);border:2px solid var(--accent);color:var(--text);padding:14px 20px;border-radius:14px;font-weight:700;font-size:13px;z-index:9999;max-width:92vw;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,0.3);animation:nudgeBounce 0.4s ease;';
+
+    var title = document.createElement('div');
+    title.textContent = t.title.replace('{name}', playerName);
+    title.style.cssText = 'margin-bottom:10px;font-size:15px;font-weight:800;';
+    toast.appendChild(title);
+
+    var btnWrap = document.createElement('div');
+    btnWrap.style.cssText = 'display:flex;gap:8px;justify-content:center;flex-wrap:wrap;';
+
+    var soonBtn = document.createElement('button');
+    soonBtn.textContent = t.soon;
+    soonBtn.style.cssText = 'background:var(--accent);color:white;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;';
+    soonBtn.onclick = function() {
+      _sendHostResponse(t.soon);
+      toast.remove();
+    };
+
+    var waitBtn = document.createElement('button');
+    waitBtn.textContent = t.waiting;
+    waitBtn.style.cssText = 'background:var(--surface);color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;';
+    waitBtn.onclick = function() {
+      _sendHostResponse(t.waiting);
+      toast.remove();
+    };
+
+    btnWrap.appendChild(soonBtn);
+    btnWrap.appendChild(waitBtn);
+    toast.appendChild(btnWrap);
+    document.body.appendChild(toast);
+
+    // Auto-dismiss after 30 seconds if no response
+    setTimeout(function() { if (document.getElementById('nudge-toast') === toast) toast.remove(); }, 30000);
+  }
+
+  function _sendHostResponse(message) {
+    var socket = window._gameSocket || (typeof window.socket !== 'undefined' ? window.socket : null);
+    if (!socket) return;
+    // Get room code from the nav display or URL
+    var codeEl = document.getElementById('nav-room-code') || document.getElementById('lobby-code');
+    var code = '';
+    if (codeEl) code = codeEl.textContent.trim();
+    if (!code) {
+      var match = window.location.search.match(/code=([A-Z0-9]+)/i);
+      if (match) code = match[1];
+    }
+    // Try getting from game state
+    if (!code && typeof roomCode !== 'undefined') code = roomCode;
+
+    var name = '';
+    var nameEl = document.querySelector('.you-badge');
+    if (nameEl && nameEl.parentElement) name = nameEl.parentElement.textContent.replace(nameEl.textContent, '').trim();
+    if (!name && typeof myName !== 'undefined') name = myName;
+
+    socket.emit('host_response', { code: code, name: name, message: message });
+  }
+
+  // Init listener
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', _attachNudgeListener);
+  } else {
+    _attachNudgeListener();
+  }
+})();
+
+// ═══════════════════════════════════════════════════════
+// POST-GAME REACTIONS
+// ═══════════════════════════════════════════════════════
+(function() {
+  var _reactionSent = false;
+
+  var REACTION_LABELS = {
+    pl: [
+      { emoji: '👏', text: 'Dobra gra!' },
+      { emoji: '😂', text: 'Super zabawa!' },
+      { emoji: '🔥', text: 'Gotowy na rewanż!' },
+      { emoji: '👋', text: 'Dzięki!' },
+    ],
+    en: [
+      { emoji: '👏', text: 'GG!' },
+      { emoji: '😂', text: 'That was fun!' },
+      { emoji: '🔥', text: 'Ready for rematch!' },
+      { emoji: '👋', text: 'Thanks!' },
+    ],
+    de: [
+      { emoji: '👏', text: 'Gut gespielt!' },
+      { emoji: '😂', text: 'Hat Spaß gemacht!' },
+      { emoji: '🔥', text: 'Bereit für Revanche!' },
+      { emoji: '👋', text: 'Danke!' },
+    ],
+    sv: [
+      { emoji: '👏', text: 'Bra spelat!' },
+      { emoji: '😂', text: 'Kul!' },
+      { emoji: '🔥', text: 'Redo för revansch!' },
+      { emoji: '👋', text: 'Tack!' },
+    ],
+  };
+
+  // Inject CSS for reactions
+  var rStyle = document.createElement('style');
+  rStyle.textContent = '.reaction-bar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid var(--border);} .reaction-btn{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;transition:all 0.2s;} .reaction-btn:hover{border-color:var(--accent);color:var(--accent);transform:scale(1.05);} .reaction-btn:active{transform:scale(0.95);} .reaction-btn.sent{background:var(--accent);color:white;border-color:var(--accent);pointer-events:none;} @keyframes reactionFloat{0%{opacity:1;transform:translateY(0) scale(1)}70%{opacity:1;transform:translateY(-60px) scale(1.2)}100%{opacity:0;transform:translateY(-100px) scale(0.8)}} .reaction-float{position:fixed;left:50%;transform:translateX(-50%);bottom:30%;font-size:28px;z-index:99999;pointer-events:none;animation:reactionFloat 2s ease-out forwards;text-align:center;} .reaction-float .rf-name{font-size:11px;font-weight:800;color:var(--accent);white-space:nowrap;}';
+  document.head.appendChild(rStyle);
+
+  // Build reaction buttons
+  window._buildReactionBar = function(containerEl, roomCode, myName) {
+    if (!containerEl) return;
+    _reactionSent = false;
+
+    // Detect language
+    var rl = 'en';
+    if (typeof lang !== 'undefined' && lang) rl = lang;
+    else if (window._forceLang) rl = window._forceLang;
+    var reactions = REACTION_LABELS[rl] || REACTION_LABELS['en'];
+
+    // Remove existing bar if re-rendering
+    var existing = containerEl.querySelector('.reaction-bar');
+    if (existing) existing.remove();
+    var existingLabel = containerEl.querySelector('.reaction-label');
+    if (existingLabel) existingLabel.remove();
+
+    // Label above buttons
+    var REACTION_HEADING = {
+      pl: 'Wyślij krótką wiadomość do graczy',
+      en: 'Send a quick message to other players',
+      de: 'Sende eine kurze Nachricht an die Spieler',
+      sv: 'Skicka ett kort meddelande till spelarna',
+    };
+    var label = document.createElement('p');
+    label.className = 'reaction-label';
+    label.textContent = REACTION_HEADING[rl] || REACTION_HEADING['en'];
+    label.style.cssText = 'text-align:center;font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:12px;';
+    containerEl.appendChild(label);
+
+    var bar = document.createElement('div');
+    bar.className = 'reaction-bar';
+
+    reactions.forEach(function(r) {
+      var btn = document.createElement('button');
+      btn.className = 'reaction-btn';
+      btn.textContent = r.emoji + ' ' + r.text;
+      btn.onclick = function() {
+        if (_reactionSent) return;
+        _reactionSent = true;
+
+        // Send reaction via socket
+        var socket = window._gameSocket || (typeof window.socket !== 'undefined' ? window.socket : null);
+        if (socket) {
+          socket.emit('game_reaction', { code: roomCode, name: myName, emoji: r.emoji, text: r.text });
+        }
+
+        // Mark as sent
+        bar.querySelectorAll('.reaction-btn').forEach(function(b) {
+          if (b === btn) {
+            b.classList.add('sent');
+          } else {
+            b.style.opacity = '0.3';
+            b.style.pointerEvents = 'none';
+          }
+        });
+      };
+      bar.appendChild(btn);
+    });
+
+    containerEl.appendChild(bar);
+  };
+
+  // Show floating reaction from other players
+  function _showFloatingReaction(emoji, name) {
+    var float = document.createElement('div');
+    float.className = 'reaction-float';
+    float.innerHTML = '<div>' + emoji + '</div><div class="rf-name">' + name + '</div>';
+    // Random horizontal position
+    var xOffset = (Math.random() * 40 - 20);
+    float.style.left = 'calc(50% + ' + xOffset + 'px)';
+    document.body.appendChild(float);
+    setTimeout(function() { float.remove(); }, 2200);
+  }
+
+  // Listen for reactions
+  function _attachReactionListener() {
+    var socket = window._gameSocket || (typeof window.socket !== 'undefined' ? window.socket : null);
+    if (!socket) {
+      setTimeout(_attachReactionListener, 500);
+      return;
+    }
+    if (socket._reactionListenerAttached) return;
+    socket._reactionListenerAttached = true;
+
+    socket.on('game_reaction_received', function(data) {
+      _showFloatingReaction(data.emoji || '👏', data.name || '?');
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', _attachReactionListener);
+  } else {
+    _attachReactionListener();
+  }
+})();
