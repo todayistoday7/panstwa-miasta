@@ -307,6 +307,22 @@ function register(io, socket) {
   socket.on('charades_join', ({ code, name }) => {
     const room = rooms[code];
     if (!room) return socket.emit('charades_error', { message: 'Room not found' });
+    
+    // Check if this is a returning player (same name)
+    const existing = room.players.find(p => p.name === (name || '').trim());
+    if (existing) {
+      // Returning player — update socket and rejoin
+      if (room.hostId === existing.id) room.hostId = socket.id;
+      if (room.state.actorId === existing.id) room.state.actorId = socket.id;
+      existing.id = socket.id;
+      existing.connected = true;
+      socket.join(code);
+      socket.emit('charades_room_joined', { code });
+      broadcastState(io, room);
+      return;
+    }
+    
+    // New player — only allowed during lobby
     if (room.state.phase !== 'lobby') return socket.emit('charades_error', { message: 'Game already started' });
     if (room.players.length >= 12) return socket.emit('charades_error', { message: 'Room is full (max 12)' });
     

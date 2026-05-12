@@ -166,6 +166,14 @@ function register(io, socket) {
       return;
     }
 
+    // Check if returning player
+    const existing = room.players.find(p => p.name === (name || '').trim());
+    if (existing) {
+      if (room.hostId === existing.id) room.hostId = socket.id;
+      existing.id = socket.id; existing.connected = true;
+      socket.join(code); socket.emit('hang_room_joined', { code });
+      emitHangState(io, room); return;
+    }
     if (room.state.phase !== 'lobby') { socket.emit('hang_error', { msg: 'Game already started.' }); return; }
     if (room.players.length >= 10)    { socket.emit('hang_error', { msg: 'Room is full.' }); return; }
 

@@ -130,6 +130,14 @@ function register(io, socket) {
         return;
       }
 
+      // Check if returning player
+      const _ret = room.players.find(p => p.name === (name || '').trim());
+      if (_ret) {
+        if (room.hostId === _ret.id) room.hostId = socket.id;
+        _ret.id = socket.id; _ret.connected = true;
+        socket.join(code); socket.emit('bingo_room_joined', { code });
+        emitBingoState(io, room); return;
+      }
       if (room.phase !== 'lobby') { socket.emit('bingo_error', { msg: 'Game already started.' }); return; }
 
       room.players.push({

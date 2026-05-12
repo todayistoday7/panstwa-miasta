@@ -258,6 +258,14 @@ function register(io, socket) {
       return;
     }
 
+    // Check if returning player
+    const _ret = room.players.find(p => p.name === (name || '').trim());
+    if (_ret) {
+      if (room.hostId === _ret.id) room.hostId = socket.id;
+      _ret.id = socket.id; _ret.connected = true;
+      socket.join(room.code); socket.emit('room_joined', { code: room.code });
+      broadcastState(io, room); return;
+    }
     if (room.state.phase !== 'lobby')  { socket.emit('error', { msg: 'Game already started.' }); return; }
     if (room.players.length >= 12)    { socket.emit('error', { msg: 'Room is full (max 12).' }); return; }
 

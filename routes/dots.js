@@ -165,6 +165,15 @@ function register(io, socket) {
     }
 
     // New player — only allowed in lobby
+    // Check if returning player
+    const _ret = room.players.find(p => p.name === (name || '').trim());
+    if (_ret) {
+      if (room.hostId === _ret.id) room.hostId = socket.id;
+      if (room.state.currentPlayer === _ret.id) room.state.currentPlayer = socket.id;
+      _ret.id = socket.id; _ret.connected = true;
+      socket.join(code); socket.emit('dots_room_joined', { code });
+      emitDotsState(io, room); return;
+    }
     if (room.state.phase !== 'lobby') { socket.emit('dots_error', { msg: 'Game already started.' }); return; }
     if (room.players.length >= (room.settings.maxPlayers || 4)) {
       socket.emit('dots_error', { msg: 'Room is full.' }); return;

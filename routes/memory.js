@@ -129,9 +129,11 @@ function register(io, socket) {
     if (room.state.phase === 'final') { socket.emit('mem_error', { msg: 'This game has ended.' }); return; }
     if (isBotName(name)) { socket.emit('mem_error', { msg: 'Invalid name.' }); return; }
 
-    // Rejoin check
-    const existing = room.players.find(p => p.name === name && !p.connected);
+    // Rejoin check — match by name regardless of connected flag
+    const existing = room.players.find(p => p.name === (name || '').trim());
     if (existing) {
+      if (room.hostId === existing.id) room.hostId = socket.id;
+      if (room.state.currentPlayer === existing.id) room.state.currentPlayer = socket.id;
       existing.id = socket.id;
       existing.connected = true;
       socket.join(room.code);

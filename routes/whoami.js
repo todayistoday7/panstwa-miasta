@@ -1125,6 +1125,18 @@ function register(io, socket) {
         emitState(io, room);
         return;
       }
+      // Check if returning player
+      const _ret = room.players.find(p => p.name === (trimmed || '').trim());
+      if (_ret) {
+        const oldId = _ret.id;
+        if (room.hostId === oldId) room.hostId = socket.id;
+        if (room.state.currentIdx < room.players.length && room.players[room.state.currentIdx].id === oldId) {
+          room.players[room.state.currentIdx].id = socket.id;
+        }
+        _ret.id = socket.id; _ret.connected = true;
+        socket.join(roomCode); socket.emit('whoami_room_joined', { code: roomCode });
+        emitState(io, room); return;
+      }
       socket.emit('whoami_error', { msg: 'Game already started.' }); return;
     }
     if (room.players.length >= 16) { socket.emit('whoami_error', { msg: 'Room is full.' }); return; }
