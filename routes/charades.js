@@ -433,6 +433,27 @@ function register(io, socket) {
     startTurn(io, room);
   });
   
+  socket.on('charades_leave', ({ code }) => {
+    const room = rooms[code];
+    if (!room) return;
+    const player = room.players.find(p => p.id === socket.id);
+    if (player) {
+      player.connected = false;
+      socket.leave(code);
+      const connected = getConnected(room);
+      if (connected.length === 0) {
+        clearTimeout(room.state.timer);
+        room._deleteTimer = setTimeout(() => {
+          const still = room.players.filter(p => p.connected);
+          if (still.length === 0) delete rooms[code];
+        }, 30 * 60 * 1000);
+      } else {
+        if (socket.id === room.hostId) room.hostId = connected[0].id;
+        broadcastState(io, room);
+      }
+    }
+  });
+
   socket.on('charades_play_again', ({ code }) => {
     const room = rooms[code];
     if (!room || socket.id !== room.hostId) return;

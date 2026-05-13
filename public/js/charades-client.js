@@ -1323,7 +1323,9 @@ function goHome() {
 function leaveRoom() {
   sessionStorage.removeItem('charades_code');
   sessionStorage.removeItem('charades_name');
+  if (roomCode) socket.emit('charades_leave', { code: roomCode });
   roomCode = '';
+  myName = '';
   showScreen('screen-home');
   window.scrollTo(0, 0);
 }
