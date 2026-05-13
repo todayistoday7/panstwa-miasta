@@ -380,6 +380,342 @@ const EMOJI_HINTS = {
   'Wrestling':'🤼',
   'Zamiatanie':'🧹',
   'Łapanie piłki':'🤲',
+  'Ameise':'🐜',
+  'Ant':'🐜',
+  'Bat':'🦇',
+  'Bauer':'🧑‍🌾',
+  'Bee':'🐝',
+  'Bi':'🐝',
+  'Biene':'🐝',
+  'Bonde':'🧑‍🌾',
+  'Chomik':'🐹',
+  'Crab':'🦀',
+  'Farmer':'🧑‍🌾',
+  'Fladdermus':'🦇',
+  'Fledermaus':'🦇',
+  'Hamster':'🐹',
+  'Konik morski':'🐴',
+  'Krab':'🦀',
+  'Krabba':'🦀',
+  'Krabbe':'🦀',
+  'Krankenschwester':'👩‍⚕️',
+  'Mask':'🪱',
+  'Mrówka':'🐜',
+  'Myra':'🐜',
+  'Nietoperz':'🦇',
+  'Nurse':'👩‍⚕️',
+  'Pielęgniarka':'👩‍⚕️',
+  'Pszczoła':'🐝',
+  'Robak':'🪱',
+  'Rolnik':'🧑‍🌾',
+  'Seahorse':'🐴',
+  'Seepferdchen':'🐴',
+  'Sjuksköterska':'👩‍⚕️',
+  'Sjöhäst':'🐴',
+  'Worm':'🪱',
+  'Wurm':'🪱',
+  'Bläckfisk':'🐙',
+  'Blåsfisk':'🐡',
+  'Camel':'🐫',
+  'Donkey':'🫏',
+  'Dzięcioł':'🐦',
+  'Eichhörnchen':'🐿️',
+  'Ekorre':'🐿️',
+  'Esel':'🫏',
+  'Fliege':'🪰',
+  'Flodhäst':'🦛',
+  'Fluga':'🪰',
+  'Fly':'🪰',
+  'Grasshopper':'🦗',
+  'Gräshoppa':'🦗',
+  'Hackspett':'🐦',
+  'Heuschrecke':'🦗',
+  'Hipopotam':'🦛',
+  'Hippo':'🦛',
+  'Kamel':'🐫',
+  'Komar':'🦟',
+  'Konik polny':'🦗',
+  'Kugelfisch':'🐡',
+  'Mosquito':'🦟',
+  'Mucha':'🪰',
+  'Mygga':'🦟',
+  'Mücke':'🦟',
+  'Nashorn':'🦏',
+  'Nilpferd':'🦛',
+  'Noshörning':'🦏',
+  'Nosorożec':'🦏',
+  'Octopus':'🐙',
+  'Oktopus':'🐙',
+  'Orm':'🐍',
+  'Osioł':'🫏',
+  'Ośmiornica':'🐙',
+  'Paw':'🦚',
+  'Peacock':'🦚',
+  'Pfau':'🦚',
+  'Piranha':'🐟',
+  'Pirania':'🐟',
+  'Piraya':'🐟',
+  'Puffer fish':'🐡',
+  'Påfågel':'🦚',
+  'Raccoon':'🦝',
+  'Rhinoceros':'🦏',
+  'Rozgwiazda':'⭐',
+  'Ryba rozdymka':'🐡',
+  'Schlange':'🐍',
+  'Schwan':'🦢',
+  'Scorpion':'🦂',
+  'Seestern':'⭐',
+  'Sjöstjärna':'⭐',
+  'Skorpion':'🦂',
+  'Skunk':'🦨',
+  'Skunks':'🦨',
+  'Snake':'🐍',
+  'Specht':'🐦',
+  'Squirrel':'🐿️',
+  'Starfish':'⭐',
+  'Stinktier':'🦨',
+  'Svan':'🦢',
+  'Swan':'🦢',
+  'Szop':'🦝',
+  'Tvättbjörn':'🦝',
+  'Waschbär':'🦝',
+  'Wielbłąd':'🐫',
+  'Wiewiórka':'🐿️',
+  'Woodpecker':'🐦',
+  'Wąż':'🐍',
+  'Åsna':'🫏',
+  'Łabędź':'🦢',
+  'Ananas':'🍍',
+  'Apelsin':'🍊',
+  'Babeczka':'🧁',
+  'Bagietka':'🥖',
+  'Baguette':'🥖',
+  'Broccoli':'🥦',
+  'Brokkoli':'🥦',
+  'Brokuł':'🥦',
+  'Burger':'🍔',
+  'Burrito':'🌯',
+  'Cebula':'🧅',
+  'Cereal':'🥣',
+  'Cherry':'🍒',
+  'Chips':'🥔',
+  'Chipsy':'🥔',
+  'Citron':'🍋',
+  'Coconut':'🥥',
+  'Corn on the Cob':'🌽',
+  'Crisps':'🥔',
+  'Cucumber':'🥒',
+  'Cupcake':'🧁',
+  'Cytryna':'🍋',
+  'Czosnek':'🧄',
+  'Donut':'🍩',
+  'Fleischbällchen':'🧆',
+  'Flingor':'🥣',
+  'French Fries':'🍟',
+  'Frytki':'🍟',
+  'Garlic':'🧄',
+  'Godis':'🍬',
+  'Grapes':'🍇',
+  'Gummibärchen':'🍬',
+  'Gummies':'🍬',
+  'Gurka':'🥒',
+  'Gurke':'🥒',
+  'Hamburgare':'🍔',
+  'Hamburger':'🍔',
+  'Joghurt':'🥛',
+  'Jogurt':'🥛',
+  'Kartoffelpüree':'🥔',
+  'Kirsche':'🍒',
+  'Klopsiki':'🧆',
+  'Knoblauch':'🧄',
+  'Kokos':'🥥',
+  'Kokosnuss':'🥥',
+  'Kokosnöt':'🥥',
+  'Kolba kukurydzy':'🌽',
+  'Körsbär':'🍒',
+  'Köttbullar':'🧆',
+  'Lemon':'🍋',
+  'Lettuce':'🥬',
+  'Lök':'🧅',
+  'Maiskolben':'🌽',
+  'Majskolv':'🌽',
+  'Mashed Potatoes':'🥔',
+  'Meatballs':'🧆',
+  'Muffin':'🧁',
+  'Munk':'🍩',
+  'Müsli':'🥣',
+  'Ogórek':'🥒',
+  'Onion':'🧅',
+  'Orange':'🍊',
+  'Pineapple':'🍍',
+  'Pomarańcza':'🍊',
+  'Pommes':'🍟',
+  'Pommes frites':'🍟',
+  'Potatismos':'🥔',
+  'Puree ziemniaczane':'🥔',
+  'Pączek':'🍩',
+  'Płatki śniadaniowe':'🥣',
+  'Reis':'🍚',
+  'Rice':'🍚',
+  'Ris':'🍚',
+  'Rostat bröd':'🍞',
+  'Ryż':'🍚',
+  'Salat':'🥬',
+  'Sallad':'🥬',
+  'Sałata':'🥬',
+  'Toast':'🍞',
+  'Tost':'🍞',
+  'Trauben':'🍇',
+  'Vatten':'💧',
+  'Vindruvor':'🍇',
+  'Vitlök':'🧄',
+  'Wasser':'💧',
+  'Water':'💧',
+  'Winogrona':'🍇',
+  'Wiśnia':'🍒',
+  'Woda':'💧',
+  'Yoghurt':'🥛',
+  'Zitrone':'🍋',
+  'Zwiebel':'🧅',
+  'Żelki':'🍬',
+  'Auto fahren':'🚗',
+  'Blinka':'😉',
+  'Blowing a kiss':'😘',
+  'Blowing birthday candles':'🎂',
+  'Blåsa ut ljus':'🎂',
+  'Bowling':'🎳',
+  'Chodzenie na palcach':'🤫',
+  'Dragkamp':'🪢',
+  'Dricka med sugrör':'🥤',
+  'Drinking from straw':'🥤',
+  'Driving a car':'🚗',
+  'Durch Strohhalm trinken':'🥤',
+  'Eating ice cream':'🍦',
+  'Eating spaghetti':'🍝',
+  'Eis essen':'🍦',
+  'Geschenk öffnen':'🎁',
+  'Gitarre spielen':'🎸',
+  'Granie na gitarze':'🎸',
+  'Gå på tå':'🤫',
+  'Hampelmänner':'🏋️',
+  'Hide and seek':'🫣',
+  'High five':'🖐️',
+  'Jedzenie lodów':'🍦',
+  'Jedzenie spaghetti':'🍝',
+  'Jumping jacks':'🏋️',
+  'Kerzen ausblasen':'🎂',
+  'Kręgle':'🎳',
+  'Kurragömma':'🫣',
+  'Kusshand':'😘',
+  'Köra bil':'🚗',
+  'Marching':'🪖',
+  'Marschera':'🪖',
+  'Marschieren':'🪖',
+  'Maszerowanie':'🪖',
+  'Mruganie':'😉',
+  'Opening a present':'🎁',
+  'Otwieranie prezentu':'🎁',
+  'Pajacyki':'🏋️',
+  'Phone call':'📱',
+  'Picie przez słomkę':'🥤',
+  'Piątka':'🖐️',
+  'Playing guitar':'🎸',
+  'Posyłanie buziaka':'😘',
+  'Prowadzenie auta':'🚗',
+  'Przeciąganie liny':'🪢',
+  'Putting on shoes':'👟',
+  'Ringa':'📱',
+  'Rozmowa telefoniczna':'📱',
+  'Rutscha':'🛝',
+  'Rutschen':'🛝',
+  'Schuhe anziehen':'👟',
+  'Sliding':'🛝',
+  'Slänga slängkyss':'😘',
+  'Spaghetti essen':'🍝',
+  'Spela gitarr':'🎸',
+  'Sätta på skor':'👟',
+  'Tauziehen':'🪢',
+  'Telefonieren':'📱',
+  'Tiptoe walk':'🤫',
+  'Tug of war':'🪢',
+  'Verstecken spielen':'🫣',
+  'Winking':'😉',
+  'Zabawa w chowanego':'🫣',
+  'Zakładanie butów':'👟',
+  'Zdmuchiwanie świeczek':'🎂',
+  'Zehenspitzen-Gang':'🤫',
+  'Zjeżdżanie':'🛝',
+  'Zwinkern':'😉',
+  'Äta glass':'🍦',
+  'Äta spagetti':'🍝',
+  'Öppna present':'🎁',
+  'Cashier':'💰',
+  'DJ':'🎧',
+  'Dziennikarz':'📰',
+  'Fischer':'🎣',
+  'Fisherman':'🎣',
+  'Fiskare':'🎣',
+  'Forskare':'🔬',
+  'Hausmeister':'🧹',
+  'Janitor':'🧹',
+  'Journalist':'📰',
+  'Kasjer':'💰',
+  'Kassierer':'💰',
+  'Kassör':'💰',
+  'Naukowiec':'🔬',
+  'Ochroniarz':'🛡️',
+  'Przewodnik':'🗺️',
+  'Reiseleiter':'🗺️',
+  'Rybak':'🎣',
+  'Scientist':'🔬',
+  'Security guard':'🛡️',
+  'Sicherheitsmann':'🛡️',
+  'Sprzątacz':'🧹',
+  'Städare':'🧹',
+  'Taksówkarz':'🚕',
+  'Taxi driver':'🚕',
+  'Taxichaufför':'🚕',
+  'Taxifahrer':'🚕',
+  'Tour guide':'🗺️',
+  'Turistguide':'🗺️',
+  'Vakt':'🛡️',
+  'Wissenschaftler':'🔬',
+  'Baseball':'⚾',
+  'Cheerleading':'📣',
+  'Frisbee':'🥏',
+  'Gewichtheben':'🏋️',
+  'Hoppa hage':'🔢',
+  'Hopscotch':'🔢',
+  'Hüpfspiel':'🔢',
+  'Jazda na rolkach':'🛼',
+  'Kickball':'⚽',
+  'Klasy':'🔢',
+  'Klippklättring':'🧗',
+  'Nurkowanie z rurką':'🤿',
+  'Parkour':'🏃',
+  'Podnoszenie ciężarów':'🏋️',
+  'Pole vault':'🥇',
+  'Relay race':'🏃',
+  'Rock climbing':'🧗',
+  'Roller skating':'🛼',
+  'Rollschuhlaufen':'🛼',
+  'Rullskridskor':'🛼',
+  'Schnorcheln':'🤿',
+  'Skok o tyczce':'🥇',
+  'Snorkeling':'🤿',
+  'Snorkling':'🤿',
+  'Stabhochsprung':'🥇',
+  'Stafettlopp':'🏃',
+  'Staffellauf':'🏃',
+  'Stavhopp':'🥇',
+  'Sumo':'🤼',
+  'Sumo wrestling':'🤼',
+  'Sumo-Ringen':'🤼',
+  'Sumobrottning':'🤼',
+  'Sztafeta':'🏃',
+  'Tyngdlyftning':'🏋️',
+  'Weightlifting':'🏋️',
+  'Wspinaczka skałkowa':'🧗',
 };
 
 const LANGS = {
@@ -394,7 +730,7 @@ const LANGS = {
     moveToRed: '→ 🔴', moveToBlue: '→ 🔵',
     settings: 'Ustawienia', category: 'Kategoria', difficulty: 'Poziom', timer: 'Czas', rounds: 'Rundy',
     catMixed: '🎲 Losowe', catAnimals: '🐾 Zwierzęta', catActions: '🏃 Czynności',
-    catProfessions: '👷 Zawody', catMovies: '🎬 Filmy', catFood: '🍕 Jedzenie', catSports: '⚽ Sport',
+    catProfessions: '👷 Zawody', catMovies: '🎬 Postacie z filmów', catFood: '🍕 Jedzenie', catSports: '⚽ Sport',
     diffKids: '🧒 Dzieci', diffFamily: '👨‍👩‍👧 Rodzina', diffAdults: '🎓 Dorośli',
     yourTurnAct: '🎭 Twoja kolej! Pokaż:',
     teamIsActing: 'pokazuje:',
@@ -423,7 +759,7 @@ const LANGS = {
     moveToRed: '→ 🔴', moveToBlue: '→ 🔵',
     settings: 'Settings', category: 'Category', difficulty: 'Difficulty', timer: 'Timer', rounds: 'Rounds',
     catMixed: '🎲 Mixed', catAnimals: '🐾 Animals', catActions: '🏃 Actions',
-    catProfessions: '👷 Jobs', catMovies: '🎬 Movies', catFood: '🍕 Food', catSports: '⚽ Sports',
+    catProfessions: '👷 Jobs', catMovies: '🎬 Characters', catFood: '🍕 Food', catSports: '⚽ Sports',
     diffKids: '🧒 Kids', diffFamily: '👨‍👩‍👧 Family', diffAdults: '🎓 Adults',
     yourTurnAct: '🎭 Your turn! Act out:',
     teamIsActing: 'is acting:',
@@ -452,7 +788,7 @@ const LANGS = {
     moveToRed: '→ 🔴', moveToBlue: '→ 🔵',
     settings: 'Einstellungen', category: 'Kategorie', difficulty: 'Schwierigkeit', timer: 'Zeit', rounds: 'Runden',
     catMixed: '🎲 Gemischt', catAnimals: '🐾 Tiere', catActions: '🏃 Aktionen',
-    catProfessions: '👷 Berufe', catMovies: '🎬 Filme', catFood: '🍕 Essen', catSports: '⚽ Sport',
+    catProfessions: '👷 Berufe', catMovies: '🎬 Figuren', catFood: '🍕 Essen', catSports: '⚽ Sport',
     diffKids: '🧒 Kinder', diffFamily: '👨‍👩‍👧 Familie', diffAdults: '🎓 Erwachsene',
     yourTurnAct: '🎭 Du bist dran! Zeige:',
     teamIsActing: 'zeigt:',
@@ -481,7 +817,7 @@ const LANGS = {
     moveToRed: '→ 🔴', moveToBlue: '→ 🔵',
     settings: 'Inställningar', category: 'Kategori', difficulty: 'Svårighet', timer: 'Tid', rounds: 'Rundor',
     catMixed: '🎲 Blandat', catAnimals: '🐾 Djur', catActions: '🏃 Handlingar',
-    catProfessions: '👷 Yrken', catMovies: '🎬 Filmer', catFood: '🍕 Mat', catSports: '⚽ Sport',
+    catProfessions: '👷 Yrken', catMovies: '🎬 Karaktärer', catFood: '🍕 Mat', catSports: '⚽ Sport',
     diffKids: '🧒 Barn', diffFamily: '👨‍👩‍👧 Familj', diffAdults: '🎓 Vuxna',
     yourTurnAct: '🎭 Din tur! Visa:',
     teamIsActing: 'visar:',
@@ -569,6 +905,7 @@ socket.on('charades_state', function(data) {
 function applyState(data) {
   switch (data.phase) {
     case 'lobby':     showScreen('screen-lobby');   renderLobby(data);   break;
+    case 'preparing': showScreen('screen-playing'); renderPreparing(data); break;
     case 'acting':    showScreen('screen-playing'); renderPlaying(data); break;
     case 'turn_end':  showScreen('screen-playing'); renderTurnEnd(data); break;
     case 'final':     showScreen('screen-final');   renderFinal(data);   break;
@@ -694,6 +1031,76 @@ function renderPills(containerId, items, active, onClick) {
   });
 }
 
+// ── PREPARING (Up Next) ──
+function renderPreparing(data) {
+  var isActor = data.actorId === myId;
+  var actorName = data.actorName || '?';
+  var teamLabel = data.actorTeam === 'red' ? L.teamRed : L.teamBlue;
+  
+  // Scoreboard
+  var scoreEl = document.getElementById('scoreboard');
+  if (scoreEl) {
+    scoreEl.innerHTML =
+      '<div class="score-team' + (data.actorTeam === 'red' ? ' active-team' : '') + '">' +
+        '<div class="score-label">' + L.teamRed + '</div>' +
+        '<div class="score-value">' + data.teams.red.score + '</div>' +
+      '</div>' +
+      '<div class="score-vs">VS</div>' +
+      '<div class="score-team' + (data.actorTeam === 'blue' ? ' active-team' : '') + '">' +
+        '<div class="score-label">' + L.teamBlue + '</div>' +
+        '<div class="score-value">' + data.teams.blue.score + '</div>' +
+      '</div>';
+  }
+  
+  // Round + category
+  var roundEl = document.getElementById('round-indicator');
+  if (roundEl) {
+    var catLabels = {mixed:L.catMixed, animals:L.catAnimals, actions:L.catActions, professions:L.catProfessions, movies:L.catMovies, food:L.catFood, sports:L.catSports};
+    var catLabel = catLabels[data.settings.category] || data.settings.category;
+    roundEl.textContent = L.round + ' ' + data.round + ' ' + L.of + ' ' + data.totalRounds + '  ·  ' + catLabel;
+  }
+  
+  // Hide playing elements
+  var wordCard = document.getElementById('word-card');
+  var actorBtns = document.getElementById('actor-buttons');
+  var timerText = document.getElementById('timer-text');
+  var timerBar = document.getElementById('timer-bar');
+  var flash = document.getElementById('result-flash');
+  var nextBtn = document.getElementById('next-round-btn');
+  if (wordCard) wordCard.style.display = 'none';
+  if (actorBtns) actorBtns.style.display = 'none';
+  if (timerText) timerText.textContent = '';
+  if (timerBar) timerBar.style.width = '100%';
+  if (flash) flash.style.display = 'none';
+  if (nextBtn) nextBtn.style.display = 'none';
+  clearInterval(window._timerInterval);
+  
+  // Banner — "Up Next"
+  var banner = document.getElementById('turn-banner');
+  if (banner) {
+    banner.className = 'turn-banner actor-banner';
+    banner.textContent = '⏭️ ' + (lang === 'pl' ? 'Następny' : lang === 'de' ? 'Als Nächstes' : lang === 'sv' ? 'Nästa' : 'Up Next') + ': ' + actorName + ' (' + teamLabel + ')';
+  }
+  
+  // Wait message — actor sees "Ready" button, others see "Get ready"
+  var waitMsg = document.getElementById('wait-message');
+  if (waitMsg) {
+    waitMsg.style.display = '';
+    if (isActor) {
+      waitMsg.innerHTML =
+        '<div class="wait-icon">🎭</div>' +
+        '<p style="font-size:18px;color:var(--text);font-weight:800;">' + (lang === 'pl' ? 'Twoja kolej!' : lang === 'de' ? 'Du bist dran!' : lang === 'sv' ? 'Din tur!' : 'Your turn!') + '</p>' +
+        '<p style="font-size:13px;color:var(--muted);margin-bottom:16px;">' + (lang === 'pl' ? 'Przygotuj się i naciśnij przycisk gdy będziesz gotowy' : lang === 'de' ? 'Mach dich bereit und drücke den Knopf' : lang === 'sv' ? 'Gör dig redo och tryck på knappen' : 'Get ready and press the button when you are prepared') + '</p>' +
+        '<button class="btn big-btn correct-btn" onclick="actorReady()" style="width:100%;max-width:300px;margin:0 auto;">▶ ' + (lang === 'pl' ? 'Jestem gotowy!' : lang === 'de' ? 'Ich bin bereit!' : lang === 'sv' ? 'Jag är redo!' : "I'm Ready!") + '</button>';
+    } else {
+      waitMsg.innerHTML =
+        '<div class="wait-icon">⏳</div>' +
+        '<p style="font-size:18px;color:var(--text);font-weight:800;">' + actorName + '</p>' +
+        '<p style="font-size:13px;color:var(--muted);">' + (lang === 'pl' ? 'przygotowuje się...' : lang === 'de' ? 'bereitet sich vor...' : lang === 'sv' ? 'förbereder sig...' : 'is getting ready...') + '</p>';
+    }
+  }
+}
+
 // ── PLAYING ──
 function renderPlaying(data) {
   var isActor = data.actorId === myId;
@@ -719,9 +1126,13 @@ function renderPlaying(data) {
       '</div>';
   }
   
-  // Round
+  // Round + category
   var roundEl = document.getElementById('round-indicator');
-  if (roundEl) roundEl.textContent = L.round + ' ' + data.round + ' ' + L.of + ' ' + data.totalRounds;
+  if (roundEl) {
+    var catLabels = {mixed:L.catMixed, animals:L.catAnimals, actions:L.catActions, professions:L.catProfessions, movies:L.catMovies, food:L.catFood, sports:L.catSports};
+    var catLabel = catLabels[data.settings.category] || data.settings.category;
+    roundEl.textContent = L.round + ' ' + data.round + ' ' + L.of + ' ' + data.totalRounds + '  ·  ' + catLabel;
+  }
   
   // Banner
   var banner = document.getElementById('turn-banner');
@@ -900,6 +1311,7 @@ function joinRoom() {
 function startGame() { socket.emit('charades_start', { code: roomCode }); }
 function actorCorrect() { socket.emit('charades_correct', { code: roomCode }); }
 function actorPass() { socket.emit('charades_pass', { code: roomCode }); }
+function actorReady() { socket.emit('charades_ready', { code: roomCode }); }
 function nextRound() { socket.emit('charades_next_round', { code: roomCode }); }
 function playAgain() { socket.emit('charades_play_again', { code: roomCode }); }
 function goHome() { window.location.href = '/?lang=' + lang; }
