@@ -1314,7 +1314,19 @@ function actorPass() { socket.emit('charades_pass', { code: roomCode }); }
 function actorReady() { socket.emit('charades_ready', { code: roomCode }); }
 function nextRound() { socket.emit('charades_next_round', { code: roomCode }); }
 function playAgain() { socket.emit('charades_play_again', { code: roomCode }); }
-function goHome() { window.location.href = '/?lang=' + lang; }
+function goHome() {
+  sessionStorage.removeItem('charades_code');
+  sessionStorage.removeItem('charades_name');
+  var langUrls = { pl: '/kalambury', en: '/charades-online', de: '/scharade', sv: '/charader' };
+  window.location.href = langUrls[lang] || '/kalambury';
+}
+function leaveRoom() {
+  sessionStorage.removeItem('charades_code');
+  sessionStorage.removeItem('charades_name');
+  roomCode = '';
+  showScreen('screen-home');
+  window.scrollTo(0, 0);
+}
 window.movePlayer = function(id, team) { socket.emit('charades_move_team', { code: roomCode, playerId: id, team: team }); };
 
 // ── Language ──
@@ -1343,6 +1355,7 @@ function applyTranslations() {
     'lbl-settings':'settings','lbl-category':'category','lbl-difficulty':'difficulty',
     'lbl-timer':'timer','lbl-game-length':'gameLength',
     'lbl-start':'startGame','lbl-final-title':'finalTitle',
+    'lbl-leave-room':'leaveRoom',
     'lbl-play-again':'playAgain','lbl-go-home':'goHome',
     'game-title':'gameTitle','game-subtitle':'gameSubtitle',
   };

@@ -543,7 +543,9 @@ function renderPlaying(data) {
     const turnsEach = data.settings.turnsEach || 1;
     const playerCount = data.players.length;
     const currentRound = Math.floor(data.turnCount / playerCount) + 1;
-    roundEl.textContent = (L.roundLabel || 'Round') + ' ' + currentRound + '/' + turnsEach;
+    const catName = data.settings.category || '';
+    const catDisplay = catName ? '  ·  ' + catName.charAt(0).toUpperCase() + catName.slice(1) : '';
+    roundEl.textContent = (L.roundLabel || 'Round') + ' ' + currentRound + '/' + turnsEach + catDisplay;
   }
 
   // Score mini bar
@@ -794,6 +796,10 @@ function renderFinal(data) {
       <span class="wa-score-pts">${p.score}</span>
     </div>`
   ).join('');
+
+  // Hide play again button for non-host
+  var playAgainBtn = document.getElementById('wa-play-again-btn');
+  if (playAgainBtn) playAgainBtn.style.display = isHost ? '' : 'none';
 
   if (typeof renderOtherGames === 'function') renderOtherGames('whoami');
 
