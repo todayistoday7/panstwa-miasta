@@ -311,6 +311,7 @@ function register(io, socket) {
   });
   
   socket.on('charades_join', ({ code, name }) => {
+    code = (code || '').toUpperCase().trim();
     const room = rooms[code];
     if (!room) return socket.emit('charades_error', { message: 'Room not found' });
     
@@ -434,6 +435,7 @@ function register(io, socket) {
   });
   
   socket.on('charades_leave', ({ code }) => {
+    code = (code || '').toUpperCase().trim();
     const room = rooms[code];
     if (!room) return;
     const player = room.players.find(p => p.id === socket.id);
@@ -512,6 +514,7 @@ function register(io, socket) {
   });
   
   socket.on('charades_rejoin', ({ code, name }) => {
+    code = (code || '').toUpperCase().trim();
     const room = rooms[code];
     if (!room) return socket.emit('charades_error', { message: 'Room not found' });
     const existing = room.players.find(p => p.name === name);
