@@ -381,7 +381,7 @@ function register(io, socket) {
       if (p._disconnectTimer) clearTimeout(p._disconnectTimer);
       // Grace period: longer in lobby (host may be sharing link via another app)
       // shorter during gameplay to keep chains moving
-      const gracePeriod = room.state.phase === 'lobby' ? 300000 : 45000; // 5min lobby, 45s game
+      const gracePeriod = room.state.phase === 'lobby' ? 300000 : 30 * 60 * 1000; // 5min lobby, 45s game
       p._disconnectTimer = setTimeout(() => {
         if (!p.connected) {
           room.players = room.players.filter(pl => pl.id !== socket.id);

@@ -293,7 +293,7 @@ function register(io, socket) {
         if (room.players.length === 0) { delete memRooms[code]; continue; }
         if (socket.id === room.hostId) promoteMemHost(room);
       } else {
-        if (room.players.every(p => !p.connected)) { delete memRooms[code]; continue; }
+        if (room.players.every(p => !p.connected)) { room._deleteTimer = setTimeout(() => { if (memRooms[code] && memRooms[code].players.every(p => !p.connected)) delete memRooms[code]; }, 30*60*1000); continue; }
         if (socket.id === room.hostId) promoteMemHost(room);
         if (room.state.currentPlayer === socket.id) {
           room.state.currentPlayer = nextPlayerIndex(room, socket.id);

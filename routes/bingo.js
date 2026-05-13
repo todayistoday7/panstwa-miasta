@@ -252,7 +252,7 @@ function register(io, socket) {
               emitBingoState(io, room);
             }
           }
-        }, room.phase === 'lobby' ? 600000 : 45000); // 10min lobby, 45s game
+        }, room.phase === 'lobby' ? 600000 : 30 * 60 * 1000); // 10min lobby, 45s game
         emitBingoState(io, room);
         break;
       }

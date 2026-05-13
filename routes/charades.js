@@ -464,8 +464,14 @@ function register(io, socket) {
         const connected = getConnected(room);
         if (connected.length === 0) {
           clearTimeout(room.state.timer);
-          delete rooms[code];
+          // Grace period — keep room alive for 2 minutes in case everyone comes back
+          room._deleteTimer = setTimeout(() => {
+            const stillConnected = room.players.filter(p => p.connected);
+            if (stillConnected.length === 0) delete rooms[code];
+          }, 30 * 60 * 1000);
         } else {
+          // Cancel delete timer if someone is still here
+          if (room._deleteTimer) { clearTimeout(room._deleteTimer); room._deleteTimer = null; }
           if (socket.id === room.hostId) {
             room.hostId = connected[0].id;
           }
