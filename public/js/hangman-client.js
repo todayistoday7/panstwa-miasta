@@ -380,21 +380,23 @@ function drawGallows(svgEl, wrongCount, isComplete) {
 // ─── KEYBOARD ────────────────────────────────────────────────────
 // Language-appropriate alphabet
 const ALPHABETS = {
-  pl: 'QWERTYUIOPĄŚDFGHJKLŁZXĆCVBNMŃÓŹŻĘ',
+  pl: 'QWERTYUIOPASDFGHJKLZXCVBNMĄĆĘŁŃÓŚŹŻ',
   en: 'QWERTYUIOPASDFGHJKLZXCVBNM',
-  de: 'QWERTZUIOPÄASDFGHJKLÖYXCVBNMÜß',
+  de: 'QWERTZUIOPASDFGHJKLYXCVBNMÄÖÜß',
+  sv: 'QWERTYUIOPASDFGHJKLZXCVBNMÅÄÖ',
 };
 // Keyboard rows for QWERTY layout rendering
 const KEYBOARD_ROWS = {
-  pl: ['QWERTYUIOP','AĄSŚDFGHJKLŁ','ZXĆCVBNMŃÓŹŻĘ'],
+  pl: ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM','ĄĆĘŁŃÓŚŹŻ'],
   en: ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'],
-  de: ['QWERTZUIOPÄ','ASDFGHJKLÖ','YXCVBNMÜß'],
+  de: ['QWERTZUIOP','ASDFGHJKL','YXCVBNM','ÄÖÜß'],
+  sv: ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM','ÅÄÖ'],
 };
 
 function buildKeyboard(guessedLetters, word) {
   const el  = document.getElementById('hang-keyboard');
   el.innerHTML = '';
-  const langKey = L === LANGS.pl ? 'pl' : L === LANGS.de ? 'de' : 'en';
+  const langKey = L === LANGS.pl ? 'pl' : L === LANGS.de ? 'de' : L === LANGS.sv ? 'sv' : 'en';
   const rows = KEYBOARD_ROWS[langKey] || KEYBOARD_ROWS['en'];
   const wordLetters = word ? word.toUpperCase().split('') : [];
 

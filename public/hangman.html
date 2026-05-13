@@ -88,10 +88,11 @@
   /* Keyboard QWERTY rows */
   .hang-key-row {
     display: flex;
-    gap: 5px;
+    gap: 4px;
     justify-content: center;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
     flex-wrap: nowrap;
+    width: 100%;
   }
   /* Alphabet keyboard */
   .hang-keyboard {
@@ -100,13 +101,17 @@
     align-items: center;
     gap: 0;
     justify-content: center;
+    width: 100%;
     max-width: 480px;
+    margin: 0 auto;
   }
   .hang-key {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
+    font-size: 16px;
     letter-spacing: 1px;
-    width: 38px;
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 42px;
     height: 38px;
     display: flex;
     align-items: center;
