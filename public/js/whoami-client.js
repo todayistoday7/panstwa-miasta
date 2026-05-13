@@ -475,7 +475,15 @@ function renderPlaying(data) {
 
   if (isActive) {
     if (charCard)    charCard.style.display    = 'none';
-    if (mysteryCard) { mysteryCard.style.display = ''; document.getElementById('wa-mystery-text').textContent = L.mysteryText; }
+    if (mysteryCard) {
+      mysteryCard.style.display = '';
+      document.getElementById('wa-mystery-text').textContent = L.mysteryText;
+      var mysteryCat = document.getElementById('wa-mystery-cat');
+      if (mysteryCat && data.settings.category) {
+        var catName = data.settings.category;
+        mysteryCat.textContent = (lang === 'pl' ? 'Kategoria: ' : lang === 'de' ? 'Kategorie: ' : lang === 'sv' ? 'Kategori: ' : 'Category: ') + catName.charAt(0).toUpperCase() + catName.slice(1);
+      }
+    }
     if (hintsWrap && data.settings.hintsOn && data.mode !== 'chat') { hintsWrap.style.display = ''; renderHints(data); }
     if (guessWrap) {
       guessWrap.style.display = '';

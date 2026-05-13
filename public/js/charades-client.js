@@ -1167,8 +1167,8 @@ function renderPlaying(data) {
     if (actorBtns) {
       actorBtns.style.display = '';
       actorBtns.innerHTML =
-        '<button class="btn big-btn correct-btn" onclick="actorCorrect()"><span style="font-size:28px;">✅</span><br>' + L.correct + '</button>' +
-        '<button class="btn big-btn pass-btn" onclick="actorPass()"' + (data.passesLeft <= 0 ? ' disabled style="opacity:0.3;"' : '') + '><span style="font-size:28px;">⏭️</span><br>' + L.pass + ' (' + data.passesLeft + ')</button>';
+        '<button class="btn big-btn correct-btn" onclick="actorCorrect()" style="font-size:22px;">' + L.correct + '</button>' +
+        '<button class="btn big-btn pass-btn" onclick="actorPass()" style="font-size:22px;"' + (data.passesLeft <= 0 ? ' disabled style="font-size:22px;opacity:0.3;"' : '') + '>' + L.pass + ' (' + data.passesLeft + ')</button>';
     }
     if (waitMsg) waitMsg.style.display = 'none';
   } else {
