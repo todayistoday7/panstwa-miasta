@@ -46,21 +46,21 @@
   /* Character card */
   .wa-char-card {
     background:var(--card); border:2px solid var(--accent2); border-radius:18px;
-    padding:20px; text-align:center; margin:16px 0;
+    padding:12px; text-align:center; margin:8px 0;
   }
   .wa-char-img {
-    width:120px; height:120px; border-radius:50%; object-fit:cover;
-    border:3px solid var(--accent2); margin:0 auto 12px; display:block;
+    width:100px; height:100px; border-radius:50%; object-fit:cover;
+    border:3px solid var(--accent2); margin:0 auto 8px; display:block;
     background:var(--surface);
   }
   .wa-char-img-placeholder {
-    width:120px; height:120px; border-radius:50%;
-    border:3px solid var(--accent2); margin:0 auto 12px;
+    width:100px; height:100px; border-radius:50%;
+    border:3px solid var(--accent2); margin:0 auto 8px;
     display:flex; align-items:center; justify-content:center;
-    font-size:48px; background:var(--surface);
+    font-size:40px; background:var(--surface);
   }
   .wa-char-name {
-    font-family:'Bebas Neue',sans-serif; font-size:clamp(24px,6vw,40px);
+    font-family:'Bebas Neue',sans-serif; font-size:clamp(22px,5vw,36px);
     letter-spacing:3px; color:var(--accent2); line-height:1.1;
   }
   .wa-char-cat { font-size:12px; font-weight:700; color:var(--muted); margin-top:4px; letter-spacing:1px; text-transform:uppercase; }
@@ -68,14 +68,15 @@
   /* Active player mystery card */
   .wa-mystery-card {
     background:var(--card); border:2px dashed var(--border); border-radius:18px;
-    padding:32px 20px; text-align:center; margin:16px 0;
+    padding:16px 16px; text-align:center; margin:8px 0;
   }
-  .wa-mystery-icon { font-size:56px; margin-bottom:8px; }
-  .wa-mystery-text { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:3px; color:var(--muted); }
-  .wa-mystery-hint { font-family:'Bebas Neue',sans-serif; font-size:14px; color:var(--muted); margin-top:10px; letter-spacing:1px; animation: wa-hint-pulse 2.5s ease-in-out infinite; }
+  .wa-mystery-icon { font-size:36px; margin-bottom:4px; }
+  .wa-mystery-text { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:3px; color:var(--muted); }
+  .wa-mystery-hint { font-family:'Bebas Neue',sans-serif; font-size:14px; color:var(--muted); margin-top:6px; letter-spacing:1px; animation: wa-hint-pulse 2.5s ease-in-out infinite; }
   @keyframes wa-hint-pulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
-
-  /* Chat mode — compact cards so chat is visible without scrolling */
+  .wa-guess-wrap { display:flex; flex-direction:column; gap:8px; margin:12px 0; }
+  .wa-guess-wrap .btn { padding:16px 20px !important; font-size:18px !important; font-weight:800 !important; min-height:56px; }
+  .wa-guess-wrap .btn.secondary { padding:14px 20px !important; font-size:16px !important; min-height:48px; }
   .chat-mode-compact .wa-mystery-card {
     padding: 10px 16px; margin: 6px 0; display: flex;
     align-items: center; gap: 10px; text-align: left;
@@ -490,7 +491,6 @@
 
     <!-- Mystery card (active player) -->
     <div id="wa-mystery-card" class="wa-mystery-card" style="display:none;">
-      <div class="wa-mystery-icon wa-bounce">❓</div>
       <div class="wa-mystery-text" id="wa-mystery-text">KIM JESTEM?</div>
       <div class="wa-mystery-hint" id="wa-mystery-hint" style="display:none;">💡 <span id="lbl-mystery-hint">Podaj odpowiedź → następnie naciśnij ✅ poniżej ↓</span></div>
     </div>
@@ -514,7 +514,7 @@
     </div>
 
     <!-- Skip — host only -->
-    <button id="wa-skip-btn" class="btn secondary" onclick="skipCharacter()" style="width:100%;margin-top:4px;display:none;">⏭️ <span id="lbl-skip-btn">Pomiń postać</span></button>
+    <button id="wa-skip-btn" class="btn secondary" onclick="skipCharacter()" style="width:100%;margin-top:4px;display:none;padding:14px 20px;font-size:16px;min-height:48px;">⏭️ <span id="lbl-skip-btn">Pomiń postać</span></button>
 
     <!-- Question hints (active player, togglable) -->
     <div id="wa-hints" class="wa-hints" style="display:none;">

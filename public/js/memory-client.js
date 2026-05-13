@@ -504,6 +504,8 @@ function updateSettings() {
 }
 
 function goHome() {
+  sessionStorage.removeItem('mem_code');
+  sessionStorage.removeItem('mem_name');
   if (roomCode) socket.emit('mem_leave', { code: roomCode });
   roomCode = '';
   roomState = null;

@@ -1161,7 +1161,6 @@ function renderPlaying(data) {
       var emoji = EMOJI_HINTS[data.word] || '';
       var emojiHtml = emoji ? '<div class="word-emoji">' + emoji + '</div>' : '';
       wordCard.innerHTML =
-        '<div class="word-label">🎭</div>' +
         emojiHtml +
         '<div class="word-text">' + (data.word || '') + '</div>';
     }
