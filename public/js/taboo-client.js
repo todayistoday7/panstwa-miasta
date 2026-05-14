@@ -4,6 +4,7 @@
 const socket = io();
 window._gameSocket = socket;
 var _prevPlayerCount = 0;
+var _lastTeamTotals = null;
 const _urlLang = new URLSearchParams(window.location.search).get('lang');
 let lang = (window._forceLang && ['pl','en','de','sv'].includes(window._forceLang))
            ? window._forceLang
@@ -55,9 +56,9 @@ const LANGS_TABOO = {
     yourRole: 'Twoja rola:',
     describer: '🎤 OPISUJĄCY', referee: '👁 SĘDZIA', guesser: '🤔 ZGADUJĄCY',
     roleDescriber: function(team) { return '🎤 OPISUJESZ — ' + team + ' zgaduje'; },
-    roleReferee: function(team) { return '👁 SĘDZIA — pilnujesz ' + team; },
-    roleGuesserOwn: function(name, team) { return '🤔 ZGADUJ! ' + name + ' (' + team + ') opisuje dla Twojej drużyny'; },
-    roleGuesserOpp: function(name, team) { return '👀 ' + name + ' (' + team + ') opisuje dla drużyny przeciwnej — czekaj na swoją rundę'; },
+    roleReferee: function(team) { return '👁 SĘDZIA — pilnuj ' + team; },
+    roleGuesserOwn: function(name, team) { return '🤔 ZGADUJ! ' + name + ' opisuje — to Twoja drużyna!'; },
+    roleGuesserOpp: function(name, team) { return '👀 ' + name + ' opisuje dla ' + team + ' — obserwuj'; },
     forbidden: 'Nie mów:', forbiddenRef: 'Słowa zakazane:',
     refereeSeesWord: 'Widzisz słowo (pilnuj zakazanych!):',
     waitingForWord: 'Czekam aż opisujący zacznie...',
@@ -109,9 +110,9 @@ const LANGS_TABOO = {
     yourRole: 'Your role:',
     describer: '🎤 DESCRIBER', referee: '👁 REFEREE', guesser: '🤔 GUESSER',
     roleDescriber: function(team) { return '🎤 YOU ARE DESCRIBING — ' + team + ' is guessing'; },
-    roleReferee: function(team) { return '👁 YOU ARE REFEREE — watch ' + team + ' for forbidden words'; },
-    roleGuesserOwn: function(name, team) { return '🤔 GUESS! ' + name + ' (' + team + ') is describing for your team'; },
-    roleGuesserOpp: function(name, team) { return '👀 ' + name + ' (' + team + ') is describing for the opposing team — wait for your turn'; },
+    roleReferee: function(team) { return '👁 REFEREE — watch ' + team; },
+    roleGuesserOwn: function(name, team) { return '🤔 GUESS! ' + name + ' is describing — your team!'; },
+    roleGuesserOpp: function(name, team) { return '👀 ' + name + ' describes for ' + team + ' — watch!'; },
     forbidden: "Don't say:", forbiddenRef: 'Forbidden words:',
     refereeSeesWord: 'You can see the word (watch for forbidden words!):',
     waitingForWord: 'Waiting for describer to pick a word...',
@@ -162,9 +163,9 @@ const LANGS_TABOO = {
     yourRole: 'Deine Rolle:',
     describer: '🎤 BESCHREIBER', referee: '👁 SCHIEDSRICHTER', guesser: '🤔 RATER',
     roleDescriber: function(team) { return '🎤 DU BESCHREIBST — ' + team + ' rät'; },
-    roleReferee: function(team) { return '👁 DU BIST SCHIEDSRICHTER — beobachte ' + team + ' auf verbotene Wörter'; },
-    roleGuesserOwn: function(name, team) { return '🤔 RATE! ' + name + ' (' + team + ') beschreibt für dein Team'; },
-    roleGuesserOpp: function(name, team) { return '👀 ' + name + ' (' + team + ') beschreibt für das gegnerische Team — warte auf deine Runde'; },
+    roleReferee: function(team) { return '👁 SCHIEDSRICHTER — beobachte ' + team; },
+    roleGuesserOwn: function(name, team) { return '🤔 RATE! ' + name + ' beschreibt — dein Team!'; },
+    roleGuesserOpp: function(name, team) { return '👀 ' + name + ' beschreibt für ' + team + ' — beobachte!'; },
     forbidden: 'Nicht sagen:', forbiddenRef: 'Verbotene Wörter:',
     refereeSeesWord: 'Du siehst das Wort (achte auf verbotene Wörter!):',
     waitingForWord: 'Warte auf den Beschreiber...',
@@ -213,7 +214,7 @@ const LANGS_TABOO = {
     describer: '🎤 BESKRIVARE', referee: '👁 DOMARE', guesser: '🤔 GISSARE',
     roleDescriber: function(team) { return '🎤 DU BESKRIVER — ' + team + ' gissar'; },
     roleReferee: function(team) { return '👁 DU ÄR DOMARE — bevaka ' + team + ' för förbjudna ord'; },
-    roleGuesserOwn: function(name, team) { return '🤔 GISSA! ' + name + ' (' + team + ') beskriver för ditt lag'; },
+    roleGuesserOwn: function(name, team) { return '🤔 GISSA! ' + name + ' beskriver — ditt lag!'; },
     roleGuesserOpp: function(name, team) { return '👀 ' + name + ' (' + team + ') beskriver för motståndarlaget — vänta på din runda'; },
     forbidden: 'Säg inte:', forbiddenRef: 'Förbjudna ord:',
     refereeSeesWord: 'Du ser ordet (bevaka förbjudna ord!):',
@@ -377,10 +378,17 @@ function renderLobby(data) {
   // Game length pills (host only)
   var lengthEl = document.getElementById('taboo-length-pills');
   if (lengthEl && isHost) {
+    var lengthDesc = {
+      pl: {quick:'każdy opisuje raz',standard:'każdy opisuje 2x',marathon:'każdy opisuje 3x'},
+      en: {quick:'everyone describes once',standard:'everyone describes twice',marathon:'everyone describes 3x'},
+      de: {quick:'jeder beschreibt 1x',standard:'jeder beschreibt 2x',marathon:'jeder beschreibt 3x'},
+      sv: {quick:'alla beskriver 1 gång',standard:'alla beskriver 2 ggr',marathon:'alla beskriver 3 ggr'},
+    };
+    var ld = lengthDesc[lang] || lengthDesc.en;
     var lengths = [
-      {key:'quick',label:L.lengthQuick||'⚡ Quick'},
-      {key:'standard',label:L.lengthStandard||'🎮 Standard'},
-      {key:'marathon',label:L.lengthMarathon||'🏆 Marathon'},
+      {key:'quick',label:(L.lengthQuick||'⚡ Quick') + '<br><small style="font-weight:400;font-size:10px;opacity:0.7;">' + ld.quick + '</small>'},
+      {key:'standard',label:(L.lengthStandard||'🎮 Standard') + '<br><small style="font-weight:400;font-size:10px;opacity:0.7;">' + ld.standard + '</small>'},
+      {key:'marathon',label:(L.lengthMarathon||'🏆 Marathon') + '<br><small style="font-weight:400;font-size:10px;opacity:0.7;">' + ld.marathon + '</small>'},
     ];
     lengthEl.innerHTML = lengths.map(function(item) {
       return '<div class="lang-pill' + (item.key === (settings.gameLength||'standard') ? ' active' : '') + '" onclick="updateTabooSettings({gameLength:\'' + item.key + '\'})">' + item.label + '</div>';
@@ -470,6 +478,18 @@ function tabooReady() { socket.emit('taboo_ready', { code: roomCode }); }
 
 function renderPlaying(data) {
   const { players, currentWord, turnDescriber, turnReferee, describerTeam, teams, teamTotals, scores, round } = data;
+  
+  // Hide score ticker during play - show only at round end
+  var ticker = document.getElementById('score-ticker');
+  if (ticker) ticker.style.display = 'none';
+  
+  // Round indicator
+  var roundInfo = document.getElementById('round-indicator');
+  if (roundInfo) {
+    var totalRounds = data.totalRounds || '?';
+    roundInfo.textContent = (L.roundLabel || 'Round') + ' ' + (round + 1) + '/' + totalRounds;
+    roundInfo.style.display = 'block';
+  }
 
   const isDescriber  = myId === turnDescriber;
   const isReferee    = !isDescriber && myId === turnReferee;
@@ -639,6 +659,7 @@ function renderRoundEnd(data) {
 // ─── FINAL ───────────────────────────────────────────────────────
 function renderFinal(data) {
   const { teamTotals, players, teams } = data;
+  _lastTeamTotals = teamTotals;
   const red = teamTotals.red || 0, blue = teamTotals.blue || 0;
 
   const winnerHtml = red > blue
@@ -738,17 +759,21 @@ function setLang(code) {
 function copyRoomCode() { shareRoom('taboo'); }
 
 function shareResults() {
-  var url  = 'https://panstwamiastagra.com/taboo';
+  var langUrls = { pl: '/zakazane-slowa', en: '/forbidden-words', de: '/verbotene-woerter', sv: '/forbjudna-ord' };
+  var url = 'https://panstwamiastagra.com' + (langUrls[lang] || '/forbidden-words');
+  var redScore = _lastTeamTotals ? (_lastTeamTotals.red || 0) : 0;
+  var blueScore = _lastTeamTotals ? (_lastTeamTotals.blue || 0) : 0;
+  var winner = redScore > blueScore ? '🔴' : blueScore > redScore ? '🔵' : '🤝';
   var text = (lang === 'pl'
-    ? 'Właśnie zagraliśmy w Zakazane Słowa online! 🎭\n\nZagraj za darmo: '
-    : 'We just played Forbidden Words online! 🎭\n\nPlay for free: ') + url;
-  if (navigator.share) { navigator.share({ title: 'Forbidden Words Online', text }).catch(() => {}); }
+    ? 'Zakazane Słowa 🎭\n' + winner + ' 🔴 ' + redScore + ' : ' + blueScore + ' 🔵\n\nZagraj za darmo: '
+    : lang === 'de'
+    ? 'Verbotene Wörter 🎭\n' + winner + ' 🔴 ' + redScore + ' : ' + blueScore + ' 🔵\n\nKostenlos spielen: '
+    : lang === 'sv'
+    ? 'Förbjudna Ord 🎭\n' + winner + ' 🔴 ' + redScore + ' : ' + blueScore + ' 🔵\n\nSpela gratis: '
+    : 'Forbidden Words 🎭\n' + winner + ' 🔴 ' + redScore + ' : ' + blueScore + ' 🔵\n\nPlay for free: ') + url;
+  if (navigator.share) { navigator.share({ title: L.gameTitle || 'Forbidden Words', text: text }).catch(function() {}); }
   else {
-    var ta = document.createElement('textarea');
-    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.focus(); ta.select();
-    try { document.execCommand('copy'); showToast('📋 Copied!'); } catch(e) {}
-    document.body.removeChild(ta);
+    navigator.clipboard.writeText(text).then(function() { showToast('📋 Copied!'); }).catch(function() {});
   }
 }
 
