@@ -393,10 +393,10 @@ function renderLobby(data) {
     ];
     lengthEl.innerHTML = lengths.map(function(item) {
       var isActive = item.key === currentLength;
-      return '<div onclick="updateTabooSettings({gameLength:\'' + item.key + '\'})" style="display:flex;align-items:center;padding:10px 14px;border-radius:10px;cursor:pointer;margin-bottom:6px;' +
+      return '<div onclick="updateTabooSettings({gameLength:\'' + item.key + '\'})" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:10px;cursor:pointer;margin-bottom:6px;' +
         (isActive ? 'border:2px solid var(--accent);background:rgba(255,107,53,0.08);' : 'border:1px solid var(--border);background:var(--surface);') + '">' +
         '<span style="font-size:15px;font-weight:700;' + (isActive ? 'color:var(--accent);' : 'color:var(--text);') + '">' + item.label + '</span>' +
-        '<span style="margin-left:auto;font-size:13px;' + (isActive ? 'color:var(--accent);font-weight:700;' : 'color:var(--muted);') + '">' + item.desc + '</span>' +
+        '<span style="margin-left:12px;font-size:13px;white-space:nowrap;' + (isActive ? 'color:var(--accent);font-weight:700;' : 'color:var(--muted);') + '">' + item.desc + '</span>' +
         '</div>';
     }).join('');
   }
