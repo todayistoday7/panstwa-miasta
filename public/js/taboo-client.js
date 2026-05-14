@@ -44,6 +44,7 @@ const LANGS_TABOO = {
     rule2: 'Opisujący z Drużyny A — jego drużyna zgaduje',
     rule3: 'Sędzia z Drużyny B — łapie zakazane słowa',
     nudge: '👋 Szturchnij', nudgeSent: '✓ Wysłano!',
+    lengthQuick: '⚡ Szybka', lengthStandard: '🎮 Standardowa', lengthMarathon: '🏆 Maraton',
     rule4: 'Zgadnięte słowo = +1 dla drużyny · Zakazane słowo = +1 dla drużyny przeciwnej',
     rule5: 'Drużyny zmieniają się rolami co rundę',
     rule6: 'Wygrywa drużyna z największą liczbą punktów!',
@@ -97,6 +98,7 @@ const LANGS_TABOO = {
     rule2: 'Describer from Team A — their own team guesses',
     rule3: 'Referee from Team B — catches forbidden words',
     nudge: '👋 Nudge', nudgeSent: '✓ Sent!',
+    lengthQuick: '⚡ Quick', lengthStandard: '🎮 Standard', lengthMarathon: '🏆 Marathon',
     rule4: 'Correct guess = +1 for your team · Forbidden word caught = +1 for opposing team',
     rule5: 'Teams swap roles every turn',
     rule6: 'Team with the most points wins!',
@@ -149,6 +151,7 @@ const LANGS_TABOO = {
     rule2: 'Beschreiber aus Team A — sein eigenes Team rät',
     rule3: 'Schiedsrichter aus Team B — achtet auf verbotene Wörter',
     nudge: '👋 Anstupsen', nudgeSent: '✓ Gesendet!',
+    lengthQuick: '⚡ Kurz', lengthStandard: '🎮 Standard', lengthMarathon: '🏆 Marathon',
     rule4: 'Richtiges Raten = +1 für dein Team · Verbotenes Wort = +1 für das gegnerische Team',
     rule5: 'Teams tauschen jede Runde die Rollen',
     rule6: 'Das Team mit den meisten Punkten gewinnt!',
@@ -198,6 +201,7 @@ const LANGS_TABOO = {
     rule2: 'Beskrivaren från Lag A — deras eget lag gissar',
     rule3: 'Domaren från Lag B — fångar förbjudna ord',
     nudge: '👋 Puffa', nudgeSent: '✓ Skickat!',
+    lengthQuick: '⚡ Snabb', lengthStandard: '🎮 Standard', lengthMarathon: '🏆 Maraton',
     rule4: 'Rätt gissning = +1 för ditt lag · Förbjudet ord = +1 för motståndarlaget',
     rule5: 'Lagen byter roller varje runda',
     rule6: 'Laget med flest poäng vinner!',
@@ -290,6 +294,7 @@ socket.on('taboo_timer_tick',  ({ remaining })        => { updateTimerDisplay(re
 function applyState(data) {
   switch (data.phase) {
     case 'lobby':    showScreen('screen-lobby');    renderLobby(data);    break;
+    case 'preparing':showScreen('screen-playing');  renderPreparing(data); break;
     case 'playing':  showScreen('screen-playing');  renderPlaying(data);  if(!window._gaGameStarted){_ga('game_started',{game:'taboo',language:lang});window._gaGameStarted=true;} break;
     case 'roundend': showScreen('screen-roundend'); renderRoundEnd(data); break;
     case 'final':    showScreen('screen-final');    renderFinal(data);    _ga('game_completed',{game:'taboo',language:lang}); window._gaGameStarted=false; break;
@@ -331,13 +336,16 @@ function renderLobby(data) {
         html += '<div class="team-empty">—</div>';
       } else {
         members.forEach((p, i) => {
-          html += '<div class="team-player' + (p.id === myId ? ' me' : '') + '">' +
+          html += '<div class="team-player' + (p.id === myId ? ' me' : '') + '" style="display:flex;align-items:center;justify-content:space-between;">' +
+            '<div style="display:flex;align-items:center;gap:8px;">' +
             '<div class="avatar av-' + (i % 8) + '" style="border:2px solid ' + tc.bg + '">' +
             p.name.charAt(0).toUpperCase() + '</div>' +
             '<span>' + p.name +
             (p.id === myId  ? ' <span class="you-badge">' + L.youBadge + '</span>' : '') +
             (p.id === hostId ? ' <span class="host-badge">' + L.hostBadge + '</span>' : '') +
-            '</span></div>';
+            '</span></div>' +
+            (p.id === myId ? '<button class="move-btn" onclick="switchTeam()" style="font-size:10px;font-weight:800;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:2px 8px;cursor:pointer;color:var(--muted);">' + (team === 'red' ? '→ 🔵' : '→ 🔴') + '</button>' : '') +
+            '</div>';
         });
       }
       html += '</div>';
@@ -366,8 +374,26 @@ function renderLobby(data) {
     window._buildNudgeButton(nudgeContainer, roomCode, myName || '', { nudge: L.nudge, nudgeSent: L.nudgeSent });
   }
 
-  document.getElementById('settings-rounds').value = settings.rounds || 5;
-  document.getElementById('settings-timer').value  = settings.turnTime || 60;
+  // Game length pills (host only)
+  var lengthEl = document.getElementById('taboo-length-pills');
+  if (lengthEl && isHost) {
+    var lengths = [
+      {key:'quick',label:L.lengthQuick||'⚡ Quick'},
+      {key:'standard',label:L.lengthStandard||'🎮 Standard'},
+      {key:'marathon',label:L.lengthMarathon||'🏆 Marathon'},
+    ];
+    lengthEl.innerHTML = lengths.map(function(item) {
+      return '<div class="lang-pill' + (item.key === (settings.gameLength||'standard') ? ' active' : '') + '" onclick="updateTabooSettings({gameLength:\'' + item.key + '\'})">' + item.label + '</div>';
+    }).join('');
+  }
+  // Timer pills (host only)
+  var timerEl = document.getElementById('taboo-timer-pills');
+  if (timerEl && isHost) {
+    var timers = [{key:30,label:'30s'},{key:60,label:'60s'},{key:90,label:'90s'}];
+    timerEl.innerHTML = timers.map(function(item) {
+      return '<div class="lang-pill' + (item.key === (settings.turnTime||60) ? ' active' : '') + '" onclick="updateTabooSettings({turnTime:' + item.key + '})">' + item.label + '</div>';
+    }).join('');
+  }
 
   const pillsEl = document.getElementById('lobby-lang-pills');
   if (pillsEl) {
@@ -389,6 +415,59 @@ function renderLobby(data) {
 }
 
 // ─── PLAYING — Bug 2: clear role banners; Bug 4: referee always visible ──
+// ── PREPARING (Up Next) ──
+function renderPreparing(data) {
+  const { players, turnDescriber, describerTeam, teams, teamTotals } = data;
+  const isDescriber = myId === turnDescriber;
+  const describerPlayer = players.find(p => p.id === turnDescriber);
+  const describerName = describerPlayer ? describerPlayer.name : '?';
+  const teamLabel = describerTeam === 'red' ? L.teamRed : L.teamBlue;
+
+  // Hide all views
+  document.getElementById('describer-view').style.display = 'none';
+  document.getElementById('guesser-view').style.display = 'none';
+  document.getElementById('referee-view').style.display = 'none';
+
+  // Show Up Next banner
+  const banner = document.getElementById('role-banner');
+  if (banner) {
+    banner.style.borderLeft = '4px solid var(--accent)';
+    banner.innerHTML = '<div style="text-align:center;padding:16px 0;">' +
+      '<div style="font-size:14px;color:var(--muted);margin-bottom:4px;">⏭️ ' + (lang === 'pl' ? 'Następny' : lang === 'de' ? 'Als Nächstes' : lang === 'sv' ? 'Nästa' : 'Up Next') + '</div>' +
+      '<div style="font-size:24px;font-weight:800;color:var(--text);margin-bottom:4px;">' + describerName + '</div>' +
+      '<div style="font-size:13px;color:var(--muted);">' + teamLabel + '</div>' +
+      '</div>';
+  }
+
+  // Show scores
+  const liveEl = document.getElementById('live-scores');
+  if (liveEl) {
+    liveEl.innerHTML =
+      '<span style="color:' + TEAM_COLORS.red.bg + '">' + TEAM_COLORS.red.emoji + ' ' + (teamTotals.red || 0) + '</span>' +
+      '<span style="color:var(--muted);padding:0 8px">vs</span>' +
+      '<span style="color:' + TEAM_COLORS.blue.bg + '">' + TEAM_COLORS.blue.emoji + ' ' + (teamTotals.blue || 0) + '</span>';
+  }
+
+  // Describer sees Ready button, others see waiting message
+  const teammatesEl = document.getElementById('my-teammates');
+  if (teammatesEl) {
+    if (isDescriber) {
+      teammatesEl.innerHTML = '<div style="text-align:center;padding:20px 0;">' +
+        '<div style="font-size:18px;font-weight:800;color:var(--accent);margin-bottom:12px;">' + (lang === 'pl' ? '🎭 Twoja kolej!' : lang === 'de' ? '🎭 Du bist dran!' : lang === 'sv' ? '🎭 Din tur!' : '🎭 Your turn!') + '</div>' +
+        '<button class="btn taboo-big-btn" onclick="tabooReady()" style="max-width:300px;margin:0 auto;">▶ ' + (lang === 'pl' ? 'Jestem gotowy!' : lang === 'de' ? 'Ich bin bereit!' : lang === 'sv' ? 'Jag är redo!' : "I'm Ready!") + '</button>' +
+        '</div>';
+      teammatesEl.style.borderColor = 'var(--accent)';
+    } else {
+      teammatesEl.innerHTML = '<div style="text-align:center;padding:16px 0;color:var(--muted);font-weight:700;">' +
+        describerName + ' ' + (lang === 'pl' ? 'przygotowuje się...' : lang === 'de' ? 'bereitet sich vor...' : lang === 'sv' ? 'förbereder sig...' : 'is getting ready...') +
+        '</div>';
+      teammatesEl.style.borderColor = 'var(--border)';
+    }
+  }
+}
+
+function tabooReady() { socket.emit('taboo_ready', { code: roomCode }); }
+
 function renderPlaying(data) {
   const { players, currentWord, turnDescriber, turnReferee, describerTeam, teams, teamTotals, scores, round } = data;
 
@@ -645,6 +724,10 @@ function updateSettings() {
   const turnTime = parseInt(document.getElementById('settings-timer').value);
   socket.emit('taboo_update_settings', { code: roomCode, settings: { rounds, turnTime, lang, isPublic: getIsPublic() } });
 }
+
+function updateTabooSettings(s) { socket.emit('taboo_update_settings', { code: roomCode, settings: s }); }
+
+function switchTeam() { socket.emit('taboo_switch_team', { code: roomCode }); }
 
 function setLang(code) {
   lang = code; L = LANGS_TABOO[code] || LANGS_TABOO['en'];

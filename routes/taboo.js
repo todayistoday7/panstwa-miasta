@@ -21,10 +21,11 @@ function makeTabooRoom(hostId, settings) {
     code, hostId,
     isPublic: settings.isPublic || false,
     settings: {
-      rounds:   settings.rounds   || 5,
-      turnTime: settings.turnTime || 60,
-      lang:     settings.lang     || 'en',
-      isPublic: settings.isPublic || false,
+      rounds:     settings.rounds   || 0, // 0 = auto from gameLength
+      turnTime:   settings.turnTime || 60,
+      lang:       settings.lang     || 'en',
+      isPublic:   settings.isPublic || false,
+      gameLength: settings.gameLength || 'standard',
     },
     players: [],
     state: {
@@ -54,7 +55,12 @@ function getTabooRoom(code)  { return tabooRooms[code]; }
 function getTabooRoomCount() { return Object.keys(tabooRooms).length; }
 
 function assignTeams(room) {
-  const players = room.players.filter(p => p.connected !== false).map(p => p.id);
+  // Calculate rounds based on gameLength and player count
+  const connected = room.players.filter(p => p.connected !== false);
+  const multiplier = room.settings.gameLength === 'quick' ? 1 : room.settings.gameLength === 'marathon' ? 3 : 2;
+  room.settings.rounds = Math.max(2, connected.length * multiplier);
+  
+  const players = connected.map(p => p.id);
   for (let i = players.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [players[i], players[j]] = [players[j], players[i]];
@@ -110,13 +116,19 @@ function emitTabooState(io, room) {
   });
 }
 
-function startTabooTurn(io, room) {
-  const code         = room.code;
+function prepareTabooTurn(io, room) {
   const describingTeam = room.state.describerTeam;
   const opponentTeam   = opposingTeam(describingTeam);
 
   room.state.turnDescriber = nextDescriber(room, describingTeam);
   room.state.turnReferee   = pickReferee(room, opponentTeam);
+  room.state.phase         = 'preparing';
+  room.state.currentWord   = null;
+  emitTabooState(io, room);
+}
+
+function startTabooTurn(io, room) {
+  const code = room.code;
   room.state.phase         = 'playing';
   room.state.currentWord   = null;
   emitTabooState(io, room);
@@ -264,7 +276,7 @@ function register(io, socket) {
     room.state.describerTeam      = 'red';
     assignTeams(room);
     lobby.remove(room.code);
-    startTabooTurn(io, room);
+    prepareTabooTurn(io, room);
   });
 
   socket.on('taboo_word_request', ({ code, word, forbidden }) => {
@@ -316,6 +328,25 @@ function register(io, socket) {
     emitTabooState(io, room);
   });
 
+  // Describer presses "I'm Ready!" to start their turn
+  socket.on('taboo_ready', ({ code }) => {
+    const room = getTabooRoom(code);
+    if (!room || room.state.phase !== 'preparing') return;
+    if (socket.id !== room.state.turnDescriber) return;
+    startTabooTurn(io, room);
+  });
+
+  // Player switches their own team
+  socket.on('taboo_switch_team', ({ code }) => {
+    const room = getTabooRoom(code);
+    if (!room || room.state.phase !== 'lobby') return;
+    const currentTeam = room.state.teams.red.includes(socket.id) ? 'red' : 'blue';
+    const newTeam = currentTeam === 'red' ? 'blue' : 'red';
+    room.state.teams[currentTeam] = room.state.teams[currentTeam].filter(id => id !== socket.id);
+    room.state.teams[newTeam].push(socket.id);
+    emitTabooState(io, room);
+  });
+
   socket.on('taboo_next_round', ({ code }) => {
     const room = getTabooRoom(code);
     if (!room || socket.id !== room.hostId) return;
@@ -326,7 +357,7 @@ function register(io, socket) {
       lobby.remove(room.code);
       setTimeout(() => { if (tabooRooms[room.code]) delete tabooRooms[room.code]; }, 60 * 60 * 1000);
     } else {
-      startTabooTurn(io, room);
+      prepareTabooTurn(io, room);
     }
   });
 
