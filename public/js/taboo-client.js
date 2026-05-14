@@ -385,14 +385,15 @@ function renderLobby(data) {
       sv: {quick:'alla beskriver 1 gång',standard:'alla beskriver 2 ggr',marathon:'alla beskriver 3 ggr'},
     };
     var ld = lengthDesc[lang] || lengthDesc.en;
+    var currentLength = settings.gameLength || 'standard';
     var lengths = [
-      {key:'quick',label:(L.lengthQuick||'⚡ Quick') + '<br><small style="font-weight:600;font-size:12px;color:var(--muted);">' + ld.quick + '</small>'},
-      {key:'standard',label:(L.lengthStandard||'🎮 Standard') + '<br><small style="font-weight:600;font-size:12px;color:var(--muted);">' + ld.standard + '</small>'},
-      {key:'marathon',label:(L.lengthMarathon||'🏆 Marathon') + '<br><small style="font-weight:600;font-size:12px;color:var(--muted);">' + ld.marathon + '</small>'},
+      {key:'quick',label:L.lengthQuick||'⚡ Quick'},
+      {key:'standard',label:L.lengthStandard||'🎮 Standard'},
+      {key:'marathon',label:L.lengthMarathon||'🏆 Marathon'},
     ];
     lengthEl.innerHTML = lengths.map(function(item) {
-      return '<div class="lang-pill' + (item.key === (settings.gameLength||'standard') ? ' active' : '') + '" onclick="updateTabooSettings({gameLength:\'' + item.key + '\'})">' + item.label + '</div>';
-    }).join('');
+      return '<div class="lang-pill' + (item.key === currentLength ? ' active' : '') + '" onclick="updateTabooSettings({gameLength:\'' + item.key + '\'})">' + item.label + '</div>';
+    }).join('') + '<p style="text-align:center;font-size:13px;font-weight:700;color:var(--accent2);margin-top:6px;">' + ld[currentLength] + '</p>';
   }
   // Timer pills (host only)
   var timerEl = document.getElementById('taboo-timer-pills');
