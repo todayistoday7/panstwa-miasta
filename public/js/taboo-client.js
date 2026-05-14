@@ -386,9 +386,9 @@ function renderLobby(data) {
     };
     var ld = lengthDesc[lang] || lengthDesc.en;
     var lengths = [
-      {key:'quick',label:(L.lengthQuick||'⚡ Quick') + '<br><small style="font-weight:400;font-size:10px;opacity:0.7;">' + ld.quick + '</small>'},
-      {key:'standard',label:(L.lengthStandard||'🎮 Standard') + '<br><small style="font-weight:400;font-size:10px;opacity:0.7;">' + ld.standard + '</small>'},
-      {key:'marathon',label:(L.lengthMarathon||'🏆 Marathon') + '<br><small style="font-weight:400;font-size:10px;opacity:0.7;">' + ld.marathon + '</small>'},
+      {key:'quick',label:(L.lengthQuick||'⚡ Quick') + '<br><small style="font-weight:600;font-size:12px;color:var(--muted);">' + ld.quick + '</small>'},
+      {key:'standard',label:(L.lengthStandard||'🎮 Standard') + '<br><small style="font-weight:600;font-size:12px;color:var(--muted);">' + ld.standard + '</small>'},
+      {key:'marathon',label:(L.lengthMarathon||'🏆 Marathon') + '<br><small style="font-weight:600;font-size:12px;color:var(--muted);">' + ld.marathon + '</small>'},
     ];
     lengthEl.innerHTML = lengths.map(function(item) {
       return '<div class="lang-pill' + (item.key === (settings.gameLength||'standard') ? ' active' : '') + '" onclick="updateTabooSettings({gameLength:\'' + item.key + '\'})">' + item.label + '</div>';
