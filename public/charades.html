@@ -195,7 +195,10 @@
 
   <!-- ══ PLAYING ══ -->
   <div id="screen-playing" class="screen">
-    <div class="round-indicator" id="round-indicator"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div class="round-indicator" id="round-indicator"></div>
+      <div id="playing-room-code" style="font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;color:var(--muted);"></div>
+    </div>
     <div class="scoreboard" id="scoreboard"></div>
     <div class="turn-banner" id="turn-banner"></div>
     <div class="timer-wrap">
@@ -207,6 +210,7 @@
     <div class="actor-buttons" id="actor-buttons" style="display:none;"></div>
     <div class="wait-message" id="wait-message" style="display:none;"></div>
     <button class="btn" id="next-round-btn" onclick="nextRound()" style="display:none;width:100%;margin-top:12px;">➡️ <span id="lbl-next-round">Next Round</span></button>
+    <button class="btn secondary" onclick="leaveRoom()" style="width:100%;margin-top:8px;font-size:13px;padding:8px;opacity:0.7;"><span class="lbl-leave-room-dup">🚪 Leave Room</span></button>
     
   </div>
 

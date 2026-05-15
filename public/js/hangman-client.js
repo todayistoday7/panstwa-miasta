@@ -869,6 +869,7 @@ function updateSettings() {
   socket.emit('hang_update_settings', { code: roomCode, settings: { lang, isPublic: getIsPublic(), totalRounds } });
 }
 function goHome() {
+  if (roomCode && socket.connected) { socket.disconnect(); socket.connect(); }
   roomCode = ''; roomState = null; myName = '';
   sessionStorage.removeItem('hang_code');
   sessionStorage.removeItem('hang_name');

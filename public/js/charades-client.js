@@ -1033,6 +1033,8 @@ function renderPills(containerId, items, active, onClick) {
 
 // ── PREPARING (Up Next) ──
 function renderPreparing(data) {
+  var codeEl = document.getElementById('playing-room-code');
+  if (codeEl) codeEl.textContent = '🔑 ' + roomCode;
   var isActor = data.actorId === myId;
   var actorName = data.actorName || '?';
   var teamLabel = data.actorTeam === 'red' ? L.teamRed : L.teamBlue;
@@ -1103,6 +1105,8 @@ function renderPreparing(data) {
 
 // ── PLAYING ──
 function renderPlaying(data) {
+  var codeEl = document.getElementById('playing-room-code');
+  if (codeEl) codeEl.textContent = '🔑 ' + roomCode;
   var isActor = data.actorId === myId;
   // Hide next round button during acting
   var nextBtn = document.getElementById('next-round-btn');

@@ -866,6 +866,7 @@ function closeConfirm() {
 function goHome() {
   closeConfirm();
   if (timerInterval) clearInterval(timerInterval);
+  if (roomCode && socket.connected) { socket.disconnect(); socket.connect(); }
   roomCode = ''; roomState = null; myName = ''; isHost = false;
   sessionStorage.removeItem('drawing_code');
   sessionStorage.removeItem('drawing_name');

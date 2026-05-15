@@ -957,6 +957,7 @@ function rematch() {
 
 function goHome() {
   if (_timerInt) clearInterval(_timerInt);
+  if (roomCode && socket.connected) { socket.disconnect(); socket.connect(); }
   roomCode = ''; roomState = null; myName = '';
   sessionStorage.removeItem('whoami_code');
   sessionStorage.removeItem('whoami_name');

@@ -516,7 +516,7 @@ function renderPlaying(data) {
   const banner = document.getElementById('role-banner');
   banner.style.borderLeft = '4px solid ' + myTeamColor;
   if (isDescriber) {
-    banner.innerHTML = L.roleDescriber(opponentTeamLabel);
+    banner.innerHTML = L.roleDescriber(myTeamLabel);
   } else if (isReferee) {
     banner.innerHTML = L.roleReferee(describerTeamLabel);
   } else {
@@ -769,14 +769,13 @@ function shareResults() {
   var url = 'https://panstwamiastagra.com' + (langUrls[lang] || '/forbidden-words');
   var redScore = _lastTeamTotals ? (_lastTeamTotals.red || 0) : 0;
   var blueScore = _lastTeamTotals ? (_lastTeamTotals.blue || 0) : 0;
-  var winner = redScore > blueScore ? '🔴' : blueScore > redScore ? '🔵' : '🤝';
   var text = (lang === 'pl'
-    ? 'Zakazane Słowa 🎭\n' + winner + ' 🔴 ' + redScore + ' : ' + blueScore + ' 🔵\n\nZagraj za darmo: '
+    ? 'Zakazane Słowa 🎭\n🔴 ' + redScore + ' : ' + blueScore + ' 🔵\n\nZagraj za darmo: '
     : lang === 'de'
-    ? 'Verbotene Wörter 🎭\n' + winner + ' 🔴 ' + redScore + ' : ' + blueScore + ' 🔵\n\nKostenlos spielen: '
+    ? 'Verbotene Wörter 🎭\n🔴 ' + redScore + ' : ' + blueScore + ' 🔵\n\nKostenlos spielen: '
     : lang === 'sv'
-    ? 'Förbjudna Ord 🎭\n' + winner + ' 🔴 ' + redScore + ' : ' + blueScore + ' 🔵\n\nSpela gratis: '
-    : 'Forbidden Words 🎭\n' + winner + ' 🔴 ' + redScore + ' : ' + blueScore + ' 🔵\n\nPlay for free: ') + url;
+    ? 'Förbjudna Ord 🎭\n🔴 ' + redScore + ' : ' + blueScore + ' 🔵\n\nSpela gratis: '
+    : 'Forbidden Words 🎭\n🔴 ' + redScore + ' : ' + blueScore + ' 🔵\n\nPlay for free: ') + url;
   if (navigator.share) { navigator.share({ title: L.gameTitle || 'Forbidden Words', text: text }).catch(function() {}); }
   else {
     navigator.clipboard.writeText(text).then(function() { showToast('📋 Copied!'); }).catch(function() {});
@@ -801,6 +800,7 @@ socket.on('taboo_group_rematch', ({ code }) => {
 });
 
 function goHome() {
+  if (roomCode && socket.connected) { socket.disconnect(); socket.connect(); }
   roomCode = ''; roomState = null; myName = '';
   sessionStorage.removeItem('taboo_code');
   sessionStorage.removeItem('taboo_name');

@@ -19,6 +19,16 @@ function _ga(event_name, params) {
 
 // ─── SCREEN TRANSITIONS ──────────────────────────────────────────
 
+// ─── CLEAR ALL GAME SESSIONS ─────────────────────────────────────
+// Called when navigating away via burger menu to prevent auto-rejoin
+function _clearAllGameSessions() {
+  var prefixes = ['pm','dots','hang','taboo','tt','whoami','bingo','drawing','mem','charades'];
+  prefixes.forEach(function(p) {
+    sessionStorage.removeItem(p + '_code');
+    sessionStorage.removeItem(p + '_name');
+  });
+}
+
 // ─── UNIVERSAL SOCKET RECONNECT ──────────────────────────────────
 // When a socket reconnects (e.g. after mobile tab suspension),
 // it gets a new socket.id and is NOT in any Socket.io room.
@@ -594,6 +604,12 @@ function initVisibilityToggle() {
     document.addEventListener('click', function(e) {
       var n = document.getElementById('gb-nav');
       var b = document.getElementById('gb-toggle');
+
+    // Clear game sessions when clicking any burger menu link (event delegation)
+    nav.addEventListener('click', function(e) {
+      var link = e.target.closest('a[href]');
+      if (link) _clearAllGameSessions();
+    });
       if (n && n.classList.contains('open') && b &&
           !n.contains(e.target) && !b.contains(e.target)) {
         n.classList.remove('open');

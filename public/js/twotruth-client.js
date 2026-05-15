@@ -747,6 +747,7 @@ socket.on('tt_group_rematch', ({ code }) => {
 });
 
 function goHome() {
+  if (roomCode && socket.connected) { socket.disconnect(); socket.connect(); }
   roomCode = ''; roomState = null; myName = ''; myVote = null; myLieIdx = null;
   sessionStorage.removeItem('tt_code');
   sessionStorage.removeItem('tt_name');

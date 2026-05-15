@@ -891,8 +891,9 @@ function updateSettings() {
 
 
 function goHome() {
+  if (roomCode && socket.connected) { socket.disconnect(); socket.connect(); }
   roomCode = ''; roomState = null; myName = '';
-  _demoStarted = false; // allow demo to restart
+  _demoStarted = false;
   sessionStorage.removeItem('dots_code');
   sessionStorage.removeItem('dots_name');
   showScreen('screen-home');
