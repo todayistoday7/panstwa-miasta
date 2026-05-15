@@ -86,6 +86,7 @@ function register(io, socket) {
       const room = {
         code,
         hostId:  socket.id,
+        _createdAt: Date.now(),
         phase:   'lobby',
         lang:    lang || 'pl',
         players: [],
@@ -487,5 +488,5 @@ const PHRASES = {
 
 };
 
-module.exports = { register, getBingoRooms };
+module.exports = { getRooms: () => bingoRooms, register, getBingoRooms };
 const { isBotName, isHoneypot } = require('./botfilter');

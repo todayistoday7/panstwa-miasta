@@ -26,6 +26,7 @@ function makeHangRoom(hostId, settings) {
   const code = generateHangCode();
   hangmanRooms[code] = {
     code, hostId,
+    _createdAt: Date.now(),
     isPublic: settings.isPublic || false,
     settings: {
       lang:        settings.lang        || 'en',
@@ -319,7 +320,7 @@ function register(io, socket) {
       room.state.phase = 'final';
       lobby.remove(room.code);
       emitHangState(io, room);
-      setTimeout(() => { if (hangmanRooms[room.code]) delete hangmanRooms[room.code]; }, 60 * 60 * 1000);
+      setTimeout(() => { if (hangmanRooms[room.code]) delete hangmanRooms[room.code]; }, 10 * 60 * 1000);
     } else {
       room.state.pickerIndex = (room.state.pickerIndex + 1) % connected.length;
       startNextRound(io, room);
@@ -399,4 +400,4 @@ function register(io, socket) {
 
 function getHangRooms() { return Object.values(hangmanRooms); }
 
-module.exports = { getHangRooms, register, getHangRoomCount };
+module.exports = { getRooms: () => hangmanRooms, getHangRooms, register, getHangRoomCount };

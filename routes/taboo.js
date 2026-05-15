@@ -19,6 +19,7 @@ function makeTabooRoom(hostId, settings) {
   const code = generateTabooCode();
   tabooRooms[code] = {
     code, hostId,
+    _createdAt: Date.now(),
     isPublic: settings.isPublic || false,
     settings: {
       rounds:     settings.rounds   || 0, // 0 = auto from gameLength
@@ -443,5 +444,5 @@ function register(io, socket) {
 
 function getTabooRooms() { return Object.values(tabooRooms); }
 
-module.exports = { getTabooRooms, register, getTabooRoomCount };
+module.exports = { getRooms: () => tabooRooms, getTabooRooms, register, getTabooRoomCount };
 // Note: disconnect handler appended below register()

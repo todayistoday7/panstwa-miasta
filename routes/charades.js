@@ -277,6 +277,7 @@ function register(io, socket) {
     rooms[code] = {
       code,
       hostId: socket.id,
+      _createdAt: Date.now(),
       players: [player],
       isPublic: false,
       settings: {
@@ -557,4 +558,4 @@ function getCharadesRooms() {
     }));
 }
 
-module.exports = { register, getCharadesRooms };
+module.exports = { getRooms: () => rooms, register, getCharadesRooms };

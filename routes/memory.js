@@ -49,6 +49,7 @@ function makeMemRoom(hostId, settings) {
   const theme = settings.theme || 'animals';
   memRooms[code] = {
     code, hostId,
+    _createdAt: Date.now(),
     isPublic: settings.isPublic || false,
     settings: { boardSize: size, theme, maxPlayers: settings.maxPlayers || 6 },
     players: [],
@@ -330,4 +331,4 @@ function register(io, socket) {
   });
 }
 
-module.exports = { register, getMemRoom, getMemRoomCount, getMemRooms, memRooms };
+module.exports = { getRooms: () => memRooms, register, getMemRoom, getMemRoomCount, getMemRooms, memRooms };

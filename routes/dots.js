@@ -34,6 +34,7 @@ function makeDotsRoom(hostId, settings) {
   const n    = settings.gridSize || 4;
   dotsRooms[code] = {
     code, hostId,
+    _createdAt: Date.now(),
     isPublic: settings.isPublic || false,
     settings: { gridSize: n, maxPlayers: settings.maxPlayers || 4, totalRounds: settings.totalRounds || 1 },
     players: [],     // { id, name, color, connected, score }
@@ -275,7 +276,7 @@ function register(io, socket) {
         room.state.phase = 'final';
         emitDotsState(io, room);
         lobby.remove(room.code);
-        setTimeout(() => { if (dotsRooms[room.code]) delete dotsRooms[room.code]; }, 60 * 60 * 1000);
+        setTimeout(() => { if (dotsRooms[room.code]) delete dotsRooms[room.code]; }, 10 * 60 * 1000);
       } else {
         // More rounds to play — go back to lobby for next round
         room.state.phase = 'lobby';
@@ -375,4 +376,4 @@ function register(io, socket) {
 
 function getDotsRooms() { return Object.values(dotsRooms); }
 
-module.exports = { getDotsRooms, register, getDotsRoomCount };
+module.exports = { getRooms: () => dotsRooms, getDotsRooms, register, getDotsRoomCount };

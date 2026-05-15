@@ -457,6 +457,62 @@ const io     = new Server(server, {
 
 lobbyHub.init(io);
 
+// ─── MEMORY CLEANUP ──────────────────────────────────────────────
+// Periodic cleanup to prevent memory leaks from orphaned rooms
+// Runs every 30 minutes
+setInterval(() => {
+  const now = Date.now();
+  const MAX_AGE = 2 * 60 * 60 * 1000; // 2 hours
+
+  // Clean each game's rooms
+  const gameModules = [
+    { name: 'pm', getRooms: () => pm.getRooms() },
+    { name: 'taboo', getRooms: () => taboo.getRooms() },
+    { name: 'dots', getRooms: () => dots.getRooms() },
+    { name: 'hangman', getRooms: () => hangman.getRooms() },
+    { name: 'twotruth', getRooms: () => twotruth.getRooms() },
+    { name: 'whoami', getRooms: () => whoami.getRooms() },
+    { name: 'bingo', getRooms: () => bingo.getRooms() },
+    { name: 'drawing', getRooms: () => drawing.getRooms() },
+    { name: 'memory', getRooms: () => memory.getRooms() },
+    { name: 'charades', getRooms: () => charades.getRooms() },
+  ];
+
+  let totalCleaned = 0;
+  gameModules.forEach(({ name, getRooms }) => {
+    try {
+      const rooms = getRooms();
+      if (!rooms) return;
+      Object.keys(rooms).forEach(code => {
+        const room = rooms[code];
+        const createdAt = room._createdAt || 0;
+        const allDisconnected = (room.players || []).every(p => !p.connected || p.connected === false);
+        // Delete rooms older than 2 hours OR rooms where everyone is disconnected and older than 30 min
+        if (now - createdAt > MAX_AGE || (allDisconnected && now - createdAt > 30 * 60 * 1000)) {
+          // Clear any lingering timers
+          if (room.state && room.state.timer) clearTimeout(room.state.timer);
+          if (room.state && room.state.turnTimer) clearInterval(room.state.turnTimer);
+          if (room._deleteTimer) clearTimeout(room._deleteTimer);
+          if (room._lobbyTimer) clearTimeout(room._lobbyTimer);
+          delete rooms[code];
+          totalCleaned++;
+        }
+      });
+    } catch(e) { /* ignore errors in cleanup */ }
+  });
+
+  // Clean bugRateLimit map
+  if (typeof bugRateLimit !== 'undefined') {
+    bugRateLimit.forEach((times, ip) => {
+      const recent = times.filter(t => now - t < 60 * 60 * 1000);
+      if (recent.length === 0) bugRateLimit.delete(ip);
+      else bugRateLimit.set(ip, recent);
+    });
+  }
+
+  if (totalCleaned > 0) console.log(`[cleanup] Removed ${totalCleaned} stale rooms`);
+}, 30 * 60 * 1000); // Every 30 minutes
+
 io.on('connection', (socket) => {
   pm.register(io, socket);
   taboo.register(io, socket);

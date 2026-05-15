@@ -984,6 +984,7 @@ function makeWhoamiRoom(hostId, settings) {
   return {
     code,
     hostId,
+    _createdAt: Date.now(),
     isPublic: settings.isPublic || false,
     mode: settings.mode || 'voice',           // 'voice' | 'chat'
     settings: {
@@ -1392,4 +1393,4 @@ function register(io, socket) {
 
 function getWhoamiRooms() { return Object.values(whoamiRooms); }
 
-module.exports = { register, getWhoamiRooms };
+module.exports = { getRooms: () => whoamiRooms, register, getWhoamiRooms };

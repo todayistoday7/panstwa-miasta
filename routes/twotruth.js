@@ -22,6 +22,7 @@ function makeTTRoom(hostId, settings) {
   const code = generateTTCode();
   ttRooms[code] = {
     code, hostId,
+    _createdAt: Date.now(),
     isPublic: settings.isPublic || false,
     settings: {
       lang:     settings.lang     || 'en',
@@ -381,4 +382,4 @@ function register(io, socket) {
 
 function getTTRooms() { return Object.values(ttRooms); }
 
-module.exports = { getTTRooms, register, getTTRoomCount };
+module.exports = { getRooms: () => ttRooms, getTTRooms, register, getTTRoomCount };

@@ -23,6 +23,7 @@ function makeRoom(hostId, settings) {
   const code = generateCode();
   drawingRooms[code] = {
     code, hostId,
+    _createdAt: Date.now(),
     isPublic: settings.isPublic || false,
     settings: {
       lang:     settings.lang     || 'en',
@@ -407,4 +408,4 @@ function register(io, socket) {
   });
 }
 
-module.exports = { register, getDrawingRooms };
+module.exports = { getRooms: () => drawingRooms, register, getDrawingRooms };

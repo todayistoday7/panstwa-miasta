@@ -20,6 +20,7 @@ function makeRoom(hostId, settings) {
   const code = generateCode();
   rooms[code] = {
     code, hostId,
+    _createdAt: Date.now(),
     isPublic: settings.isPublic || false,
     settings: {
       totalRounds: settings.totalRounds || 5,
@@ -190,7 +191,7 @@ function endGame(io, room) {
   emitRoomState(io, room);
   // 1h after game ends, delete room so code can't be reused
   lobby.remove(room.code);
-  setTimeout(() => { if (rooms[room.code]) delete rooms[room.code]; }, 60 * 60 * 1000);
+  setTimeout(() => { if (rooms[room.code]) delete rooms[room.code]; }, 10 * 60 * 1000);
 }
 
 // ─── REGISTER SOCKET EVENTS ──────────────────────────────────────
@@ -264,7 +265,7 @@ function register(io, socket) {
       if (room.hostId === _ret.id) room.hostId = socket.id;
       _ret.id = socket.id; _ret.connected = true;
       socket.join(room.code); socket.emit('room_joined', { code: room.code });
-      broadcastState(io, room); return;
+      emitRoomState(io, room); return;
     }
     if (room.state.phase !== 'lobby')  { socket.emit('error', { msg: 'Game already started.' }); return; }
     if (room.players.length >= 12)    { socket.emit('error', { msg: 'Room is full (max 12).' }); return; }
@@ -551,4 +552,4 @@ function register(io, socket) {
 
 function getPMRooms() { return Object.values(pmRooms); }
 
-module.exports = { getPMRooms, register, getRoomCount, getRoomByCode };
+module.exports = { getRooms: () => pmRooms, getPMRooms, register, getRoomCount, getRoomByCode };
