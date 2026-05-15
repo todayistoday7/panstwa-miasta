@@ -375,9 +375,9 @@ function renderLobby(data) {
     window._buildNudgeButton(nudgeContainer, roomCode, myName || '', { nudge: L.nudge, nudgeSent: L.nudgeSent });
   }
 
-  // Game length pills (host only)
+  // Game length cards
   var lengthEl = document.getElementById('taboo-length-pills');
-  if (lengthEl && isHost) {
+  if (lengthEl) {
     var lengthDesc = {
       pl: {quick:'każdy opisuje raz',standard:'każdy opisuje 2x',marathon:'każdy opisuje 3x'},
       en: {quick:'everyone describes once',standard:'everyone describes twice',marathon:'everyone describes 3x'},
@@ -393,19 +393,22 @@ function renderLobby(data) {
     ];
     lengthEl.innerHTML = lengths.map(function(item) {
       var isActive = item.key === currentLength;
-      return '<div onclick="updateTabooSettings({gameLength:\'' + item.key + '\'})" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:10px;cursor:pointer;margin-bottom:6px;' +
-        (isActive ? 'border:2px solid var(--accent);background:rgba(255,107,53,0.08);' : 'border:1px solid var(--border);background:var(--surface);') + '">' +
+      return '<div' + (isHost ? ' onclick="updateTabooSettings({gameLength:\'' + item.key + '\'})"' : '') + ' style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:10px;' + (isHost ? 'cursor:pointer;' : '') + 'margin-bottom:6px;' +
+        (isActive ? 'border:2px solid var(--accent);background:rgba(255,107,53,0.08);' : 'border:1px solid var(--border);background:var(--surface);' + (!isHost ? 'opacity:0.5;' : '')) + '">' +
         '<span style="font-size:15px;font-weight:700;' + (isActive ? 'color:var(--accent);' : 'color:var(--text);') + '">' + item.label + '</span>' +
         '<span style="margin-left:12px;font-size:13px;white-space:nowrap;' + (isActive ? 'color:var(--accent);font-weight:700;' : 'color:var(--muted);') + '">' + item.desc + '</span>' +
         '</div>';
     }).join('');
   }
-  // Timer pills (host only)
+  // Timer pills
   var timerEl = document.getElementById('taboo-timer-pills');
-  if (timerEl && isHost) {
+  if (timerEl) {
     var timers = [{key:30,label:'30s'},{key:60,label:'60s'},{key:90,label:'90s'}];
     timerEl.innerHTML = timers.map(function(item) {
-      return '<div class="lang-pill' + (item.key === (settings.turnTime||60) ? ' active' : '') + '" onclick="updateTabooSettings({turnTime:' + item.key + '})">' + item.label + '</div>';
+      return '<div class="lang-pill' + (item.key === (settings.turnTime||60) ? ' active' : '') + '"' +
+        (isHost ? ' onclick="updateTabooSettings({turnTime:' + item.key + '})"' : '') +
+        ((!isHost && item.key !== (settings.turnTime||60)) ? ' style="opacity:0.5;"' : '') +
+        '>' + item.label + '</div>';
     }).join('');
   }
 
