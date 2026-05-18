@@ -1015,6 +1015,13 @@ function renderLobby(data) {
     lobbySteps.forEach(function(el, i) { el.textContent = lobbyStepTexts[lang][i]; });
   }
   
+  // Word count info
+  var wcEl = document.getElementById('word-count-info');
+  if (wcEl && data.wordCount) {
+    wcEl.style.display = 'block';
+    wcEl.textContent = '📚 ' + data.wordCount + ' ' + (lang === 'pl' ? 'słów dostępnych' : lang === 'de' ? 'Wörter verfügbar' : lang === 'sv' ? 'ord tillgängliga' : 'words available');
+  }
+  
   // Start button
   var startBtn = document.getElementById('start-btn');
   if (startBtn) startBtn.style.display = (isHost && redCount >= 1 && blueCount >= 1) ? '' : 'none';

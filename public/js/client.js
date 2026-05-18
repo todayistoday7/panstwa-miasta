@@ -617,15 +617,38 @@ function renderLeaderboard(elId, data, rIdx) {
     return { name: p.name, id: p.id, total: t };
   }).sort((a,b) => b.total - a.total);
   el.innerHTML = '';
-  totals.forEach((p, rank) => {
-    const rp = (state.scores[rIdx] && state.scores[rIdx][p.id])
-      ? Object.values(state.scores[rIdx][p.id]).reduce((a,b)=>a+b,0) : 0;
-    el.innerHTML += '<div class="lb-row' + (rank===0?' first':'') + '">' +
-      '<div class="lb-rank' + (rank===0?' gold':'') + '">' + (rank+1) + '</div>' +
-      '<div class="lb-name">' + p.name + (p.id===myId?' (you)':'') + '</div>' +
-      '<div><div class="lb-pts">' + p.total + '</div><div class="lb-round-pts">+' + rp + '</div></div>' +
-      '</div>';
-  });
+  
+  // Condensed layout for 6+ players
+  if (totals.length >= 6) {
+    var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">';
+    totals.forEach(function(p, rank) {
+      var rp = (state.scores[rIdx] && state.scores[rIdx][p.id])
+        ? Object.values(state.scores[rIdx][p.id]).reduce(function(a,b){return a+b;},0) : 0;
+      var isFirst = rank === 0;
+      var isMe = p.id === myId;
+      html += '<div style="display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;' +
+        'border:1px solid ' + (isFirst ? 'var(--accent2)' : 'var(--border)') + ';' +
+        'background:' + (isFirst ? 'rgba(255,209,102,0.06)' : 'var(--card)') + ';">' +
+        '<span style="font-family:Bebas Neue,sans-serif;font-size:16px;color:' + (isFirst ? 'var(--accent2)' : 'var(--muted)') + ';width:18px;">' + (rank+1) + '</span>' +
+        '<span style="font-weight:700;font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;' + (isMe ? 'color:var(--accent);' : '') + '">' + p.name + '</span>' +
+        '<span style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--accent);">' + p.total + '</span>' +
+        '<span style="font-size:10px;color:var(--muted);">+' + rp + '</span>' +
+        '</div>';
+    });
+    html += '</div>';
+    el.innerHTML = html;
+  } else {
+    // Standard layout for 5 or fewer players
+    totals.forEach(function(p, rank) {
+      var rp = (state.scores[rIdx] && state.scores[rIdx][p.id])
+        ? Object.values(state.scores[rIdx][p.id]).reduce(function(a,b){return a+b;},0) : 0;
+      el.innerHTML += '<div class="lb-row' + (rank===0?' first':'') + '">' +
+        '<div class="lb-rank' + (rank===0?' gold':'') + '">' + (rank+1) + '</div>' +
+        '<div class="lb-name">' + p.name + (p.id===myId?' (you)':'') + '</div>' +
+        '<div><div class="lb-pts">' + p.total + '</div><div class="lb-round-pts">+' + rp + '</div></div>' +
+        '</div>';
+    });
+  }
 }
 
 // ─── FINAL SCREEN ───────────────────────────────────────────────
@@ -634,15 +657,35 @@ function renderFinalScreen(data) {
   window._lastMyScore = state.totalScores[myId] || 0;
   const el = document.getElementById('final-leaderboard');
   el.innerHTML = '';
-  players.map(p => ({ name: p.name, id: p.id, total: state.totalScores[p.id]||0 }))
-    .sort((a,b) => b.total-a.total)
-    .forEach((p, rank) => {
-      const medal = rank===0?'🥇':rank===1?'🥈':rank===2?'🥉':'';
+  var sorted = players.map(p => ({ name: p.name, id: p.id, total: state.totalScores[p.id]||0 }))
+    .sort((a,b) => b.total-a.total);
+  
+  if (sorted.length >= 6) {
+    // Condensed final leaderboard
+    var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">';
+    sorted.forEach(function(p, rank) {
+      var medal = rank===0?'🥇':rank===1?'🥈':rank===2?'🥉':'';
+      var isFirst = rank === 0;
+      var isMe = p.id === myId;
+      html += '<div style="display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:8px;' +
+        'border:1px solid ' + (isFirst ? 'var(--accent2)' : 'var(--border)') + ';' +
+        'background:' + (isFirst ? 'rgba(255,209,102,0.06)' : 'var(--card)') + ';">' +
+        '<span style="font-family:Bebas Neue,sans-serif;font-size:16px;color:' + (isFirst ? 'var(--accent2)' : 'var(--muted)') + ';width:22px;">' + (medal||rank+1) + '</span>' +
+        '<span style="font-weight:700;font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;' + (isMe ? 'color:var(--accent);' : '') + '">' + p.name + '</span>' +
+        '<span style="font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--accent);">' + p.total + '</span>' +
+        '</div>';
+    });
+    html += '</div>';
+    el.innerHTML = html;
+  } else {
+    sorted.forEach(function(p, rank) {
+      var medal = rank===0?'🥇':rank===1?'🥈':rank===2?'🥉':'';
       el.innerHTML += '<div class="lb-row' + (rank===0?' first':'') + '">' +
         '<div class="lb-rank' + (rank===0?' gold':'') + '">' + (medal||rank+1) + '</div>' +
         '<div class="lb-name">' + p.name + (p.id===myId?' (you)':'') + '</div>' +
         '<div class="lb-pts">' + p.total + '</div></div>';
     });
+  }
 
   if (typeof renderOtherGames === 'function') renderOtherGames('pm');
 

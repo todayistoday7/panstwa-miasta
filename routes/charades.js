@@ -14,16 +14,16 @@ const WORDS = {
       sv: ['Katt','Hund','Fisk','Häst','Ko','Gris','Anka','Groda','Kanin','Björn','Fjäril','Snigel','Kyckling','Get','Apa','Lejon','Elefant','Sköldpadda','Pingvin','Mus','Får','Spindel','Nyckelpiga','Papegoja','Krokodil','Dinosaurie','Haj','Delfin','Uggla','Hamster','Bi','Myra','Mask','Fladdermus','Krabba','Orm','Bläckfisk','Flodhäst','Skunk','Hackspett','Svan','Ekorre','Kamel','Åsna','Sjöstjärna','Mygga','Fluga'],
     },
     family: {
-      pl: ['Słoń','Żyrafa','Małpa','Kangur','Pingwin','Krokodyl','Delfin','Papuga','Pająk','Żółw','Lew','Tygrys','Orzeł','Rekin','Wieloryb','Sowa','Biedronka','Jeleń','Lis','Wilk','Goryl','Zebra','Flaming','Niedźwiedź','Koala','Kameleon','Nosorożec','Pirania','Ryba rozdymka','Konik polny','Skorpion'],
-      en: ['Elephant','Giraffe','Monkey','Kangaroo','Penguin','Crocodile','Dolphin','Parrot','Spider','Turtle','Lion','Tiger','Eagle','Shark','Whale','Owl','Ladybug','Deer','Fox','Wolf','Gorilla','Zebra','Flamingo','Bear','Koala','Chameleon','Rhinoceros','Piranha','Puffer fish','Grasshopper','Scorpion','Hippo','Peacock','Raccoon'],
-      de: ['Elefant','Giraffe','Affe','Känguru','Pinguin','Krokodil','Delfin','Papagei','Spinne','Schildkröte','Löwe','Tiger','Adler','Hai','Wal','Eule','Marienkäfer','Hirsch','Fuchs','Wolf','Gorilla','Zebra','Flamingo','Bär','Koala','Chamäleon','Nashorn','Piranha','Kugelfisch','Heuschrecke','Skorpion','Nilpferd','Pfau','Waschbär'],
-      sv: ['Elefant','Giraff','Apa','Känguru','Pingvin','Krokodil','Delfin','Papegoja','Spindel','Sköldpadda','Lejon','Tiger','Örn','Haj','Val','Uggla','Nyckelpiga','Hjort','Räv','Varg','Gorilla','Zebra','Flamingo','Björn','Koala','Kameleont','Noshörning','Piraya','Blåsfisk','Gräshoppa','Skorpion','Flodhäst','Påfågel','Tvättbjörn'],
+      pl: ['Słoń','Żyrafa','Małpa','Kangur','Pingwin','Krokodyl','Delfin','Papuga','Pająk','Żółw','Lew','Tygrys','Orzeł','Rekin','Wieloryb','Sowa','Biedronka','Jeleń','Lis','Wilk','Goryl','Zebra','Flaming','Niedźwiedź','Koala','Kameleon','Nosorożec','Pirania','Ryba rozdymka','Konik polny','Skorpion','Mrówkojad','Borsuk','Bóbr','Bawół','Gepard','Żuraw','Jeleń','Delfin','Orzeł','Sokół','Jeż','Jaguar','Lemur','Lama','Kret','Wydra','Papuga','Pelikan','Gołąb','Puma','Kruk','Foka','Tukan','Łasica','Dzięcioł'],
+      en: ['Elephant','Giraffe','Monkey','Kangaroo','Penguin','Crocodile','Dolphin','Parrot','Spider','Turtle','Lion','Tiger','Eagle','Shark','Whale','Owl','Ladybug','Deer','Fox','Wolf','Gorilla','Zebra','Flamingo','Bear','Koala','Chameleon','Rhinoceros','Piranha','Puffer fish','Grasshopper','Scorpion','Hippo','Peacock','Raccoon','Anteater','Badger','Beaver','Buffalo','Cheetah','Crane','Deer','Dolphin','Eagle','Falcon','Hedgehog','Jaguar','Lemur','Llama','Mole','Otter','Parrot','Pelican','Pigeon','Puma','Raven','Seal','Toucan','Weasel','Woodpecker'],
+      de: ['Elefant','Giraffe','Affe','Känguru','Pinguin','Krokodil','Delfin','Papagei','Spinne','Schildkröte','Löwe','Tiger','Adler','Hai','Wal','Eule','Marienkäfer','Hirsch','Fuchs','Wolf','Gorilla','Zebra','Flamingo','Bär','Koala','Chamäleon','Nashorn','Piranha','Kugelfisch','Heuschrecke','Skorpion','Nilpferd','Pfau','Waschbär','Ameisenbär','Dachs','Biber','Büffel','Gepard','Kranich','Hirsch','Delfin','Adler','Falke','Igel','Jaguar','Lemur','Lama','Maulwurf','Otter','Papagei','Pelikan','Taube','Puma','Rabe','Robbe','Tukan','Wiesel','Specht'],
+      sv: ['Elefant','Giraff','Apa','Känguru','Pingvin','Krokodil','Delfin','Papegoja','Spindel','Sköldpadda','Lejon','Tiger','Örn','Haj','Val','Uggla','Nyckelpiga','Hjort','Räv','Varg','Gorilla','Zebra','Flamingo','Björn','Koala','Kameleont','Noshörning','Piraya','Blåsfisk','Gräshoppa','Skorpion','Flodhäst','Påfågel','Tvättbjörn','Myrslok','Grävling','Bäver','Buffel','Gepard','Trana','Hjort','Delfin','Örn','Falk','Igelkott','Jaguar','Lemur','Lama','Mullvad','Utter','Papegoja','Pelikan','Duva','Puma','Korp','Säl','Tukan','Vessla','Hackspett'],
     },
     adults: {
-      pl: ['Mrówkojad','Szakal','Kapibara','Narwal','Okapi','Lemur','Pelikan','Albatros','Fretka','Gazela','Homar','Meduza','Termit','Leniwiec','Wombat'],
-      en: ['Anteater','Jackal','Capybara','Narwhal','Okapi','Lemur','Pelican','Albatross','Ferret','Gazelle','Lobster','Jellyfish','Termite','Sloth','Wombat'],
-      de: ['Ameisenbär','Schakal','Capybara','Narwal','Okapi','Lemur','Pelikan','Albatros','Frettchen','Gazelle','Hummer','Qualle','Termite','Faultier','Wombat'],
-      sv: ['Myrslok','Schakal','Kapybara','Narval','Okapi','Lemur','Pelikan','Albatross','Iller','Gasell','Hummer','Manet','Termit','Sengångare','Vombat'],
+      pl: ['Mrówkojad','Szakal','Kapibara','Narwal','Okapi','Lemur','Pelikan','Albatros','Fretka','Gazela','Homar','Meduza','Termit','Leniwiec','Wombat','Dziobak','Pancernik','Iguana','Waran z Komodo','Jeżozwierz','Surykatka','Rosomak','Manat','Łuskowiec','Kapibara','Hiena','Salamandra','Kameleon','Sęp','Pelikan','Barrakuda','Płaszczka','Łoś','Bizon','Tarantula','Meduza','Mors','Szynszyla','Fretka','Albatros'],
+      en: ['Anteater','Jackal','Capybara','Narwhal','Okapi','Lemur','Pelican','Albatross','Ferret','Gazelle','Lobster','Jellyfish','Termite','Sloth','Wombat','Platypus','Armadillo','Iguana','Komodo dragon','Porcupine','Meerkat','Wolverine','Manatee','Pangolin','Capybara','Hyena','Salamander','Chameleon','Vulture','Pelican','Barracuda','Stingray','Moose','Bison','Tarantula','Jellyfish','Walrus','Chinchilla','Ferret','Albatross'],
+      de: ['Ameisenbär','Schakal','Capybara','Narwal','Okapi','Lemur','Pelikan','Albatros','Frettchen','Gazelle','Hummer','Qualle','Termite','Faultier','Wombat','Schnabeltier','Gürteltier','Leguan','Komodowaran','Stachelschwein','Erdmännchen','Vielfraß','Seekuh','Pangolin','Capybara','Hyäne','Salamander','Chamäleon','Geier','Pelikan','Barrakuda','Stachelrochen','Elch','Bison','Vogelspinne','Qualle','Walross','Chinchilla','Frettchen','Albatros'],
+      sv: ['Myrslok','Schakal','Kapybara','Narval','Okapi','Lemur','Pelikan','Albatross','Iller','Gasell','Hummer','Manet','Termit','Sengångare','Vombat','Näbbdjur','Bältdjur','Leguan','Komodovaran','Piggsvin','Surikat','Järv','Sjöko','Pangolin','Kapybara','Hyena','Salamander','Kameleont','Gam','Pelikan','Barracuda','Rocka','Älg','Bison','Tarantel','Manet','Valross','Chinchilla','Iller','Albatross'],
     },
   },
   actions: {
@@ -34,16 +34,16 @@ const WORDS = {
       sv: ['Sova','Äta','Dricka','Hoppa','Springa','Simma','Flyga','Kamma håret','Tvätta händerna','Bada','Rita','Sparka boll','Klappa','Dansa','Gråta','Skratta','Gå','Krypa','Klättra','Gömma sig','Vinka','Blåsa','Nysa','Gäspa','Klä på sig','Sopa','Vattna blommor','Mata','Krama','Smeka','High five','Rutscha','Slänga slängkyss','Blinka','Gå på tå','Marschera','Äta glass','Sätta på skor','Ringa','Öppna present','Äta spagetti','Blåsa ut ljus','Dricka med sugrör','Jumping jacks'],
     },
     family: {
-      pl: ['Gotowanie','Malowanie','Granie na gitarze','Czytanie','Pisanie','Śpiewanie','Jazda na rowerze','Mycie zębów','Robienie zdjęcia','Granie w piłkę','Wspinaczka','Jazda na nartach','Dmuchanie balonów','Rzucanie piłką','Jazda samochodem','Odkurzanie','Wędkowanie','Suszenie włosów','Granie w tenisa','Skakanie na skakance','Oglądanie TV','Latanie samolotem','Przewracanie naleśników','Słuchanie muzyki','Pisanie listu','Strzyżenie','Pisanie na klawiaturze','Bitwa na śnieżki','Granie w golfa','Modlenie się','Wchodzenie pod górę','Branie prysznica','Karmienie psa','Prowadzenie auta','Granie na gitarze','Kręgle','Zabawa w chowanego','Przeciąganie liny'],
-      en: ['Cooking','Painting','Guitar playing','Reading','Writing','Singing','Cycling','Brushing teeth','Photographing','Football','Climbing','Skiing','Blowing balloons','Throwing ball','Driving car','Vacuuming','Fishing','Hair drying','Tennis','Jump rope','Watching TV','Flying','Flipping pancakes','Listening to music','Writing letter','Cutting hair','Typing','Snowball fight','Playing golf','Praying','Climbing hill','Showering','Feeding dog','Driving a car','Playing guitar','Bowling','Hide and seek','Tug of war'],
-      de: ['Kochen','Malen','Gitarre spielen','Lesen','Schreiben','Singen','Fahrrad fahren','Zähne putzen','Foto machen','Fußball spielen','Klettern','Skifahren','Luftballons aufblasen','Ball werfen','Auto fahren','Staubsaugen','Angeln','Haare föhnen','Tennis spielen','Seilspringen','Fernsehen','Fliegen im Flugzeug','Pfannkuchen wenden','Musik hören','Brief schreiben','Haare schneiden','Tippen','Schneeballschlacht','Golf spielen','Beten','Bergauf gehen','Duschen','Hund füttern','Auto fahren','Gitarre spielen','Bowling','Verstecken spielen','Tauziehen'],
-      sv: ['Laga mat','Måla','Spela gitarr','Läsa','Skriva','Sjunga','Cykla','Borsta tänderna','Ta foto','Spela fotboll','Klättra','Åka skidor','Blåsa ballonger','Kasta boll','Köra bil','Dammsuga','Fiska','Föna håret','Spela tennis','Hoppa hopprep','Titta på TV','Flyga med flygplan','Vända pannkakor','Lyssna på musik','Skriva ett brev','Klippa hår','Skriva på tangentbord','Snöbollskrig','Spela golf','Be','Gå uppför','Duscha','Mata hunden','Köra bil','Spela gitarr','Bowling','Kurragömma','Dragkamp'],
+      pl: ['Gotowanie','Malowanie','Granie na gitarze','Czytanie','Pisanie','Śpiewanie','Jazda na rowerze','Mycie zębów','Robienie zdjęcia','Granie w piłkę','Wspinaczka','Jazda na nartach','Dmuchanie balonów','Rzucanie piłką','Jazda samochodem','Odkurzanie','Wędkowanie','Suszenie włosów','Granie w tenisa','Skakanie na skakance','Oglądanie TV','Latanie samolotem','Przewracanie naleśników','Słuchanie muzyki','Pisanie listu','Strzyżenie','Pisanie na klawiaturze','Bitwa na śnieżki','Granie w golfa','Modlenie się','Wchodzenie pod górę','Branie prysznica','Karmienie psa','Prowadzenie auta','Granie na gitarze','Kręgle','Zabawa w chowanego','Przeciąganie liny','Malowanie','Łowienie ryb','Sadzenie','Podlewanie kwiatów','Zamiatanie','Odkurzanie','Składanie prania','Nakrywanie stołu','Pakowanie prezentu','Wydmuchiwanie nosa','Czesanie włosów','Wiązanie sznurówek','Obieranie banana','Nalewanie napoju','Mieszanie zupy','Rzucanie monetą','Siłowanie na rękę','Robienie pompek','Rozciąganie','Granie na perkusji'],
+      en: ['Cooking','Painting','Guitar playing','Reading','Writing','Singing','Cycling','Brushing teeth','Photographing','Football','Climbing','Skiing','Blowing balloons','Throwing ball','Driving car','Vacuuming','Fishing','Hair drying','Tennis','Jump rope','Watching TV','Flying','Flipping pancakes','Listening to music','Writing letter','Cutting hair','Typing','Snowball fight','Playing golf','Praying','Climbing hill','Showering','Feeding dog','Driving a car','Playing guitar','Bowling','Hide and seek','Tug of war','Painting','Fishing','Planting','Watering flowers','Sweeping','Vacuuming','Folding laundry','Setting table','Wrapping present','Blowing nose','Combing hair','Tying shoelaces','Peeling banana','Pouring drink','Stirring soup','Flipping coin','Arm wrestling','Doing pushups','Stretching','Playing drums'],
+      de: ['Kochen','Malen','Gitarre spielen','Lesen','Schreiben','Singen','Fahrrad fahren','Zähne putzen','Foto machen','Fußball spielen','Klettern','Skifahren','Luftballons aufblasen','Ball werfen','Auto fahren','Staubsaugen','Angeln','Haare föhnen','Tennis spielen','Seilspringen','Fernsehen','Fliegen im Flugzeug','Pfannkuchen wenden','Musik hören','Brief schreiben','Haare schneiden','Tippen','Schneeballschlacht','Golf spielen','Beten','Bergauf gehen','Duschen','Hund füttern','Auto fahren','Gitarre spielen','Bowling','Verstecken spielen','Tauziehen','Malen','Angeln','Pflanzen','Blumen gießen','Fegen','Staubsaugen','Wäsche falten','Tisch decken','Geschenk einpacken','Nase putzen','Haare kämmen','Schuhe binden','Banane schälen','Getränk einschenken','Suppe umrühren','Münze werfen','Armdrücken','Liegestütze','Dehnen','Schlagzeug spielen'],
+      sv: ['Laga mat','Måla','Spela gitarr','Läsa','Skriva','Sjunga','Cykla','Borsta tänderna','Ta foto','Spela fotboll','Klättra','Åka skidor','Blåsa ballonger','Kasta boll','Köra bil','Dammsuga','Fiska','Föna håret','Spela tennis','Hoppa hopprep','Titta på TV','Flyga med flygplan','Vända pannkakor','Lyssna på musik','Skriva ett brev','Klippa hår','Skriva på tangentbord','Snöbollskrig','Spela golf','Be','Gå uppför','Duscha','Mata hunden','Köra bil','Spela gitarr','Bowling','Kurragömma','Dragkamp','Måla','Fiska','Plantera','Vattna blommor','Sopa','Dammsuga','Vika tvätt','Duka bordet','Slå in present','Snyta sig','Kamma håret','Knyta skor','Skala banan','Hälla dryck','Röra soppa','Singla slant','Armbrytning','Göra armhävningar','Stretcha','Spela trummor'],
     },
     adults: {
-      pl: ['Prasowanie','Negocjowanie','Medytowanie','Szydełkowanie','Żonglowanie','Surfowanie','Dyrygowanie orkiestrą','Naprawianie samochodu','Prowadzenie wykładu','Robienie na drutach'],
-      en: ['Ironing','Negotiating','Meditating','Crocheting','Juggling','Surfing','Conducting orchestra','Fixing a car','Giving a lecture','Knitting'],
-      de: ['Bügeln','Verhandeln','Meditieren','Häkeln','Jonglieren','Surfen','Orchester dirigieren','Auto reparieren','Vortrag halten','Stricken'],
-      sv: ['Stryka','Förhandla','Meditera','Virka','Jonglera','Surfa','Dirigera orkester','Laga bil','Hålla föreläsning','Sticka'],
+      pl: ['Prasowanie','Negocjowanie','Medytowanie','Szydełkowanie','Żonglowanie','Surfowanie','Dyrygowanie orkiestrą','Naprawianie samochodu','Prowadzenie wykładu','Robienie na drutach','Żonglowanie','Siłowanie na rękę','Chodzenie po linie','Bungee','Skoki spadochronowe','Nurkowanie','Szermierka','Pantomima','Lunatykowanie','Autostop','Joga','Prasowanie','Mycie podłogi','Ogrodnictwo','Robienie na drutach','Szycie','Pastowanie butów','Zmiana koła','Parkowanie równoległe','Dyrygowanie orkiestrą','Negocjowanie','Medytacja','Moonwalk','Breakdance','Taniec limbo','Walka na miecze','Kamień papier nożyce','Przeciąganie liny','Resuscytacja','Oświadczyny'],
+      en: ['Ironing','Negotiating','Meditating','Crocheting','Juggling','Surfing','Conducting orchestra','Fixing a car','Giving a lecture','Knitting','Juggling','Arm wrestling','Tightrope walking','Bungee jumping','Skydiving','Scuba diving','Fencing','Mime','Sleepwalking','Hitchhiking','Yoga','Ironing','Mopping','Gardening','Knitting','Sewing','Polishing shoes','Changing a tire','Parallel parking','Conducting orchestra','Negotiating','Meditating','Moonwalking','Breakdancing','Limbo dancing','Sword fighting','Rock paper scissors','Tug of war','CPR','Proposing'],
+      de: ['Bügeln','Verhandeln','Meditieren','Häkeln','Jonglieren','Surfen','Orchester dirigieren','Auto reparieren','Vortrag halten','Stricken','Jonglieren','Armdrücken','Seiltanzen','Bungee-Jumping','Fallschirmspringen','Tauchen','Fechten','Pantomime','Schlafwandeln','Trampen','Yoga','Bügeln','Wischen','Gärtnern','Stricken','Nähen','Schuhe putzen','Reifen wechseln','Einparken','Dirigieren','Verhandeln','Meditieren','Moonwalk','Breakdance','Limbo tanzen','Schwertkampf','Schere Stein Papier','Tauziehen','Wiederbelebung','Heiratsantrag'],
+      sv: ['Stryka','Förhandla','Meditera','Virka','Jonglera','Surfa','Dirigera orkester','Laga bil','Hålla föreläsning','Sticka','Jonglera','Armbrytning','Lindans','Bungyjump','Fallskärmshoppning','Dyka','Fäktning','Pantomim','Sömngång','Lifta','Yoga','Stryka','Moppa','Trädgårdsarbete','Sticka','Sy','Putsa skor','Byta däck','Fickparkering','Dirigera orkester','Förhandla','Meditera','Moonwalk','Breakdance','Limbodans','Svärdsfäktning','Sten sax påse','Dragkamp','HLR','Frieri'],
     },
   },
   professions: {
@@ -54,16 +54,16 @@ const WORDS = {
       sv: ['Läkare','Brandman','Polis','Lärare','Kock','Pilot','Astronaut','Prinsessa','Riddare','Cowboy','Trollkarl','Målare','Dansare','Sångare','Förare','Bagare','Trädgårdsmästare','Clown','Kung','Drottning','Brevbärare','Veterinär','Fotograf','Bonde','Sjuksköterska','DJ','Fiskare','Kassör','Städare'],
     },
     family: {
-      pl: ['Dentysta','Fryzjer','Kierowca','Fotograf','Ogrodnik','Listonosz','Mechanik','Aktor','Sędzia','Weterynarz','Ratownik','Stolarz','Piekarz','Kelner','Detektyw','Dziennikarz','Ochroniarz','Przewodnik','Taksówkarz','Naukowiec'],
-      en: ['Dentist','Hairdresser','Driver','Photographer','Gardener','Postman','Mechanic','Actor','Referee','Vet','Lifeguard','Carpenter','Baker','Waiter','Detective','Journalist','Security guard','Tour guide','Taxi driver','Scientist'],
-      de: ['Zahnarzt','Friseur','Fahrer','Fotograf','Gärtner','Briefträger','Mechaniker','Schauspieler','Schiedsrichter','Tierarzt','Rettungsschwimmer','Tischler','Bäcker','Kellner','Detektiv','Journalist','Sicherheitsmann','Reiseleiter','Taxifahrer','Wissenschaftler'],
-      sv: ['Tandläkare','Frisör','Förare','Fotograf','Trädgårdsmästare','Brevbärare','Mekaniker','Skådespelare','Domare','Veterinär','Livräddare','Snickare','Bagare','Servitör','Detektiv','Journalist','Vakt','Turistguide','Taxichaufför','Forskare'],
+      pl: ['Dentysta','Fryzjer','Kierowca','Fotograf','Ogrodnik','Listonosz','Mechanik','Aktor','Sędzia','Weterynarz','Ratownik','Stolarz','Piekarz','Kelner','Detektyw','Dziennikarz','Ochroniarz','Przewodnik','Taksówkarz','Naukowiec','Hydraulik','Elektryk','Stolarz','Architekt','Bibliotekarz','Kelner','Barman','Recepcjonista','Chirurg','Ratownik medyczny','Prawnik','Sędzia','Marynarz','Żołnierz','Profesor','Florystka','Fryzjer','Krawiec','Trener','Sędzia sportowy'],
+      en: ['Dentist','Hairdresser','Driver','Photographer','Gardener','Postman','Mechanic','Actor','Referee','Vet','Lifeguard','Carpenter','Baker','Waiter','Detective','Journalist','Security guard','Tour guide','Taxi driver','Scientist','Plumber','Electrician','Carpenter','Architect','Librarian','Waiter','Bartender','Receptionist','Surgeon','Paramedic','Lawyer','Judge','Sailor','Soldier','Professor','Florist','Barber','Tailor','Coach','Referee'],
+      de: ['Zahnarzt','Friseur','Fahrer','Fotograf','Gärtner','Briefträger','Mechaniker','Schauspieler','Schiedsrichter','Tierarzt','Rettungsschwimmer','Tischler','Bäcker','Kellner','Detektiv','Journalist','Sicherheitsmann','Reiseleiter','Taxifahrer','Wissenschaftler','Klempner','Elektriker','Schreiner','Architekt','Bibliothekar','Kellner','Barkeeper','Rezeptionist','Chirurg','Sanitäter','Anwalt','Richter','Matrose','Soldat','Professor','Florist','Friseur','Schneider','Trainer','Schiedsrichter'],
+      sv: ['Tandläkare','Frisör','Förare','Fotograf','Trädgårdsmästare','Brevbärare','Mekaniker','Skådespelare','Domare','Veterinär','Livräddare','Snickare','Bagare','Servitör','Detektiv','Journalist','Vakt','Turistguide','Taxichaufför','Forskare','Rörmokare','Elektriker','Snickare','Arkitekt','Bibliotekarie','Servitör','Bartender','Receptionist','Kirurg','Ambulanssjukvårdare','Advokat','Domare','Sjöman','Soldat','Professor','Florist','Frisör','Skräddare','Tränare','Domare'],
     },
     adults: {
-      pl: ['Archeolog','Chirurg','Dyplomata','Farmaceuta','Geolog','Prawnik','Psycholog','Architekt','Księgowy','Tłumacz'],
-      en: ['Archaeologist','Surgeon','Diplomat','Pharmacist','Geologist','Lawyer','Psychologist','Architect','Accountant','Translator'],
-      de: ['Archäologe','Chirurg','Diplomat','Apotheker','Geologe','Anwalt','Psychologe','Architekt','Buchhalter','Übersetzer'],
-      sv: ['Arkeolog','Kirurg','Diplomat','Farmaceut','Geolog','Advokat','Psykolog','Arkitekt','Revisor','Översättare'],
+      pl: ['Archeolog','Chirurg','Dyplomata','Farmaceuta','Geolog','Prawnik','Psycholog','Architekt','Księgowy','Tłumacz','Chirurg','Prawnik','Architekt','Elektryk','Hydraulik','Sommelier','Archeolog','Licytator','Kowal','Bibliotekarz','Terapeuta','Kręgarz','Barista','Tatuażysta','Florystka','Rzeźnik','Ślusarz','Krawiec','Optyk','Farmaceuta','Księgowy','Trener personalny','Kaskader','Opiekun zoo','Dyplomata','Tłumacz','Lalkarz','Grabarz','Sędzia','Kontroler lotów'],
+      en: ['Archaeologist','Surgeon','Diplomat','Pharmacist','Geologist','Lawyer','Psychologist','Architect','Accountant','Translator','Surgeon','Lawyer','Architect','Electrician','Plumber','Sommelier','Archaeologist','Auctioneer','Blacksmith','Librarian','Therapist','Chiropractor','Barista','Tattoo artist','Florist','Butcher','Locksmith','Tailor','Optician','Pharmacist','Accountant','Personal trainer','Stuntman','Zookeeper','Diplomat','Interpreter','Puppeteer','Undertaker','Referee','Air traffic controller'],
+      de: ['Archäologe','Chirurg','Diplomat','Apotheker','Geologe','Anwalt','Psychologe','Architekt','Buchhalter','Übersetzer','Chirurg','Anwalt','Architekt','Elektriker','Klempner','Sommelier','Archäologe','Auktionator','Schmied','Bibliothekar','Therapeut','Chiropraktiker','Barista','Tätowierer','Florist','Metzger','Schlosser','Schneider','Optiker','Apotheker','Buchhalter','Personal Trainer','Stuntman','Zoowärter','Diplomat','Dolmetscher','Puppenspieler','Bestatter','Schiedsrichter','Fluglotse'],
+      sv: ['Arkeolog','Kirurg','Diplomat','Farmaceut','Geolog','Advokat','Psykolog','Arkitekt','Revisor','Översättare','Kirurg','Advokat','Arkitekt','Elektriker','Rörmokare','Sommelier','Arkeolog','Auktionist','Smed','Bibliotekarie','Terapeut','Kiropraktor','Barista','Tatuerare','Florist','Slaktare','Låssmed','Skräddare','Optiker','Apotekare','Revisor','Personlig tränare','Stuntman','Djurskötare','Diplomat','Tolk','Dockspelare','Begravningsentreprenör','Domare','Flygledare'],
     },
   },
   movies: {
@@ -74,16 +74,16 @@ const WORDS = {
       sv: ['Superman','Batman','Spider-Man','Elsa','Shrek','Nemo','Pikachu','Musse Pigg','Scooby-Doo','Svampbob','Buzz Lightyear','Simba','Greta Gris','Paw Patrol','Olaf','Stitch','Dora','Bluey','Garfield','Tom och Jerry','Bambi','Dumbo','Mimmi Pigg','Långansen','Kalle Anka'],
     },
     family: {
-      pl: ['Harry Potter','Król Lew','Piraci z Karaibów','Indiana Jones','Robin Hood','Aladyn','Kopciuszek','Tarzan','Peter Pan','Zorro','Rocky','Rambo','Terminator','E.T.','Toy Story'],
-      en: ['Harry Potter','The Lion King','Pirates of the Caribbean','Indiana Jones','Robin Hood','Aladdin','Cinderella','Tarzan','Peter Pan','Zorro','Rocky','Rambo','Terminator','E.T.','Toy Story'],
-      de: ['Harry Potter','König der Löwen','Fluch der Karibik','Indiana Jones','Robin Hood','Aladdin','Aschenputtel','Tarzan','Peter Pan','Zorro','Rocky','Rambo','Terminator','E.T.','Toy Story'],
-      sv: ['Harry Potter','Lejonkungen','Pirates of the Caribbean','Indiana Jones','Robin Hood','Aladdin','Askungen','Tarzan','Peter Pan','Zorro','Rocky','Rambo','Terminator','E.T.','Toy Story'],
+      pl: ['Harry Potter','Król Lew','Piraci z Karaibów','Indiana Jones','Robin Hood','Aladyn','Kopciuszek','Tarzan','Peter Pan','Zorro','Rocky','Rambo','Terminator','E.T.','Toy Story','Simba','Chudy','Dory','Zygzak McQueen','Olaf','Roszpunka','Aladyn','Mulan','Vaiana','Kot w butach','Minionki','Grinch','Willy Wonka','Katniss','Neo','John Wick','Rambo','Leia','Chewbacca','Thanos'],
+      en: ['Harry Potter','The Lion King','Pirates of the Caribbean','Indiana Jones','Robin Hood','Aladdin','Cinderella','Tarzan','Peter Pan','Zorro','Rocky','Rambo','Terminator','E.T.','Toy Story','Simba','Woody','Dory','Lightning McQueen','Olaf','Rapunzel','Aladdin','Mulan','Moana','Puss in Boots','Minions','Grinch','Willy Wonka','Katniss','Neo','John Wick','Rambo','Leia','Chewbacca','Thanos'],
+      de: ['Harry Potter','König der Löwen','Fluch der Karibik','Indiana Jones','Robin Hood','Aladdin','Aschenputtel','Tarzan','Peter Pan','Zorro','Rocky','Rambo','Terminator','E.T.','Toy Story','Simba','Woody','Dory','Lightning McQueen','Olaf','Rapunzel','Aladdin','Mulan','Vaiana','Gestiefelter Kater','Minions','Grinch','Willy Wonka','Katniss','Neo','John Wick','Rambo','Leia','Chewbacca','Thanos'],
+      sv: ['Harry Potter','Lejonkungen','Pirates of the Caribbean','Indiana Jones','Robin Hood','Aladdin','Askungen','Tarzan','Peter Pan','Zorro','Rocky','Rambo','Terminator','E.T.','Toy Story','Simba','Woody','Dory','Blixten McQueen','Olaf','Rapunzel','Aladdin','Mulan','Vaiana','Mästerkatten','Minions','Grinch','Willy Wonka','Katniss','Neo','John Wick','Rambo','Leia','Chewbacca','Thanos'],
     },
     adults: {
-      pl: ['James Bond','Star Wars','Titanic','Jurassic Park','Matrix','Gladiator','Forrest Gump','Ojciec Chrzestny','Fight Club','Pulp Fiction'],
-      en: ['James Bond','Star Wars','Titanic','Jurassic Park','Matrix','Gladiator','Forrest Gump','The Godfather','Fight Club','Pulp Fiction'],
-      de: ['James Bond','Star Wars','Titanic','Jurassic Park','Matrix','Gladiator','Forrest Gump','Der Pate','Fight Club','Pulp Fiction'],
-      sv: ['James Bond','Star Wars','Titanic','Jurassic Park','Matrix','Gladiator','Forrest Gump','Gudfadern','Fight Club','Pulp Fiction'],
+      pl: ['James Bond','Star Wars','Titanic','Jurassic Park','Matrix','Gladiator','Forrest Gump','Ojciec Chrzestny','Fight Club','Pulp Fiction','Gandalf','Darth Vader','James Bond','Indiana Jones','Jack Sparrow','Hermiona','Gollum','Yoda','Rocky','Terminator','Joker','Forrest Gump','Hannibal Lecter','E.T.','King Kong','Tarzan','Zorro','Drakula','Frankenstein','Wolverine','Deadpool','Sherlock Holmes','Robin Hood','Piotruś Pan','Mary Poppins','Lara Croft','Homer Simpson','Scooby-Doo','Tom i Jerry','Buzz Astral'],
+      en: ['James Bond','Star Wars','Titanic','Jurassic Park','Matrix','Gladiator','Forrest Gump','The Godfather','Fight Club','Pulp Fiction','Gandalf','Darth Vader','James Bond','Indiana Jones','Jack Sparrow','Hermione','Gollum','Yoda','Rocky','Terminator','Joker','Forrest Gump','Hannibal Lecter','E.T.','King Kong','Tarzan','Zorro','Dracula','Frankenstein','Wolverine','Deadpool','Sherlock Holmes','Robin Hood','Peter Pan','Mary Poppins','Lara Croft','Homer Simpson','Scooby-Doo','Tom and Jerry','Buzz Lightyear'],
+      de: ['James Bond','Star Wars','Titanic','Jurassic Park','Matrix','Gladiator','Forrest Gump','Der Pate','Fight Club','Pulp Fiction','Gandalf','Darth Vader','James Bond','Indiana Jones','Jack Sparrow','Hermine','Gollum','Yoda','Rocky','Terminator','Joker','Forrest Gump','Hannibal Lecter','E.T.','King Kong','Tarzan','Zorro','Dracula','Frankenstein','Wolverine','Deadpool','Sherlock Holmes','Robin Hood','Peter Pan','Mary Poppins','Lara Croft','Homer Simpson','Scooby-Doo','Tom und Jerry','Buzz Lightyear'],
+      sv: ['James Bond','Star Wars','Titanic','Jurassic Park','Matrix','Gladiator','Forrest Gump','Gudfadern','Fight Club','Pulp Fiction','Gandalf','Darth Vader','James Bond','Indiana Jones','Jack Sparrow','Hermione','Gollum','Yoda','Rocky','Terminator','Joker','Forrest Gump','Hannibal Lecter','E.T.','King Kong','Tarzan','Zorro','Dracula','Frankenstein','Wolverine','Deadpool','Sherlock Holmes','Robin Hood','Peter Pan','Mary Poppins','Lara Croft','Homer Simpson','Scooby-Doo','Tom och Jerry','Buzz Lightyear'],
     },
   },
   food: {
@@ -94,16 +94,16 @@ const WORDS = {
       sv: ['Pizza','Glass','Tårta','Äpple','Banan','Mjölk','Kaka','Choklad','Vattenmelon','Smörgås','Ägg','Morot','Tomat','Jordgubbe','Druva','Majs','Ost','Bröd','Pasta','Pannkaka','Våffla','Klubba','Tuggummi','Popcorn','Juice','Hamburgare','Köttbullar','Pommes frites','Ris','Munk','Apelsin','Vindruvor','Ananas','Citron','Körsbär','Kokosnöt','Broccoli','Gurka','Lök','Vatten','Muffin','Chips','Yoghurt','Rostat bröd','Flingor'],
     },
     family: {
-      pl: ['Spaghetti','Naleśniki','Jajecznica','Sałatka','Zupa','Hamburger','Hot dog','Popcorn','Pierogi','Kiełbasa','Gofr','Smoothie','Sushi','Grillowanie','Szaszłyk','Burrito','Puree ziemniaczane','Kolba kukurydzy','Sałata','Czosnek','Żelki','Bagietka'],
-      en: ['Spaghetti','Pancakes','Scrambled eggs','Salad','Soup','Hamburger','Hot dog','Popcorn','Dumplings','Sausage','Waffle','Smoothie','Sushi','BBQ','Kebab','Burrito','Mashed Potatoes','Corn on the Cob','Lettuce','Garlic','Gummies','Baguette'],
-      de: ['Spaghetti','Pfannkuchen','Rührei','Salat','Suppe','Hamburger','Hot Dog','Popcorn','Maultaschen','Wurst','Waffel','Smoothie','Sushi','Grillen','Kebab','Burrito','Kartoffelpüree','Maiskolben','Salat','Knoblauch','Gummibärchen','Baguette'],
-      sv: ['Spaghetti','Pannkakor','Äggröra','Sallad','Soppa','Hamburgare','Korv med bröd','Popcorn','Piroger','Korv','Våffla','Smoothie','Sushi','Grilla','Kebab','Burrito','Potatismos','Majskolv','Sallad','Vitlök','Godis','Baguette'],
+      pl: ['Spaghetti','Naleśniki','Jajecznica','Sałatka','Zupa','Hamburger','Hot dog','Popcorn','Pierogi','Kiełbasa','Gofr','Smoothie','Sushi','Grillowanie','Szaszłyk','Burrito','Puree ziemniaczane','Kolba kukurydzy','Sałata','Czosnek','Żelki','Bagietka','Taco','Nachos','Gofry','Bajgiel','Precel','Koktajl mleczny','Lasagne','Ravioli','Risotto','Stek','Omlet','Suflet','Sernik','Brownie','Bułka cynamonowa','Chleb czosnkowy','Krążki cebulowe','Nuggetsy','Ryba z frytkami','Sajgonka'],
+      en: ['Spaghetti','Pancakes','Scrambled eggs','Salad','Soup','Hamburger','Hot dog','Popcorn','Dumplings','Sausage','Waffle','Smoothie','Sushi','BBQ','Kebab','Burrito','Mashed Potatoes','Corn on the Cob','Lettuce','Garlic','Gummies','Baguette','Taco','Nachos','Waffles','Bagel','Pretzel','Milkshake','Lasagna','Ravioli','Risotto','Steak','Omelette','Souffle','Cheesecake','Brownie','Cinnamon roll','Garlic bread','Onion rings','Chicken nuggets','Fish and chips','Spring roll'],
+      de: ['Spaghetti','Pfannkuchen','Rührei','Salat','Suppe','Hamburger','Hot Dog','Popcorn','Maultaschen','Wurst','Waffel','Smoothie','Sushi','Grillen','Kebab','Burrito','Kartoffelpüree','Maiskolben','Salat','Knoblauch','Gummibärchen','Baguette','Taco','Nachos','Waffeln','Bagel','Brezel','Milchshake','Lasagne','Ravioli','Risotto','Steak','Omelett','Soufflé','Käsekuchen','Brownie','Zimtschnecke','Knoblauchbrot','Zwiebelringe','Chicken Nuggets','Fish and Chips','Frühlingsrolle'],
+      sv: ['Spaghetti','Pannkakor','Äggröra','Sallad','Soppa','Hamburgare','Korv med bröd','Popcorn','Piroger','Korv','Våffla','Smoothie','Sushi','Grilla','Kebab','Burrito','Potatismos','Majskolv','Sallad','Vitlök','Godis','Baguette','Taco','Nachos','Våfflor','Bagel','Kringla','Milkshake','Lasagne','Ravioli','Risotto','Biff','Omelett','Sufflé','Cheesecake','Brownie','Kanelbulle','Vitlöksbröd','Lökringar','Kycklingnuggets','Fish and chips','Vårrullar'],
     },
     adults: {
-      pl: ['Fondue','Carpaccio','Tiramisu','Creme brulee','Gazpacho','Ratatouille','Paella','Risotto','Guacamole','Tartare'],
-      en: ['Fondue','Carpaccio','Tiramisu','Creme brulee','Gazpacho','Ratatouille','Paella','Risotto','Guacamole','Tartare'],
-      de: ['Fondue','Carpaccio','Tiramisu','Crème brûlée','Gazpacho','Ratatouille','Paella','Risotto','Guacamole','Tatar'],
-      sv: ['Fondue','Carpaccio','Tiramisu','Crème brûlée','Gazpacho','Ratatouille','Paella','Risotto','Guacamole','Tartare'],
+      pl: ['Fondue','Carpaccio','Tiramisu','Creme brulee','Gazpacho','Ratatouille','Paella','Risotto','Guacamole','Tartare','Sushi','Ramen','Homar','Ostryga','Kawior','Fondue','Paella','Gulasz','Dim sum','Croissant','Precel','Tiramisu','Crème brûlée','Suflet','Gazpacho','Carpaccio','Tatar','Ślimaki','Pad Thai','Falafel','Hummus','Kimchi','Wasabi','Trufla','Risotto','Gnocchi','Ceviche','Bruschetta','Churros','Baklawa'],
+      en: ['Fondue','Carpaccio','Tiramisu','Creme brulee','Gazpacho','Ratatouille','Paella','Risotto','Guacamole','Tartare','Sushi','Ramen','Lobster','Oyster','Caviar','Fondue','Paella','Goulash','Dim sum','Croissant','Pretzel','Tiramisu','Crème brûlée','Soufflé','Gazpacho','Carpaccio','Beef tartare','Escargot','Pad Thai','Falafel','Hummus','Kimchi','Wasabi','Truffle','Risotto','Gnocchi','Ceviche','Bruschetta','Churros','Baklava'],
+      de: ['Fondue','Carpaccio','Tiramisu','Crème brûlée','Gazpacho','Ratatouille','Paella','Risotto','Guacamole','Tatar','Sushi','Ramen','Hummer','Auster','Kaviar','Fondue','Paella','Gulasch','Dim Sum','Croissant','Brezel','Tiramisu','Crème brûlée','Soufflé','Gazpacho','Carpaccio','Rindertatar','Schnecken','Pad Thai','Falafel','Hummus','Kimchi','Wasabi','Trüffel','Risotto','Gnocchi','Ceviche','Bruschetta','Churros','Baklava'],
+      sv: ['Fondue','Carpaccio','Tiramisu','Crème brûlée','Gazpacho','Ratatouille','Paella','Risotto','Guacamole','Tartare','Sushi','Ramen','Hummer','Ostron','Kaviar','Fondue','Paella','Gulasch','Dim sum','Croissant','Kringla','Tiramisu','Crème brûlée','Sufflé','Gazpacho','Carpaccio','Råbiff','Sniglar','Pad Thai','Falafel','Hummus','Kimchi','Wasabi','Tryffel','Risotto','Gnocchi','Ceviche','Bruschetta','Churros','Baklava'],
     },
   },
   sports: {
@@ -114,16 +114,16 @@ const WORDS = {
       sv: ['Fotboll','Basket','Simning','Löpning','Hopp','Cykling','Dans','Gymnastik','Karate','Hockey','Sparkcykel','Kasta boll','Fånga boll','Hoppa hopprep','Skridskoåkning','Rockring','Pingis','Badminton','Skateboard','Handboll','Boxning','Judo','Brottning','Volleyboll','Surfing','Baseball','Rullskridskor','Frisbee','Hoppa hage','Cheerleading','Stafettlopp','Kickball'],
     },
     family: {
-      pl: ['Tenis','Siatkówka','Golf','Łucznictwo','Szermierka','Surfing','Wspinaczka','Boks','Wrestling','Jazda konna','Narciarstwo','Snowboard','Łyżwiarstwo','Skateboarding','Wiosłowanie','Wspinaczka skałkowa','Podnoszenie ciężarów','Nurkowanie z rurką','Parkour','Skok o tyczce','Sumo'],
-      en: ['Tennis','Volleyball','Golf','Archery','Fencing','Surfing','Climbing','Boxing','Wrestling','Horse riding','Skiing','Snowboarding','Ice skating','Skateboarding','Rowing','Rock climbing','Weightlifting','Snorkeling','Parkour','Pole vault','Sumo wrestling'],
-      de: ['Tennis','Volleyball','Golf','Bogenschießen','Fechten','Surfen','Klettern','Boxen','Ringen','Reiten','Skifahren','Snowboarden','Eislaufen','Skateboarden','Rudern','Klettern','Gewichtheben','Schnorcheln','Parkour','Stabhochsprung','Sumo-Ringen'],
-      sv: ['Tennis','Volleyboll','Golf','Bågskytte','Fäktning','Surfning','Klättring','Boxning','Brottning','Ridning','Skidåkning','Snowboard','Skridskoåkning','Skateboard','Rodd','Klippklättring','Tyngdlyftning','Snorkling','Parkour','Stavhopp','Sumobrottning'],
+      pl: ['Tenis','Siatkówka','Golf','Łucznictwo','Szermierka','Surfing','Wspinaczka','Boks','Wrestling','Jazda konna','Narciarstwo','Snowboard','Łyżwiarstwo','Skateboarding','Wiosłowanie','Wspinaczka skałkowa','Podnoszenie ciężarów','Nurkowanie z rurką','Parkour','Skok o tyczce','Sumo','Kajakarstwo','Żeglarstwo','Narty wodne','Paralotniarstwo','Kolarstwo górskie','Biegi narciarskie','Łyżwiarstwo szybkie','Skoki na trampolinie','Rzut oszczepem','Rzut dyskiem','Pięciobój','Dwa ognie','Krykiet','Rugby','Squash','Rzutki','Bilard','Piłka ręczna','Lacrosse','Wioślarstwo'],
+      en: ['Tennis','Volleyball','Golf','Archery','Fencing','Surfing','Climbing','Boxing','Wrestling','Horse riding','Skiing','Snowboarding','Ice skating','Skateboarding','Rowing','Rock climbing','Weightlifting','Snorkeling','Parkour','Pole vault','Sumo wrestling','Canoeing','Sailing','Water skiing','Paragliding','Mountain biking','Cross-country skiing','Speed skating','Trampolining','Javelin throw','Discus throw','Pentathlon','Dodgeball','Cricket','Rugby','Squash','Darts','Billiards','Handball','Lacrosse','Rowing'],
+      de: ['Tennis','Volleyball','Golf','Bogenschießen','Fechten','Surfen','Klettern','Boxen','Ringen','Reiten','Skifahren','Snowboarden','Eislaufen','Skateboarden','Rudern','Klettern','Gewichtheben','Schnorcheln','Parkour','Stabhochsprung','Sumo-Ringen','Kanufahren','Segeln','Wasserski','Paragliding','Mountainbiken','Langlauf','Eisschnelllauf','Trampolinturnen','Speerwerfen','Diskuswerfen','Fünfkampf','Völkerball','Cricket','Rugby','Squash','Darts','Billard','Handball','Lacrosse','Rudern'],
+      sv: ['Tennis','Volleyboll','Golf','Bågskytte','Fäktning','Surfning','Klättring','Boxning','Brottning','Ridning','Skidåkning','Snowboard','Skridskoåkning','Skateboard','Rodd','Klippklättring','Tyngdlyftning','Snorkling','Parkour','Stavhopp','Sumobrottning','Kanot','Segling','Vattenskidåkning','Paragliding','Mountainbike','Längdskidåkning','Skridskoåkning','Trampolin','Spjutkast','Diskuskast','Femkamp','Brännboll','Cricket','Rugby','Squash','Dart','Biljard','Handboll','Lacrosse','Rodd'],
     },
     adults: {
-      pl: ['Polo','Krykiet','Curling','Triathlon','Bobslej','Skeleton','Biathlon','Pentathlon','Kendo','Capoeira'],
-      en: ['Polo','Cricket','Curling','Triathlon','Bobsled','Skeleton','Biathlon','Pentathlon','Kendo','Capoeira'],
-      de: ['Polo','Cricket','Curling','Triathlon','Bobfahren','Skeleton','Biathlon','Fünfkampf','Kendo','Capoeira'],
-      sv: ['Polo','Cricket','Curling','Triathlon','Bobsled','Skeleton','Skidskytte','Femkamp','Kendo','Capoeira'],
+      pl: ['Polo','Krykiet','Curling','Triathlon','Bobslej','Skeleton','Biathlon','Pentathlon','Kendo','Capoeira','Szermierka','Polo','Piłka wodna','Pływanie synchroniczne','Łyżwiarstwo figurowe','Curling','Pchnięcie kulą','Rzut dyskiem','Rzut oszczepem','Skok wzwyż','Skok w dal','Płotki','Triathlon','Dziesięciobój','Pięciobój','Bobslej','Saneczkarstwo','Krykiet','Rugby','Lacrosse','Squash','Piłka ręczna','Tenis stołowy','Rzutki','Bilard','Motocross','Formuła 1','Żeglarstwo','Kajakarstwo','Windsurfing'],
+      en: ['Polo','Cricket','Curling','Triathlon','Bobsled','Skeleton','Biathlon','Pentathlon','Kendo','Capoeira','Fencing','Polo','Water polo','Synchronized swimming','Figure skating','Curling','Shot put','Discus throw','Javelin throw','High jump','Long jump','Hurdles','Triathlon','Decathlon','Pentathlon','Bobsled','Luge','Cricket','Rugby','Lacrosse','Squash','Handball','Table tennis','Darts','Billiards','Motocross','Formula 1','Sailing','Kayaking','Windsurfing'],
+      de: ['Polo','Cricket','Curling','Triathlon','Bobfahren','Skeleton','Biathlon','Fünfkampf','Kendo','Capoeira','Fechten','Polo','Wasserball','Synchronschwimmen','Eiskunstlauf','Curling','Kugelstoßen','Diskuswerfen','Speerwerfen','Hochsprung','Weitsprung','Hürdenlauf','Triathlon','Zehnkampf','Fünfkampf','Bobfahren','Rodeln','Cricket','Rugby','Lacrosse','Squash','Handball','Tischtennis','Darts','Billard','Motocross','Formel 1','Segeln','Kajakfahren','Windsurfen'],
+      sv: ['Polo','Cricket','Curling','Triathlon','Bobsled','Skeleton','Skidskytte','Femkamp','Kendo','Capoeira','Fäktning','Polo','Vattenpolo','Konstsim','Konståkning','Curling','Kulstötning','Diskuskast','Spjutkast','Höjdhopp','Längdhopp','Häcklöpning','Triathlon','Tiokamp','Femkamp','Bob','Rodel','Cricket','Rugby','Lacrosse','Squash','Handboll','Bordtennis','Dart','Biljard','Motocross','Formel 1','Segling','Kajakpaddling','Windsurfing'],
     },
   },
 };
@@ -140,10 +140,18 @@ function pickWord(room) {
   // Try to find an unused word
   for (let attempt = 0; attempt < 50; attempt++) {
     const chosenCat = categories[Math.floor(Math.random() * categories.length)];
-    const pool = WORDS[chosenCat] && WORDS[chosenCat][diff] && WORDS[chosenCat][diff][lang]
-               ? WORDS[chosenCat][diff][lang]
-               : (WORDS[chosenCat] && WORDS[chosenCat][diff] && WORDS[chosenCat][diff]['en']
-                  ? WORDS[chosenCat][diff]['en'] : []);
+    // Cascade: adults get adults+family+kids, family gets family+kids
+    let pool = [];
+    const catWords = WORDS[chosenCat];
+    if (!catWords) continue;
+    const getLang = (d) => (catWords[d] && catWords[d][lang]) || (catWords[d] && catWords[d]['en']) || [];
+    if (diff === 'adults') {
+      pool = [...getLang('adults'), ...getLang('family'), ...getLang('kids')];
+    } else if (diff === 'family') {
+      pool = [...getLang('family'), ...getLang('kids')];
+    } else {
+      pool = getLang('kids');
+    }
     if (pool.length === 0) continue;
     const word = pool[Math.floor(Math.random() * pool.length)];
     if (!room.state.usedWords.has(word)) {
@@ -169,6 +177,27 @@ function getConnected(room) {
 
 function getTeamPlayers(room, team) {
   return room.players.filter(p => p.connected && p.team === team);
+}
+
+function getWordCount(room) {
+  const cat = room.settings.category;
+  const diff = room.settings.difficulty;
+  const lang = room.settings.lang || 'en';
+  const categories = cat === 'mixed' ? Object.keys(WORDS) : [cat];
+  let total = 0;
+  const getLang = (catWords, d) => (catWords[d] && catWords[d][lang]) || (catWords[d] && catWords[d]['en']) || [];
+  categories.forEach(c => {
+    const catWords = WORDS[c];
+    if (!catWords) return;
+    if (diff === 'adults') {
+      total += getLang(catWords, 'adults').length + getLang(catWords, 'family').length + getLang(catWords, 'kids').length;
+    } else if (diff === 'family') {
+      total += getLang(catWords, 'family').length + getLang(catWords, 'kids').length;
+    } else {
+      total += getLang(catWords, 'kids').length;
+    }
+  });
+  return total;
 }
 
 function broadcastState(io, room) {
@@ -199,6 +228,7 @@ function broadcastState(io, room) {
     lastResult: room.state.lastResult,
     settings: room.settings,
     isPublic: room.isPublic,
+    wordCount: getWordCount(room),
   };
 
   // Broadcast to everyone in the room (like Forbidden Words does)
@@ -332,7 +362,7 @@ function register(io, socket) {
     
     // New player — only allowed during lobby
     if (room.state.phase !== 'lobby') return socket.emit('charades_error', { message: 'Game already started' });
-    if (room.players.length >= 12) return socket.emit('charades_error', { message: 'Room is full (max 12)' });
+    if (room.players.length >= 40) return socket.emit('charades_error', { message: 'Room is full (max 40)' });
     
     // Auto-assign to team with fewer players
     const redCount = room.players.filter(p => p.team === 'red' && p.connected).length;
@@ -552,7 +582,7 @@ function getCharadesRooms() {
       hostName: r.players.find(p => p.id === r.hostId)?.name || '?',
       lang: r.settings.lang,
       players: r.players.filter(p => p.connected).length,
-      maxPlayers: 12,
+      maxPlayers: 40,
       isPublic: r.isPublic,
       createdAt: r.createdAt,
     }));

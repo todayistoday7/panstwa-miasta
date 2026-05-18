@@ -990,7 +990,8 @@ function makeWhoamiRoom(hostId, settings) {
     settings: {
       categories:  settings.categories  || ['mixed'],
       difficulty:  settings.difficulty  || 'easy',
-      turnsEach:   settings.turnsEach   || 1,
+      turnsEach:   settings.turnsEach   || 2,
+      gameLength:  settings.gameLength  || 'standard',
       timerSecs:   (settings.timerSecs !== undefined && settings.timerSecs !== null) ? settings.timerSecs : 120,  // 0 = no timer
       hintsOn:     settings.hintsOn     !== false,
       lang:        settings.lang        || 'pl',

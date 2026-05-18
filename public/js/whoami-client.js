@@ -6,6 +6,7 @@
 const socket = io();
 window._gameSocket = socket;
 var _prevPlayerCount = 0;
+window._waGameLength = 'standard';
 const _urlLang = new URLSearchParams(window.location.search).get('lang');
 let lang = (window._forceLang && ['pl','en','de','sv'].includes(window._forceLang))
            ? window._forceLang
@@ -104,7 +105,7 @@ const LANGS = {
     chatTitle:'💬 Pytania i Odpowiedzi',
     helperTitle:'💡 Szybkie pytania',
     qPlaceholder:'Zadaj pytanie...',
-    turnsEach:'Tury na gracza', timer:'Timer', noTimer:'Bez limitu',
+    turnsEach:'Długość gry', lengthQuick:'⚡ Szybka', lengthStandard:'🎮 Standardowa', lengthMarathon:'🏆 Maraton', lengthDescQuick:'każdy zgaduje raz', lengthDescStandard:'każdy zgaduje 2x', lengthDescMarathon:'każdy zgaduje 3x', timer:'Timer', noTimer:'Bez limitu',
     hintsToggle:'Pokaż podpowiedzi pytań',
     howToPlay:'Jak grać?',
     rule1:'Stwórz pokój i zaproś znajomych kodem',
@@ -167,7 +168,7 @@ const LANGS = {
     chatTitle:'💬 Questions & Answers',
     helperTitle:'💡 Quick questions',
     qPlaceholder:'Ask a question...',
-    turnsEach:'Turns per player', timer:'Timer', noTimer:'No limit',
+    turnsEach:'Game length', lengthQuick:'⚡ Quick', lengthStandard:'🎮 Standard', lengthMarathon:'🏆 Marathon', lengthDescQuick:'everyone guesses once', lengthDescStandard:'everyone guesses twice', lengthDescMarathon:'everyone guesses 3x', timer:'Timer', noTimer:'No limit',
     hintsToggle:'Show question hints',
     howToPlay:'How to play?',
     rule1:'Create a room and invite friends with the code',
@@ -230,7 +231,7 @@ const LANGS = {
     chatTitle:'💬 Fragen & Antworten',
     helperTitle:'💡 Schnellfragen',
     qPlaceholder:'Frage stellen...',
-    turnsEach:'Züge pro Spieler', timer:'Timer', noTimer:'Kein Limit',
+    turnsEach:'Spiellänge', lengthQuick:'⚡ Kurz', lengthStandard:'🎮 Standard', lengthMarathon:'🏆 Marathon', lengthDescQuick:'jeder rät 1x', lengthDescStandard:'jeder rät 2x', lengthDescMarathon:'jeder rät 3x', timer:'Timer', noTimer:'Kein Limit',
     hintsToggle:'Fragenhinweise anzeigen',
     howToPlay:'Wie spielt man?',
     rule1:'Erstelle einen Raum und lade Freunde mit dem Code ein',
@@ -293,7 +294,7 @@ const LANGS = {
     chatTitle:'💬 Frågor & Svar',
     helperTitle:'💡 Snabbfrågor',
     qPlaceholder:'Ställ en fråga...',
-    turnsEach:'Omgångar per spelare', timer:'Timer', noTimer:'Ingen gräns',
+    turnsEach:'Spellängd', lengthQuick:'⚡ Snabb', lengthStandard:'🎮 Standard', lengthMarathon:'🏆 Maraton', lengthDescQuick:'alla gissar 1 gång', lengthDescStandard:'alla gissar 2 ggr', lengthDescMarathon:'alla gissar 3 ggr', timer:'Timer', noTimer:'Ingen gräns',
     hintsToggle:'Visa frågotips',
     howToPlay:'Hur spelar man?',
     rule1:'Skapa ett rum och bjud in vänner med koden',
@@ -819,6 +820,12 @@ function renderFinal(data) {
 }
 
 // ── UI Actions ────────────────────────────────────────────────────
+function setGameLength(key) {
+  window._waGameLength = key;
+  // Re-render lobby to update card highlighting
+  if (roomState) renderLobby(roomState);
+}
+
 function setMode(mode) {
   gameMode = mode;
   document.getElementById('mode-voice').classList.toggle('active', mode === 'voice');
@@ -859,7 +866,8 @@ function createRoom() {
       mode:       gameMode,
       categories: selCats.length ? selCats : ['mixed'],
       difficulty: selDiff,
-      turnsEach:  parseInt(document.getElementById('host-turns').value) || 1,
+      turnsEach:  window._waGameLength === 'quick' ? 1 : window._waGameLength === 'marathon' ? 3 : 2,
+      gameLength: window._waGameLength || 'standard',
       timerSecs:  (function(){ var v = parseInt(document.getElementById('host-timer').value); return isNaN(v) ? 120 : v; })(),
       hintsOn:    document.getElementById('host-hints').checked,
       isPublic:   typeof _isPublic !== 'undefined' ? _isPublic : false,
@@ -1020,6 +1028,29 @@ function applyTranslations() {
   set('lbl-cat-cartoons',   'catCartoons'); // cartoons category
   set('lbl-cat-mixed',      'catMixed');
   set('lbl-turns-each',     'turnsEach');
+  
+  // Sync game length from server state (for non-host)
+  if (data.settings && data.settings.gameLength) window._waGameLength = data.settings.gameLength;
+  
+  // Game length cards
+  var lengthEl = document.getElementById('wa-length-cards');
+  if (lengthEl) {
+    var currentLength = window._waGameLength || 'standard';
+    var lengths = [
+      {key:'quick', label:L.lengthQuick, desc:L.lengthDescQuick},
+      {key:'standard', label:L.lengthStandard, desc:L.lengthDescStandard},
+      {key:'marathon', label:L.lengthMarathon, desc:L.lengthDescMarathon},
+    ];
+    lengthEl.innerHTML = lengths.map(function(item) {
+      var isActive = item.key === currentLength;
+      return '<div' + (isHost ? ' onclick="setGameLength(\'' + item.key + '\')" style="cursor:pointer;' : ' style="') +
+        'display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:10px;margin-bottom:6px;' +
+        (isActive ? 'border:2px solid var(--accent);background:rgba(255,107,53,0.08);' : 'border:1px solid var(--border);background:var(--surface);' + (!isHost ? 'opacity:0.5;' : '')) + '">' +
+        '<span style="font-size:15px;font-weight:700;' + (isActive ? 'color:var(--accent);' : 'color:var(--text);') + '">' + item.label + '</span>' +
+        '<span style="margin-left:12px;font-size:13px;white-space:nowrap;' + (isActive ? 'color:var(--accent);font-weight:700;' : 'color:var(--muted);') + '">' + item.desc + '</span>' +
+        '</div>';
+    }).join('');
+  }
   set('lbl-timer',          'timer');
   set('lbl-no-timer',       'noTimer');
   set('lbl-hints-toggle',   'hintsToggle');
