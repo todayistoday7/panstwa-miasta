@@ -405,7 +405,7 @@ function register(io, socket) {
     if (!room || socket.id !== room.hostId) return;
     const redTeam = getTeamPlayers(room, 'red');
     const blueTeam = getTeamPlayers(room, 'blue');
-    if (redTeam.length < 1 || blueTeam.length < 1) return;
+    if (redTeam.length < 2 || blueTeam.length < 2) { socket.emit("charades_error", { message: "Need at least 2 players per team (4 total)" }); return; }
     
     room.state.round = 1;
     room.state.scores = { red: 0, blue: 0 };

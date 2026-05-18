@@ -421,6 +421,11 @@ function renderLobby(data) {
   if (isHost) {
     document.getElementById('lobby-btn-row').style.display = 'flex';
     document.getElementById('waiting-msg').style.display   = 'none';
+    var _startBtn = document.getElementById('lobby-start-btn');
+    if (_startBtn) {
+      var _pc = data.players ? data.players.filter(function(p){return p.connected;}).length : 0;
+      _startBtn.disabled = _pc < 3; _startBtn.style.opacity = _pc >= 3 ? '1' : '0.4';
+    }
   } else {
     document.getElementById('lobby-btn-row').style.display = 'none';
     document.getElementById('waiting-msg').style.display   = 'block';

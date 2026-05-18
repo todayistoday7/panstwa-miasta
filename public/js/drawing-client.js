@@ -352,7 +352,7 @@ function renderLobby(data) {
     if (btnRow) btnRow.style.display = 'flex';
     if (waitMsg) waitMsg.style.display = 'none';
     const startBtn = document.getElementById('lbl-start-btn');
-    if (startBtn) startBtn.disabled = connected.length < 3;
+    if (startBtn) { startBtn.disabled = connected.length < 3; startBtn.style.opacity = connected.length >= 3 ? '1' : '0.4'; }
   } else {
     if (lobbySettings) lobbySettings.style.display = 'none';
     if (btnRow) btnRow.style.display = 'none';

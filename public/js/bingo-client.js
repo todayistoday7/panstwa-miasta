@@ -293,6 +293,7 @@ function renderLobby(data) {
     if (startBtn) {
       startBtn.style.display = 'inline-flex';
       startBtn.disabled = connected < 2;
+      startBtn.style.opacity = connected >= 2 ? '1' : '0.4';
     }
     if (waitMsg)  waitMsg.style.display  = 'none';
     if (needMsg)  needMsg.style.display  = connected < 2 ? 'block' : 'none';

@@ -388,7 +388,34 @@ function applyState(data) {
 // ── Lobby ─────────────────────────────────────────────────────────
 function renderLobby(data) {
   const startBtn = document.getElementById('lobby-start-btn');
-  if (startBtn) startBtn.style.display = isHost ? '' : 'none';
+  if (startBtn) {
+    startBtn.style.display = isHost ? '' : 'none';
+    var playerCount = data.players.filter(function(p){return p.connected;}).length;
+    var canStart = playerCount >= 2;
+    startBtn.disabled = !canStart;
+    startBtn.style.opacity = canStart ? '1' : '0.4';
+  }
+
+  // Game length cards
+  if (data.settings && data.settings.gameLength) window._waGameLength = data.settings.gameLength;
+  var lengthEl = document.getElementById('wa-length-cards');
+  if (lengthEl) {
+    var currentLength = window._waGameLength || 'standard';
+    var lengths = [
+      {key:'quick', label:L.lengthQuick, desc:L.lengthDescQuick},
+      {key:'standard', label:L.lengthStandard, desc:L.lengthDescStandard},
+      {key:'marathon', label:L.lengthMarathon, desc:L.lengthDescMarathon},
+    ];
+    lengthEl.innerHTML = lengths.map(function(item) {
+      var isActive = item.key === currentLength;
+      return '<div' + (isHost ? ' onclick="setGameLength(\'' + item.key + '\')" style="cursor:pointer;' : ' style="') +
+        'display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:10px;margin-bottom:6px;' +
+        (isActive ? 'border:2px solid var(--accent);background:rgba(255,107,53,0.08);' : 'border:1px solid var(--border);background:var(--surface);' + (!isHost ? 'opacity:0.5;' : '')) + '">' +
+        '<span style="font-size:15px;font-weight:700;' + (isActive ? 'color:var(--accent);' : 'color:var(--text);') + '">' + item.label + '</span>' +
+        '<span style="margin-left:12px;font-size:13px;white-space:nowrap;' + (isActive ? 'color:var(--accent);font-weight:700;' : 'color:var(--muted);') + '">' + item.desc + '</span>' +
+        '</div>';
+    }).join('');
+  }
 
   // Sync visibility toggle to match current room state (host only)
   if (isHost && data.isPublic !== undefined) {

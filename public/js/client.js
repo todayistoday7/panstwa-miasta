@@ -270,6 +270,11 @@ function renderLobby(data) {
     // Subsequent renders: do NOT touch settings UI — host owns it
     document.getElementById('lobby-btn-row').style.display = 'flex';
     document.getElementById('waiting-msg').style.display   = 'none';
+    var _startBtn = document.getElementById('lobby-start-btn');
+    if (_startBtn) {
+      var _pc = data.players ? data.players.filter(function(p){return p.connected;}).length : 0;
+      _startBtn.disabled = _pc < 2; _startBtn.style.opacity = _pc >= 2 ? '1' : '0.4';
+    }
   } else {
     // Non-host: always sync from server (read-only)
     document.getElementById('settings-rounds').value = settings.totalRounds;
@@ -603,6 +608,16 @@ function renderScoringScreen(data) {
     document.getElementById('scoring-next-btn').style.display = 'none';
     document.getElementById('scoring-waiting').style.display = 'block';
     document.getElementById('scoring-waiting').textContent = L.waitingScoring;
+  }
+}
+
+function prevScoringCat() {
+  if (_scoringCatIdx > 0) { _scoringCatIdx--; if (_lastScoringData) renderScoringScreen(_lastScoringData); }
+}
+function nextScoringCat() {
+  if (_lastScoringData) {
+    var max = _lastScoringData.settings.categories.length - 1;
+    if (_scoringCatIdx < max) { _scoringCatIdx++; renderScoringScreen(_lastScoringData); }
   }
 }
 

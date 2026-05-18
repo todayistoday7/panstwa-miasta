@@ -166,7 +166,10 @@
     <div id="player-warning" class="player-warning" style="display:none;"></div>
     <div class="card" id="settings-card" style="display:none;margin-top:12px;">
       <h3 id="lbl-settings">Settings</h3>
-      <label class="field-label" id="lbl-category">Category</label>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <label class="field-label" id="lbl-category">Category</label>
+        <span id="word-count-info" style="display:none;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;"></span>
+      </div>
       <div id="cat-pills" class="pills"></div>
       <label class="field-label" style="margin-top:12px;" id="lbl-difficulty">Difficulty</label>
       <div id="diff-pills" class="pills"></div>
@@ -176,7 +179,6 @@
       <div id="timer-pills" class="pills"></div>
     </div>
     <div class="btn-row" style="margin-top:16px;">
-      <div id="word-count-info" style="display:none;text-align:center;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:8px;"></div>
       <button class="btn" id="start-btn" onclick="startGame()" style="display:none;"><span id="lbl-start">🎬 Start</span></button>
       <button class="btn secondary" onclick="leaveRoom()"><span id="lbl-leave-room">🚪 Leave Room</span></button>
     </div>

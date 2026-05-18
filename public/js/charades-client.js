@@ -1024,7 +1024,12 @@ function renderLobby(data) {
   
   // Start button
   var startBtn = document.getElementById('start-btn');
-  if (startBtn) startBtn.style.display = (isHost && redCount >= 1 && blueCount >= 1) ? '' : 'none';
+  if (startBtn) {
+    startBtn.style.display = isHost ? '' : 'none';
+    var canStart = redCount >= 2 && blueCount >= 2;
+    startBtn.disabled = !canStart;
+    startBtn.style.opacity = canStart ? '1' : '0.4';
+  }
 }
 
 function renderPills(containerId, items, active, onClick) {
