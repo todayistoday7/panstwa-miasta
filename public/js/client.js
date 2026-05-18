@@ -174,7 +174,7 @@ function applyRoomState(data) {
     case 'playing':     showScreen('screen-playing');     renderPlayingScreen(data); break;
     case 'stopped':     showScreen('screen-stopped');     renderStoppedScreen(data); break;
     case 'calculating': showScreen('screen-calculating'); window.scrollTo(0,0); break;
-    case 'scoring':     showScreen('screen-scoring');     renderScoringScreen(data); break;
+    case 'scoring':     _scoringCatIdx = 0; showScreen('screen-scoring');     renderScoringScreen(data); break;
     case 'final':       showScreen('screen-final');       renderFinalScreen(data);   _ga('game_completed', { game:'panstwa_miasta', language:lang }); window._gaGameStarted=false; break;
   }
 }

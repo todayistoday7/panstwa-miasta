@@ -722,7 +722,7 @@ const LANGS = {
   pl: {
     name: '🇵🇱 PL',
     gameTitle: 'Kalambury',
-    gameSubtitle: 'Gra drużynowa · 2–12 graczy',
+    gameSubtitle: 'Gra drużynowa · 4–40 graczy',
     createRoom: 'Stwórz pokój', joinRoom: 'Dołącz do pokoju',
     enterName: 'Twoje imię', enterCode: 'Kod pokoju',
     startGame: '🎬 Start', leaveRoom: '🚪 Wyjdź',
@@ -751,7 +751,7 @@ const LANGS = {
   en: {
     name: '🇬🇧 EN',
     gameTitle: 'Charades',
-    gameSubtitle: 'Team game · 2–12 players',
+    gameSubtitle: 'Team game · 4–40 players',
     createRoom: 'Create room', joinRoom: 'Join room',
     enterName: 'Your name', enterCode: 'Room code',
     startGame: '🎬 Start', leaveRoom: '🚪 Leave',
@@ -780,7 +780,7 @@ const LANGS = {
   de: {
     name: '🇩🇪 DE',
     gameTitle: 'Scharade',
-    gameSubtitle: 'Teamspiel · 2–12 Spieler',
+    gameSubtitle: 'Teamspiel · 4–40 Spieler',
     createRoom: 'Raum erstellen', joinRoom: 'Beitreten',
     enterName: 'Dein Name', enterCode: 'Raumcode',
     startGame: '🎬 Start', leaveRoom: '🚪 Verlassen',
@@ -809,7 +809,7 @@ const LANGS = {
   sv: {
     name: '🇸🇪 SV',
     gameTitle: 'Charader',
-    gameSubtitle: 'Lagspel · 2–12 spelare',
+    gameSubtitle: 'Lagspel · 4–40 spelare',
     createRoom: 'Skapa rum', joinRoom: 'Gå med',
     enterName: 'Ditt namn', enterCode: 'Rumskod',
     startGame: '🎬 Starta', leaveRoom: '🚪 Lämna',

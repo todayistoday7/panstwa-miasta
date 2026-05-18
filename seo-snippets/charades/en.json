@@ -2,7 +2,7 @@
   "lang": "en",
   "htmlLang": "en",
   "title": "Charades Online — Free Team Party Game | panstwamiastagra.com",
-  "description": "Play Charades online for free! Classic team party game — act out words, guess in teams. No signup, 2-12 players.",
+  "description": "Play Charades online for free! Classic team party game — act out words, guess in teams. No signup, 4-40 players.",
   "canonical": "https://panstwamiastagra.com/charades-online",
   "ogUrl": "https://panstwamiastagra.com/charades-online",
   "hreflang": {
@@ -18,5 +18,5 @@
     "de": "/scharade",
     "sv": "/charader"
   },
-  "bottomContent": "\n<div style=\"margin-top:32px;\">\n    <h1 style=\"font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,48px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 10px;\">Charades Online</h1>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\"><strong style=\"color:var(--text);\">Charades</strong> is the classic party game where you act out words without speaking — no sounds, no pointing! Now play online with friends, family, or colleagues. Split into two teams and compete!</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Perfect for <strong style=\"color:var(--text);\">family game nights</strong>, parties, team building, or playing with kids. Kids mode includes simple words with emoji hints — even the youngest can join in!</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;\">7 categories, 3 difficulty levels, 2-12 players. Works on phone, tablet, and desktop — just share the link.</p>\n</div>\n"
+  "bottomContent": "\n<div style=\"margin-top:32px;\">\n    <h1 style=\"font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,48px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 10px;\">Charades Online</h1>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\"><strong style=\"color:var(--text);\">Charades</strong> is the classic party game where you act out words without speaking — no sounds, no pointing! Now play online with friends, family, or colleagues. Split into two teams and compete!</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Perfect for <strong style=\"color:var(--text);\">family game nights</strong>, parties, team building, or playing with kids. Kids mode includes simple words with emoji hints — even the youngest can join in!</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:16px;\">7 categories, 3 difficulty levels, 4-40 players. Works on phone, tablet, and desktop — just share the link.</p>\n</div>\n"
 }
