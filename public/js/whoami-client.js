@@ -396,9 +396,9 @@ function renderLobby(data) {
     startBtn.style.opacity = canStart ? '1' : '0.4';
   }
 
-  // Game length cards
+  // Game length cards in lobby
   if (data.settings && data.settings.gameLength) window._waGameLength = data.settings.gameLength;
-  var lengthEl = document.getElementById('wa-length-cards');
+  var lengthEl = document.getElementById('lobby-length-display');
   if (lengthEl) {
     var currentLength = window._waGameLength || 'standard';
     var lengths = [
