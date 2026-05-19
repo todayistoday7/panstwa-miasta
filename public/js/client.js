@@ -505,58 +505,88 @@ function focusStoppedNext(ci) {
 
 // ─── SCORING SCREEN ───────────────────────────────────────────────
 function renderScoringScreen(data) {
+  _lastScoringData = data;
   const { state, settings, players } = data;
   const rIdx = state.round - 1;
   document.getElementById('scoring-round-badge').textContent = L.scoringLabel(state.round);
 
+  const totalCats = settings.categories.length;
+  if (_scoringCatIdx >= totalCats) _scoringCatIdx = totalCats - 1;
+  if (_scoringCatIdx < 0) _scoringCatIdx = 0;
+  const ci = _scoringCatIdx;
+  const cat = settings.categories[ci];
+
   const grid = document.getElementById('scoring-grid');
-  let html = '<table class="scoring-table"><thead><tr><th>' + L.categoryCol + '</th>';
+
+  // Category header with navigation
+  let html = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">' +
+    '<button class="btn secondary" onclick="prevScoringCat()" style="padding:6px 12px;font-size:13px;' + (ci === 0 ? 'opacity:0.3;pointer-events:none;' : '') + '">' + (L.prevCat||'\u2190 Previous') + '</button>' +
+    '<div style="text-align:center;">' +
+      '<div style="font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:2px;color:var(--accent2);">' + cat + '</div>' +
+      '<div style="font-size:11px;color:var(--muted);font-weight:700;">' + (L.categoryLabel||'Category') + ' ' + (ci+1) + '/' + totalCats + '  \u00b7  ' + (L.letterLabel||'Letter') + ': ' + (state.letter||'?') + '</div>' +
+    '</div>' +
+    '<button class="btn secondary" onclick="nextScoringCat()" style="padding:6px 12px;font-size:13px;' + (ci === totalCats - 1 ? 'opacity:0.3;pointer-events:none;' : '') + '">' + (L.nextCat||'Next \u2192') + '</button>' +
+    '</div>';
+
+  // Collect answers for duplicate detection
+  const answersForCat = [];
   players.forEach(p => {
-    html += '<th style="text-align:center"><div style="font-weight:800">' + p.name + '</div></th>';
+    const ans = ((state.answers[p.id] || {})[ci] || '').trim().toLowerCase();
+    if (ans) answersForCat.push(ans);
   });
-  html += '</tr></thead><tbody>';
+  const answerCounts = {};
+  answersForCat.forEach(a => { answerCounts[a] = (answerCounts[a] || 0) + 1; });
 
-  settings.categories.forEach((cat, ci) => {
-    html += '<tr><td><strong>' + cat + '</strong></td>';
-    players.forEach(p => {
-      const ans = ((state.answers[p.id] || {})[ci] || '').trim();
-      const pts = (state.scores[rIdx] && state.scores[rIdx][p.id] && state.scores[rIdx][p.id][ci] !== undefined)
-        ? state.scores[rIdx][p.id][ci] : 0;
-      const key = rIdx + '_' + p.id + '_' + ci;
-      const isCh = !!state.challenged[key];
-      const valid = ans && startsWithLetter(ans, state.letter);
-      const wCl = isCh ? 'challenged' : (!ans||!valid ? 'missing' : pts===5 ? 'duplicate' : '');
-      const showCh = ans && valid && !isCh && p.id !== myId && !state.activeChallenge;
-
-      html += '<td><div class="answer-cell">' +
-        '<span class="answer-word ' + wCl + '">' + (ans||'—') + '</span>' +
-        '<div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;">';
-
-      if (isHost) {
-        html += '<div class="pts-toggle">' +
-          '<button class="pts-btn' + (pts===15&&!isCh?' selected':'') + '" onclick="setScore(\'' + p.id + '\',' + rIdx + ',' + ci + ',15)">15p</button>' +
-          '<button class="pts-btn' + (pts===10&&!isCh?' selected':'') + '" onclick="setScore(\'' + p.id + '\',' + rIdx + ',' + ci + ',10)">10p</button>' +
-          '<button class="pts-btn dup' + (pts===5&&!isCh?' selected':'') + '" onclick="setScore(\'' + p.id + '\',' + rIdx + ',' + ci + ',5)">5p</button>' +
-          '<button class="pts-btn none' + ((isCh||pts===0)?' selected':'') + '" onclick="setScore(\'' + p.id + '\',' + rIdx + ',' + ci + ',0)">0</button>' +
-          '</div>';
-      } else {
-        html += '<span class="pts-badge">' + (pts > 0 ? '+'+pts : '0') + '</span>';
-      }
-
-      if (showCh) html += '<button class="challenge-btn" onclick="openChallenge(\'' + p.id + '\',' + rIdx + ',' + ci + ')">' + (L.challengeBtn||'⚠') + '</button>';
-      if (isCh) html += '<span class="voted-out-tag">VOTED OUT</span>';
-      html += '</div></div></td>';
-    });
-    html += '</tr>';
-  });
-
-  html += '<tr style="background:var(--surface);"><td><strong>' + L.totalLabel + '</strong></td>';
-  players.forEach(p => {
+  // Player answers - vertical list
+  players.forEach((p, pIdx) => {
+    const ans = ((state.answers[p.id] || {})[ci] || '').trim();
+    const ansLower = ans.toLowerCase();
     const rScores = (state.scores[rIdx] && state.scores[rIdx][p.id]) || {};
-    const sum = Object.values(rScores).reduce((a,b) => a+b, 0);
-    html += '<td style="text-align:center"><strong style="color:var(--accent);font-size:17px;">' + sum + '</strong></td>';
+    const pts = rScores[ci] !== undefined ? rScores[ci] : 0;
+    const key = rIdx + '_' + p.id + '_' + ci;
+    const isCh = !!state.challenged[key];
+    const valid = ans && startsWithLetter(ans, state.letter);
+    const isDuplicate = ansLower && answerCounts[ansLower] > 1;
+    const isMe = p.id === myId;
+    const showCh = ans && valid && !isCh && p.id !== myId && !state.activeChallenge;
+
+    html += '<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;margin-bottom:6px;' +
+      'border:1px solid ' + (isCh ? 'var(--red)' : isMe ? 'var(--accent)' : 'var(--border)') + ';' +
+      'background:' + (isCh ? 'rgba(255,80,80,0.06)' : isDuplicate && !isCh ? 'rgba(255,209,102,0.06)' : 'var(--card)') + ';">';
+
+    // Player name
+    html += '<div style="min-width:60px;max-width:80px;">' +
+      '<span style="font-weight:700;font-size:13px;' + (isMe ? 'color:var(--accent);' : '') + '">' + p.name + '</span>' +
+      '</div>';
+
+    // Answer
+    html += '<div style="flex:1;font-size:15px;font-weight:' + (ans ? '800' : '400') + ';' +
+      (isCh ? 'text-decoration:line-through;color:var(--red);' : !ans || !valid ? 'color:var(--muted);font-style:italic;' : isDuplicate ? 'color:var(--accent2);' : '') + '">' +
+      (ans || '\u2014') +
+      (isDuplicate && !isCh ? ' <span style="font-size:10px;font-weight:700;color:var(--accent2);">\u00d7' + answerCounts[ansLower] + '</span>' : '') +
+      '</div>';
+
+    // Points
+    html += '<div style="display:flex;align-items:center;gap:3px;">';
+    if (isHost) {
+      [15,10,5,0].forEach(v => {
+        const sel = (pts === v && !isCh) || (v === 0 && isCh);
+        html += '<button class="pts-btn' + (sel ? ' selected' : '') + (v===5?' dup':'') + (v===0?' none':'') + '" ' +
+          'onclick="setScore(\'' + p.id + '\',' + rIdx + ',' + ci + ',' + v + ')" ' +
+          'style="padding:3px 5px;font-size:11px;min-width:26px;">' + v + '</button>';
+      });
+    } else {
+      html += '<span style="font-family:Bebas Neue,sans-serif;font-size:18px;font-weight:800;' +
+        (pts >= 15 ? 'color:var(--green);' : pts >= 10 ? 'color:var(--accent);' : pts > 0 ? 'color:var(--accent2);' : 'color:var(--muted);') +
+        '">' + (pts > 0 ? '+' + pts : '0') + '</span>';
+    }
+
+    if (showCh) html += '<button class="challenge-btn" onclick="openChallenge(\'' + p.id + '\',' + rIdx + ',' + ci + ')" style="padding:3px 6px;font-size:11px;">\u26a0</button>';
+    if (isCh) html += '<span style="font-size:10px;color:var(--red);font-weight:800;">\u2717</span>';
+
+    html += '</div></div>';
   });
-  html += '</tr></tbody></table>';
+
   grid.innerHTML = html;
 
   renderLeaderboard('leaderboard-mini', data, rIdx);
