@@ -420,7 +420,6 @@ function renderPlayingScreen(data) {
       startStopCountdown(state.timerStart);
     }
   }
-  updateProgressTracker(data);
 }
 
 
