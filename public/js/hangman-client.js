@@ -540,7 +540,7 @@ function renderLobby(data) {
   if (isHost) {
     document.getElementById('lobby-btn-row').style.display = 'flex';
     document.getElementById('waiting-msg').style.display   = 'none';
-    var _startBtn = document.getElementById('lobby-start-btn');
+    var _startBtn = document.getElementById('lbl-start-btn');
     if (_startBtn) {
       var _pc = data.players ? data.players.filter(function(p){return p.connected;}).length : 0;
       _startBtn.disabled = _pc < 2; _startBtn.style.opacity = _pc >= 2 ? '1' : '0.4';

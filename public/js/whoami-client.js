@@ -1135,6 +1135,6 @@ function showError(msg) {
 
 // ── Init ──────────────────────────────────────────────────────────
 buildLangBar();
-applyTranslations();
+setUiLang(lang);
 window.lang = lang;
 initVisibilityToggle();
