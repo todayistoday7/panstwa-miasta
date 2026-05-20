@@ -1,0 +1,22 @@
+{
+  "lang": "de",
+  "htmlLang": "de",
+  "title": "Stadt Land Fluss Online — Kostenloses Multiplayer-Wortspiel | panstwamiastagra.com",
+  "description": "Spiele Stadt Land Fluss online kostenlos! Das beliebte Wortspiel für 2-12 Spieler — wähle einen Buchstaben und fülle Kategorien wie Länder, Städte, Tiere. Ohne Anmeldung.",
+  "canonical": "https://panstwamiastagra.com/stadt-land-fluss-online",
+  "ogUrl": "https://panstwamiastagra.com/stadt-land-fluss-online",
+  "hreflang": {
+    "pl": "https://panstwamiastagra.com/",
+    "en": "https://panstwamiastagra.com/countries-cities-game",
+    "de": "https://panstwamiastagra.com/stadt-land-fluss-online",
+    "sv": "https://panstwamiastagra.com/laender-och-staeder",
+    "x-default": "https://panstwamiastagra.com/countries-cities-game"
+  },
+  "seoLangUrls": {
+    "pl": "/",
+    "en": "/countries-cities-game",
+    "de": "/stadt-land-fluss-online",
+    "sv": "/laender-och-staeder"
+  },
+  "bottomContent": "<div style=\"margin-top:32px;\">\n    <h1 style=\"font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,48px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 10px;\">Stadt Land Fluss Online</h1>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\"><strong style=\"color:var(--text);\">Stadt Land Fluss</strong> — der Klassiker unter den Wortspielen, jetzt online spielbar mit Freunden, Familie oder deinem Team. Kostenlos, auf jedem Gerät. Raum erstellen, Code teilen und in unter einer Minute loslegen.</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Ein zufälliger Buchstabe wird gezogen. Alle Spieler füllen Kategorien aus — Städte, Länder, Tiere, Namen und mehr — mit Wörtern, die mit diesem Buchstaben beginnen. <strong style=\"color:var(--text);\">Einzigartige Antworten bringen mehr Punkte</strong>!</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Perfekt für <strong style=\"color:var(--text);\">Spieleabende, Team-Building, Partys und den Unterricht</strong>. 2-12 Spieler, mehrere Runden, eigene Kategorien und integrierte Punktevergabe mit Abstimmung. Desktop, Tablet und Handy — kein Download, keine Anmeldung.</p>\n</div>"
+}

@@ -1,0 +1,22 @@
+{
+  "lang": "en",
+  "htmlLang": "en",
+  "title": "Countries & Cities Online — Free Multiplayer Word Game | panstwamiastagra.com",
+  "description": "Play Countries & Cities online free! Classic word game for 2-12 players — pick a letter, race to fill categories like countries, cities, animals. No signup needed.",
+  "canonical": "https://panstwamiastagra.com/countries-cities-game",
+  "ogUrl": "https://panstwamiastagra.com/countries-cities-game",
+  "hreflang": {
+    "pl": "https://panstwamiastagra.com/",
+    "en": "https://panstwamiastagra.com/countries-cities-game",
+    "de": "https://panstwamiastagra.com/stadt-land-fluss-online",
+    "sv": "https://panstwamiastagra.com/laender-och-staeder",
+    "x-default": "https://panstwamiastagra.com/countries-cities-game"
+  },
+  "seoLangUrls": {
+    "pl": "/",
+    "en": "/countries-cities-game",
+    "de": "/stadt-land-fluss-online",
+    "sv": "/laender-och-staeder"
+  },
+  "bottomContent": "<div style=\"margin-top:32px;\">\n    <h1 style=\"font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,48px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 10px;\">Countries & Cities Online</h1>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\"><strong style=\"color:var(--text);\">Countries & Cities</strong> (also known as Stadt Land Fluss, Scattergories, or Państwa-Miasta) is a classic word game — now playable online with friends, family or your team, for free, on any device. Create a room, share the code and start playing in under a minute.</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">A random letter is drawn. All players race to fill in categories — countries, cities, animals, names, and more — with words starting with that letter. <strong style=\"color:var(--text);\">Unique answers score more points</strong>, so think creatively!</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Perfect for <strong style=\"color:var(--text);\">game nights, remote team building, parties, and classrooms</strong>. Supports 2-12 players, multiple rounds, custom categories, and built-in scoring with challenge voting. Works on desktop, tablet and mobile — no download, no signup.</p>\n</div>"
+}

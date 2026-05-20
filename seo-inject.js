@@ -35,6 +35,7 @@ function loadFile(filePath) {
 
 // Map game names to their base HTML files
 const GAME_FILES = {
+  pm: 'public/index.html',
   dots: 'public/dots.html',
   hangman: 'public/hangman.html',
   taboo: 'public/taboo.html',
