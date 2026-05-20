@@ -505,6 +505,10 @@ function focusStoppedNext(ci) {
 // ─── SCORING SCREEN ───────────────────────────────────────────────
 function renderScoringScreen(data) {
   _lastScoringData = data;
+  // Don't re-render scoring grid while challenge modal is open
+  var modal = document.getElementById('challenge-modal');
+  if (modal && modal.style.display === 'flex') return;
+  
   const { state, settings, players } = data;
   const rIdx = state.round - 1;
   document.getElementById('scoring-round-badge').textContent = L.scoringLabel(state.round);
@@ -804,6 +808,11 @@ function closeChallenge() {
   } else {
     document.getElementById('challenge-modal').style.display = 'none';
   }
+  // Re-render scoring with latest data after modal closes
+  setTimeout(function() {
+    document.getElementById('challenge-modal').style.display = 'none';
+    if (_lastScoringData) renderScoringScreen(_lastScoringData);
+  }, 200);
 }
 
 // ─── SHARE / COPY FUNCTIONS ───────────────────────────────────────

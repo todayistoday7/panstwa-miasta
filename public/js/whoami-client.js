@@ -396,25 +396,10 @@ function renderLobby(data) {
     startBtn.style.opacity = canStart ? '1' : '0.4';
   }
 
-  // Game length cards in lobby
+  // Sync game length from server and re-render cards
   if (data.settings && data.settings.gameLength) window._waGameLength = data.settings.gameLength;
-  var lengthEl = document.getElementById('lobby-length-display');
-  if (lengthEl) {
-    var currentLength = window._waGameLength || 'standard';
-    var lengths = [
-      {key:'quick', label:L.lengthQuick, desc:L.lengthDescQuick},
-      {key:'standard', label:L.lengthStandard, desc:L.lengthDescStandard},
-      {key:'marathon', label:L.lengthMarathon, desc:L.lengthDescMarathon},
-    ];
-    lengthEl.innerHTML = lengths.map(function(item) {
-      var isActive = item.key === currentLength;
-      return '<div' + (isHost ? ' onclick="setGameLength(\'' + item.key + '\')" style="cursor:pointer;' : ' style="') +
-        'display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:10px;margin-bottom:6px;' +
-        (isActive ? 'border:2px solid var(--accent);background:rgba(255,107,53,0.08);' : 'border:1px solid var(--border);background:var(--surface);' + (!isHost ? 'opacity:0.5;' : '')) + '">' +
-        '<span style="font-size:15px;font-weight:700;' + (isActive ? 'color:var(--accent);' : 'color:var(--text);') + '">' + item.label + '</span>' +
-        '<span style="margin-left:12px;font-size:13px;white-space:nowrap;' + (isActive ? 'color:var(--accent);font-weight:700;' : 'color:var(--muted);') + '">' + item.desc + '</span>' +
-        '</div>';
-    }).join('');
+  if (typeof _renderLengthCards === 'function') {
+    _renderLengthCards(document.getElementById('lobby-length-display'), isHost);
   }
 
   // Sync visibility toggle to match current room state (host only)
@@ -1059,25 +1044,31 @@ function applyTranslations() {
   // Sync game length from server state (for non-host)
   if (data.settings && data.settings.gameLength) window._waGameLength = data.settings.gameLength;
   
-  // Game length cards
+  // Game length cards (create room + lobby)
   var lengthEl = document.getElementById('wa-length-cards');
-  if (lengthEl) {
+  var lengthElLobby = document.getElementById('lobby-length-display');
+  window._renderLengthCards = function(el, canEdit) {
+    if (!el) return;
     var currentLength = window._waGameLength || 'standard';
     var lengths = [
       {key:'quick', label:L.lengthQuick, desc:L.lengthDescQuick},
       {key:'standard', label:L.lengthStandard, desc:L.lengthDescStandard},
       {key:'marathon', label:L.lengthMarathon, desc:L.lengthDescMarathon},
     ];
-    lengthEl.innerHTML = lengths.map(function(item) {
+    el.innerHTML = lengths.map(function(item) {
       var isActive = item.key === currentLength;
-      return '<div' + (isHost ? ' onclick="setGameLength(\'' + item.key + '\')" style="cursor:pointer;' : ' style="') +
+      return '<div' + (canEdit ? ' onclick="setGameLength(\'' + item.key + '\')" style="cursor:pointer;' : ' style="') +
         'display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:10px;margin-bottom:6px;' +
-        (isActive ? 'border:2px solid var(--accent);background:rgba(255,107,53,0.08);' : 'border:1px solid var(--border);background:var(--surface);' + (!isHost ? 'opacity:0.5;' : '')) + '">' +
+        (isActive ? 'border:2px solid var(--accent);background:rgba(255,107,53,0.08);' : 'border:1px solid var(--border);background:var(--surface);' + (!canEdit ? 'opacity:0.5;' : '')) + '">' +
         '<span style="font-size:15px;font-weight:700;' + (isActive ? 'color:var(--accent);' : 'color:var(--text);') + '">' + item.label + '</span>' +
         '<span style="margin-left:12px;font-size:13px;white-space:nowrap;' + (isActive ? 'color:var(--accent);font-weight:700;' : 'color:var(--muted);') + '">' + item.desc + '</span>' +
         '</div>';
     }).join('');
-  }
+  };
+  // Create room screen — always editable
+  _renderLengthCards(lengthEl, true);
+  // Lobby screen — editable only for host
+  _renderLengthCards(lengthElLobby, isHost);
   set('lbl-timer',          'timer');
   set('lbl-no-timer',       'noTimer');
   set('lbl-hints-toggle',   'hintsToggle');
