@@ -215,7 +215,7 @@ const LANGS = {
     leaveRoom:'Lämna rum',
     rejoinTip:'Om du lämnar av misstag, gå tillbaka med samma namn och rumskod.',
     homeRejoinTip:'Om du lämnar spelet av misstag, gå tillbaka med samma namn och rumskod.',
-    cats:['Länder','Städer','Djur','Växter','Saker','Namn'],
+    cats:['Länder','Städer','Djur','Växter','Saker','Namn','Färg','Yrke','Varumärke','Sport','Film','Frukt/Grönsak'],
     navHome:'Startsida', navAllGames:'Alla spel',
     youBadge:'DU ·', hostBadge:'VÄRD', nudge:'👋 Puffa', nudgeSent:'✓ Skickat!',
     newGame:'🔄 Nytt spel', playAgainGroup:'🔄 Spela igen med samma grupp',

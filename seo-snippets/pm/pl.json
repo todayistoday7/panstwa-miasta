@@ -1,0 +1,22 @@
+{
+  "lang": "pl",
+  "htmlLang": "pl",
+  "title": "Państwa Miasta Online — Darmowa Gra Multiplayer",
+  "description": "Graj w Państwa Miasta online za darmo! Klasyczna polska gra towarzyska w wersji multiplayer. Stwórz pokój i wpisuj państwa, miasta, zwierzęta na wylosowaną literę.",
+  "canonical": "https://panstwamiastagra.com/",
+  "ogUrl": "https://panstwamiastagra.com/",
+  "hreflang": {
+    "pl": "https://panstwamiastagra.com/",
+    "en": "https://panstwamiastagra.com/countries-cities-game",
+    "de": "https://panstwamiastagra.com/stadt-land-fluss-online",
+    "sv": "https://panstwamiastagra.com/laender-och-staeder",
+    "x-default": "https://panstwamiastagra.com/countries-cities-game"
+  },
+  "seoLangUrls": {
+    "pl": "/",
+    "en": "/countries-cities-game",
+    "de": "/stadt-land-fluss-online",
+    "sv": "/laender-och-staeder"
+  },
+  "bottomContent": "<div style=\"margin-top:32px;\">\n    <h1 style=\"font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,48px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:16px 0 10px;\">Państwa Miasta Online</h1>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\"><strong style=\"color:var(--text);\">Państwa Miasta</strong> — kultowa polska gra towarzyska, teraz dostępna online za darmo. Graj z przyjaciółmi, rodziną lub współpracownikami na dowolnym urządzeniu. Stwórz pokój, udostępnij kod i zacznij grać w mniej niż minutę.</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Losowana jest litera. Wszyscy gracze na czas wpisują odpowiedzi w kategoriach — państwa, miasta, zwierzęta, imiona i wiele więcej. <strong style=\"color:var(--text);\">Unikalne odpowiedzi dają więcej punktów</strong> — bądź kreatywny!</p>\n    <p style=\"color:var(--muted);font-size:14px;line-height:1.8;font-weight:600;margin-bottom:8px;\">Idealna na <strong style=\"color:var(--text);\">wieczory ze znajomymi, imprezy, integracje firmowe i lekcje</strong>. 2-12 graczy, wiele rund, własne kategorie i wbudowane punktowanie z możliwością kwestionowania odpowiedzi. Działa na telefonie, tablecie i komputerze — bez pobierania, bez rejestracji.</p>\n</div>"
+}

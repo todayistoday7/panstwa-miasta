@@ -35,6 +35,9 @@ try {
 }
 
 // ─── STATIC + PAGE ROUTES ────────────────────────────────
+// Polish PM landing page — seo-inject (must be before express.static)
+app.get('/', seoInject('pm', 'pl'));
+
 app.get('/taboo', (req, res) => res.sendFile(path.join(__dirname, 'public/taboo.html')));
 app.get('/twotruth', (req, res) => res.sendFile(path.join(__dirname, 'public/twotruth.html')));
 app.get('/dots',        (req, res) => res.sendFile(path.join(__dirname, 'public/dots.html')));
