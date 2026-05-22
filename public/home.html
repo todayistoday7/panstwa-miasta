@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Room For Games — Free Multiplayer Party Games Online</title>
+<meta name="description" content="Play free multiplayer party games online with friends, family and teams. No downloads, no sign-up. Taboo, Hangman, Who Am I, Drawing, Bingo and more — all in your browser.">
+<meta property="og:title" content="Room For Games — Free Multiplayer Party Games Online">
+<meta property="og:description" content="Play free multiplayer party games online with friends. No downloads, no sign-up. 10+ games in your browser.">
+<meta property="og:url" content="https://roomforgames.com">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://roomforgames.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/favicon.svg">
+<!-- GA injected by middleware -->
+<script async data-cfasync="false" src="https://www.googletagmanager.com/gtag/js?id=G-BJ79ZM6WPQ"></script>
+<script data-cfasync="false">
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-BJ79ZM6WPQ');
+</script>
+<style>
+/* ══════════════════════════════════════════════════════════
+   ROOM FOR GAMES — LANDING PAGE
+   Clean, modern, Jackbox-inspired
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Hero Section ── */
+.rfg-hero {
+  text-align: center;
+  padding: 48px 20px 36px;
+  position: relative;
+}
+.rfg-hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 10vw, 80px);
+  letter-spacing: 4px;
+  line-height: 1;
+  margin: 0;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.rfg-hero .rfg-subtitle {
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 10px;
+  letter-spacing: 0.5px;
+}
+.rfg-hero .rfg-cta-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+.rfg-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 15px;
+  letter-spacing: 1px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.rfg-cta:hover { transform: translateY(-2px); }
+.rfg-cta-primary {
+  background: linear-gradient(135deg, var(--accent), #ff8c55);
+  color: #000;
+  box-shadow: 0 4px 20px rgba(255,107,53,0.3);
+}
+.rfg-cta-primary:hover { box-shadow: 0 6px 28px rgba(255,107,53,0.45); }
+.rfg-cta-secondary {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  color: var(--text);
+}
+.rfg-cta-secondary:hover { border-color: var(--accent); }
+
+/* ── Stats bar ── */
+.rfg-stats {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  padding: 20px;
+  margin: 0 auto;
+  max-width: 600px;
+}
+.rfg-stat {
+  text-align: center;
+}
+.rfg-stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  color: var(--accent);
+  letter-spacing: 2px;
+  line-height: 1;
+}
+.rfg-stat-label {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ── Games showcase ── */
+.rfg-section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.rfg-section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(28px, 6vw, 42px);
+  letter-spacing: 3px;
+  color: var(--text);
+  text-align: center;
+  margin: 48px 0 8px;
+}
+.rfg-section-sub {
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 28px;
+}
+
+/* Game preview cards — 2-column on desktop, 1-column mobile */
+.rfg-game-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 36px;
+}
+.rfg-game-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  text-decoration: none;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.rfg-game-item:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+}
+.rfg-game-icon {
+  font-size: 36px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.rfg-game-info { flex: 1; min-width: 0; }
+.rfg-game-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.rfg-game-desc {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+  line-height: 1.5;
+}
+.rfg-game-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.rfg-tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+/* ── How it works ── */
+.rfg-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 48px;
+}
+.rfg-step {
+  text-align: center;
+  padding: 24px 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+.rfg-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #000;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+.rfg-step-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.rfg-step-desc {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* ── Feature highlights ── */
+.rfg-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 48px;
+}
+.rfg-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.rfg-feature-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.rfg-feature-text h3 {
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--text);
+  margin: 0 0 4px;
+}
+.rfg-feature-text p {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── SEO content block ── */
+.rfg-content {
+  max-width: 720px;
+  margin: 0 auto 48px;
+  padding: 0 20px;
+}
+.rfg-content h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 2px;
+  color: var(--text);
+  margin: 32px 0 12px;
+}
+.rfg-content p {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 600;
+  line-height: 1.7;
+  margin: 0 0 16px;
+}
+
+/* ── Bottom CTA ── */
+.rfg-bottom-cta {
+  text-align: center;
+  padding: 48px 20px 64px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  margin-top: 48px;
+}
+.rfg-bottom-cta h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(32px, 7vw, 52px);
+  letter-spacing: 3px;
+  color: var(--text);
+  margin: 0 0 8px;
+}
+.rfg-bottom-cta p {
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+</style>
+</head>
+<body>
+<script>window._rfgDomain = true;</script>
+
+<!-- ══════════ HERO ══════════ -->
+<div class="rfg-hero">
+  <h1 id="rfg-hero-title">ROOM FOR GAMES</h1>
+  <p class="rfg-subtitle" id="rfg-hero-sub">Free multiplayer party games — no downloads, no sign-up</p>
+  <div class="rfg-cta-row">
+    <a href="/games" class="rfg-cta rfg-cta-primary" id="rfg-btn-browse">🎮 Browse Games</a>
+    <a href="/rooms" class="rfg-cta rfg-cta-secondary" id="rfg-btn-join">🚪 Join a Room</a>
+  </div>
+</div>
+
+<!-- ══════════ STATS ══════════ -->
+<div class="rfg-stats">
+  <div class="rfg-stat">
+    <div class="rfg-stat-num">10+</div>
+    <div class="rfg-stat-label" data-rfg="stat_games">Games</div>
+  </div>
+  <div class="rfg-stat">
+    <div class="rfg-stat-num">2-20</div>
+    <div class="rfg-stat-label" data-rfg="stat_players">Players</div>
+  </div>
+  <div class="rfg-stat">
+    <div class="rfg-stat-num">100%</div>
+    <div class="rfg-stat-label" data-rfg="stat_free">Free</div>
+  </div>
+  <div class="rfg-stat">
+    <div class="rfg-stat-num">0</div>
+    <div class="rfg-stat-label" data-rfg="stat_downloads">Downloads Needed</div>
+  </div>
+</div>
+
+<!-- ══════════ GAMES SHOWCASE ══════════ -->
+<div class="rfg-section">
+  <h2 class="rfg-section-title" id="rfg-games-title">PICK A GAME, START PLAYING</h2>
+  <p class="rfg-section-sub" id="rfg-games-sub">All games are free, work on any device, and support 2-20 players</p>
+
+  <div class="rfg-game-list" id="rfg-game-list">
+    <a href="/forbidden-words" class="rfg-game-item">
+      <div class="rfg-game-icon">🚫</div>
+      <div class="rfg-game-info">
+        <div class="rfg-game-name">Forbidden Words</div>
+        <div class="rfg-game-desc">Describe a word without using the forbidden clues. Fast-paced and hilarious.</div>
+        <div class="rfg-game-tags"><span class="rfg-tag">Teams</span><span class="rfg-tag">Word Game</span><span class="rfg-tag">3+ Players</span></div>
+      </div>
+    </a>
+    <a href="/hangman-online" class="rfg-game-item">
+      <div class="rfg-game-icon">💀</div>
+      <div class="rfg-game-info">
+        <div class="rfg-game-name">Hangman</div>
+        <div class="rfg-game-desc">Classic word guessing with multiplayer twists. Guess the word before time runs out.</div>
+        <div class="rfg-game-tags"><span class="rfg-tag">Word Game</span><span class="rfg-tag">2+ Players</span></div>
+      </div>
+    </a>
+    <a href="/who-am-i" class="rfg-game-item">
+      <div class="rfg-game-icon">🎭</div>
+      <div class="rfg-game-info">
+        <div class="rfg-game-name">Who Am I?</div>
+        <div class="rfg-game-desc">Ask yes/no questions to figure out which character you've been assigned.</div>
+        <div class="rfg-game-tags"><span class="rfg-tag">Guessing</span><span class="rfg-tag">3+ Players</span></div>
+      </div>
+    </a>
+    <a href="/sketch-and-guess" class="rfg-game-item">
+      <div class="rfg-game-icon">🎨</div>
+      <div class="rfg-game-info">
+        <div class="rfg-game-name">Sketch & Guess</div>
+        <div class="rfg-game-desc">Draw a word while others race to guess it. Like Pictionary but online.</div>
+        <div class="rfg-game-tags"><span class="rfg-tag">Drawing</span><span class="rfg-tag">3+ Players</span></div>
+      </div>
+    </a>
+    <a href="/two-truths-one-lie" class="rfg-game-item">
+      <div class="rfg-game-icon">🤥</div>
+      <div class="rfg-game-info">
+        <div class="rfg-game-name">Two Truths One Lie</div>
+        <div class="rfg-game-desc">Share three statements — two true, one false. Can your friends spot the lie?</div>
+        <div class="rfg-game-tags"><span class="rfg-tag">Social</span><span class="rfg-tag">3+ Players</span></div>
+      </div>
+    </a>
+    <a href="/dots-and-boxes-online" class="rfg-game-item">
+      <div class="rfg-game-icon">⬜</div>
+      <div class="rfg-game-info">
+        <div class="rfg-game-name">Dots & Boxes</div>
+        <div class="rfg-game-desc">Connect dots, complete boxes, claim territory. A classic strategy game.</div>
+        <div class="rfg-game-tags"><span class="rfg-tag">Strategy</span><span class="rfg-tag">2 Players</span></div>
+      </div>
+    </a>
+    <a href="/corporate-bingo" class="rfg-game-item">
+      <div class="rfg-game-icon">📋</div>
+      <div class="rfg-game-info">
+        <div class="rfg-game-name">Corporate Bingo</div>
+        <div class="rfg-game-desc">Spot the buzzwords in your next meeting. Cross them off your bingo card.</div>
+        <div class="rfg-game-tags"><span class="rfg-tag">Fun</span><span class="rfg-tag">2+ Players</span></div>
+      </div>
+    </a>
+    <a href="/countries-cities-game" class="rfg-game-item">
+      <div class="rfg-game-icon">🌍</div>
+      <div class="rfg-game-info">
+        <div class="rfg-game-name">Countries & Cities</div>
+        <div class="rfg-game-desc">Name a country, city, animal and more starting with a random letter. Beat the clock!</div>
+        <div class="rfg-game-tags"><span class="rfg-tag">Trivia</span><span class="rfg-tag">2+ Players</span></div>
+      </div>
+    </a>
+    <a href="/find-pairs-online" class="rfg-game-item">
+      <div class="rfg-game-icon">🃏</div>
+      <div class="rfg-game-info">
+        <div class="rfg-game-name">Find Pairs</div>
+        <div class="rfg-game-desc">Flip cards and match pairs before your opponent. Test your memory!</div>
+        <div class="rfg-game-tags"><span class="rfg-tag">Memory</span><span class="rfg-tag">2 Players</span></div>
+      </div>
+    </a>
+    <a href="/charades-online" class="rfg-game-item">
+      <div class="rfg-game-icon">🎬</div>
+      <div class="rfg-game-info">
+        <div class="rfg-game-name">Charades</div>
+        <div class="rfg-game-desc">Act it out, guess the word. The classic party game, now multiplayer online.</div>
+        <div class="rfg-game-tags"><span class="rfg-tag">Acting</span><span class="rfg-tag">4+ Players</span></div>
+      </div>
+    </a>
+  </div>
+
+  <div style="text-align:center; margin-bottom:48px;">
+    <a href="/games" class="rfg-cta rfg-cta-primary" id="rfg-btn-all">🎮 See All Games</a>
+  </div>
+</div>
+
+<!-- ══════════ HOW IT WORKS ══════════ -->
+<div class="rfg-section">
+  <h2 class="rfg-section-title" id="rfg-how-title">HOW IT WORKS</h2>
+  <p class="rfg-section-sub" id="rfg-how-sub">Three steps. Under 30 seconds. That's it.</p>
+  <div class="rfg-steps">
+    <div class="rfg-step">
+      <div class="rfg-step-num">1</div>
+      <div class="rfg-step-title" data-rfg="step1_title">PICK A GAME</div>
+      <div class="rfg-step-desc" data-rfg="step1_desc">Choose from 10+ free party games. Word games, drawing, trivia and more.</div>
+    </div>
+    <div class="rfg-step">
+      <div class="rfg-step-num">2</div>
+      <div class="rfg-step-title" data-rfg="step2_title">SHARE THE CODE</div>
+      <div class="rfg-step-desc" data-rfg="step2_desc">Create a room and share the 4-letter code with friends. They join instantly.</div>
+    </div>
+    <div class="rfg-step">
+      <div class="rfg-step-num">3</div>
+      <div class="rfg-step-title" data-rfg="step3_title">PLAY TOGETHER</div>
+      <div class="rfg-step-desc" data-rfg="step3_desc">Works on any device — phone, tablet, laptop. No downloads needed.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ FEATURES ══════════ -->
+<div class="rfg-section">
+  <h2 class="rfg-section-title" id="rfg-feat-title">WHY ROOM FOR GAMES?</h2>
+  <div class="rfg-features">
+    <div class="rfg-feature">
+      <div class="rfg-feature-icon">💰</div>
+      <div class="rfg-feature-text">
+        <h3 data-rfg="feat1_title">100% Free</h3>
+        <p data-rfg="feat1_desc">No subscriptions, no hidden fees. Every game is completely free to play.</p>
+      </div>
+    </div>
+    <div class="rfg-feature">
+      <div class="rfg-feature-icon">📱</div>
+      <div class="rfg-feature-text">
+        <h3 data-rfg="feat2_title">Works Everywhere</h3>
+        <p data-rfg="feat2_desc">Phone, tablet, or computer. Any modern browser. No app to install.</p>
+      </div>
+    </div>
+    <div class="rfg-feature">
+      <div class="rfg-feature-icon">⚡</div>
+      <div class="rfg-feature-text">
+        <h3 data-rfg="feat3_title">Instant Start</h3>
+        <p data-rfg="feat3_desc">No sign-up, no account needed. Pick a name and start playing in seconds.</p>
+      </div>
+    </div>
+    <div class="rfg-feature">
+      <div class="rfg-feature-icon">🌍</div>
+      <div class="rfg-feature-text">
+        <h3 data-rfg="feat4_title">4 Languages</h3>
+        <p data-rfg="feat4_desc">Available in English, Polish, German and Swedish. Play in your language.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SEO CONTENT ══════════ -->
+<div class="rfg-content">
+  <h2>Free Online Party Games for Everyone</h2>
+  <p>Room For Games is a collection of free, browser-based multiplayer party games. Whether you're looking for something to play during a video call with colleagues, a family game night, or just a quick round with friends — we've got you covered. Every game works in real-time, connects players through simple room codes, and runs on any device with a browser.</p>
+
+  <h2>Perfect for Game Night, Team Building & Classrooms</h2>
+  <p>Our games are designed for groups of 2 to 20 players. They work great for virtual team meetings, remote team building, classroom activities, or casual hangouts. Popular choices include Forbidden Words (like Taboo), Who Am I, Sketch & Guess (like Pictionary), and Two Truths One Lie. All games are family-friendly and suitable for all ages.</p>
+
+  <h2>No Downloads, No Accounts, No Hassle</h2>
+  <p>Just pick a game, create a room, and share the code. Your friends join on their own devices — phone, tablet or computer. The games run entirely in the browser with real-time multiplayer powered by WebSocket technology. Everything is free, with no ads interrupting your game.</p>
+</div>
+
+<!-- ══════════ BOTTOM CTA ══════════ -->
+<div class="rfg-bottom-cta">
+  <h2 id="rfg-bottom-title">READY TO PLAY?</h2>
+  <p id="rfg-bottom-sub">Pick a game and start playing in under 30 seconds</p>
+  <a href="/games" class="rfg-cta rfg-cta-primary" id="rfg-btn-bottom">🎮 Browse All Games</a>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/shared.js"></script>
+
+<script>
+// ─── i18n for the landing page ───────────────────────────
+(function() {
+  var T = {
+    en: {
+      hero_title: 'ROOM FOR GAMES',
+      hero_sub: 'Free multiplayer party games — no downloads, no sign-up',
+      btn_browse: '🎮 Browse Games',
+      btn_join: '🚪 Join a Room',
+      stat_games: 'Games', stat_players: 'Players', stat_free: 'Free', stat_downloads: 'Downloads Needed',
+      games_title: 'PICK A GAME, START PLAYING',
+      games_sub: 'All games are free, work on any device, and support 2-20 players',
+      how_title: 'HOW IT WORKS',
+      how_sub: "Three steps. Under 30 seconds. That's it.",
+      step1_title: 'PICK A GAME', step1_desc: 'Choose from 10+ free party games. Word games, drawing, trivia and more.',
+      step2_title: 'SHARE THE CODE', step2_desc: 'Create a room and share the 4-letter code with friends. They join instantly.',
+      step3_title: 'PLAY TOGETHER', step3_desc: 'Works on any device — phone, tablet, laptop. No downloads needed.',
+      feat_title: 'WHY ROOM FOR GAMES?',
+      feat1_title: '100% Free', feat1_desc: 'No subscriptions, no hidden fees. Every game is completely free to play.',
+      feat2_title: 'Works Everywhere', feat2_desc: 'Phone, tablet, or computer. Any modern browser. No app to install.',
+      feat3_title: 'Instant Start', feat3_desc: 'No sign-up, no account needed. Pick a name and start playing in seconds.',
+      feat4_title: '4 Languages', feat4_desc: 'Available in English, Polish, German and Swedish. Play in your language.',
+      bottom_title: 'READY TO PLAY?',
+      bottom_sub: 'Pick a game and start playing in under 30 seconds',
+      btn_all: '🎮 See All Games',
+      btn_bottom: '🎮 Browse All Games',
+    },
+    pl: {
+      hero_title: 'ROOM FOR GAMES',
+      hero_sub: 'Darmowe gry multiplayer online — bez pobierania, bez rejestracji',
+      btn_browse: '🎮 Przeglądaj Gry',
+      btn_join: '🚪 Dołącz do Pokoju',
+      stat_games: 'Gier', stat_players: 'Graczy', stat_free: 'Za Darmo', stat_downloads: 'Pobierania',
+      games_title: 'WYBIERZ GRĘ, ZACZNIJ GRAĆ',
+      games_sub: 'Wszystkie gry są darmowe, działają na każdym urządzeniu i obsługują 2-20 graczy',
+      how_title: 'JAK TO DZIAŁA',
+      how_sub: 'Trzy kroki. Poniżej 30 sekund. To wszystko.',
+      step1_title: 'WYBIERZ GRĘ', step1_desc: 'Wybierz spośród 10+ darmowych gier. Słowne, rysunkowe, quizy i więcej.',
+      step2_title: 'UDOSTĘPNIJ KOD', step2_desc: 'Utwórz pokój i udostępnij 4-literowy kod znajomym. Dołączą natychmiast.',
+      step3_title: 'GRAJCIE RAZEM', step3_desc: 'Działa na każdym urządzeniu — telefon, tablet, laptop. Bez pobierania.',
+      feat_title: 'DLACZEGO ROOM FOR GAMES?',
+      feat1_title: '100% Za Darmo', feat1_desc: 'Bez subskrypcji, bez ukrytych opłat. Każda gra jest całkowicie darmowa.',
+      feat2_title: 'Działa Wszędzie', feat2_desc: 'Telefon, tablet lub komputer. Każda nowoczesna przeglądarka.',
+      feat3_title: 'Natychmiastowy Start', feat3_desc: 'Bez rejestracji, bez konta. Wybierz nick i zacznij grać w sekundy.',
+      feat4_title: '4 Języki', feat4_desc: 'Dostępne w języku polskim, angielskim, niemieckim i szwedzkim.',
+      bottom_title: 'GOTOWI DO GRY?',
+      bottom_sub: 'Wybierz grę i zacznij grać w mniej niż 30 sekund',
+      btn_all: '🎮 Zobacz Wszystkie Gry',
+      btn_bottom: '🎮 Przeglądaj Wszystkie Gry',
+    },
+    de: {
+      hero_title: 'ROOM FOR GAMES',
+      hero_sub: 'Kostenlose Multiplayer-Partyspiele — kein Download, keine Anmeldung',
+      btn_browse: '🎮 Spiele Entdecken',
+      btn_join: '🚪 Raum Beitreten',
+      stat_games: 'Spiele', stat_players: 'Spieler', stat_free: 'Kostenlos', stat_downloads: 'Downloads Nötig',
+      games_title: 'WÄHLE EIN SPIEL, FANG AN',
+      games_sub: 'Alle Spiele sind kostenlos, funktionieren auf jedem Gerät und unterstützen 2-20 Spieler',
+      how_title: 'SO FUNKTIONIERT ES',
+      how_sub: 'Drei Schritte. Unter 30 Sekunden. Das war\'s.',
+      step1_title: 'SPIEL WÄHLEN', step1_desc: 'Wähle aus 10+ kostenlosen Partyspielen. Wortspiele, Zeichnen, Quiz und mehr.',
+      step2_title: 'CODE TEILEN', step2_desc: 'Erstelle einen Raum und teile den 4-Buchstaben-Code mit Freunden.',
+      step3_title: 'ZUSAMMEN SPIELEN', step3_desc: 'Funktioniert auf jedem Gerät — Handy, Tablet, Laptop. Kein Download nötig.',
+      feat_title: 'WARUM ROOM FOR GAMES?',
+      feat1_title: '100% Kostenlos', feat1_desc: 'Keine Abonnements, keine versteckten Kosten. Jedes Spiel ist komplett kostenlos.',
+      feat2_title: 'Überall Spielbar', feat2_desc: 'Handy, Tablet oder Computer. Jeder moderne Browser. Keine App nötig.',
+      feat3_title: 'Sofort Starten', feat3_desc: 'Keine Registrierung, kein Konto nötig. Namen eingeben und losspielen.',
+      feat4_title: '4 Sprachen', feat4_desc: 'Verfügbar auf Englisch, Polnisch, Deutsch und Schwedisch.',
+      bottom_title: 'BEREIT ZU SPIELEN?',
+      bottom_sub: 'Wähle ein Spiel und spiel in unter 30 Sekunden los',
+      btn_all: '🎮 Alle Spiele Ansehen',
+      btn_bottom: '🎮 Alle Spiele Entdecken',
+    },
+    sv: {
+      hero_title: 'ROOM FOR GAMES',
+      hero_sub: 'Gratis multiplayerspel — inga nedladdningar, ingen registrering',
+      btn_browse: '🎮 Utforska Spel',
+      btn_join: '🚪 Gå med i Rum',
+      stat_games: 'Spel', stat_players: 'Spelare', stat_free: 'Gratis', stat_downloads: 'Nedladdningar',
+      games_title: 'VÄLJ ETT SPEL, BÖRJA SPELA',
+      games_sub: 'Alla spel är gratis, fungerar på alla enheter och stöder 2-20 spelare',
+      how_title: 'SÅ FUNGERAR DET',
+      how_sub: 'Tre steg. Under 30 sekunder. Det är allt.',
+      step1_title: 'VÄLJ SPEL', step1_desc: 'Välj bland 10+ gratis partyspel. Ordspel, ritning, frågesport och mer.',
+      step2_title: 'DELA KODEN', step2_desc: 'Skapa ett rum och dela 4-bokstavskoden med vänner. De ansluter direkt.',
+      step3_title: 'SPELA TILLSAMMANS', step3_desc: 'Fungerar på alla enheter — telefon, surfplatta, laptop. Inga nedladdningar.',
+      feat_title: 'VARFÖR ROOM FOR GAMES?',
+      feat1_title: '100% Gratis', feat1_desc: 'Inga prenumerationer, inga dolda avgifter. Varje spel är helt gratis.',
+      feat2_title: 'Fungerar Överallt', feat2_desc: 'Telefon, surfplatta eller dator. Alla moderna webbläsare. Ingen app behövs.',
+      feat3_title: 'Starta Direkt', feat3_desc: 'Ingen registrering, inget konto. Välj ett namn och börja spela på sekunder.',
+      feat4_title: '4 Språk', feat4_desc: 'Tillgängligt på engelska, polska, tyska och svenska. Spela på ditt språk.',
+      bottom_title: 'REDO ATT SPELA?',
+      bottom_sub: 'Välj ett spel och börja spela på under 30 sekunder',
+      btn_all: '🎮 Se Alla Spel',
+      btn_bottom: '🎮 Utforska Alla Spel',
+    },
+  };
+
+  function applyLang(lang) {
+    var t = T[lang] || T.en;
+    // IDs
+    var idMap = {
+      'rfg-hero-title': 'hero_title', 'rfg-hero-sub': 'hero_sub',
+      'rfg-btn-browse': 'btn_browse', 'rfg-btn-join': 'btn_join',
+      'rfg-games-title': 'games_title', 'rfg-games-sub': 'games_sub',
+      'rfg-how-title': 'how_title', 'rfg-how-sub': 'how_sub',
+      'rfg-feat-title': 'feat_title',
+      'rfg-bottom-title': 'bottom_title', 'rfg-bottom-sub': 'bottom_sub',
+      'rfg-btn-all': 'btn_all', 'rfg-btn-bottom': 'btn_bottom',
+    };
+    Object.keys(idMap).forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = t[idMap[id]];
+    });
+    // data-rfg attributes
+    document.querySelectorAll('[data-rfg]').forEach(function(el) {
+      var key = el.getAttribute('data-rfg');
+      if (t[key]) el.textContent = t[key];
+    });
+  }
+
+  // Detect language: URL param > localStorage > browser
+  var urlLang = new URLSearchParams(window.location.search).get('lang');
+  var storedLang = localStorage.getItem('pm_lang');
+  var browserLang = (navigator.language || '').slice(0,2);
+  var lang = urlLang || storedLang || (['pl','de','sv'].indexOf(browserLang) !== -1 ? browserLang : 'en');
+  if (['pl','en','de','sv'].indexOf(lang) === -1) lang = 'en';
+
+  if (lang !== 'en') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() { applyLang(lang); });
+    } else {
+      applyLang(lang);
+    }
+  }
+})();
+</script>
+</body>
+</html>
