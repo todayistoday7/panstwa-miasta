@@ -327,12 +327,12 @@ function setGameLang(code) {
   prefillJoinCode();
   // Update UI immediately — host owns the settings UI
   renderLangPills(code, true);
-  renderCatGrid(L.cats.slice(0,8), true);
+  renderCatGrid(L.cats, true);
   if (roomState && roomState.settings) {
     roomState.settings.lang = code;
-    roomState.settings.categories = L.cats.slice(0,8);
+    roomState.settings.categories = L.cats;
   }
-  socket.emit('update_settings', { code: roomCode, settings: { lang: code, categories: L.cats.slice(0,8), isPublic: getIsPublic() } });
+  socket.emit('update_settings', { code: roomCode, settings: { lang: code, categories: L.cats, isPublic: getIsPublic() } });
 }
 
 function updateSettings() {
@@ -879,7 +879,7 @@ function createRoom() {
   myName = name; isHost = true;
   const _hp = document.getElementById('hp-website');
   if (_hp && _hp.value) return;
-  socket.emit('create_room', { name, settings: { totalRounds: 5, categories: L.cats.slice(0,8), lang, isPublic: getIsPublic() } });
+  socket.emit('create_room', { name, settings: { totalRounds: 5, categories: L.cats, lang, isPublic: getIsPublic() } });
 }
 
 function joinRoom() {
@@ -948,7 +948,7 @@ function playAgainGroup() {
   // Reset scores and start new game with same players in same room
   socket.emit('create_room', { name: myName, settings: {
     totalRounds: 5,
-    categories: L.cats.slice(0,8),
+    categories: L.cats,
     lang: lang,
     isPublic: getIsPublic(),
     keepGroup: true,
