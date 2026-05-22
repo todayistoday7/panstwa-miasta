@@ -100,8 +100,15 @@ socket.on('letter_drawn', ({ letter }) => {
   el.classList.remove('rolling');
   el.textContent = letter;
   if (roomState && isMyDrawTurn()) {
+    document.getElementById('drawing-host-controls').style.display = 'block';
+    document.getElementById('drawing-waiting').style.display = 'none';
     document.getElementById('draw-btn').style.display = 'none';
     document.getElementById('play-btn').style.display = 'inline-flex';
+  } else {
+    document.getElementById('drawing-host-controls').style.display = 'none';
+    document.getElementById('drawing-waiting').style.display = 'block';
+    const drawerName = getDrawerName();
+    document.getElementById('drawing-waiting').textContent = L.drawerChoseLetter(drawerName, letter);
   }
 });
 
