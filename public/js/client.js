@@ -980,7 +980,7 @@ function setUiLang(code) { setLang(code); }
 function buildLangBar() {
   const bar = document.getElementById('lang-bar');
   bar.innerHTML = Object.keys(LANGS).map(code =>
-    '<button class="lang-btn' + (code===lang?' active':'') + '" data-lang="' + code + '" onclick="setLang(\'' + code + '\')">' + LANGS[code].name + '</button>'
+    '<button class="lang-btn' + (code===lang?' active':'') + '" data-lang="' + code + '" onclick="setUiLang(\'' + code + '\')">' + LANGS[code].name + '</button>'
   ).join('');
 }
 
