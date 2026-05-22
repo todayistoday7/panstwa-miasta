@@ -529,7 +529,7 @@ function initVisibilityToggle() {
     // Logo
     var logo = document.createElement('a');
     logo.className = 'gb-logo';
-    logo.href = '/' + ql;
+    logo.href = (lang==='pl'?'/':lang==='de'?'/stadt-land-fluss-online':lang==='sv'?'/laender-och-staeder':'/countries-cities-game');
     logo.innerHTML =
       '<svg viewBox="0 0 80 80" width="28" height="28" xmlns="http://www.w3.org/2000/svg">' +
         '<circle cx="40" cy="40" r="34" fill="none" stroke="#ff6b35" stroke-width="3"/>' +
@@ -565,10 +565,10 @@ function initVisibilityToggle() {
     nav.className = 'gb-nav';
     nav.innerHTML =
       '<div class="gb-sec">' + t.sg + '</div>' +
-      '<a href="/' + ql + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
+      '<a href="' + (lang==='pl'?'/':lang==='de'?'/stadt-land-fluss-online':lang==='sv'?'/laender-och-staeder':'/countries-cities-game') + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
       '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
       '<div class="gb-div"></div>' +
-      '<a href="/' + ql + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
+      '<a href="' + (lang==='pl'?'/':lang==='de'?'/stadt-land-fluss-online':lang==='sv'?'/laender-och-staeder':'/countries-cities-game') + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
       '<a href="' + (lang==='pl'?'/zakazane-slowa':lang==='de'?'/verbotene-woerter':lang==='sv'?'/forbjudna-ord':'/forbidden-words') + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
       '<a href="' + (lang==='pl'?'/wisielec':lang==='de'?'/galgenmaennchen-online':lang==='sv'?'/hanga-gubbe-online':'/hangman-online') + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
       '<a href="' + (lang==='pl'?'/kropki-i-kreski-online':lang==='de'?'/punkte-und-linien-online':lang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
@@ -697,10 +697,10 @@ window._rebuildBurger = function(newLang) {
   if (!t.home) return; // labels not loaded yet
   nav.innerHTML =
     '<div class="gb-sec">' + t.sg + '</div>' +
-    '<a href="/' + ql + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
+    '<a href="' + (newLang==='pl'?'/':newLang==='de'?'/stadt-land-fluss-online':newLang==='sv'?'/laender-och-staeder':'/countries-cities-game') + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
     '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
     '<div class="gb-div"></div>' +
-    '<a href="/' + ql + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
+    '<a href="' + (newLang==='pl'?'/':newLang==='de'?'/stadt-land-fluss-online':newLang==='sv'?'/laender-och-staeder':'/countries-cities-game') + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
     '<a href="' + (newLang==='pl'?'/zakazane-slowa':newLang==='de'?'/verbotene-woerter':newLang==='sv'?'/forbjudna-ord':'/forbidden-words') + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
     '<a href="' + (newLang==='pl'?'/wisielec':newLang==='de'?'/galgenmaennchen-online':newLang==='sv'?'/hanga-gubbe-online':'/hangman-online') + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
     '<a href="' + (newLang==='pl'?'/kropki-i-kreski-online':newLang==='de'?'/punkte-und-linien-online':newLang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
@@ -719,7 +719,7 @@ window._rebuildBurger = function(newLang) {
     '<a href="/privacy' + ql + '"><span class="gb-ico">🔒</span>' + t.privacy + '</a>' +
     '<a href="#" onclick="event.preventDefault();openBugModal();" style="cursor:pointer;"><span class="gb-ico">🐛</span>' + (t.bug||'Report a Bug') + '</a>';
   // Update logo href
-  if (logo) logo.href = '/' + ql;
+  if (logo) logo.href = (newLang==='pl'?'/':newLang==='de'?'/stadt-land-fluss-online':newLang==='sv'?'/laender-och-staeder':'/countries-cities-game');
 };
 // Keep old name as alias so nothing breaks
 window._footerSetLang = window._switchLang;
