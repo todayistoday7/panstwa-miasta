@@ -834,8 +834,11 @@ function renderFinal(data) {
 // ── UI Actions ────────────────────────────────────────────────────
 function setGameLength(key) {
   window._waGameLength = key;
-  // Re-render lobby to update card highlighting
-  if (roomState) renderLobby(roomState);
+  // Re-render length cards on both create room and lobby screens
+  if (typeof _renderLengthCards === 'function') {
+    _renderLengthCards(document.getElementById('wa-length-cards'), true);
+    _renderLengthCards(document.getElementById('lobby-length-display'), isHost);
+  }
 }
 
 function setMode(mode) {
@@ -1042,7 +1045,7 @@ function applyTranslations() {
   set('lbl-turns-each',     'turnsEach');
   
   // Sync game length from server state (for non-host)
-  if (data.settings && data.settings.gameLength) window._waGameLength = data.settings.gameLength;
+  if (typeof data !== 'undefined' && data && data.settings && data.settings.gameLength) window._waGameLength = data.settings.gameLength;
   
   // Game length cards (create room + lobby)
   var lengthEl = document.getElementById('wa-length-cards');
