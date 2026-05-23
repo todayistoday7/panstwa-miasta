@@ -396,10 +396,10 @@ function renderLobby(data) {
     startBtn.style.opacity = canStart ? '1' : '0.4';
   }
 
-  // Sync game length from server and re-render cards
+  // Sync game length from server and re-render cards (always read-only in lobby)
   if (data.settings && data.settings.gameLength) window._waGameLength = data.settings.gameLength;
   if (typeof _renderLengthCards === 'function') {
-    _renderLengthCards(document.getElementById('lobby-length-display'), isHost);
+    _renderLengthCards(document.getElementById('lobby-length-display'), false);
   }
 
   // Sync visibility toggle to match current room state (host only)

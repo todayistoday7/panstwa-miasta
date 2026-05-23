@@ -1037,23 +1037,28 @@ function emitState(io, room) {
     totalTurns:    room.settings.turnsEach * room.players.filter(p=>p.connected).length,
   };
 
-  // Broadcast to everyone in the room
-  io.to(room.code).emit('whoami_state', baseState);
-
-  // During playing phase, send character privately to non-active players
-  if (room.state.phase === 'playing') {
-    room.players.forEach(p => {
-      if (p.id !== activePId && p.connected) {
+  // Send per-player state with localised character name
+  room.players.forEach(p => {
+    if (!p.connected) return;
+    const playerState = { ...baseState };
+    if (room.state.phase === 'playing') {
+      // Active player doesn't see the character; others see it in their language
+      if (p.id === activePId) {
+        playerState.activeChar = null;
+        playerState.wikiSlug = null;
+      } else {
         const charForLang = (room.state.charByLang && room.state.charByLang[p.lang || 'en'])
           ? room.state.charByLang[p.lang || 'en'] : room.state.activeChar;
-        io.to(p.id).emit('whoami_state', {
-          ...baseState,
-          activeChar: charForLang,
-          wikiSlug: room.state.wikiSlug,
-        });
+        playerState.activeChar = charForLang;
+        playerState.wikiSlug = room.state.wikiSlug;
       }
-    });
-  }
+    } else if (room.state.charByLang) {
+      // turn_result / final: show character in each player's language
+      const charForLang = room.state.charByLang[p.lang || 'en'];
+      if (charForLang) playerState.activeChar = charForLang;
+    }
+    io.to(p.id).emit('whoami_state', playerState);
+  });
 }
 
 function startNextTurn(io, room) {
