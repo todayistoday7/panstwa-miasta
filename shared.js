@@ -184,7 +184,7 @@ function shareRoom(gameSlug, titleText) {
   var usePath = seoSlugs.indexOf(currentPath) >= 0
     ? currentPath
     : (gameSlug ? '/' + gameSlug : '/');
-  const url  = 'https://panstwamiastagra.com' + usePath + '?join=' + roomCode + '&lang=' + currentLang;
+  const url  = (window._rfgDomain ? 'https://roomforgames.com' : 'https://panstwamiastagra.com') + usePath + '?join=' + roomCode + '&lang=' + currentLang;
   var shareLabels = {pl:'Dołącz do gry! Kod pokoju: ', en:'Join my game! Room code: ', de:'Tritt dem Spiel bei! Raumcode: ', sv:'Gå med i mitt spel! Rumskod: '};
   var shareTitle = {pl:'Zagraj ze mną!', en:'Play with me!', de:'Spiel mit mir!', sv:'Spela med mig!'};
   var copiedLabels = {pl:'🔗 Link skopiowany!', en:'🔗 Link copied!', de:'🔗 Link kopiert!', sv:'🔗 Länk kopierad!'};
@@ -529,7 +529,7 @@ function initVisibilityToggle() {
     // Logo
     var logo = document.createElement('a');
     logo.className = 'gb-logo';
-    logo.href = (lang==='pl'?'/':lang==='de'?'/stadt-land-fluss-online':lang==='sv'?'/laender-och-staeder':'/countries-cities-game');
+    logo.href = window._rfgDomain ? '/' : (lang==='pl'?'/':lang==='de'?'/stadt-land-fluss-online':lang==='sv'?'/laender-och-staeder':'/countries-cities-game');
     logo.innerHTML =
       '<svg viewBox="0 0 80 80" width="28" height="28" xmlns="http://www.w3.org/2000/svg">' +
         '<circle cx="40" cy="40" r="34" fill="none" stroke="#ff6b35" stroke-width="3"/>' +
@@ -540,7 +540,7 @@ function initVisibilityToggle() {
         '<circle cx="55" cy="32" r="4" fill="#06d6a0"/>' +
         '<circle cx="27" cy="50" r="4" fill="#06d6a0"/>' +
       '</svg>' +
-      '<span class="gb-logo-text">panstwamiastagra.com</span>';
+      '<span class="gb-logo-text">' + (window._rfgDomain ? 'roomforgames.com' : 'panstwamiastagra.com') + '</span>';
 
     // Hamburger button
     var btn = document.createElement('button');
@@ -719,7 +719,7 @@ window._rebuildBurger = function(newLang) {
     '<a href="/privacy' + ql + '"><span class="gb-ico">🔒</span>' + t.privacy + '</a>' +
     '<a href="#" onclick="event.preventDefault();openBugModal();" style="cursor:pointer;"><span class="gb-ico">🐛</span>' + (t.bug||'Report a Bug') + '</a>';
   // Update logo href
-  if (logo) logo.href = (newLang==='pl'?'/':newLang==='de'?'/stadt-land-fluss-online':newLang==='sv'?'/laender-och-staeder':'/countries-cities-game');
+  if (logo) logo.href = window._rfgDomain ? '/' : (newLang==='pl'?'/':newLang==='de'?'/stadt-land-fluss-online':newLang==='sv'?'/laender-och-staeder':'/countries-cities-game');
 };
 // Keep old name as alias so nothing breaks
 window._footerSetLang = window._switchLang;
@@ -913,7 +913,7 @@ window._buildFooterLangBtns = function() {
         '</div>' +
       '</div>' +
       '<div style="border-top:1px solid var(--border);padding-top:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">' +
-        '<span style="color:var(--muted);font-size:12px;font-weight:600;">© 2025 panstwamiastagra.com · ' + t.tagline + '</span>' +
+        '<span style="color:var(--muted);font-size:12px;font-weight:600;">© 2025 ' + (window._rfgDomain ? 'roomforgames.com' : 'panstwamiastagra.com') + ' · ' + t.tagline + '</span>' +
 
       '</div>' +
     '</div>';
