@@ -340,8 +340,8 @@ function renderLobby(data) {
           html += '<div class="team-player' + (p.id === myId ? ' me' : '') + '" style="display:flex;align-items:center;justify-content:space-between;">' +
             '<div style="display:flex;align-items:center;gap:8px;">' +
             '<div class="avatar av-' + (i % 8) + '" style="border:2px solid ' + tc.bg + '">' +
-            p.name.charAt(0).toUpperCase() + '</div>' +
-            '<span>' + p.name +
+            esc(p.name).charAt(0).toUpperCase() + '</div>' +
+            '<span>' + esc(p.name) +
             (p.id === myId  ? ' <span class="you-badge">' + L.youBadge + '</span>' : '') +
             (p.id === hostId ? ' <span class="host-badge">' + L.hostBadge + '</span>' : '') +
             '</span></div>' +
@@ -542,8 +542,8 @@ function renderPlaying(data) {
       .map(id => players.find(p => p.id === id))
       .filter(Boolean)
       .map(p => p.id === myId
-        ? '<span class="teammate-you">' + p.name + ' (' + L.youBadge + ')</span>'
-        : '<span class="teammate-name">' + p.name + '</span>')
+        ? '<span class="teammate-you">' + esc(p.name) + ' (' + L.youBadge + ')</span>'
+        : '<span class="teammate-name">' + esc(p.name) + '</span>')
       .join('');
     teammatesEl.innerHTML = '<span class="teammates-label">' + L.teammates + ':</span> ' + mates;
     teammatesEl.style.borderColor = myTeamColor;
@@ -686,7 +686,7 @@ function renderFinal(data) {
     return '<div class="team-members">' +
       (ids || []).map(id => {
         const p = players.find(pl => pl.id === id);
-        return p ? '<span class="team-member">' + p.name + (id === myId ? ' (' + L.youBadge + ')' : '') + '</span>' : '';
+        return p ? '<span class="team-member">' + esc(p.name) + (id === myId ? ' (' + L.youBadge + ')' : '') + '</span>' : '';
       }).join('') + '</div>';
   }
 

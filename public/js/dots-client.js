@@ -439,9 +439,9 @@ function renderLobby(data) {
     el.innerHTML +=
       '<div class="lobby-player" style="' + (!isConn ? 'opacity:0.4;' : '') + '">' +
         '<div class="avatar av-' + (i % 8) + '" style="background:' + p.color + ';color:#fff;">' +
-          p.name.charAt(0).toUpperCase() +
+          esc(p.name).charAt(0).toUpperCase() +
         '</div>' +
-        '<span class="pname">' + p.name +
+        '<span class="pname">' + esc(p.name) +
           (p.id === myId   ? ' <span class="you-badge">'  + L.youBadge  + '</span>' : '') +
           (p.id === hostId ? ' <span class="host-badge">' + L.hostBadge + '</span>' : '') +
           (!isConn ? ' <span class="offline-badge">' + (L.offlineBadge || 'offline') + '</span>' : '') +
@@ -572,7 +572,7 @@ function renderScoreboard(data) {
     card.style.borderColor = isActive ? p.color : 'var(--border)';
     card.innerHTML =
       '<div class="dots-score-swatch" style="background:' + p.color + '"></div>' +
-      '<span class="dots-score-name">' + p.name + (p.id === myId ? ' (' + L.youBadge + ')' : '') + '</span>' +
+      '<span class="dots-score-name">' + esc(p.name) + (p.id === myId ? ' (' + L.youBadge + ')' : '') + '</span>' +
       '<span class="dots-score-pts" style="color:' + p.color + '">' + p.score + '</span>';
     el.appendChild(card);
   });
@@ -592,7 +592,7 @@ function renderTurnBar(data) {
   const isMe = currentPlayer === myId;
   el.innerHTML =
     '<div class="dots-turn-dot" style="background:' + cur.color + '"></div>' +
-    '<span style="color:' + cur.color + '">' + (isMe ? L.yourTurn : L.theirTurn(cur.name)) + '</span>';
+    '<span style="color:' + cur.color + '">' + (isMe ? L.yourTurn : L.theirTurn(esc(cur.name))) + '</span>';
 }
 
 function renderGrid(data) {
@@ -647,7 +647,7 @@ function renderGrid(data) {
           opacity: '0.7',
         });
         const p = players.find(pl => pl.id === owner);
-        txt.textContent = p ? p.name.charAt(0).toUpperCase() : '?';
+        txt.textContent = p ? esc(p.name).charAt(0).toUpperCase() : '?';
         svg.appendChild(txt);
       }
     }
@@ -821,7 +821,7 @@ function renderFinal(data) {
 
   const heading = isDraw
     ? L.draw
-    : L.winner(winners[0].name);
+    : L.winner(esc(winners[0].name));
 
   const el = document.getElementById('final-results');
   el.innerHTML = '<div style="text-align:center;font-size:22px;font-weight:900;margin-bottom:20px;color:var(--accent2)">' + heading + '</div>';

@@ -329,8 +329,8 @@ function renderLobby(data) {
     const isH  = p.id === hostId;
     const offline = p.connected === false;
     return `<div class="player-row" style="opacity:${offline?'.4':'1'}">
-      <div class="player-avatar" style="background:${COLORS[i%8]};color:#000">${p.name.charAt(0).toUpperCase()}</div>
-      <span class="player-name">${p.name}</span>
+      <div class="player-avatar" style="background:${COLORS[i%8]};color:#000">${esc(p.name).charAt(0).toUpperCase()}</div>
+      <span class="player-name">${esc(p.name)}</span>
       ${isH  ? `<span class="badge badge-host">${L.hostBadge}</span>` : ''}
       ${isMe ? `<span class="badge badge-you">${L.youBadge}</span>` : ''}
       ${offline ? `<span class="badge badge-offline">offline</span>` : ''}
@@ -694,7 +694,7 @@ function renderReveal(data) {
   if (nav && revealChainOrder.length > 1) {
     nav.innerHTML = revealChainOrder.map((id,i) => {
       const p = (data.players || []).find(pl => pl.id === id);
-      const name = p ? p.name : ('Chain ' + (i+1));
+      const name = p ? esc(p.name) : ('Chain ' + (i+1));
       return `<button class="btn${i===0?' btn-primary':' btn-secondary'}" id="dot-${i}"
         onclick="switchRevealChain(${i})"
         style="flex:1;min-width:80px;font-size:13px;padding:8px 10px;">${name}</button>`;
@@ -730,7 +730,7 @@ function renderRevealChain(data) {
   const wrap = document.getElementById('reveal-chains');
   if (!wrap) return;
 
-  wrap.innerHTML = `<div class="chain-header">🔗 ${originPlayer ? originPlayer.name : '?'}</div>` +
+  wrap.innerHTML = `<div class="chain-header">🔗 ${originPlayer ? esc(originPlayer.name) : '?'}</div>` +
     chain.map(entry => {
       const typeLabel = entry.type === 'word' ? L.chainWord
         : entry.type === 'draw' ? L.chainDraw : L.chainGuess;
@@ -772,7 +772,7 @@ function renderFinal(data) {
     // Find last draw entry
     const lastDraw = [...chain].reverse().find(e => e.type === 'draw');
     return `<div class="final-card">
-      <h3>🔗 ${originPlayer ? originPlayer.name : '?'}</h3>
+      <h3>🔗 ${originPlayer ? esc(originPlayer.name) : '?'}</h3>
       <div style="font-size:11px;color:var(--muted);font-weight:700;margin-bottom:4px;">${L.chainWord}:</div>
       <div style="font-size:18px;font-weight:900;color:var(--accent);margin-bottom:8px;">${orig ? orig.content : '?'}</div>
       ${lastDraw && lastDraw.content ? `<img class="chain-img" src="${lastDraw.content}" alt="drawing" style="max-width:100%;border-radius:8px;margin-bottom:8px;"/>` : ''}

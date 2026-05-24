@@ -1,3 +1,9 @@
+// ─── HTML ESCAPE — use for ANY user-provided text inserted via innerHTML ────
+function esc(s) {
+  if (typeof s !== 'string') return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
 // ─── GA4 EVENT HELPER ────────────────────────────────────────────
 // Safe wrapper — fires only if gtag is loaded, never throws
 function _ga(event_name, params) {
@@ -180,10 +186,32 @@ function shareRoom(gameSlug, titleText) {
                   '/kim-jestem','/who-am-i',
                   '/wer-bin-ich','/vem-ar-jag',
                   '/znajdz-pary','/find-pairs-online',
-                  '/memo-spiel-online','/memo-spel-online'];
-  var usePath = seoSlugs.indexOf(currentPath) >= 0
-    ? currentPath
-    : (gameSlug ? '/' + gameSlug : '/');
+                  '/memo-spiel-online','/memo-spel-online',
+                  '/kalambury','/charades-online',
+                  '/scharade','/charader',
+                  '/','/countries-cities-game',
+                  '/stadt-land-fluss-online','/laender-och-staeder'];
+  // On RFG, always use the English SEO path for sharing
+  var rfgSlugMap = {
+    '':        '/countries-cities-game',
+    'taboo':   '/forbidden-words',
+    'dots':    '/dots-and-boxes-online',
+    'twotruth':'/two-truths-one-lie',
+    'hangman': '/hangman-online',
+    'drawing': '/sketch-and-guess',
+    'bingo':   '/corporate-bingo',
+    'who-am-i':'/who-am-i',
+    'memory':  '/find-pairs-online',
+    'charades':'/charades-online'
+  };
+  var usePath;
+  if (seoSlugs.indexOf(currentPath) >= 0) {
+    usePath = currentPath;
+  } else if (window._rfgDomain && rfgSlugMap[gameSlug] !== undefined) {
+    usePath = rfgSlugMap[gameSlug];
+  } else {
+    usePath = gameSlug ? '/' + gameSlug : '/';
+  }
   const url  = (window._rfgDomain ? 'https://roomforgames.com' : 'https://panstwamiastagra.com') + usePath + '?join=' + roomCode + '&lang=' + currentLang;
   var shareLabels = {pl:'Dołącz do gry! Kod pokoju: ', en:'Join my game! Room code: ', de:'Tritt dem Spiel bei! Raumcode: ', sv:'Gå med i mitt spel! Rumskod: '};
   var shareTitle = {pl:'Zagraj ze mną!', en:'Play with me!', de:'Spiel mit mir!', sv:'Spela med mig!'};
@@ -565,10 +593,10 @@ function initVisibilityToggle() {
     nav.className = 'gb-nav';
     nav.innerHTML =
       '<div class="gb-sec">' + t.sg + '</div>' +
-      '<a href="' + (lang==='pl'?'/':lang==='de'?'/stadt-land-fluss-online':lang==='sv'?'/laender-och-staeder':'/countries-cities-game') + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
+      '<a href="' + (window._rfgDomain ? '/' : (lang==='pl'?'/':lang==='de'?'/stadt-land-fluss-online':lang==='sv'?'/laender-och-staeder':'/countries-cities-game')) + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
       '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
       '<div class="gb-div"></div>' +
-      '<a href="' + (lang==='pl'?'/':lang==='de'?'/stadt-land-fluss-online':lang==='sv'?'/laender-och-staeder':'/countries-cities-game') + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
+      '<a href="' + (window._rfgDomain ? '/' : (lang==='pl'?'/':lang==='de'?'/stadt-land-fluss-online':lang==='sv'?'/laender-och-staeder':'/countries-cities-game')) + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
       '<a href="' + (lang==='pl'?'/zakazane-slowa':lang==='de'?'/verbotene-woerter':lang==='sv'?'/forbjudna-ord':'/forbidden-words') + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
       '<a href="' + (lang==='pl'?'/wisielec':lang==='de'?'/galgenmaennchen-online':lang==='sv'?'/hanga-gubbe-online':'/hangman-online') + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
       '<a href="' + (lang==='pl'?'/kropki-i-kreski-online':lang==='de'?'/punkte-und-linien-online':lang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
@@ -697,10 +725,10 @@ window._rebuildBurger = function(newLang) {
   if (!t.home) return; // labels not loaded yet
   nav.innerHTML =
     '<div class="gb-sec">' + t.sg + '</div>' +
-    '<a href="' + (newLang==='pl'?'/':newLang==='de'?'/stadt-land-fluss-online':newLang==='sv'?'/laender-och-staeder':'/countries-cities-game') + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
+    '<a href="' + (window._rfgDomain ? '/' : (newLang==='pl'?'/':newLang==='de'?'/stadt-land-fluss-online':newLang==='sv'?'/laender-och-staeder':'/countries-cities-game')) + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
     '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
     '<div class="gb-div"></div>' +
-    '<a href="' + (newLang==='pl'?'/':newLang==='de'?'/stadt-land-fluss-online':newLang==='sv'?'/laender-och-staeder':'/countries-cities-game') + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
+    '<a href="' + (window._rfgDomain ? '/' : (newLang==='pl'?'/':newLang==='de'?'/stadt-land-fluss-online':newLang==='sv'?'/laender-och-staeder':'/countries-cities-game')) + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
     '<a href="' + (newLang==='pl'?'/zakazane-slowa':newLang==='de'?'/verbotene-woerter':newLang==='sv'?'/forbjudna-ord':'/forbidden-words') + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
     '<a href="' + (newLang==='pl'?'/wisielec':newLang==='de'?'/galgenmaennchen-online':newLang==='sv'?'/hanga-gubbe-online':'/hangman-online') + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
     '<a href="' + (newLang==='pl'?'/kropki-i-kreski-online':newLang==='de'?'/punkte-und-linien-online':newLang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
@@ -905,7 +933,7 @@ window._buildFooterLangBtns = function() {
         '<div>' +
           '<div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;">' + t.about + '</div>' +
           '<div style="display:flex;flex-direction:column;gap:6px;">' +
-            '<a href="/?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🏠 ' + (t.home||'Home') + '</a>' +
+            '<a href="' + (window._rfgDomain ? '/' : '/?lang=' + footerLang) + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🏠 ' + (t.home||'Home') + '</a>' +
             '<a href="/privacy" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔒 ' + t.privacy + '</a>' +
             '<a href="/blog' + (footerLang==='pl'?'/pl':footerLang==='de'?'/de':footerLang==='sv'?'/sv':'') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">✍️ ' + (t.blog||'Blog') + '</a>' +
             '<a href="#" onclick="event.preventDefault();if(typeof openBugModal===\'function\')openBugModal();" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;">' + (t.bug||'🐛 Report a Bug') + '</a>' +
@@ -987,7 +1015,8 @@ window._buildFooterLangBtns = function() {
     document.getElementById('gdpr-reject').onclick = function() {
       localStorage.setItem('gdpr_consent', 'rejected');
       // Disable GA if rejected
-      window['ga-disable-' + (window._rfgDomain ? 'G-4T6TKZ7MPV' : 'G-BJ79ZM6WPQ')] = true;
+      window['ga-disable-G-BJ79ZM6WPQ'] = true;
+      window['ga-disable-G-4T6TKZ7MPV'] = true;
       banner.remove();
     };
   }

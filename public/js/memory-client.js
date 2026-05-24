@@ -307,9 +307,9 @@ function renderLobby(data) {
     el.innerHTML +=
       '<div class="lobby-player" style="' + (!isConn ? 'opacity:0.4;' : '') + '">' +
         '<div class="avatar av-' + (i % 8) + '" style="background:' + p.color + ';color:#fff;">' +
-          p.name.charAt(0).toUpperCase() +
+          esc(p.name).charAt(0).toUpperCase() +
         '</div>' +
-        '<span class="pname">' + p.name +
+        '<span class="pname">' + esc(p.name) +
           (p.id === myId   ? ' <span class="you-badge">'  + L.youBadge  + '</span>' : '') +
           (p.id === hostId ? ' <span class="host-badge">' + L.hostBadge + '</span>' : '') +
           (!isConn ? ' <span class="offline-badge">' + (L.offlineBadge || 'offline') + '</span>' : '') +

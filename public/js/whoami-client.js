@@ -417,9 +417,9 @@ function renderLobby(data) {
     players.innerHTML = data.players.map(p =>
       `<div class="lobby-player">
         <div class="avatar av-${data.players.indexOf(p) % 8}" style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:16px;color:#fff;">
-          ${p.name.charAt(0).toUpperCase()}
+          ${esc(p.name).charAt(0).toUpperCase()}
         </div>
-        <span style="font-weight:700;color:var(--text);">${p.name}</span>
+        <span style="font-weight:700;color:var(--text);">${esc(p.name)}</span>
         ${p.id === data.hostId ? '<span style="font-size:11px;font-weight:700;color:var(--accent);margin-left:auto;">HOST</span>' : ''}
         ${!p.connected ? '<span style="font-size:11px;color:var(--muted);">offline</span>' : ''}
       </div>`
@@ -654,7 +654,7 @@ function renderChat(data, isActive) {
     const totalVoters = nonActivePlayers.length;
 
     chatEl.innerHTML = (data.chat || []).map(m => {
-      if (m.type === 'system') return `<div class="wa-msg system">${m.text}</div>`;
+      if (m.type === 'system') return `<div class="wa-msg system">${esc(m.text)}</div>`;
 
       if (m.type === 'question') {
         const votes = m.votes || {};
@@ -685,7 +685,7 @@ function renderChat(data, isActive) {
         }
 
         return `<div class="wa-msg question" data-qid="${m.qId}">
-          <div class="wa-q-header"><strong>${m.from}:</strong> ${m.text}</div>
+          <div class="wa-q-header"><strong>${esc(m.from)}:</strong> ${esc(m.text)}</div>
           <div class="wa-q-footer">${votePills}${waiting}${answerBtns}</div>
         </div>`;
       }
@@ -755,7 +755,7 @@ function renderTurnResult(data) {
       <div style="text-align:center;">
         <div id="rev-ph" style="width:100px;height:100px;border-radius:50%;border:3px solid var(--accent2);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:40px;background:var(--surface);">🕵️</div>
         <img id="rev-img" style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid var(--accent2);margin:0 auto 10px;display:none;" alt=""/>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;color:var(--accent2);">${charName}</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;color:var(--accent2);">${esc(charName)}</div>
         <div style="font-size:12px;font-weight:700;color:var(--muted);margin-top:4px;">${L.itWas}</div>
       </div>`;
     // Load image
@@ -778,7 +778,7 @@ function renderTurnResult(data) {
     const activeId = data.activePlayerId;
     scoresEl.innerHTML = data.players.map(p =>
       `<div class="wa-score-row ${p.id === activeId ? 'active-turn' : ''}">
-        <span style="font-weight:800;">${p.id === activeId ? '→ ' : ''}${p.name}</span>
+        <span style="font-weight:800;">${p.id === activeId ? '→ ' : ''}${esc(p.name)}</span>
         <span class="wa-score-pts">${p.score}</span>
       </div>`
     ).join('');
@@ -813,7 +813,7 @@ function renderFinal(data) {
   const max = sorted[0] ? sorted[0].score : 0;
   el.innerHTML = sorted.map((p, i) => `
     <div class="wa-score-row ${p.score === max ? 'winner' : ''}">
-      <span style="font-weight:800;">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'  '} ${p.name}</span>
+      <span style="font-weight:800;">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'  '} ${esc(p.name)}</span>
       <span class="wa-score-pts">${p.score}</span>
     </div>`
   ).join('');

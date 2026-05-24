@@ -223,8 +223,8 @@ function renderLobby(data) {
   el.innerHTML = '';
   players.forEach((p, i) => {
     el.innerHTML += '<div class="lobby-player' + (p.isHost?' host':'') + '">' +
-      '<div class="avatar av-' + (i%8) + '">' + p.name.charAt(0).toUpperCase() + '</div>' +
-      '<span class="pname">' + p.name + (p.id===myId?' (you)':'') + '</span>' +
+      '<div class="avatar av-' + (i%8) + '">' + esc(esc(p.name)).charAt(0).toUpperCase() + '</div>' +
+      '<span class="pname">' + esc(p.name) + (p.id===myId?' (you)':'') + '</span>' +
       (p.isHost ? '<span class="host-badge">' + L.hostBadge + '</span>' : '') +
       (!p.connected ? '<span class="offline-badge">' + L.offlineBadge + '</span>' : '') +
       '</div>';
@@ -566,13 +566,13 @@ function renderScoringScreen(data) {
 
     // Player name
     html += '<div style="min-width:60px;max-width:80px;">' +
-      '<span style="font-weight:700;font-size:13px;' + (isMe ? 'color:var(--accent);' : '') + '">' + p.name + '</span>' +
+      '<span style="font-weight:700;font-size:13px;' + (isMe ? 'color:var(--accent);' : '') + '">' + esc(p.name) + '</span>' +
       '</div>';
 
     // Answer
     html += '<div style="flex:1;font-size:15px;font-weight:' + (ans ? '800' : '400') + ';' +
       (isCh ? 'text-decoration:line-through;color:var(--red);' : !ans || !valid ? 'color:var(--muted);font-style:italic;' : isDuplicate ? 'color:var(--accent2);' : '') + '">' +
-      (ans || '\u2014') +
+      (esc(ans) || '\u2014') +
       (isDuplicate && !isCh ? ' <span style="font-size:10px;font-weight:700;color:var(--accent2);">\u00d7' + answerCounts[ansLower] + '</span>' : '') +
       '</div>';
 
@@ -621,7 +621,7 @@ function renderScoringScreen(data) {
   connectedPlayers.forEach(function(p, i) {
     var isReady = !!readyPlayers[p.id];
     readyHtml += '<div class="ready-player ' + (isReady?'ready':'') + '">' +
-      '<div class="avatar av-' + (i%8) + '" style="width:30px;height:30px;font-size:12px;">' + p.name.charAt(0).toUpperCase() + '</div>' +
+      '<div class="avatar av-' + (i%8) + '" style="width:30px;height:30px;font-size:12px;">' + esc(esc(p.name)).charAt(0).toUpperCase() + '</div>' +
       '<span style="font-size:11px;font-weight:800;color:' + (isReady?'var(--green)':'var(--muted)') + '">' + (isReady?'✓':'') + '</span>' +
       '</div>';
   });
@@ -685,7 +685,7 @@ function renderLeaderboard(elId, data, rIdx) {
         'border:1px solid ' + (isFirst ? 'var(--accent2)' : 'var(--border)') + ';' +
         'background:' + (isFirst ? 'rgba(255,209,102,0.06)' : 'var(--card)') + ';">' +
         '<span style="font-family:Bebas Neue,sans-serif;font-size:16px;color:' + (isFirst ? 'var(--accent2)' : 'var(--muted)') + ';width:18px;">' + (rank+1) + '</span>' +
-        '<span style="font-weight:700;font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;' + (isMe ? 'color:var(--accent);' : '') + '">' + p.name + '</span>' +
+        '<span style="font-weight:700;font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;' + (isMe ? 'color:var(--accent);' : '') + '">' + esc(p.name) + '</span>' +
         '<span style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--accent);">' + p.total + '</span>' +
         '<span style="font-size:10px;color:var(--muted);">+' + rp + '</span>' +
         '</div>';
@@ -699,7 +699,7 @@ function renderLeaderboard(elId, data, rIdx) {
         ? Object.values(state.scores[rIdx][p.id]).reduce(function(a,b){return a+b;},0) : 0;
       el.innerHTML += '<div class="lb-row' + (rank===0?' first':'') + '">' +
         '<div class="lb-rank' + (rank===0?' gold':'') + '">' + (rank+1) + '</div>' +
-        '<div class="lb-name">' + p.name + (p.id===myId?' (you)':'') + '</div>' +
+        '<div class="lb-name">' + esc(p.name) + (p.id===myId?' (you)':'') + '</div>' +
         '<div><div class="lb-pts">' + p.total + '</div><div class="lb-round-pts">+' + rp + '</div></div>' +
         '</div>';
     });
@@ -726,7 +726,7 @@ function renderFinalScreen(data) {
         'border:1px solid ' + (isFirst ? 'var(--accent2)' : 'var(--border)') + ';' +
         'background:' + (isFirst ? 'rgba(255,209,102,0.06)' : 'var(--card)') + ';">' +
         '<span style="font-family:Bebas Neue,sans-serif;font-size:16px;color:' + (isFirst ? 'var(--accent2)' : 'var(--muted)') + ';width:22px;">' + (medal||rank+1) + '</span>' +
-        '<span style="font-weight:700;font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;' + (isMe ? 'color:var(--accent);' : '') + '">' + p.name + '</span>' +
+        '<span style="font-weight:700;font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;' + (isMe ? 'color:var(--accent);' : '') + '">' + esc(p.name) + '</span>' +
         '<span style="font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--accent);">' + p.total + '</span>' +
         '</div>';
     });
@@ -737,7 +737,7 @@ function renderFinalScreen(data) {
       var medal = rank===0?'🥇':rank===1?'🥈':rank===2?'🥉':'';
       el.innerHTML += '<div class="lb-row' + (rank===0?' first':'') + '">' +
         '<div class="lb-rank' + (rank===0?' gold':'') + '">' + (medal||rank+1) + '</div>' +
-        '<div class="lb-name">' + p.name + (p.id===myId?' (you)':'') + '</div>' +
+        '<div class="lb-name">' + esc(p.name) + (p.id===myId?' (you)':'') + '</div>' +
         '<div class="lb-pts">' + p.total + '</div></div>';
     });
   }
@@ -758,15 +758,15 @@ function openChallenge(playerId, rIdx, catIndex) {
 
 function showChallengeModal(rIdx, playerId, catIndex, word, category, playerName, challengerName, votes) {
   document.getElementById('modal-title').textContent = L.challengeTitle;
-  document.getElementById('modal-desc').innerHTML = L.challengeDesc(playerName, word, category);
-  document.getElementById('modal-word-area').innerHTML = '<div class="word-highlight">' + word + '</div>';
+  document.getElementById('modal-desc').innerHTML = L.challengeDesc(esc(playerName), esc(word), esc(category));
+  document.getElementById('modal-word-area').innerHTML = '<div class="word-highlight">' + esc(word) + '</div>';
   const voters = roomState.players;
   const vg = document.getElementById('vote-grid'); vg.innerHTML = '';
   voters.forEach(p => {
     const myVote = votes[p.id];
     const isChallenged = p.id === playerId;
     vg.innerHTML += '<div class="vote-row" id="vrow-' + p.id + '">' +
-      '<div class="player-name">' + p.name + (p.id===myId?' (you)':'') + '</div>' +
+      '<div class="player-name">' + esc(p.name) + (p.id===myId?' (you)':'') + '</div>' +
       '<div class="vote-btns">' +
       '<button class="vote-btn valid' + (myVote===true?' selected':'') + '" onclick="castVote(\'' + playerId + '\',' + rIdx + ',' + catIndex + ',true)">' +
       (isChallenged ? (L.voteDefend||'✓ My word is correct') : L.voteValid) + '</button>' +
@@ -805,7 +805,7 @@ function updateVoteDisplay(votes, validCount, invalidCount, allVoted, word, play
     const rejected = invalidCount > validCount;
     document.getElementById('verdict-area').innerHTML =
       '<div class="verdict-banner ' + (rejected?'invalid':'valid') + '">' +
-      (rejected ? L.verdictInvalid(word) : L.verdictValid(word)) + '</div>';
+      (rejected ? L.verdictInvalid(esc(word)) : L.verdictValid(esc(word))) + '</div>';
   }
 }
 

@@ -381,8 +381,8 @@ function renderLobby(data) {
     var isConnected = p.connected !== false;
     el.innerHTML +=
       '<div class="lobby-player" style="' + (!isConnected ? 'opacity:0.4;' : '') + '">' +
-        '<div class="avatar av-' + (i % 8) + '">' + p.name.charAt(0).toUpperCase() + '</div>' +
-        '<span class="pname">' + p.name +
+        '<div class="avatar av-' + (i % 8) + '">' + esc(p.name).charAt(0).toUpperCase() + '</div>' +
+        '<span class="pname">' + esc(p.name) +
           (p.id === myId   ? ' <span style="font-size:11px;background:rgba(6,214,160,0.15);border:1px solid rgba(6,214,160,0.4);color:var(--green);border-radius:20px;padding:2px 8px;">' + L.youBadge + '</span>' : '') +
           (p.id === hostId ? ' <span class="host-badge">' + L.hostBadge + '</span>' : '') +
           (!isConnected ? ' <span class="offline-badge">' + (L.offlineBadge || 'offline') + '</span>' : '') +
@@ -525,7 +525,7 @@ function renderVoting(data) {
       card.className = 'tt-statement-card' + (!isActive && myVote === i ? ' selected' : '');
       card.innerHTML =
         '<div class="tt-num">' + (i+1) + '</div>' +
-        '<div class="tt-statement-text">' + s + '</div>';
+        '<div class="tt-statement-text">' + esc(s) + '</div>';
       if (!isActive && myVote === null) {
         card.onclick = () => castVote(i);
       }
@@ -594,7 +594,7 @@ function renderReveal(data) {
       card.innerHTML =
         '<div class="tt-num">' + (i+1) + '</div>' +
         '<div>' +
-          '<div class="tt-statement-text">' + s + '</div>' +
+          '<div class="tt-statement-text">' + esc(s) + '</div>' +
           '<div class="tt-label" style="margin-top:6px;color:' + (isLie ? 'var(--accent2)' : 'var(--green)') + '">' +
             (isLie ? L.lieWas : L.truthWas) +
           '</div>' +
@@ -629,7 +629,7 @@ function renderReveal(data) {
     const row = document.createElement('div');
     row.className = 'tt-score-row';
     row.innerHTML =
-      '<span style="font-weight:800">' + p.name + (p.id === myId ? ' (' + L.youBadge + ')' : '') + '</span>' +
+      '<span style="font-weight:800">' + esc(p.name) + (p.id === myId ? ' (' + L.youBadge + ')' : '') + '</span>' +
       '<span>' +
         '<span style="font-size:12px;color:var(--muted);margin-right:6px;">' + (msg || '') + '</span>' +
         '<span class="tt-score-pts">+' + pts + '</span>' +
@@ -662,7 +662,7 @@ function renderFinal(data) {
 
   document.getElementById('lbl-game-over').textContent = L.gameOver;
 
-  const heading = isDraw ? L.draw : L.winner(winners[0].name);
+  const heading = isDraw ? L.draw : L.winner(esc(winners[0].name));
   const el      = document.getElementById('final-results');
   el.innerHTML  = '<div style="text-align:center;font-size:22px;font-weight:900;color:var(--accent2);margin-bottom:20px;">' + heading + '</div>';
 
@@ -698,7 +698,7 @@ function renderMiniScoreboard(data) {
   return '<div style="margin-top:24px;">' +
     sorted.map(p =>
       '<div class="tt-player-row">' +
-        '<span style="flex:1">' + p.name + (p.id === myId ? ' (' + L.youBadge + ')' : '') + '</span>' +
+        '<span style="flex:1">' + esc(p.name) + (p.id === myId ? ' (' + L.youBadge + ')' : '') + '</span>' +
         '<span class="tt-score-pts" style="font-size:22px">' + (totalScores[p.id] || 0) + '</span>' +
       '</div>'
     ).join('') +

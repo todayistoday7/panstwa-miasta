@@ -274,7 +274,7 @@ function renderLobby(data) {
       const div = document.createElement('div');
       div.className = 'lobby-player' + (p.connected ? '' : ' offline');
       div.innerHTML =
-        '<div class="avatar">' + p.name.charAt(0).toUpperCase() + '</div>' +
+        '<div class="avatar">' + esc(p.name).charAt(0).toUpperCase() + '</div>' +
         '<span>' + escHtml(p.name) +
           (p.id === myId ? ' <span class="you-badge">' + L.youBadge + '</span>' : '') +
           (p.id === hostId ? ' <span class="host-badge">' + L.hostBadge + '</span>' : '') +

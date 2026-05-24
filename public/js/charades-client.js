@@ -1109,7 +1109,7 @@ function renderPreparing(data) {
     } else {
       waitMsg.innerHTML =
         '<div class="wait-icon">⏳</div>' +
-        '<p style="font-size:18px;color:var(--text);font-weight:800;">' + actorName + '</p>' +
+        '<p style="font-size:18px;color:var(--text);font-weight:800;">' + esc(actorName) + '</p>' +
         '<p style="font-size:13px;color:var(--muted);">' + (lang === 'pl' ? 'przygotowuje się...' : lang === 'de' ? 'bereitet sich vor...' : lang === 'sv' ? 'förbereder sig...' : 'is getting ready...') + '</p>';
     }
   }
@@ -1178,7 +1178,7 @@ function renderPlaying(data) {
       var emojiHtml = emoji ? '<div class="word-emoji">' + emoji + '</div>' : '';
       wordCard.innerHTML =
         emojiHtml +
-        '<div class="word-text">' + (data.word || '') + '</div>';
+        '<div class="word-text">' + esc(data.word || '') + '</div>';
     }
     if (actorBtns) {
       actorBtns.style.display = '';
@@ -1193,7 +1193,7 @@ function renderPlaying(data) {
     if (waitMsg) {
       waitMsg.style.display = '';
       if (isMyTeamActing) {
-        waitMsg.innerHTML = '<div class="wait-icon">🎭</div><p>' + data.actorName + ' ' + L.teamIsActing + '</p><p style="font-size:12px;color:var(--muted);">💡 ' + L.wordsGuessed + ' ' + data.wordsThisTurn + '</p>';
+        waitMsg.innerHTML = '<div class="wait-icon">🎭</div><p>' + esc(data.actorName) + ' ' + L.teamIsActing + '</p><p style="font-size:12px;color:var(--muted);">💡 ' + L.wordsGuessed + ' ' + data.wordsThisTurn + '</p>';
       } else {
         waitMsg.innerHTML = '<div class="wait-icon">👀</div><p>' + L.waitForTeam + '</p><p style="font-size:12px;color:var(--muted);">' + L.wordsGuessed + ' ' + data.wordsThisTurn + '</p>';
       }

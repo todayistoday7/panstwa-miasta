@@ -491,8 +491,8 @@ function renderLobby(data) {
   connected.forEach((p, i) => {
     el.innerHTML +=
       '<div class="lobby-player">' +
-        '<div class="avatar av-' + (i % 8) + '">' + p.name.charAt(0).toUpperCase() + '</div>' +
-        '<span class="pname">' + p.name +
+        '<div class="avatar av-' + (i % 8) + '">' + esc(p.name).charAt(0).toUpperCase() + '</div>' +
+        '<span class="pname">' + esc(p.name) +
           (p.id === myId   ? ' <span style="font-size:11px;background:rgba(6,214,160,0.15);border:1px solid rgba(6,214,160,0.4);color:var(--green);border-radius:20px;padding:2px 8px;">' + L.youBadge + '</span>' : '') +
           (p.id === hostId ? ' <span class="host-badge">' + L.hostBadge + '</span>' : '') +
         '</span>' +
@@ -709,7 +709,7 @@ function renderFinal(data) {
 
   document.getElementById('lbl-game-over').textContent = L.gameOver;
 
-  const heading = isDraw ? L.draw : L.winner(winners[0].name);
+  const heading = isDraw ? L.draw : L.winner(esc(winners[0].name));
   const el = document.getElementById('final-results');
   el.innerHTML = '<div style="text-align:center;font-size:22px;font-weight:900;color:var(--accent2);margin-bottom:20px;">' + heading + '</div>';
 

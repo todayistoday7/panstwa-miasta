@@ -34,6 +34,15 @@ try {
   app.use(function(req, res, next) { req.cookies = {}; next(); });
 }
 
+// ─── SECURITY HEADERS ───────────────────────────────────
+app.use(function(req, res, next) {
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  next();
+});
+
 // ─── MULTI-DOMAIN SUPPORT ────────────────────────────────
 const GA_DEFAULT = 'G-BJ79ZM6WPQ'; // panstwamiastagra.com
 const GA_RFG     = 'G-4T6TKZ7MPV'; // roomforgames.com
@@ -362,7 +371,8 @@ app.get('/share', (req, res) => {
 
   const gameName = (titles[game] || titles.pm)[lang] || (titles[game] || titles.pm)['en'];
   const ogDesc   = (textFns[lang] || textFns.en)(gameName, score);
-  const gameSlug = game === 'pm' ? '' : '/' + game;
+  const rfgPaths = { pm: '/countries-cities-game', taboo: '/forbidden-words', dots: '/dots-and-boxes-online', twotruth: '/two-truths-one-lie', hangman: '/hangman-online', drawing: '/sketch-and-guess', bingo: '/corporate-bingo', 'who-am-i': '/who-am-i', whoami: '/who-am-i', memory: '/find-pairs-online', charades: '/charades-online' };
+  const gameSlug = isRFG(req) ? (rfgPaths[game] || '/' + game) : (game === 'pm' ? '' : '/' + game);
   const playUrl  = siteUrl + gameSlug + '?lang=' + lang;
   const shareUrl = siteUrl + '/share?game=' + game + '&score=' + score + '&lang=' + lang;
 
