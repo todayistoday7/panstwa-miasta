@@ -34,73 +34,9 @@ try {
   app.use(function(req, res, next) { req.cookies = {}; next(); });
 }
 
-// ─── MULTI-DOMAIN SUPPORT ────────────────────────────────
-// GA Measurement IDs per domain
-const GA_IDS = {
-  'roomforgames.com': 'G-4T6TKZ7MPV',
-  'www.roomforgames.com': 'G-4T6TKZ7MPV',
-};
-const GA_DEFAULT = 'G-BJ79ZM6WPQ'; // panstwamiastagra.com
-
-// Production domains — staging override ignored on these
-const PROD_DOMAINS = ['panstwamiastagra.com', 'www.panstwamiastagra.com', 'roomforgames.com', 'www.roomforgames.com'];
-
-function isRFG(req) {
-  const host = (req.hostname || req.headers.host || '').replace(/:\d+$/, '').toLowerCase();
-  if (host === 'roomforgames.com' || host === 'www.roomforgames.com') return true;
-  // Staging override: ?rfg=1 works only on non-production URLs (e.g. railway staging)
-  if (req.query && req.query.rfg === '1' && PROD_DOMAINS.indexOf(host) === -1) return true;
-  return false;
-}
-
-// Middleware: swap GA tag in HTML responses based on hostname
-app.use(function(req, res, next) {
-  const host = (req.hostname || req.headers.host || '').replace(/:\d+$/, '').toLowerCase();
-  const gaId = GA_IDS[host];
-  if (!gaId) return next(); // panstwamiastagra.com — default, no swap needed
-
-  // Intercept res.send to swap GA tag + inject domain flag
-  const origSend = res.send.bind(res);
-  res.send = function(body) {
-    if (typeof body === 'string') {
-      if (body.includes(GA_DEFAULT)) {
-        body = body.split(GA_DEFAULT).join(gaId);
-      }
-      // Inject RFG domain flag if not already present
-      if (body.includes('<script') && !body.includes('window._rfgDomain')) {
-        body = body.replace(/<script/, '<script>window._rfgDomain=true;</script>\n<script');
-      }
-    }
-    return origSend(body);
-  };
-
-  // Intercept res.sendFile to read HTML, then go through res.send (which does the swapping)
-  const origSendFile = res.sendFile.bind(res);
-  res.sendFile = function(filePath, opts, cb) {
-    if (typeof filePath === 'string' && filePath.endsWith('.html')) {
-      const fs = require('fs');
-      try {
-        var html = fs.readFileSync(filePath, 'utf-8');
-        res.setHeader('Content-Type', 'text/html; charset=utf-8');
-        return res.send(html); // goes through the send interceptor above
-      } catch(e) {
-        return origSendFile(filePath, opts, cb);
-      }
-    }
-    return origSendFile(filePath, opts, cb);
-  };
-  next();
-});
-
 // ─── STATIC + PAGE ROUTES ────────────────────────────────
-// Homepage: roomforgames.com → games hub landing | panstwamiastagra.com → PM game
-app.get('/', function(req, res, next) {
-  if (isRFG(req)) {
-    return res.sendFile(path.join(__dirname, 'public/home.html'));
-  }
-  // panstwamiastagra.com: Polish PM landing page
-  return seoInject('pm', 'pl')(req, res, next);
-});
+// Polish PM landing page — seo-inject (must be before express.static)
+app.get('/', seoInject('pm', 'pl'));
 
 app.get('/taboo', (req, res) => res.sendFile(path.join(__dirname, 'public/taboo.html')));
 app.get('/twotruth', (req, res) => res.sendFile(path.join(__dirname, 'public/twotruth.html')));
@@ -331,8 +267,7 @@ app.get('/share', (req, res) => {
   const game  = req.query.game  || 'pm';
   const score = parseInt(req.query.score) || 0;
   const lang  = req.query.lang  || 'pl';
-  const siteUrl = isRFG(req) ? 'https://roomforgames.com' : 'https://panstwamiastagra.com';
-  const siteName = isRFG(req) ? 'roomforgames.com' : 'panstwamiastagra.com';
+  const siteUrl = 'https://panstwamiastagra.com';
 
   const titles = {
     pm:       { pl: 'Państwa-Miasta', en: 'Countries & Cities', de: 'Stadt Land Fluss', fr: 'Pays & Villes', es: 'Países & Ciudades' },
@@ -360,7 +295,7 @@ app.get('/share', (req, res) => {
     '<!DOCTYPE html>\n' +
     '<html lang="' + lang + '">\n<head>\n' +
     '<meta charset="UTF-8">\n' +
-    '<title>' + gameName + ' — ' + siteName + '</title>\n' +
+    '<title>' + gameName + ' — panstwamiastagra.com</title>\n' +
     '<meta property="og:title" content="' + gameName + ' — ' + ({pl:'Zagraj online za darmo!',en:'Play free online!',de:'Kostenlos online spielen!',fr:'Joue gratuitement en ligne!',es:'¡Juega gratis en línea!'}[lang]||'Play free online!') + '">\n' +
     '<meta property="og:description" content="' + ogDesc + '">\n' +
     '<meta property="og:url" content="' + shareUrl + '">\n' +
@@ -373,6 +308,68 @@ app.get('/share', (req, res) => {
     '</head>\n<body><p>Redirecting... <a href="' + playUrl + '">Click here</a></p></body>\n</html>'
   );
 });
+// ─── GTAG SWAP: serve correct Google Analytics tag per domain ─────
+const PM_GTAG = 'G-BJ79ZM6WPQ';
+const RFG_GTAG = 'G-4T6TKZ7MPV';
+app.use((req, res, next) => {
+  const host = (req.hostname || '').toLowerCase();
+  if (!host.includes('roomforgames')) return next();
+  // Intercept both res.send and res.end to catch static files too
+  const _send = res.send.bind(res);
+  const _end = res.end.bind(res);
+  const _write = res.write.bind(res);
+  let chunks = [];
+  let isHtml = false;
+  const _writeHead = res.writeHead.bind(res);
+  res.writeHead = function(status, headers) {
+    const ct = res.getHeader('content-type') || '';
+    isHtml = ct.includes('text/html') || ct.includes('application/javascript');
+    if (isHtml) {
+      // Remove content-length since we'll modify the body
+      res.removeHeader('content-length');
+      res.removeHeader('Content-Length');
+    }
+    return _writeHead(status, headers);
+  };
+  res.send = function(body) {
+    if (typeof body === 'string' && body.includes(PM_GTAG)) {
+      body = body.split(PM_GTAG).join(RFG_GTAG);
+    }
+    return _send(body);
+  };
+  res.write = function(chunk, encoding) {
+    if (!isHtml && !chunks.length) {
+      const ct = res.getHeader('content-type') || '';
+      isHtml = ct.includes('text/html') || ct.includes('application/javascript');
+      if (isHtml) { res.removeHeader('content-length'); res.removeHeader('Content-Length'); }
+    }
+    if (isHtml) {
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk, encoding));
+      return true;
+    }
+    return _write(chunk, encoding);
+  };
+  res.end = function(chunk, encoding) {
+    if (chunk) {
+      if (!isHtml) {
+        const ct = res.getHeader('content-type') || '';
+        isHtml = ct.includes('text/html') || ct.includes('application/javascript');
+        if (isHtml) { res.removeHeader('content-length'); res.removeHeader('Content-Length'); }
+      }
+      if (isHtml) {
+        chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk, encoding));
+      }
+    }
+    if (isHtml && chunks.length) {
+      let body = Buffer.concat(chunks).toString('utf-8');
+      if (body.includes(PM_GTAG)) body = body.split(PM_GTAG).join(RFG_GTAG);
+      return _end(body, 'utf-8');
+    }
+    return chunk ? _end(chunk, encoding) : _end();
+  };
+  next();
+});
+
 // JS files: 1 hour cache — short enough that deploys propagate quickly
 app.use('/js', express.static(path.join(__dirname, 'public/js'), {
   setHeaders: function(res) {
