@@ -565,10 +565,10 @@ function initVisibilityToggle() {
     nav.className = 'gb-nav';
     nav.innerHTML =
       '<div class="gb-sec">' + t.sg + '</div>' +
-      '<a href="' + (lang==='pl'?'/':lang==='de'?'/stadt-land-fluss-online':lang==='sv'?'/laender-och-staeder':'/countries-cities-game') + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
+      '<a href="' + (window._rfgDomain ? '/' : (lang==='pl'?'/':lang==='de'?'/stadt-land-fluss-online':lang==='sv'?'/laender-och-staeder':'/countries-cities-game')) + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
       '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
       '<div class="gb-div"></div>' +
-      '<a href="' + (lang==='pl'?'/':lang==='de'?'/stadt-land-fluss-online':lang==='sv'?'/laender-och-staeder':'/countries-cities-game') + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
+      '<a href="' + (window._rfgDomain ? '/' : (lang==='pl'?'/':lang==='de'?'/stadt-land-fluss-online':lang==='sv'?'/laender-och-staeder':'/countries-cities-game')) + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
       '<a href="' + (lang==='pl'?'/zakazane-slowa':lang==='de'?'/verbotene-woerter':lang==='sv'?'/forbjudna-ord':'/forbidden-words') + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
       '<a href="' + (lang==='pl'?'/wisielec':lang==='de'?'/galgenmaennchen-online':lang==='sv'?'/hanga-gubbe-online':'/hangman-online') + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
       '<a href="' + (lang==='pl'?'/kropki-i-kreski-online':lang==='de'?'/punkte-und-linien-online':lang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
@@ -697,10 +697,10 @@ window._rebuildBurger = function(newLang) {
   if (!t.home) return; // labels not loaded yet
   nav.innerHTML =
     '<div class="gb-sec">' + t.sg + '</div>' +
-    '<a href="' + (newLang==='pl'?'/':newLang==='de'?'/stadt-land-fluss-online':newLang==='sv'?'/laender-och-staeder':'/countries-cities-game') + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
+    '<a href="' + (window._rfgDomain ? '/' : (newLang==='pl'?'/':newLang==='de'?'/stadt-land-fluss-online':newLang==='sv'?'/laender-och-staeder':'/countries-cities-game')) + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
     '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
     '<div class="gb-div"></div>' +
-    '<a href="' + (newLang==='pl'?'/':newLang==='de'?'/stadt-land-fluss-online':newLang==='sv'?'/laender-och-staeder':'/countries-cities-game') + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
+    '<a href="' + (window._rfgDomain ? '/' : (newLang==='pl'?'/':newLang==='de'?'/stadt-land-fluss-online':newLang==='sv'?'/laender-och-staeder':'/countries-cities-game')) + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
     '<a href="' + (newLang==='pl'?'/zakazane-slowa':newLang==='de'?'/verbotene-woerter':newLang==='sv'?'/forbjudna-ord':'/forbidden-words') + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
     '<a href="' + (newLang==='pl'?'/wisielec':newLang==='de'?'/galgenmaennchen-online':newLang==='sv'?'/hanga-gubbe-online':'/hangman-online') + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
     '<a href="' + (newLang==='pl'?'/kropki-i-kreski-online':newLang==='de'?'/punkte-und-linien-online':newLang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
@@ -905,7 +905,7 @@ window._buildFooterLangBtns = function() {
         '<div>' +
           '<div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;">' + t.about + '</div>' +
           '<div style="display:flex;flex-direction:column;gap:6px;">' +
-            '<a href="/?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🏠 ' + (t.home||'Home') + '</a>' +
+            '<a href="' + (window._rfgDomain ? '/' : '/?lang=' + footerLang) + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🏠 ' + (t.home||'Home') + '</a>' +
             '<a href="/privacy" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔒 ' + t.privacy + '</a>' +
             '<a href="/blog' + (footerLang==='pl'?'/pl':footerLang==='de'?'/de':footerLang==='sv'?'/sv':'') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">✍️ ' + (t.blog||'Blog') + '</a>' +
             '<a href="#" onclick="event.preventDefault();if(typeof openBugModal===\'function\')openBugModal();" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;">' + (t.bug||'🐛 Report a Bug') + '</a>' +

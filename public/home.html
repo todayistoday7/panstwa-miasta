@@ -313,10 +313,34 @@
   font-weight: 700;
   margin-bottom: 24px;
 }
+/* ── Language Bar ── */
+.rfg-lang-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.rfg-lang-btn:hover { border-color: var(--accent); color: var(--text); }
+.rfg-lang-btn.active { border-color: var(--accent); background: rgba(255,107,53,0.08); color: var(--accent); }
+
 </style>
 </head>
 <body>
 <script>window._rfgDomain = true;</script>
+
+<!-- ══════════ LANGUAGE BAR ══════════ -->
+<div id="rfg-lang-bar" style="display:flex;justify-content:center;gap:8px;padding:12px 20px 0;">
+  <button onclick="switchLang('en')" class="rfg-lang-btn active" data-lang="en">🇬🇧 English</button>
+  <button onclick="switchLang('pl')" class="rfg-lang-btn" data-lang="pl">🇵🇱 Polski</button>
+  <button onclick="switchLang('de')" class="rfg-lang-btn" data-lang="de">🇩🇪 Deutsch</button>
+  <button onclick="switchLang('sv')" class="rfg-lang-btn" data-lang="sv">🇸🇪 Svenska</button>
+</div>
 
 <!-- ══════════ HERO ══════════ -->
 <div class="rfg-hero">
@@ -640,7 +664,20 @@
       var key = el.getAttribute('data-rfg');
       if (t[key]) el.textContent = t[key];
     });
+    // Update language bar active state
+    document.querySelectorAll('.rfg-lang-btn').forEach(function(btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+    });
+    // Update html lang attribute
+    document.documentElement.lang = lang;
   }
+
+  // Global switchLang for button clicks
+  window.switchLang = function(code) {
+    applyLang(code);
+    localStorage.setItem('pm_lang', code);
+    history.replaceState(null, '', window.location.pathname + '?lang=' + code);
+  };
 
   // Detect language: URL param > localStorage > browser
   var urlLang = new URLSearchParams(window.location.search).get('lang');
@@ -649,12 +686,11 @@
   var lang = urlLang || storedLang || (['pl','de','sv'].indexOf(browserLang) !== -1 ? browserLang : 'en');
   if (['pl','en','de','sv'].indexOf(lang) === -1) lang = 'en';
 
-  if (lang !== 'en') {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function() { applyLang(lang); });
-    } else {
-      applyLang(lang);
-    }
+  // Always apply (including 'en') so lang bar highlights correctly
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { applyLang(lang); });
+  } else {
+    applyLang(lang);
   }
 })();
 </script>
