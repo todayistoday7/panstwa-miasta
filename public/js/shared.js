@@ -667,9 +667,10 @@ function initVisibilityToggle() {
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', injectBurger);
+    document.addEventListener('DOMContentLoaded', function() { injectBurger(); updateNavHome(); });
   } else {
     injectBurger();
+    updateNavHome();
   }
 
 })();
