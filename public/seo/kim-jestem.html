@@ -187,8 +187,7 @@
   <!-- ══ SCREEN: HOME ══ -->
   <div id="screen-home" class="screen active">
     <div style="display:flex;gap:10px;margin-bottom:16px;">
-      <a href="/" class="nav-home-btn" style="text-decoration:none;">🏠 <span class="lbl-nav-home-dup">Home</span></a>
-      <a href="/games" class="nav-home-btn" style="text-decoration:none;">🎮 <span id="lbl-nav-all-games">All Games</span></a>
+      <a href="/games" class="nav-home-btn nav-home-link" style="text-decoration:none;">🏠 <span class="lbl-nav-home-dup">Home</span></a>
     </div>
 
     <div style="text-align:center;margin-bottom:20px;">
@@ -327,7 +326,7 @@
   <!-- ══ SCREEN: PLAYING ══ -->
   <div id="screen-playing" class="screen">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-      <button class="nav-home-btn" onclick="confirmGoHome()">🏠 <span class="lbl-nav-home-dup">Home</span></button>
+      <button class="nav-home-btn" onclick="confirmGoHome()">🚪 <span class="lbl-nav-home-dup">Leave</span></button>
       <div id="wa-score-mini" style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--muted);"></div>
     </div>
 
@@ -417,7 +416,7 @@
     <div id="wa-scores" class="wa-scores"></div>
     <div class="btn-row" style="margin-top:16px;">
       <button class="btn" id="next-turn-btn" onclick="nextTurn()" style="display:none;">➤ <span id="lbl-next-turn">Następna tura</span></button>
-      <button class="btn secondary" onclick="confirmGoHome()">🏠 <span class="lbl-nav-home-dup">Home</span></button>
+      <a href="/games" class="btn secondary nav-home-link" style="text-decoration:none;">🏠 <span class="lbl-nav-home-dup">Home</span></a>
     </div>
   </div>
 
@@ -430,7 +429,7 @@
     <div id="final-scores" class="wa-scores" style="margin:20px 0;"></div>
     <div class="btn-row">
       <button class="btn" onclick="rematch()" id="wa-play-again-btn">🔄 <span id="lbl-play-again">Zagraj ponownie</span></button>
-      <button class="btn secondary" onclick="confirmGoHome()">🏠 <span class="lbl-nav-home-dup">Home</span></button>
+      <a href="/games" class="btn secondary nav-home-link" style="text-decoration:none;">🏠 <span class="lbl-nav-home-dup">Home</span></a>
     </div>
   </div>
 
@@ -440,8 +439,8 @@
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/shared.js?v=3"></script>
-<script src="/js/whoami-client.js?v=3"></script>
+<script src="/js/shared.js?v=4"></script>
+<script src="/js/whoami-client.js?v=4"></script>
 
 
 <script>

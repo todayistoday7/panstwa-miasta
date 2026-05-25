@@ -980,6 +980,7 @@ function setLang(code) {
   // Sync burger and footer with new language
   if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
   if (typeof window._refreshFooter  === 'function') window._refreshFooter();
+  if (typeof updateNavHome === 'function') updateNavHome(code || lang);
 }
 // Alias — shared.js buildLangBar calls setUiLang; PM only defined setLang
 function setUiLang(code) { setLang(code); }

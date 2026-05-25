@@ -105,8 +105,7 @@
   <!-- ══ HOME ══ -->
   <div id="screen-home" class="screen active">
     <div style="display:flex;gap:10px;margin-bottom:16px;">
-      <a href="/" class="nav-home-btn" style="text-decoration:none;">🏠 <span class="lbl-nav-home-dup">Home</span></a>
-      <a href="/games" class="nav-home-btn" style="text-decoration:none;">🎮 <span id="lbl-nav-all-games">All Games</span></a>
+      <a href="/games" class="nav-home-btn nav-home-link" style="text-decoration:none;">🏠 <span class="lbl-nav-home-dup">Home</span></a>
     </div>
     <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,7vw,52px);letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;margin-bottom:4px;" id="lbl-game-title">Kalambury</h1>
     <p style="text-align:center;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:20px;" id="lbl-game-subtitle">Team game · 4–40 players</p>
@@ -223,7 +222,7 @@
     <div class="final-scores" id="final-scores"></div>
     <div class="btn-row" style="margin-top:16px;">
       <button class="btn" id="play-again-btn" onclick="playAgain()" style="display:none;"><span id="lbl-play-again">🔄 Play again</span></button>
-      <button class="btn secondary" onclick="goHome()"><span id="lbl-go-home">🏠 Home</span></button>
+      <a href="/games" class="btn secondary nav-home-link" style="text-decoration:none;"><span id="lbl-go-home">🏠 Home</span></a>
     </div>
     <div id="reaction-container" style="max-width:500px;margin:0 auto;"></div>
   </div>
@@ -231,7 +230,7 @@
   <div id="other-games-strip"></div>
 </div>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/shared.js?v=3"></script>
-<script src="/js/charades-client.js?v=3"></script>
+<script src="/js/shared.js?v=4"></script>
+<script src="/js/charades-client.js?v=4"></script>
 </body>
 </html>

@@ -924,6 +924,7 @@ function setUiLang(code) {
   window.lang = lang;
   if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
   if (typeof window._refreshFooter  === 'function') window._refreshFooter();
+  if (typeof updateNavHome === 'function') updateNavHome(code || lang);
 }
 
 function applyTranslations() {

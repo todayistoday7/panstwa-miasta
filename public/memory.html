@@ -130,8 +130,7 @@
   <!-- ══ SCREEN: HOME ══ -->
   <div id="screen-home" class="screen active">
     <div style="display:flex;gap:10px;margin-bottom:16px;">
-      <a href="/" class="nav-home-btn" style="text-decoration:none;">🏠 <span class="lbl-nav-home-dup">Home</span></a>
-      <a href="/games" class="nav-home-btn" style="text-decoration:none;">🎮 <span id="lbl-nav-all-games">All Games</span></a>
+      <a href="/games" class="nav-home-btn nav-home-link" style="text-decoration:none;">🏠 <span class="lbl-nav-home-dup">Home</span></a>
     </div>
     <div class="home-grid">
       <div class="card">
@@ -272,7 +271,7 @@
     <div id="final-results" style="margin:24px 0;"></div>
     <div class="btn-row">
       <button class="btn" onclick="playAgain()" id="lbl-rematch" style="display:none;font-size:17px;padding:15px 32px;width:100%;max-width:400px;">🔄 <span id="lbl-play-again">Play Again With This Group</span></button>
-      <button class="btn secondary" onclick="confirmGoHome()" id="lbl-new-game">🚪 <span class="lbl-nav-home-dup">Leave Room</span></button>
+      <a href="/games" class="btn secondary nav-home-link" style="text-decoration:none;" id="lbl-new-game">🏠 <span class="lbl-nav-home-dup">Home</span></a>
     </div>
   </div>
 
@@ -281,7 +280,7 @@
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/shared.js?v=3"></script>
-<script src="/js/memory-client.js?v=3"></script>
+<script src="/js/shared.js?v=4"></script>
+<script src="/js/memory-client.js?v=4"></script>
 </body>
 </html>

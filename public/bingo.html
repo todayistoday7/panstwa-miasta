@@ -424,6 +424,9 @@
 
   <!-- ══ HOME ══ -->
   <div id="screen-home" class="screen">
+    <div style="display:flex;gap:10px;margin-bottom:16px;">
+      <a href="/games" class="nav-home-btn nav-home-link" style="text-decoration:none;">🏠 <span class="lbl-nav-home-dup">Home</span></a>
+    </div>
     <div class="game-header">
       <h1 id="game-title">Korporacyjne Bingo</h1>
       <p id="game-subtitle">Gra na spotkania · 2–20 graczy</p>
@@ -561,9 +564,9 @@
     <button class="btn btn-green" id="play-again-btn" onclick="playAgain()" style="display:none;width:100%;max-width:300px;">
       <span id="lbl-play-again">🔄 Zagraj jeszcze raz</span>
     </button>
-    <button class="btn btn-secondary" onclick="leaveRoom()">
-      <span id="lbl-leave-room-final">Opuść grę</span>
-    </button>
+    <a href="/games" class="btn btn-secondary nav-home-link" style="text-decoration:none;">
+      <span id="lbl-leave-room-final">🏠 Home</span>
+    </a>
 
   <div id="other-games-strip"></div>
   </div>
@@ -571,7 +574,7 @@
 </div><!-- /container -->
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/shared.js?v=3"></script>
-<script src="/js/bingo-client.js?v=3"></script>
+<script src="/js/shared.js?v=4"></script>
+<script src="/js/bingo-client.js?v=4"></script>
 </body>
 </html>

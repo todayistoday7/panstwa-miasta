@@ -1363,6 +1363,7 @@ function setUiLang(code) {
   document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.lang === code); });
   applyTranslations();
   if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
+  if (typeof updateNavHome === 'function') updateNavHome(code);
 }
 function applyTranslations() {
   var map = {

@@ -247,6 +247,25 @@ function _fallbackCopy(text) {
   document.body.removeChild(ta);
 }
 
+// ─── GAMES HUB URL ──────────────────────────────────────────────
+// Returns language-responsive URL for the games hub
+function gamesHubUrl(langCode) {
+  var l = langCode || (typeof lang !== 'undefined' ? lang : 'en');
+  if (window._rfgDomain) return '/games?lang=' + l;
+  if (l === 'pl') return '/gry';
+  if (l === 'de') return '/spiele';
+  if (l === 'sv') return '/spel';
+  return '/games?lang=' + l;
+}
+
+// Updates all nav-home links on the page to point to the games hub
+function updateNavHome(langCode) {
+  var url = gamesHubUrl(langCode);
+  document.querySelectorAll('.nav-home-link').forEach(function(el) {
+    el.href = url;
+  });
+}
+
 // ─── CONFIRM LEAVE MODAL ─────────────────────────────────────────
 // Expects confirm-modal, confirm-title, confirm-msg, confirm-yes, confirm-no in HTML
 // Games define their own L.leaveTitle, L.leaveMsg, L.confirmLeave, L.leaveYes, L.leaveNo

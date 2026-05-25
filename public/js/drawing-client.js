@@ -905,6 +905,7 @@ function setVisibility(pub) {
       : (L.visHintPrivate || L.visHint || '');
   }
   if (typeof window._refreshFooter === 'function') window._refreshFooter();
+  if (typeof updateNavHome === 'function') updateNavHome(code || lang);
 }
 
 // ── Language ──────────────────────────────────────────────────────
@@ -927,6 +928,7 @@ function setUiLang(code) {
   applyTranslations();
   if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
   if (typeof window._refreshFooter  === 'function') window._refreshFooter();
+  if (typeof updateNavHome === 'function') updateNavHome(code || lang);
 }
 
 function applyTranslations() {

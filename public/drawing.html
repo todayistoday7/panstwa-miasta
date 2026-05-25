@@ -175,6 +175,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Nunito
 <!-- ══ HOME ══ -->
 <div id="screen-home" class="screen active">
   <div class="container">
+    <div style="display:flex;gap:10px;margin-bottom:16px;">
+      <a href="/games" class="nav-home-btn nav-home-link" style="text-decoration:none;">🏠 <span class="lbl-nav-home-dup">Home</span></a>
+    </div>
     <div class="hero">
       <h1 id="game-title">SZKICUJ I ZGADUJ</h1>
       <p id="game-subtitle">Gra rysunkowa · 3-10 graczy</p>
@@ -354,7 +357,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Nunito
 <div id="screen-reveal" class="screen">
   <div style="padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;">
     <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);" id="lbl-reveal-title">WIELKIE UJAWNIENIE!</span>
-    <button class="nav-home-btn" onclick="confirmGoHome()">🏠</button>
+    <a href="/games" class="nav-home-btn nav-home-link" style="text-decoration:none;">🏠</a>
   </div>
   <div class="container" style="padding-top:16px;">
     <p style="text-align:center;color:var(--muted);font-size:13px;font-weight:700;margin-bottom:16px;" id="lbl-reveal-desc">Zobaczcie jak słowa ewoluowały!</p>
@@ -370,14 +373,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Nunito
 <div id="screen-final" class="screen">
   <div style="padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;">
     <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);" id="lbl-game-over">KONIEC GRY!</span>
-    <button class="nav-home-btn" onclick="confirmGoHome()">🏠</button>
+    <a href="/games" class="nav-home-btn nav-home-link" style="text-decoration:none;">🏠</a>
   </div>
   <div class="container" style="padding-top:16px;text-align:center;">
     <p style="color:var(--muted);font-size:13px;font-weight:700;margin-bottom:16px;" id="lbl-final-desc">Sprawdź wszystkie łańcuchy ewolucji!</p>
     <div id="final-chains" class="final-grid"></div>
     <div style="margin-top:24px;display:flex;flex-direction:column;align-items:center;gap:10px;">
       <button class="btn btn-green btn-full" onclick="playAgain()" id="lbl-play-again">🔄 Zagraj jeszcze raz</button>
-      <button class="btn btn-secondary btn-full" onclick="confirmGoHome()" id="lbl-go-home">🏠 Wróć do menu</button>
+      <a href="/games" class="btn btn-secondary btn-full nav-home-link" style="text-decoration:none;" id="lbl-go-home">🏠 Wróć do menu</a>
 
   <div id="reaction-container" style="max-width:500px;margin:0 auto;"></div>
   <div id="other-games-strip"></div>
@@ -398,7 +401,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Nunito
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/shared.js?v=3"></script>
-<script src="/js/drawing-client.js?v=3"></script>
+<script src="/js/shared.js?v=4"></script>
+<script src="/js/drawing-client.js?v=4"></script>
 </body>
 </html>
