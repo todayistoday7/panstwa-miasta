@@ -612,7 +612,7 @@ function initVisibilityToggle() {
     nav.className = 'gb-nav';
     nav.innerHTML =
       '<div class="gb-sec">' + t.sg + '</div>' +
-      '<a href="' + (window._rfgDomain ? '/' : (lang==='pl'?'/':lang==='de'?'/stadt-land-fluss-online':lang==='sv'?'/laender-och-staeder':'/countries-cities-game')) + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
+      '<a href="' + gamesHubUrl(lang) + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
       '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
       '<div class="gb-div"></div>' +
       '<a href="' + (window._rfgDomain ? '/' : (lang==='pl'?'/':lang==='de'?'/stadt-land-fluss-online':lang==='sv'?'/laender-och-staeder':'/countries-cities-game')) + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
@@ -745,7 +745,7 @@ window._rebuildBurger = function(newLang) {
   if (!t.home) return; // labels not loaded yet
   nav.innerHTML =
     '<div class="gb-sec">' + t.sg + '</div>' +
-    '<a href="' + (window._rfgDomain ? '/' : (newLang==='pl'?'/':newLang==='de'?'/stadt-land-fluss-online':newLang==='sv'?'/laender-och-staeder':'/countries-cities-game')) + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
+    '<a href="' + gamesHubUrl(newLang) + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
     '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
     '<div class="gb-div"></div>' +
     '<a href="' + (window._rfgDomain ? '/' : (newLang==='pl'?'/':newLang==='de'?'/stadt-land-fluss-online':newLang==='sv'?'/laender-och-staeder':'/countries-cities-game')) + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
@@ -953,7 +953,7 @@ window._buildFooterLangBtns = function() {
         '<div>' +
           '<div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;">' + t.about + '</div>' +
           '<div style="display:flex;flex-direction:column;gap:6px;">' +
-            '<a href="' + (window._rfgDomain ? '/' : '/?lang=' + footerLang) + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🏠 ' + (t.home||'Home') + '</a>' +
+            '<a href="' + gamesHubUrl(footerLang) + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🏠 ' + (t.home||'Home') + '</a>' +
             '<a href="/privacy" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔒 ' + t.privacy + '</a>' +
             '<a href="/blog' + (footerLang==='pl'?'/pl':footerLang==='de'?'/de':footerLang==='sv'?'/sv':'') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">✍️ ' + (t.blog||'Blog') + '</a>' +
             '<a href="#" onclick="event.preventDefault();if(typeof openBugModal===\'function\')openBugModal();" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;">' + (t.bug||'🐛 Report a Bug') + '</a>' +
