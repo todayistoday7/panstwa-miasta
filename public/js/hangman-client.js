@@ -34,8 +34,9 @@ const LANGS = {
     shareRoom:         'Udostępnij pokój',
     homeRejoinTip: 'Jeśli przypadkowo opuścisz grę, wróć z tym samym imieniem i kodem pokoju.',
     rejoinTip:     'Jeśli przypadkowo opuścisz grę, wróć z tym samym imieniem i kodem pokoju.',
-    roundsLabel:   'Rundy',
+    roundsLabel:   'Długość gry',
     roundsDefault: 'Jedna tura na gracza (domyślnie)',
+    lengthQuick: '⚡ Szybka (1×)', lengthStandard: '🎮 Standardowa (2×)', lengthMarathon: '🏆 Maraton (3×)',
     waitingForHost:    'Czekam na hosta...',
     needPlayers:       'Potrzeba min. 2 graczy',
     howToPlay:         'Zasady gry',
@@ -108,8 +109,9 @@ const LANGS = {
     shareCode:         'Share this code with friends',
     shareRoom:         'Share Room',
     homeRejoinTip: 'If you accidentally leave mid-game, rejoin with the same name and room code.',
-    roundsLabel:   'Rounds',
+    roundsLabel:   'Game length',
     roundsDefault: 'One round per player (default)',
+    lengthQuick: '⚡ Quick (1×)', lengthStandard: '🎮 Standard (2×)', lengthMarathon: '🏆 Marathon (3×)',
     waitingForHost:    'Waiting for host...',
     needPlayers:       'Need at least 2 players',
     howToPlay:         'How to play',
@@ -173,8 +175,9 @@ const LANGS = {
     navHome:           'Startseite',
     navAllGames:       'Alle Spiele',
     homeRejoinTip:     'Falls du das Spiel versehentlich verlässt, tritt mit demselben Namen und Code wieder bei.',
-    roundsLabel:       'Runden',
+    roundsLabel:       'Spiellänge',
     roundsDefault:     'Eine Runde pro Spieler (Standard)',
+    lengthQuick: '⚡ Kurz (1×)', lengthStandard: '🎮 Standard (2×)', lengthMarathon: '🏆 Marathon (3×)',
     rejoinTip:         'Falls du das Spiel versehentlich verlässt, tritt mit demselben Namen und Code wieder bei.',
     gameTitle:         'GALGENMÄNNCHEN',
     subtitle:          'Wortratespiel · 2-10 Spieler',
@@ -318,8 +321,9 @@ const LANGS = {
     navHome:           'Startsida',
     navAllGames:       'Alla spel',
     homeRejoinTip:     'Om du lämnar spelet av misstag, gå tillbaka med samma namn och rumskod.',
-    roundsLabel:       'Omgångar',
+    roundsLabel:       'Spellängd',
     roundsDefault:     'En omgång per spelare (standard)',
+    lengthQuick: '⚡ Snabb (1×)', lengthStandard: '🎮 Standard (2×)', lengthMarathon: '🏆 Maraton (3×)',
     langTitle:         'Språk',
   },
 };
@@ -532,8 +536,11 @@ function renderLobby(data) {
       if (_vPriv) _vPriv.classList.toggle('active', !_isPublic);
       if (_vPub)  _vPub.classList.toggle('active',   _isPublic);
     }
-    var roundsSel = document.getElementById('settings-rounds');
-    if (roundsSel) roundsSel.value = (settings && settings.totalRounds) || 0;
+    var gl = (settings && settings.gameLength) || 'standard';
+    window._hangGameLength = gl;
+    document.querySelectorAll('#hang-length-pills .pill').forEach(function(btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-length') === gl);
+    });
     _settingsInitHang = true;
   }
 
@@ -868,10 +875,17 @@ function setGameLang(code) {
   applyTranslations();
   socket.emit('hang_update_settings', { code: roomCode, settings: { lang: code, isPublic: getIsPublic() } });
 }
+function setHangLength(key) {
+  window._hangGameLength = key;
+  document.querySelectorAll('#hang-length-pills .pill').forEach(function(btn) {
+    btn.classList.toggle('active', btn.getAttribute('data-length') === key);
+  });
+  updateSettings();
+}
+
 function updateSettings() {
-  const roundsSel = document.getElementById('settings-rounds');
-  const totalRounds = roundsSel ? parseInt(roundsSel.value) : 0;
-  socket.emit('hang_update_settings', { code: roomCode, settings: { lang, isPublic: getIsPublic(), totalRounds } });
+  const gameLength = window._hangGameLength || 'standard';
+  socket.emit('hang_update_settings', { code: roomCode, settings: { lang, isPublic: getIsPublic(), gameLength } });
 }
 function goHome() {
   if (roomCode && socket.connected) { socket.disconnect(); socket.connect(); }
@@ -939,7 +953,9 @@ function applyTranslations() {
     'lbl-play-again':       'playAgain',   'lbl-go-home':          'goHome',
     'lbl-room-visibility':  'roomVis',
     'lbl-rounds-label':     'roundsLabel',
-    'lbl-rounds-default':   'roundsDefault',
+    'lbl-length-quick':     'lengthQuick',
+    'lbl-length-standard':  'lengthStandard',
+    'lbl-length-marathon':  'lengthMarathon',
     'lbl-home-rejoin-tip':  'homeRejoinTip',
     'lbl-rejoin-tip':       'rejoinTip',
   };

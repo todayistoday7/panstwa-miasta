@@ -31,7 +31,7 @@ function makeHangRoom(hostId, settings) {
     settings: {
       lang:        settings.lang        || 'en',
       isPublic:    settings.isPublic    || false,
-      totalRounds: settings.totalRounds || 0,
+      gameLength:  settings.gameLength  || 'standard',
     },
     players: [],
     state: {
@@ -97,9 +97,10 @@ function emitHangState(io, room) {
     hint:           room.state.hint,
     roundWinner:    room.state.roundWinner,
     roundsPlayed:   room.state.roundsPlayed,
-    totalRounds:    room.settings.totalRounds > 0
-                      ? room.settings.totalRounds
-                      : getConnected(room).length,
+    totalRounds:    (function() {
+      const m = room.settings.gameLength === 'quick' ? 1 : room.settings.gameLength === 'marathon' ? 3 : 2;
+      return getConnected(room).length * m;
+    })(),
     wordLength:     room.state.word ? room.state.word.length : null,
   };
 
@@ -198,7 +199,7 @@ function register(io, socket) {
     const room = getHangRoom(code);
     if (!room || socket.id !== room.hostId) return;
     if (settings.isPublic !== undefined) { room.isPublic = settings.isPublic; room.settings.isPublic = settings.isPublic; }
-    if (settings.totalRounds !== undefined) room.settings.totalRounds = parseInt(settings.totalRounds) || 0;
+    if (settings.gameLength) room.settings.gameLength = settings.gameLength;
     room.settings = { ...room.settings, ...settings };
     lobby.announce('hangman', room);
     emitHangState(io, room);
@@ -311,9 +312,8 @@ function register(io, socket) {
 
     room.state.roundsPlayed++;
     const connected = getConnected(room);
-    const totalRounds = room.settings.totalRounds > 0
-      ? room.settings.totalRounds
-      : connected.length;
+    const multiplier = room.settings.gameLength === 'quick' ? 1 : room.settings.gameLength === 'marathon' ? 3 : 2;
+    const totalRounds = connected.length * multiplier;
 
     if (room.state.roundsPlayed >= totalRounds) {
       // All rounds played — game over
