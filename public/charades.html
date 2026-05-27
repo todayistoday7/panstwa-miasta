@@ -220,7 +220,7 @@
     <div class="final-scores" id="final-scores"></div>
     <div class="btn-row" style="margin-top:16px;">
       <button class="btn" id="play-again-btn" onclick="playAgain()" style="display:none;"><span id="lbl-play-again">🔄 Play again</span></button>
-      <a href="/games" class="btn secondary nav-home-link" style="text-decoration:none;"><span id="lbl-go-home">🏠 Home</span></a>
+      <button class="btn secondary" onclick="goHome(); window.location.href=gamesHubUrl();" id="lbl-go-home">🏠 Home</button>
     </div>
     <div id="reaction-container" style="max-width:500px;margin:0 auto;"></div>
   </div>

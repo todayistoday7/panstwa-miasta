@@ -268,6 +268,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Nunito
       <button class="btn btn-secondary btn-full" onclick="confirmGoHome()" id="lbl-leave-room">🚪 Wyjdź</button>
     </div>
     <div id="waiting-msg" style="text-align:center;color:var(--muted);font-size:13px;font-weight:700;padding:16px 0;display:none;" id="lbl-waiting-for-host">Czekam na hosta...</div>
+
+    <!-- Rules in lobby -->
+    <div class="rules-section" style="margin-top:24px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent2);text-align:center;margin-bottom:12px;" id="lbl-lobby-how-to-play">Jak grać</div>
+      <div class="rules-steps">
+        <div class="rule-step"><div class="rule-num">1</div><p class="rule-text" id="lbl-lobby-rule-1"></p></div>
+        <div class="rule-step"><div class="rule-num">2</div><p class="rule-text" id="lbl-lobby-rule-2"></p></div>
+        <div class="rule-step"><div class="rule-num">3</div><p class="rule-text" id="lbl-lobby-rule-3"></p></div>
+        <div class="rule-step"><div class="rule-num">4</div><p class="rule-text" id="lbl-lobby-rule-4"></p></div>
+        <div class="rule-step"><div class="rule-num">5</div><p class="rule-text" id="lbl-lobby-rule-5"></p></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -356,7 +368,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Nunito
 <div id="screen-reveal" class="screen">
   <div style="padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;">
     <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);" id="lbl-reveal-title">WIELKIE UJAWNIENIE!</span>
-    <a href="/games" class="nav-home-btn nav-home-link" style="text-decoration:none;">🏠</a>
+    <button class="nav-home-btn" onclick="goHome(); window.location.href=gamesHubUrl();">🏠</button>
   </div>
   <div class="container" style="padding-top:16px;">
     <p style="text-align:center;color:var(--muted);font-size:13px;font-weight:700;margin-bottom:16px;" id="lbl-reveal-desc">Zobaczcie jak słowa ewoluowały!</p>
@@ -372,14 +384,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Nunito
 <div id="screen-final" class="screen">
   <div style="padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;">
     <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);" id="lbl-game-over">KONIEC GRY!</span>
-    <a href="/games" class="nav-home-btn nav-home-link" style="text-decoration:none;">🏠</a>
+    <button class="nav-home-btn" onclick="goHome(); window.location.href=gamesHubUrl();">🏠</button>
   </div>
   <div class="container" style="padding-top:16px;text-align:center;">
     <p style="color:var(--muted);font-size:13px;font-weight:700;margin-bottom:16px;" id="lbl-final-desc">Sprawdź wszystkie łańcuchy ewolucji!</p>
     <div id="final-chains" class="final-grid"></div>
     <div style="margin-top:24px;display:flex;flex-direction:column;align-items:center;gap:10px;">
       <button class="btn btn-green btn-full" onclick="playAgain()" id="lbl-play-again">🔄 Zagraj jeszcze raz</button>
-      <a href="/games" class="btn btn-secondary btn-full nav-home-link" style="text-decoration:none;" id="lbl-go-home">🏠 Wróć do menu</a>
+      <button class="btn btn-secondary btn-full" onclick="goHome(); window.location.href=gamesHubUrl();" id="lbl-go-home">🏠 Home</button>
 
   <div id="reaction-container" style="max-width:500px;margin:0 auto;"></div>
   <div id="other-games-strip"></div>

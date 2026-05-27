@@ -363,6 +363,17 @@
       <button class="btn" onclick="startGame()" id="lobby-start-btn">🎮 <span id="lbl-start-btn">Rozpocznij grę</span></button>
       <button class="btn secondary" onclick="confirmGoHome()" id="lbl-leave-room">🚪 Wyjdź</button>
     </div>
+
+    <!-- Rules in lobby -->
+    <div class="rules-section" style="margin-top:24px;">
+      <h2 id="lbl-lobby-how-to-play" style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent2);text-align:center;margin-bottom:12px;">Jak grać?</h2>
+      <div class="rules-steps">
+        <div class="rule-step"><div class="step-num">1</div><p id="lbl-lobby-rule-1"></p></div>
+        <div class="rule-step"><div class="step-num">2</div><p id="lbl-lobby-rule-2"></p></div>
+        <div class="rule-step"><div class="step-num">3</div><p id="lbl-lobby-rule-3"></p></div>
+        <div class="rule-step"><div class="step-num">4</div><p id="lbl-lobby-rule-4"></p></div>
+      </div>
+    </div>
   </div>
 
   <!-- ══ SCREEN: PLAYING ══ -->
@@ -458,7 +469,7 @@
     <div id="wa-scores" class="wa-scores"></div>
     <div class="btn-row" style="margin-top:16px;">
       <button class="btn" id="next-turn-btn" onclick="nextTurn()" style="display:none;">➤ <span id="lbl-next-turn">Następna tura</span></button>
-      <a href="/games" class="btn secondary nav-home-link" style="text-decoration:none;">🏠 <span class="lbl-nav-home-dup">Home</span></a>
+      <button class="btn secondary" onclick="confirmGoHome()">🚪 <span class="lbl-nav-home-dup">Leave</span></button>
     </div>
   </div>
 
@@ -471,7 +482,7 @@
     <div id="final-scores" class="wa-scores" style="margin:20px 0;"></div>
     <div class="btn-row">
       <button class="btn" onclick="rematch()" id="wa-play-again-btn"><span id="lbl-play-again">🔄 Zagraj ponownie</span></button>
-      <a href="/games" class="btn secondary nav-home-link" style="text-decoration:none;">🏠 <span class="lbl-nav-home-dup">Home</span></a>
+      <button class="btn secondary" onclick="goHome(); window.location.href=gamesHubUrl();">🏠 Home</button>
     </div>
   </div>
 
