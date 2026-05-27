@@ -516,7 +516,7 @@ function renderLobby(data) {
   const pillsEl = document.getElementById('lobby-lang-pills');
   if (pillsEl) {
     pillsEl.innerHTML = '';
-    ['pl','en','de'].forEach(code => {
+    ['pl','en','de','sv'].forEach(code => {
       pillsEl.innerHTML += '<div class="lang-pill' + (code === (settings.lang || lang) ? ' active' : '') + '"' +
         (isHost ? ' onclick="setGameLang(\'' + code + '\')"' : '') + ' style="cursor:' + (isHost ? 'pointer' : 'default') + '">' +
         LANGS[code].name + '</div>';
@@ -538,7 +538,7 @@ function renderLobby(data) {
     }
     var gl = (settings && settings.gameLength) || 'standard';
     window._hangGameLength = gl;
-    document.querySelectorAll('#hang-length-pills .pill').forEach(function(btn) {
+    document.querySelectorAll('#hang-length-pills .lang-pill').forEach(function(btn) {
       btn.classList.toggle('active', btn.getAttribute('data-length') === gl);
     });
     _settingsInitHang = true;
@@ -877,7 +877,7 @@ function setGameLang(code) {
 }
 function setHangLength(key) {
   window._hangGameLength = key;
-  document.querySelectorAll('#hang-length-pills .pill').forEach(function(btn) {
+  document.querySelectorAll('#hang-length-pills .lang-pill').forEach(function(btn) {
     btn.classList.toggle('active', btn.getAttribute('data-length') === key);
   });
   updateSettings();

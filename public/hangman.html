@@ -444,18 +444,12 @@
         <h3 id="lbl-settings">Settings</h3>
         <label class="field-label" id="lbl-lang-title">Word language</label>
         <div class="lang-pills" id="lobby-lang-pills"></div>
-        <label class="field-label" id="lbl-rounds-label">Rounds</label>
-        <select id="settings-rounds" class="field-select" onchange="updateSettings()">
-          <option value="0" id="lbl-rounds-default">One round per player (default)</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="8">8</option>
-          <option value="10">10</option>
-        </select>
+        <label class="field-label" id="lbl-rounds-label">Game length</label>
+        <div id="hang-length-pills" class="lang-pills">
+          <button class="lang-pill" data-length="quick" onclick="setHangLength('quick')">⚡ <span id="lbl-length-quick">Quick (1×)</span></button>
+          <button class="lang-pill active" data-length="standard" onclick="setHangLength('standard')">🎮 <span id="lbl-length-standard">Standard (2×)</span></button>
+          <button class="lang-pill" data-length="marathon" onclick="setHangLength('marathon')">🏆 <span id="lbl-length-marathon">Marathon (3×)</span></button>
+        </div>
         <label class="field-label" style="margin-top:14px;" id="lbl-room-visibility">Room visibility</label>
         <div class="visibility-toggle" id="visibility-toggle">
           <div class="vis-option" id="vis-private" style="border-radius:8px 0 0 8px;" onclick="setVisibility(false)">🔒 <span id="lbl-vis-private">Private</span></div>
