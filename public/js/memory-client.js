@@ -338,14 +338,15 @@ function renderLobby(data) {
     window._buildNudgeButton(nudgeContainer, roomCode, myName || '', { nudge: L.nudge, nudgeSent: L.nudgeSent });
   }
 
-  // Settings (host only)
+  // Settings init (once)
   var maxSel = document.getElementById('settings-maxplayers');
+  if (isHost && !_settingsInitMem) {
+    if (maxSel) maxSel.value = settings.maxPlayers || 6;
+    _settingsInitMem = true;
+  }
+
+  // Start button (host) or waiting message (non-host)
   if (isHost) {
-    if (!_settingsInitMem) {
-      if (maxSel) maxSel.value = settings.maxPlayers || 6;
-      _settingsInitMem = true;
-    }
-    if (maxSel) maxSel.disabled = false;
     document.getElementById('lobby-btn-row').style.display = 'flex';
     document.getElementById('waiting-msg').style.display   = 'none';
     var _startBtn = document.getElementById('lobby-start-btn');
@@ -354,15 +355,29 @@ function renderLobby(data) {
       _startBtn.disabled = _pc < 2; _startBtn.style.opacity = _pc >= 2 ? '1' : '0.4';
     }
   } else {
-    if (maxSel) maxSel.disabled = true;
     document.getElementById('lobby-btn-row').style.display = 'none';
     document.getElementById('waiting-msg').style.display   = 'block';
     document.getElementById('waiting-msg').textContent     = L.waitingForHost;
   }
 
-  // Lobby settings card visibility
+  // Settings visibility — show to everyone, but controls are read-only for non-host
   var settingsCard = document.getElementById('lobby-settings-card');
-  if (settingsCard) settingsCard.style.display = isHost ? 'block' : 'none';
+  if (settingsCard) settingsCard.style.display = 'block';
+
+  // Theme and size buttons — disable for non-host
+  document.querySelectorAll('.mem-theme-btn, .mem-size-btn').forEach(function(btn) {
+    btn.style.pointerEvents = isHost ? 'auto' : 'none';
+    if (!isHost) btn.style.opacity = btn.classList.contains('active') ? '1' : '0.5';
+    else btn.style.opacity = '1';
+  });
+
+  // Max players dropdown
+  var maxSel = document.getElementById('settings-maxplayers');
+  if (maxSel) maxSel.disabled = !isHost;
+
+  // Visibility toggle
+  var togWrap = document.getElementById('visibility-toggle');
+  if (togWrap) { togWrap.style.pointerEvents = isHost ? 'auto' : 'none'; togWrap.style.opacity = isHost ? '1' : '0.6'; }
 
   // Sync theme/size buttons from server state
   if (settings) {
