@@ -399,7 +399,7 @@
     <div class="btn-row" style="flex-direction:column;align-items:center;gap:12px;">
       <button class="btn" style="font-size:18px;padding:16px 36px;width:100%;max-width:400px;" onclick="playAgainGroup()" id="lbl-play-again-group">🔄 Zagraj jeszcze raz z tą grupą</button>
       <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
-        <a href="/games" class="btn secondary nav-home-link" style="text-decoration:none;" id="lbl-new-game">🏠 Home</a>
+        <button class="btn secondary" onclick="goHome(); window.location.href=gamesHubUrl();" id="lbl-new-game">🏠 Home</button>
         <button class="btn share-btn" onclick="shareGame()" id="lbl-share-game">📤 Udostępnij wynik</button>
       </div>
     </div>
