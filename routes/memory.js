@@ -51,7 +51,7 @@ function makeMemRoom(hostId, settings) {
     code, hostId,
     _createdAt: Date.now(),
     isPublic: settings.isPublic || false,
-    settings: { boardSize: size, theme, maxPlayers: settings.maxPlayers || 6 },
+    settings: { boardSize: size, theme, maxPlayers: settings.maxPlayers || 6, gameLength: settings.gameLength || 'standard' },
     players: [],
     state: {
       phase: 'lobby',
@@ -61,6 +61,7 @@ function makeMemRoom(hostId, settings) {
       totalPairs: Math.floor(size / 2),
       foundPairs: 0,
       turnTimer: null,
+      roundsPlayed: 0,
     }
   };
   return memRooms[code];
@@ -92,6 +93,8 @@ function emitMemState(io, room) {
     board: safeBoard,
     totalPairs: room.state.totalPairs,
     foundPairs: room.state.foundPairs,
+    roundsPlayed: room.state.roundsPlayed,
+    totalRounds: room.settings.gameLength === 'quick' ? 1 : room.settings.gameLength === 'marathon' ? 3 : 2,
   });
 }
 
@@ -160,6 +163,7 @@ function register(io, socket) {
     if (!room || socket.id !== room.hostId || room.state.phase !== 'lobby') return;
     if (settings.boardSize) room.settings.boardSize = settings.boardSize;
     if (settings.theme) room.settings.theme = settings.theme;
+    if (settings.gameLength) room.settings.gameLength = settings.gameLength;
     if (settings.maxPlayers && [2,3,4,5,6].includes(settings.maxPlayers)) room.settings.maxPlayers = settings.maxPlayers;
     if (typeof settings.isPublic === 'boolean') room.isPublic = settings.isPublic;
     lobby.announce('memory', room);
@@ -219,13 +223,32 @@ function register(io, socket) {
         // Emit match event with both cards visible
         emitMemState(io, room);
 
-        // Check if game is over
+        // Check if board is complete
         if (room.state.foundPairs >= room.state.totalPairs) {
-          room.state.phase = 'final';
-          io.to(room.code).emit('mem_game_over', {
-            players: room.players.map(p => ({ name: p.name, score: p.score, color: p.color })),
-          });
-          emitMemState(io, room);
+          room.state.roundsPlayed++;
+          const totalRounds = room.settings.gameLength === 'quick' ? 1 : room.settings.gameLength === 'marathon' ? 3 : 2;
+
+          if (room.state.roundsPlayed >= totalRounds) {
+            // All rounds done — final screen
+            room.state.phase = 'final';
+            io.to(room.code).emit('mem_game_over', {
+              players: room.players.map(p => ({ name: p.name, score: p.score, color: p.color })),
+            });
+            emitMemState(io, room);
+          } else {
+            // More rounds — show round summary briefly, then start next board
+            room.state.phase = 'round_end';
+            emitMemState(io, room);
+            setTimeout(() => {
+              room.state.board = makeBoard(room.settings.theme, room.settings.boardSize);
+              room.state.totalPairs = Math.floor(room.settings.boardSize / 2);
+              room.state.foundPairs = 0;
+              room.state.flippedCards = [];
+              room.state.phase = 'playing';
+              room.state.currentPlayer = room.players.filter(p => p.connected)[0]?.id || room.players[0].id;
+              emitMemState(io, room);
+            }, 3000);
+          }
         }
         // Player gets another turn — don't change currentPlayer
       } else {
@@ -254,6 +277,7 @@ function register(io, socket) {
     room.state.totalPairs = Math.floor(room.settings.boardSize / 2);
     room.state.foundPairs = 0;
     room.state.flippedCards = [];
+    room.state.roundsPlayed = 0;
     room.state.phase = 'playing';
     room.state.currentPlayer = room.players[0].id;
     room.players.forEach(p => p.score = 0);

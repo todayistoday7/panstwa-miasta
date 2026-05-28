@@ -58,6 +58,8 @@ const LANGS = {
     navHome:      'Strona główna',
     navAllGames:  'Wszystkie gry',
     playAgain:    '🔄 Zagraj jeszcze raz z tą grupą',
+    lengthQuick: '⚡ Szybka (1 plansza)', lengthStandard: '🎮 Standard (2 plansze)', lengthMarathon: '🏆 Maraton (3 plansze)',
+    gameLength:  'Długość gry', roundOf: function(a,b){return 'Plansza '+a+'/'+b;}, nextBoard: 'Następna plansza...',
     newGame:      '🏠 Powrót',
     hostBadge:    'HOST',
     youBadge:     'TY ·',
@@ -108,6 +110,8 @@ const LANGS = {
     navHome:      'Home',
     navAllGames:  'All Games',
     playAgain:    '🔄 Play Again With This Group',
+    lengthQuick: '⚡ Quick (1 board)', lengthStandard: '🎮 Standard (2 boards)', lengthMarathon: '🏆 Marathon (3 boards)',
+    gameLength:  'Game length', roundOf: function(a,b){return 'Board '+a+'/'+b;}, nextBoard: 'Next board...',
     newGame:      '🏠 Home',
     hostBadge:    'HOST',
     youBadge:     'YOU ·',
@@ -158,6 +162,8 @@ const LANGS = {
     navHome:      'Startseite',
     navAllGames:  'Alle Spiele',
     playAgain:    '🔄 Nochmal mit dieser Gruppe',
+    lengthQuick: '⚡ Kurz (1 Brett)', lengthStandard: '🎮 Standard (2 Bretter)', lengthMarathon: '🏆 Marathon (3 Bretter)',
+    gameLength:  'Spiellänge', roundOf: function(a,b){return 'Brett '+a+'/'+b;}, nextBoard: 'Nächstes Brett...',
     newGame:      '🏠 Startseite',
     hostBadge:    'HOST',
     youBadge:     'DU ·',
@@ -208,6 +214,8 @@ const LANGS = {
     navHome:      'Startsida',
     navAllGames:  'Alla spel',
     playAgain:    '🔄 Spela igen med denna grupp',
+    lengthQuick: '⚡ Snabb (1 bräda)', lengthStandard: '🎮 Standard (2 brädor)', lengthMarathon: '🏆 Maraton (3 brädor)',
+    gameLength:  'Spellängd', roundOf: function(a,b){return 'Bräda '+a+'/'+b;}, nextBoard: 'Nästa bräda...',
     newGame:      '🏠 Startsida',
     hostBadge:    'HOST',
     youBadge:     'DU ·',
@@ -366,6 +374,22 @@ function renderLobby(data) {
     });
   }
 
+  // Game length pills
+  var gl = (settings && settings.gameLength) || 'standard';
+  var lengthPills = document.getElementById('mem-length-pills');
+  if (lengthPills) {
+    var lengths = [
+      { key: 'quick', label: L.lengthQuick || '⚡ Quick (1 board)' },
+      { key: 'standard', label: L.lengthStandard || '🎮 Standard (2 boards)' },
+      { key: 'marathon', label: L.lengthMarathon || '🏆 Marathon (3 boards)' }
+    ];
+    lengthPills.innerHTML = lengths.map(function(item) {
+      return '<div class="lang-pill' + (item.key === gl ? ' active' : '') + '"' +
+        (isHost ? ' onclick="setMemLength(\'' + item.key + '\')" style="cursor:pointer;"' : ' style="cursor:default;' + (item.key !== gl ? 'opacity:0.5;' : '') + '"') +
+        '>' + item.label + '</div>';
+    }).join('');
+  }
+
   buildThemeGrid();
 }
 
@@ -501,6 +525,11 @@ function flipCard(index) {
   socket.emit('mem_flip', { code: roomCode, cardIndex: index });
 }
 
+function setMemLength(key) {
+  if (!roomCode) return;
+  socket.emit('mem_update_settings', { code: roomCode, settings: { gameLength: key } });
+}
+
 function updateSettings() {
   if (!roomCode) return;
   var maxSel = document.getElementById('settings-maxplayers');
@@ -550,6 +579,21 @@ socket.on('mem_state', function(state) {
   } else if (state.phase === 'playing') {
     renderGame(state);
     showScreen('screen-playing');
+    // Show round indicator if multi-round
+    var roundLabel = document.getElementById('round-indicator');
+    if (roundLabel && state.totalRounds > 1 && L.roundOf) {
+      roundLabel.textContent = L.roundOf(state.roundsPlayed + 1, state.totalRounds);
+      roundLabel.style.display = 'block';
+    } else if (roundLabel) {
+      roundLabel.style.display = 'none';
+    }
+  } else if (state.phase === 'round_end') {
+    // Brief transition between boards — show message on playing screen
+    var roundLabel = document.getElementById('round-indicator');
+    if (roundLabel) {
+      roundLabel.textContent = L.nextBoard || 'Next board...';
+      roundLabel.style.display = 'block';
+    }
   } else if (state.phase === 'final') {
     renderFinal(state);
     showScreen('screen-final');
@@ -588,7 +632,7 @@ function applyTranslations() {
     'lbl-your-name':    'yourName',    'lbl-join-name':    'joinName',
     'lbl-room-code':    'roomCode',    'lbl-create-btn':   'createBtn',
     'lbl-join-btn':     'joinBtn',     'lbl-settings':     'settings',
-    'lbl-theme':        'theme',       'lbl-board-size':   'boardSize',
+    'lbl-theme':        'theme',       'lbl-board-size':   'boardSize',   'lbl-game-length':  'gameLength',
     'lbl-max-players':  'maxPlayers',
     'lbl-players-title':'playersTitle','lbl-start-btn':    'startBtn',
     'lbl-leave-room':   'leaveRoom',   'lbl-share-code':   'shareCode',
