@@ -445,11 +445,7 @@
         <label class="field-label" id="lbl-lang-title">Word language</label>
         <div class="lang-pills" id="lobby-lang-pills"></div>
         <label class="field-label" id="lbl-rounds-label">Game length</label>
-        <div id="hang-length-pills" class="lang-pills">
-          <button class="lang-pill" data-length="quick" onclick="setHangLength('quick')">⚡ <span id="lbl-length-quick">Quick (1×)</span></button>
-          <button class="lang-pill active" data-length="standard" onclick="setHangLength('standard')">🎮 <span id="lbl-length-standard">Standard (2×)</span></button>
-          <button class="lang-pill" data-length="marathon" onclick="setHangLength('marathon')">🏆 <span id="lbl-length-marathon">Marathon (3×)</span></button>
-        </div>
+        <div id="hang-length-pills" class="lang-pills"></div>
         <label class="field-label" style="margin-top:14px;" id="lbl-room-visibility">Room visibility</label>
         <div class="visibility-toggle" id="visibility-toggle">
           <div class="vis-option" id="vis-private" style="border-radius:8px 0 0 8px;" onclick="setVisibility(false)">🔒 <span id="lbl-vis-private">Private</span></div>
@@ -577,13 +573,12 @@
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:50px;letter-spacing:2px;color:var(--accent2);" id="lbl-game-over">Game Over!</h2>
     </div>
     <div style="display:flex;flex-direction:column;align-items:center;margin:24px 0;" id="final-results"></div>
-    <div class="btn-row">
+    <div class="btn-row" style="flex-direction:column;align-items:center;gap:10px;margin-top:16px;">
       <button class="btn" onclick="playAgain()" id="lbl-play-again" style="display:none;font-size:17px;padding:15px 32px;width:100%;max-width:400px;"><span id="lbl-play-again-inner">🔄 Play Again With This Group</span></button>
-      <button class="btn secondary" onclick="goHome(); window.location.href=gamesHubUrl();" id="lbl-go-home">🏠 <span class="lbl-nav-home-dup">Home</span></button>
-
-  <div id="reaction-container" style="max-width:500px;margin:0 auto;"></div>
-  <div id="other-games-strip"></div>
+      <button class="btn secondary" onclick="goHome(); window.location.href=gamesHubUrl();" id="lbl-go-home" style="width:100%;max-width:400px;">🏠 Home</button>
     </div>
+    <div id="reaction-container" style="max-width:500px;margin:16px auto 0;"></div>
+    <div id="other-games-strip"></div>
   </div>
 
 </div>
