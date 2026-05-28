@@ -536,22 +536,24 @@ function renderLobby(data) {
       if (_vPriv) _vPriv.classList.toggle('active', !_isPublic);
       if (_vPub)  _vPub.classList.toggle('active',   _isPublic);
     }
-    var gl = (settings && settings.gameLength) || 'standard';
-    window._hangGameLength = gl;
-    var lengthPills = document.getElementById('hang-length-pills');
-    if (lengthPills) {
-      var lengths = [
-        { key: 'quick', label: L.lengthQuick || '⚡ Quick (1×)' },
-        { key: 'standard', label: L.lengthStandard || '🎮 Standard (2×)' },
-        { key: 'marathon', label: L.lengthMarathon || '🏆 Marathon (3×)' }
-      ];
-      lengthPills.innerHTML = lengths.map(function(item) {
-        return '<div class="lang-pill' + (item.key === gl ? ' active' : '') + '"' +
-          (isHost ? ' onclick="setHangLength(\'' + item.key + '\')" style="cursor:pointer;"' : ' style="cursor:default;' + (item.key !== gl ? 'opacity:0.5;' : '') + '"') +
-          '>' + item.label + '</div>';
-      }).join('');
-    }
     _settingsInitHang = true;
+  }
+
+  // Game length pills — always re-render to reflect host status and server state
+  var gl = (settings && settings.gameLength) || 'standard';
+  window._hangGameLength = gl;
+  var lengthPills = document.getElementById('hang-length-pills');
+  if (lengthPills) {
+    var lengths = [
+      { key: 'quick', label: L.lengthQuick || '⚡ Quick (1×)' },
+      { key: 'standard', label: L.lengthStandard || '🎮 Standard (2×)' },
+      { key: 'marathon', label: L.lengthMarathon || '🏆 Marathon (3×)' }
+    ];
+    lengthPills.innerHTML = lengths.map(function(item) {
+      return '<div class="lang-pill' + (item.key === gl ? ' active' : '') + '"' +
+        (isHost ? ' onclick="setHangLength(\'' + item.key + '\')" style="cursor:pointer;"' : ' style="cursor:default;' + (item.key !== gl ? 'opacity:0.5;' : '') + '"') +
+        '>' + item.label + '</div>';
+    }).join('');
   }
 
   if (isHost) {
