@@ -30,6 +30,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Nu
 .screen{display:none;}
 .screen.active{display:flex;flex-direction:column;}
 .container{max-width:680px;margin:0 auto;padding:16px;width:100%;}
+.inner-container{max-width:680px;margin:0 auto;padding:16px;width:100%;}
 
 /* ── Top nav ── */
 #top-nav{display:none;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
@@ -172,9 +173,11 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Nu
   
 </div>
 
+<div class="container">
+
 <!-- ══ HOME ══ -->
 <div id="screen-home" class="screen active">
-  <div class="container">
+  <div class="inner-container">
     <div style="display:flex;gap:10px;margin-bottom:16px;">
       <a href="/games" class="nav-home-btn nav-home-link" style="text-decoration:none;">🏠 <span class="lbl-nav-home-dup">Home</span></a>
     </div>
@@ -227,7 +230,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Nu
 <!-- ══ LOBBY ══ -->
 <div id="screen-lobby" class="screen">
 
-  <div class="container" style="padding-top:20px;">
+  <div class="inner-container" style="padding-top:20px;">
     <div style="text-align:center;margin-bottom:16px;">
       <p style="font-size:12px;color:var(--muted);font-weight:700;margin-bottom:4px;" id="lbl-share-code">Udostępnij kod znajomym</p>
       <div style="font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:8px;color:var(--accent);" id="room-code-display"></div>
@@ -295,7 +298,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Nu
       <div class="timer-num" id="timer-num">--</div>
     </div>
   </div>
-  <div class="container" style="padding-top:16px;">
+  <div class="inner-container" style="padding-top:16px;">
 
     <!-- Write word task -->
     <div id="task-write-word" style="display:none;">
@@ -370,7 +373,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Nu
     <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);" id="lbl-reveal-title">WIELKIE UJAWNIENIE!</span>
     <button class="nav-home-btn" onclick="goHome(); window.location.href=gamesHubUrl();">🏠</button>
   </div>
-  <div class="container" style="padding-top:16px;">
+  <div class="inner-container" style="padding-top:16px;">
     <p style="text-align:center;color:var(--muted);font-size:13px;font-weight:700;margin-bottom:16px;" id="lbl-reveal-desc">Zobaczcie jak słowa ewoluowały!</p>
     <div id="reveal-chains"></div>
     <div id="reveal-nav" class="chain-nav" style="justify-content:center;"></div>
@@ -386,7 +389,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Nu
     <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);" id="lbl-game-over">KONIEC GRY!</span>
     <button class="nav-home-btn" onclick="goHome(); window.location.href=gamesHubUrl();">🏠</button>
   </div>
-  <div class="container" style="padding-top:16px;text-align:center;">
+  <div class="inner-container" style="padding-top:16px;text-align:center;">
     <p style="color:var(--muted);font-size:13px;font-weight:700;margin-bottom:16px;" id="lbl-final-desc">Sprawdź wszystkie łańcuchy ewolucji!</p>
     <div id="final-chains" class="final-grid"></div>
     <div style="margin-top:24px;display:flex;flex-direction:column;align-items:center;gap:10px;">
@@ -410,6 +413,8 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Nu
     </div>
   </div>
 </div>
+
+</div><!-- /outer container -->
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/shared.js?v=4"></script>

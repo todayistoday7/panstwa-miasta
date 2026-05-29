@@ -640,7 +640,7 @@ function initVisibilityToggle() {
     wrap.appendChild(topbar);
     wrap.appendChild(nav);
 
-    var container = document.querySelector('.container');
+    var container = document.querySelector('body > .container');
     if (container) {
       container.insertBefore(wrap, container.firstChild);
     } else {
