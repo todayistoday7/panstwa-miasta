@@ -378,86 +378,7 @@
   <p class="rfg-section-sub" id="rfg-games-sub">All games are free, work on any device, and support 2-20 players</p>
 
   <div class="rfg-game-list" id="rfg-game-list">
-    <a href="/forbidden-words" class="rfg-game-item">
-      <div class="rfg-game-icon">🚫</div>
-      <div class="rfg-game-info">
-        <div class="rfg-game-name">Forbidden Words</div>
-        <div class="rfg-game-desc">Describe a word without using the forbidden clues. Fast-paced and hilarious.</div>
-        <div class="rfg-game-tags"><span class="rfg-tag">Teams</span><span class="rfg-tag">Word Game</span><span class="rfg-tag">3+ Players</span></div>
-      </div>
-    </a>
-    <a href="/hangman-online" class="rfg-game-item">
-      <div class="rfg-game-icon">💀</div>
-      <div class="rfg-game-info">
-        <div class="rfg-game-name">Hangman</div>
-        <div class="rfg-game-desc">Classic word guessing with multiplayer twists. Guess the word before time runs out.</div>
-        <div class="rfg-game-tags"><span class="rfg-tag">Word Game</span><span class="rfg-tag">2+ Players</span></div>
-      </div>
-    </a>
-    <a href="/who-am-i" class="rfg-game-item">
-      <div class="rfg-game-icon">🎭</div>
-      <div class="rfg-game-info">
-        <div class="rfg-game-name">Who Am I?</div>
-        <div class="rfg-game-desc">Ask yes/no questions to figure out which character you've been assigned.</div>
-        <div class="rfg-game-tags"><span class="rfg-tag">Guessing</span><span class="rfg-tag">3+ Players</span></div>
-      </div>
-    </a>
-    <a href="/sketch-and-guess" class="rfg-game-item">
-      <div class="rfg-game-icon">🎨</div>
-      <div class="rfg-game-info">
-        <div class="rfg-game-name">Sketch & Guess</div>
-        <div class="rfg-game-desc">Draw a word while others race to guess it. Like Pictionary but online.</div>
-        <div class="rfg-game-tags"><span class="rfg-tag">Drawing</span><span class="rfg-tag">3+ Players</span></div>
-      </div>
-    </a>
-    <a href="/two-truths-one-lie" class="rfg-game-item">
-      <div class="rfg-game-icon">🤥</div>
-      <div class="rfg-game-info">
-        <div class="rfg-game-name">Two Truths One Lie</div>
-        <div class="rfg-game-desc">Share three statements — two true, one false. Can your friends spot the lie?</div>
-        <div class="rfg-game-tags"><span class="rfg-tag">Social</span><span class="rfg-tag">3+ Players</span></div>
-      </div>
-    </a>
-    <a href="/dots-and-boxes-online" class="rfg-game-item">
-      <div class="rfg-game-icon">⬜</div>
-      <div class="rfg-game-info">
-        <div class="rfg-game-name">Dots & Boxes</div>
-        <div class="rfg-game-desc">Connect dots, complete boxes, claim territory. A classic strategy game.</div>
-        <div class="rfg-game-tags"><span class="rfg-tag">Strategy</span><span class="rfg-tag">2 Players</span></div>
-      </div>
-    </a>
-    <a href="/corporate-bingo" class="rfg-game-item">
-      <div class="rfg-game-icon">📋</div>
-      <div class="rfg-game-info">
-        <div class="rfg-game-name">Corporate Bingo</div>
-        <div class="rfg-game-desc">Spot the buzzwords in your next meeting. Cross them off your bingo card.</div>
-        <div class="rfg-game-tags"><span class="rfg-tag">Fun</span><span class="rfg-tag">2+ Players</span></div>
-      </div>
-    </a>
-    <a href="/countries-cities-game" class="rfg-game-item">
-      <div class="rfg-game-icon">🌍</div>
-      <div class="rfg-game-info">
-        <div class="rfg-game-name">Countries & Cities</div>
-        <div class="rfg-game-desc">Name a country, city, animal and more starting with a random letter. Beat the clock!</div>
-        <div class="rfg-game-tags"><span class="rfg-tag">Trivia</span><span class="rfg-tag">2+ Players</span></div>
-      </div>
-    </a>
-    <a href="/find-pairs-online" class="rfg-game-item">
-      <div class="rfg-game-icon">🃏</div>
-      <div class="rfg-game-info">
-        <div class="rfg-game-name">Find Pairs</div>
-        <div class="rfg-game-desc">Flip cards and match pairs before your opponent. Test your memory!</div>
-        <div class="rfg-game-tags"><span class="rfg-tag">Memory</span><span class="rfg-tag">2 Players</span></div>
-      </div>
-    </a>
-    <a href="/charades-online" class="rfg-game-item">
-      <div class="rfg-game-icon">🎬</div>
-      <div class="rfg-game-info">
-        <div class="rfg-game-name">Charades</div>
-        <div class="rfg-game-desc">Act it out, guess the word. The classic party game, now multiplayer online.</div>
-        <div class="rfg-game-tags"><span class="rfg-tag">Acting</span><span class="rfg-tag">4+ Players</span></div>
-      </div>
-    </a>
+    <div id="rfg-games-dynamic"></div>
   </div>
 
   <div style="text-align:center; margin-bottom:48px;">
@@ -525,14 +446,14 @@
 
 <!-- ══════════ SEO CONTENT ══════════ -->
 <div class="rfg-content">
-  <h2>Free Online Party Games for Everyone</h2>
-  <p>Room For Games is a collection of free, browser-based multiplayer party games. Whether you're looking for something to play during a video call with colleagues, a family game night, or just a quick round with friends — we've got you covered. Every game works in real-time, connects players through simple room codes, and runs on any device with a browser.</p>
+  <h2 data-rfg="seo_h1">Free Online Party Games for Everyone</h2>
+  <p data-rfg="seo_p1">Room For Games is a collection of free, browser-based multiplayer party games. Whether you're looking for something to play during a video call with colleagues, a family game night, or just a quick round with friends — we've got you covered. Every game works in real-time, connects players through simple room codes, and runs on any device with a browser.</p>
 
-  <h2>Perfect for Game Night, Team Building & Classrooms</h2>
-  <p>Our games are designed for groups of 2 to 20 players. They work great for virtual team meetings, remote team building, classroom activities, or casual hangouts. Popular choices include Forbidden Words (like Taboo), Who Am I, Sketch & Guess (like Pictionary), and Two Truths One Lie. All games are family-friendly and suitable for all ages.</p>
+  <h2 data-rfg="seo_h2">Perfect for Game Night, Team Building & Classrooms</h2>
+  <p data-rfg="seo_p2">Our games are designed for groups of 2 to 20 players. They work great for virtual team meetings, remote team building, classroom activities, or casual hangouts. Popular choices include Forbidden Words (like Taboo), Who Am I, Sketch & Guess (like Pictionary), and Two Truths One Lie. All games are family-friendly and suitable for all ages.</p>
 
-  <h2>No Downloads, No Accounts, No Hassle</h2>
-  <p>Just pick a game, create a room, and share the code. Your friends join on their own devices — phone, tablet or computer. The games run entirely in the browser with real-time multiplayer powered by WebSocket technology. Everything is free, with no ads interrupting your game.</p>
+  <h2 data-rfg="seo_h3">No Downloads, No Accounts, No Hassle</h2>
+  <p data-rfg="seo_p3">Just pick a game, create a room, and share the code. Your friends join on their own devices — phone, tablet or computer. The games run entirely in the browser with real-time multiplayer powered by WebSocket technology. Everything is free, with no ads interrupting your game.</p>
 </div>
 
 <!-- ══════════ BOTTOM CTA ══════════ -->
@@ -643,6 +564,86 @@
     },
   };
 
+  // Game cards data — names, descriptions, tags, and localized URLs
+  var GAMES = [
+    { icon:'🚫', urls:{en:'/forbidden-words',pl:'/zakazane-slowa',de:'/verbotene-woerter',sv:'/forbjudna-ord'},
+      name:{en:'Forbidden Words',pl:'Zakazane Słowa',de:'Verbotene Wörter',sv:'Förbjudna Ord'},
+      desc:{en:'Describe a word without using the forbidden clues. Fast-paced and hilarious.',pl:'Opisz słowo nie używając zakazanych podpowiedzi. Szybka i zabawna gra!',de:'Beschreibe ein Wort, ohne die verbotenen Hinweise zu verwenden.',sv:'Beskriv ett ord utan att använda de förbjudna ledtrådarna.'},
+      tags:{en:['Teams','Word Game','3+ Players'],pl:['Drużyny','Gra Słowna','3+ Graczy'],de:['Teams','Wortspiel','3+ Spieler'],sv:['Lag','Ordspel','3+ Spelare']}},
+    { icon:'💀', urls:{en:'/hangman-online',pl:'/wisielec-online',de:'/galgenmaennchen-online',sv:'/hanga-gubbe-online'},
+      name:{en:'Hangman',pl:'Wisielec',de:'Galgenmännchen',sv:'Hänga Gubbe'},
+      desc:{en:'Classic word guessing with multiplayer twists. Guess the word before time runs out.',pl:'Klasyczna gra w zgadywanie słów w wersji multiplayer.',de:'Klassisches Wortraten mit Multiplayer-Twist.',sv:'Klassiskt ordgissningsspel med multiplayer-twist.'},
+      tags:{en:['Word Game','2+ Players'],pl:['Gra Słowna','2+ Graczy'],de:['Wortspiel','2+ Spieler'],sv:['Ordspel','2+ Spelare']}},
+    { icon:'🎭', urls:{en:'/who-am-i',pl:'/kim-jestem',de:'/wer-bin-ich',sv:'/vem-ar-jag'},
+      name:{en:'Who Am I?',pl:'Kim Jestem?',de:'Wer bin ich?',sv:'Vem är jag?'},
+      desc:{en:'Ask yes/no questions to figure out which character you\'ve been assigned.',pl:'Zadawaj pytania tak/nie, by odgadnąć przydzieloną postać.',de:'Stelle Ja/Nein-Fragen, um deine zugewiesene Figur zu erraten.',sv:'Ställ ja/nej-frågor för att lista ut vilken karaktär du fått.'},
+      tags:{en:['Guessing','3+ Players'],pl:['Zgadywanie','3+ Graczy'],de:['Raten','3+ Spieler'],sv:['Gissning','3+ Spelare']}},
+    { icon:'🎨', urls:{en:'/sketch-and-guess',pl:'/szkicuj-i-zgaduj',de:'/zeichnen-und-raten',sv:'/skissa-och-gissa'},
+      name:{en:'Sketch & Guess',pl:'Szkicuj i Zgaduj',de:'Zeichnen & Raten',sv:'Skissa & Gissa'},
+      desc:{en:'Draw a word while others race to guess it. Like Pictionary but online.',pl:'Rysuj słowo, a inni zgadują. Jak Pictionary, ale online.',de:'Zeichne ein Wort, während andere raten. Wie Pictionary, aber online.',sv:'Rita ett ord medan andra gissar. Som Pictionary, men online.'},
+      tags:{en:['Drawing','3+ Players'],pl:['Rysowanie','3+ Graczy'],de:['Zeichnen','3+ Spieler'],sv:['Ritning','3+ Spelare']}},
+    { icon:'🤥', urls:{en:'/two-truths-one-lie',pl:'/dwie-prawdy-jedno-klamstwo',de:'/zwei-wahrheiten-eine-luege',sv:'/tva-sanningar-en-logn'},
+      name:{en:'Two Truths One Lie',pl:'Dwie Prawdy Jedno Kłamstwo',de:'Zwei Wahrheiten Eine Lüge',sv:'Två Sanningar En Lögn'},
+      desc:{en:'Share three statements — two true, one false. Can your friends spot the lie?',pl:'Powiedz trzy zdania — dwa prawdziwe, jedno fałszywe. Znajdą kłamstwo?',de:'Teile drei Aussagen — zwei wahr, eine falsch. Erkennen deine Freunde die Lüge?',sv:'Dela tre påståenden — två sanna, ett falskt. Kan dina vänner hitta lögnen?'},
+      tags:{en:['Social','3+ Players'],pl:['Towarzyska','3+ Graczy'],de:['Gesellschaft','3+ Spieler'],sv:['Sällskap','3+ Spelare']}},
+    { icon:'⬜', urls:{en:'/dots-and-boxes-online',pl:'/kropki-i-kreski',de:'/punkte-und-linien-online',sv:'/punkter-och-linjer-online'},
+      name:{en:'Dots & Boxes',pl:'Kropki i Kreski',de:'Käsekästchen',sv:'Punkter & Linjer'},
+      desc:{en:'Connect dots, complete boxes, claim territory. A classic strategy game.',pl:'Łącz kropki, zamykaj kratki, zdobywaj terytorium.',de:'Punkte verbinden, Kästchen schließen, Gebiet erobern.',sv:'Koppla prickar, slutför rutor, erövra territorium.'},
+      tags:{en:['Strategy','2 Players'],pl:['Strategia','2 Graczy'],de:['Strategie','2 Spieler'],sv:['Strategi','2 Spelare']}},
+    { icon:'📋', urls:{en:'/corporate-bingo',pl:'/korporacyjne-bingo',de:'/firmen-bingo',sv:'/foretagsbingo'},
+      name:{en:'Corporate Bingo',pl:'Korporacyjne Bingo',de:'Firmen-Bingo',sv:'Företagsbingo'},
+      desc:{en:'Spot the buzzwords in your next meeting. Cross them off your bingo card.',pl:'Wyłap modne słówka na spotkaniu. Skreślaj je z karty bingo.',de:'Erkenne die Buzzwords im nächsten Meeting. Streiche sie auf deiner Bingo-Karte.',sv:'Hitta modeorden på nästa möte. Kryssa av dem på bingobrickan.'},
+      tags:{en:['Fun','2+ Players'],pl:['Zabawa','2+ Graczy'],de:['Spaß','2+ Spieler'],sv:['Kul','2+ Spelare']}},
+    { icon:'🌍', urls:{en:'/countries-cities-game',pl:'/',de:'/stadt-land-fluss-online',sv:'/laender-och-staeder'},
+      name:{en:'Countries & Cities',pl:'Państwa Miasta',de:'Stadt Land Fluss',sv:'Länder & Städer'},
+      desc:{en:'Name a country, city, animal and more starting with a random letter. Beat the clock!',pl:'Wymień państwo, miasto, zwierzę i więcej na wylosowaną literę!',de:'Nenne ein Land, eine Stadt, ein Tier und mehr mit einem zufälligen Buchstaben!',sv:'Nämn ett land, en stad, ett djur och mer med en slumpmässig bokstav!'},
+      tags:{en:['Trivia','2+ Players'],pl:['Wiedza','2+ Graczy'],de:['Wissen','2+ Spieler'],sv:['Kunskap','2+ Spelare']}},
+    { icon:'🃏', urls:{en:'/find-pairs-online',pl:'/znajdz-pary',de:'/memo-spiel-online',sv:'/memo-spel-online'},
+      name:{en:'Find Pairs',pl:'Znajdź Pary',de:'Memo-Spiel',sv:'Memo-Spel'},
+      desc:{en:'Flip cards and match pairs before your opponent. Test your memory!',pl:'Odkrywaj karty i dopasowuj pary szybciej niż przeciwnik!',de:'Karten umdrehen und Paare finden, bevor dein Gegner es tut!',sv:'Vänd kort och matcha par innan din motståndare. Testa ditt minne!'},
+      tags:{en:['Memory','2 Players'],pl:['Pamięć','2 Graczy'],de:['Gedächtnis','2 Spieler'],sv:['Minne','2 Spelare']}},
+    { icon:'🎬', urls:{en:'/charades-online',pl:'/kalambury',de:'/scharade',sv:'/charader'},
+      name:{en:'Charades',pl:'Kalambury',de:'Scharade',sv:'Charader'},
+      desc:{en:'Act it out, guess the word. The classic party game, now multiplayer online.',pl:'Pokaż gestem, zgadnij słowo. Klasyczna gra imprezowa online.',de:'Pantomime spielen, Wort erraten. Das klassische Partyspiel, jetzt online.',sv:'Visa med gester, gissa ordet. Det klassiska sällskapsspelet, nu online.'},
+      tags:{en:['Acting','4+ Players'],pl:['Aktorstwo','4+ Graczy'],de:['Pantomime','4+ Spieler'],sv:['Skådespel','4+ Spelare']}},
+  ];
+
+  // SEO content translations
+  var SEO = {
+    en: {
+      seo_h1:'Free Online Party Games for Everyone',
+      seo_p1:'Room For Games is a collection of free, browser-based multiplayer party games. Whether you\'re looking for something to play during a video call with colleagues, a family game night, or just a quick round with friends — we\'ve got you covered. Every game works in real-time, connects players through simple room codes, and runs on any device with a browser.',
+      seo_h2:'Perfect for Game Night, Team Building & Classrooms',
+      seo_p2:'Our games are designed for groups of 2 to 20 players. They work great for virtual team meetings, remote team building, classroom activities, or casual hangouts. Popular choices include Forbidden Words, Who Am I, Sketch & Guess, and Two Truths One Lie. All games are family-friendly and suitable for all ages.',
+      seo_h3:'No Downloads, No Accounts, No Hassle',
+      seo_p3:'Just pick a game, create a room, and share the code. Your friends join on their own devices — phone, tablet or computer. The games run entirely in the browser with real-time multiplayer. Everything is free, with no ads interrupting your game.',
+    },
+    pl: {
+      seo_h1:'Darmowe Gry Online na Imprezę dla Wszystkich',
+      seo_p1:'Room For Games to kolekcja darmowych, przeglądarkowych gier multiplayer. Szukasz czegoś na wideokonferencję ze współpracownikami, rodzinny wieczór gier, czy szybką rundę ze znajomymi? Mamy to. Każda gra działa w czasie rzeczywistym, łączy graczy prostymi kodami pokojów i działa na każdym urządzeniu z przeglądarką.',
+      seo_h2:'Idealne na Wieczór Gier, Integrację i Zajęcia',
+      seo_p2:'Nasze gry są zaprojektowane dla grup od 2 do 20 graczy. Świetnie sprawdzają się na spotkaniach wirtualnych zespołów, integracji firmowej, zajęciach szkolnych i nieformalnych spotkaniach. Popularne wybory to Zakazane Słowa, Kim Jestem, Szkicuj i Zgaduj oraz Dwie Prawdy Jedno Kłamstwo. Wszystkie gry są przyjazne rodzinie.',
+      seo_h3:'Bez Pobierania, Bez Konta, Bez Problemów',
+      seo_p3:'Wybierz grę, stwórz pokój i udostępnij kod. Twoi znajomi dołączają na swoich urządzeniach — telefon, tablet lub komputer. Gry działają w przeglądarce z multiplayerem w czasie rzeczywistym. Wszystko za darmo.',
+    },
+    de: {
+      seo_h1:'Kostenlose Online-Partyspiele für Alle',
+      seo_p1:'Room For Games ist eine Sammlung kostenloser, browserbasierter Multiplayer-Partyspiele. Ob für einen Videoanruf mit Kollegen, einen Familienspielabend oder eine schnelle Runde mit Freunden — wir haben alles. Jedes Spiel funktioniert in Echtzeit, verbindet Spieler über einfache Raumcodes und läuft auf jedem Gerät mit Browser.',
+      seo_h2:'Perfekt für Spieleabend, Teambuilding & Unterricht',
+      seo_p2:'Unsere Spiele sind für Gruppen von 2 bis 20 Spielern konzipiert. Sie eignen sich hervorragend für virtuelle Teammeetings, Teambuilding, Schulaktivitäten und Treffen mit Freunden. Beliebte Spiele sind Verbotene Wörter, Wer bin ich, Zeichnen & Raten und Zwei Wahrheiten Eine Lüge. Alle Spiele sind familienfreundlich.',
+      seo_h3:'Keine Downloads, Keine Konten, Kein Aufwand',
+      seo_p3:'Wähle ein Spiel, erstelle einen Raum und teile den Code. Deine Freunde treten auf ihren eigenen Geräten bei — Handy, Tablet oder Computer. Die Spiele laufen komplett im Browser mit Echtzeit-Multiplayer. Alles kostenlos.',
+    },
+    sv: {
+      seo_h1:'Gratis Onlinepartyspel för Alla',
+      seo_p1:'Room For Games är en samling gratis, webbläsarbaserade multiplayerspel. Oavsett om du letar efter något att spela under ett videosamtal med kollegor, en familjespelkväll eller bara en snabb runda med vänner — vi har det du behöver. Varje spel fungerar i realtid, ansluter spelare via enkla rumskoder och körs på alla enheter med webbläsare.',
+      seo_h2:'Perfekt för Spelkväll, Teambuilding & Klassrum',
+      seo_p2:'Våra spel är designade för grupper om 2 till 20 spelare. De fungerar utmärkt för virtuella teammöten, teambuilding, klassrumsaktiviteter och vardagliga träffar. Populära val inkluderar Förbjudna Ord, Vem är jag, Skissa & Gissa och Två Sanningar En Lögn. Alla spel är familjevänliga.',
+      seo_h3:'Inga Nedladdningar, Inga Konton, Inga Krångel',
+      seo_p3:'Välj ett spel, skapa ett rum och dela koden. Dina vänner ansluter på sina egna enheter — telefon, surfplatta eller dator. Spelen körs helt i webbläsaren med realtids-multiplayer. Allt är gratis.',
+    },
+  };
+
   function applyLang(lang) {
     var t = T[lang] || T.en;
     // IDs
@@ -659,21 +660,48 @@
       var el = document.getElementById(id);
       if (el) el.textContent = t[idMap[id]];
     });
-    // data-rfg attributes
+    // data-rfg attributes (includes SEO content)
+    var seo = SEO[lang] || SEO.en;
+    var merged = Object.assign({}, t, seo);
     document.querySelectorAll('[data-rfg]').forEach(function(el) {
       var key = el.getAttribute('data-rfg');
-      if (t[key]) el.textContent = t[key];
+      if (merged[key]) el.textContent = merged[key];
     });
+
+    // Render game cards in current language
+    var gamesEl = document.getElementById('rfg-games-dynamic');
+    if (gamesEl) {
+      gamesEl.innerHTML = GAMES.map(function(g) {
+        var url = g.urls[lang] || g.urls.en;
+        var name = g.name[lang] || g.name.en;
+        var desc = g.desc[lang] || g.desc.en;
+        var tags = g.tags[lang] || g.tags.en;
+        return '<a href="' + url + '" class="rfg-game-item">' +
+          '<div class="rfg-game-icon">' + g.icon + '</div>' +
+          '<div class="rfg-game-info">' +
+            '<div class="rfg-game-name">' + name + '</div>' +
+            '<div class="rfg-game-desc">' + desc + '</div>' +
+            '<div class="rfg-game-tags">' + tags.map(function(t){return '<span class="rfg-tag">'+t+'</span>';}).join('') + '</div>' +
+          '</div>' +
+        '</a>';
+      }).join('');
+    }
+
     // Update language bar active state
     document.querySelectorAll('.rfg-lang-btn').forEach(function(btn) {
       btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
     });
     // Update html lang attribute
     document.documentElement.lang = lang;
+    // Rebuild burger menu and footer in new language
+    if (typeof window._rebuildBurger === 'function') window._rebuildBurger(lang);
+    if (typeof window._refreshFooter === 'function') window._refreshFooter();
+    if (typeof updateNavHome === 'function') updateNavHome(lang);
   }
 
   // Global switchLang for button clicks
   window.switchLang = function(code) {
+    window.lang = code;
     applyLang(code);
     localStorage.setItem('pm_lang', code);
     history.replaceState(null, '', window.location.pathname + '?lang=' + code);
@@ -685,6 +713,7 @@
   var browserLang = (navigator.language || '').slice(0,2);
   var lang = urlLang || storedLang || (['pl','de','sv'].indexOf(browserLang) !== -1 ? browserLang : 'en');
   if (['pl','en','de','sv'].indexOf(lang) === -1) lang = 'en';
+  window.lang = lang;
 
   // Always apply (including 'en') so lang bar highlights correctly
   if (document.readyState === 'loading') {
