@@ -811,6 +811,7 @@ function showScreen(id) {
   if (el) el.classList.add('active');
   const topNav = document.getElementById('top-nav');
   if (topNav) topNav.style.display = (id !== 'screen-home') ? 'flex' : 'none';
+  window.scrollTo(0, 0);
 }
 
 function createRoom() {
@@ -956,6 +957,12 @@ function applyTranslations() {
     'lbl-rule-3':           'rule3',
     'lbl-rule-4':           'rule4',
     'lbl-rule-5':           'rule5',
+    'lbl-lobby-how-to-play':'howToPlay',
+    'lbl-lobby-rule-1':    'rule1',
+    'lbl-lobby-rule-2':    'rule2',
+    'lbl-lobby-rule-3':    'rule3',
+    'lbl-lobby-rule-4':    'rule4',
+    'lbl-lobby-rule-5':    'rule5',
     'lbl-room-vis':         'roomVis',
     'lbl-vis-private':      'visPrivate',
     'lbl-vis-public':       'visPublic',
