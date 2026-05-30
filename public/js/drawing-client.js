@@ -319,6 +319,10 @@ function applyState(data) {
 
 // ── Lobby ─────────────────────────────────────────────────────────
 function renderLobby(data) {
+  // Populate lobby rules (in case applyTranslations missed them)
+  var _lr = {'lbl-lobby-how-to-play':'howToPlay','lbl-lobby-rule-1':'rule1','lbl-lobby-rule-2':'rule2','lbl-lobby-rule-3':'rule3','lbl-lobby-rule-4':'rule4','lbl-lobby-rule-5':'rule5'};
+  for (var _id in _lr) { var _el = document.getElementById(_id); if (_el && L[_lr[_id]]) _el.textContent = L[_lr[_id]]; }
+
   const { players, hostId } = data;
   const connected = players.filter(p => p.connected !== false);
   const el = document.getElementById('lobby-players');

@@ -387,6 +387,10 @@ function applyState(data) {
 
 // ── Lobby ─────────────────────────────────────────────────────────
 function renderLobby(data) {
+  // Populate lobby rules (in case applyTranslations missed them)
+  var _lr = {'lbl-lobby-how-to-play':'howToPlay','lbl-lobby-rule-1':'rule1','lbl-lobby-rule-2':'rule2','lbl-lobby-rule-3':'rule3','lbl-lobby-rule-4':'rule4'};
+  for (var _id in _lr) { var _el = document.getElementById(_id); if (_el && L[_lr[_id]]) _el.textContent = L[_lr[_id]]; }
+
   const startBtn = document.getElementById('lobby-start-btn');
   if (startBtn) {
     startBtn.style.display = isHost ? '' : 'none';
@@ -990,10 +994,13 @@ function doGoHome() { closeConfirm(); goHome(); }
 
 // ── Language ──────────────────────────────────────────────────────
 function setUiLang(code) {
-  // Redirect to SEO page if available (Option B)
+  // Redirect to SEO page if available (Option B) — but not if already on that page
   if (window._seoLangUrls && window._seoLangUrls[code]) {
-    window.location.href = window._seoLangUrls[code];
-    return;
+    var target = window._seoLangUrls[code];
+    if (window.location.pathname !== target) {
+      window.location.href = target;
+      return;
+    }
   }
   lang = code; L = LANGS[code] || LANGS['pl'];
   document.querySelectorAll('.lang-btn').forEach(b =>
@@ -1081,6 +1088,11 @@ function applyTranslations() {
   set('lbl-rule-2',         'rule2');
   set('lbl-rule-3',         'rule3');
   set('lbl-rule-4',         'rule4');
+  set('lbl-lobby-how-to-play', 'howToPlay');
+  set('lbl-lobby-rule-1',  'rule1');
+  set('lbl-lobby-rule-2',  'rule2');
+  set('lbl-lobby-rule-3',  'rule3');
+  set('lbl-lobby-rule-4',  'rule4');
   set('lbl-guess-label',    'guessLabel');
   set('lbl-chat-title',     'chatTitle');
   set('lbl-helper-title',   'helperTitle');
