@@ -123,7 +123,9 @@ window._seoLangUrls = ${JSON.stringify(seo.seoLangUrls)};
   function _seoSetUiLang(code) {
     var url = window._seoLangUrls[code];
     if (url) {
-      window.location.href = url;
+      // Preserve query params (e.g. ?join=XXXXX) during language redirect
+      var params = window.location.search;
+      window.location.href = url + params;
     } else if (_origSetUiLang) {
       _origSetUiLang(code);
     }

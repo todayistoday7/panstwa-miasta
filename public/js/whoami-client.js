@@ -827,9 +827,12 @@ function renderFinal(data) {
   if (playAgainBtn) playAgainBtn.style.display = isHost ? '' : 'none';
 
   if (typeof renderOtherGames === 'function') renderOtherGames('whoami');
+  var otherGamesEl = document.getElementById('other-games-strip');
+  if (otherGamesEl) otherGamesEl.style.display = '';
 
   // Post-game reactions
   var reactionEl = document.getElementById('reaction-container');
+  if (reactionEl) reactionEl.style.display = '';
   if (reactionEl && typeof window._buildReactionBar === 'function') {
     window._buildReactionBar(reactionEl, roomCode, myName || '');
   }
@@ -998,7 +1001,7 @@ function setUiLang(code) {
   if (window._seoLangUrls && window._seoLangUrls[code]) {
     var target = window._seoLangUrls[code];
     if (window.location.pathname !== target) {
-      window.location.href = target;
+      window.location.href = target + window.location.search;
       return;
     }
   }

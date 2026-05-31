@@ -419,9 +419,8 @@ function prefillJoinCode() {
   if (join) {
     const el = document.getElementById('join-code');
     if (el) el.value = join.toUpperCase();
-    // Scroll to join card
-    const joinCard = document.getElementById('join-name');
-    if (joinCard) joinCard.focus();
+    const joinName = document.getElementById('join-name');
+    if (joinName) joinName.focus();
   }
 }
 
