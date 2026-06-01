@@ -755,8 +755,10 @@ function joinRoom() {
 
 function startGame()    { _ga('game_start_pressed',{game:'taboo',language:lang}); socket.emit('taboo_start', { code: roomCode }); }
 function updateSettings() {
-  const rounds   = parseInt(document.getElementById('settings-rounds').value);
-  const turnTime = parseInt(document.getElementById('settings-timer').value);
+  var roundsEl = document.getElementById('settings-rounds');
+  var timerEl  = document.getElementById('settings-timer');
+  var rounds   = roundsEl ? parseInt(roundsEl.value) : 0;
+  var turnTime = timerEl  ? parseInt(timerEl.value)  : 60;
   socket.emit('taboo_update_settings', { code: roomCode, settings: { rounds, turnTime, lang, isPublic: getIsPublic() } });
 }
 
