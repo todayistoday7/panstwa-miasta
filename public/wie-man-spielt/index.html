@@ -135,6 +135,9 @@
     <a class="game-pill" onclick="return showGame('twotruth')" href="#twotruth"><span class="game-pill-icon">🤥</span> 2 Wahrheiten 1 Lüge</a>
     <a class="game-pill" onclick="return showGame('zeichnen')" href="#zeichnen"><span class="game-pill-icon">🎨</span> Zeichnen &amp; Raten</a>
     <a class="game-pill" onclick="return showGame('bingo')" href="#bingo"><span class="game-pill-icon">🎯</span> Unternehmens-Bingo</a>
+    <a class="game-pill" onclick="return showGame('whoami')" href="#whoami"><span class="game-pill-icon">🕵️</span> Wer bin ich?</a>
+    <a class="game-pill" onclick="return showGame('pairs')" href="#pairs"><span class="game-pill-icon">🃏</span> Memo-Spiel</a>
+    <a class="game-pill" onclick="return showGame('charades')" href="#charades"><span class="game-pill-icon">🎬</span> Scharade</a>
     
   </div>
 
@@ -273,6 +276,49 @@
     <div class="game-cta"><p>Bereit zu spielen?</p><a href="/unternehmens-bingo" class="btn">🎯 Unternehmens-Bingo spielen</a></div>
   </div>
 
+  <div id="whoami" class="game-section">
+    <div class="game-section-header"><span class="game-section-icon">🕵️</span><div><div class="game-section-title">Wer bin ich?</div><div class="game-section-sub">2–16 Spieler · Sprache oder Chat · PL/EN/DE/SV</div></div></div>
+    <p class="rules-p">Jeder Spieler bekommt eine geheime Figur — sieht sie aber nicht! Stelle Ja/Nein-Fragen, um herauszufinden, wer du bist. Richtig geraten = 1 Punkt!</p>
+    <div class="rules-h2">So funktioniert es</div>
+    <ul class="rules-ul">
+      <li><strong>Raum erstellen</strong> — Kategorien, Schwierigkeit und Spielmodus wählen</li>
+      <li><strong>Jeder bekommt eine Figur</strong> — sichtbar für alle außer dem Spieler selbst</li>
+      <li><strong>Ja/Nein-Fragen stellen</strong> — „Bin ich eine echte Person?", „Bin ich aus einem Film?"</li>
+      <li><strong>Raten oder aufgeben</strong> — richtig = 1 Punkt, aufgeben = 0</li>
+    </ul>
+    <div class="rules-tip"><p>💡 Beginne mit breiten Fragen — „Lebe ich?", „Bin ich fiktiv?" — um schnell einzugrenzen.</p></div>
+    <div class="game-cta"><p>Bereit zu spielen?</p><a href="/wer-bin-ich" class="btn">🕵️ Wer bin ich? spielen</a></div>
+  </div>
+
+  <div id="pairs" class="game-section">
+    <div class="game-section-header"><span class="game-section-icon">🃏</span><div><div class="game-section-title">Memo-Spiel</div><div class="game-section-sub">2–6 Spieler · Gedächtnisspiel · 6 Themen</div></div></div>
+    <p class="rules-p">Das klassische Kartenpaare-Spiel. Drehe zwei Karten um — passen sie zusammen, bekommst du das Paar und bist nochmal dran.</p>
+    <div class="rules-h2">So funktioniert es</div>
+    <ul class="rules-ul">
+      <li><strong>Host wählt Thema und Brettgröße</strong> — Tiere, Essen, Flaggen und mehr</li>
+      <li><strong>Abwechselnd zwei Karten umdrehen</strong> — merke dir wo sie liegen!</li>
+      <li><strong>Paar gefunden</strong> — Punkt und nochmal dran</li>
+      <li><strong>Spielende</strong> — wenn alle Paare gefunden sind. Die meisten Paare gewinnt!</li>
+    </ul>
+    <div class="rules-tip"><p>💡 Achte auf die Karten der anderen Spieler — du kannst das Wissen bei deinem Zug nutzen!</p></div>
+    <div class="game-cta"><p>Bereit zu spielen?</p><a href="/memo-spiel-online" class="btn">🃏 Memo-Spiel spielen</a></div>
+  </div>
+
+  <div id="charades" class="game-section">
+    <div class="game-section-header"><span class="game-section-icon">🎬</span><div><div class="game-section-title">Scharade</div><div class="game-section-sub">4–40 Spieler · 2 Teams · PL/EN/DE/SV</div></div></div>
+    <p class="rules-p">Das klassische Partyspiel — stelle ein Wort nur mit Gesten dar, während dein Team rät. Kein Reden, kein Zeigen auf Gegenstände!</p>
+    <div class="rules-h2">So funktioniert es</div>
+    <ul class="rules-ul">
+      <li><strong>Spieler teilen sich in 2 Teams</strong></li>
+      <li><strong>Ein Spieler stellt dar</strong> — sieht das Wort auf dem Bildschirm</li>
+      <li><strong>Das Team rät</strong> — ruft Antworten bevor die Zeit abläuft</li>
+      <li><strong>Teams wechseln sich ab</strong></li>
+    </ul>
+    <div class="rules-tip"><p>💡 Benutze große, übertriebene Gesten. Stelle das Konzept dar, nicht einzelne Buchstaben!</p></div>
+    <div class="game-cta"><p>Bereit zu spielen?</p><a href="/scharade" class="btn">🎬 Scharade spielen</a></div>
+  </div>
+
+
   <div style="margin-top:40px;padding-top:28px;border-top:2px solid var(--border);">
     <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--accent2);margin-bottom:8px;">Für wen sind diese Spiele geeignet?</div>
     <p style="color:var(--muted);font-size:14px;font-weight:600;line-height:1.7;margin-bottom:20px;">
@@ -365,6 +411,9 @@ function showGame(id) {
     'twotruth': '/wie-man-spielt/zwei-wahrheiten-eine-luege',
     'zeichnen': '/wie-man-spielt/zeichnen-und-raten',
     'bingo':    '/wie-man-spielt/unternehmens-bingo'
+    'whoami': '/wie-man-spielt/wer-bin-ich',
+    'pairs': '/wie-man-spielt/memo-spiel',
+    'charades': '/wie-man-spielt/scharade',
   };
   document.querySelectorAll('.game-section').forEach(function(s){s.classList.remove('active');});
   document.querySelectorAll('.game-pill').forEach(function(p){p.classList.remove('active');});

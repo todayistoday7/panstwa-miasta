@@ -814,8 +814,9 @@ window._buildFooterLangBtns = function() {
           tt:      '/jak-grac/dwie-prawdy-jedno-klamstwo',
           drawing: '/jak-grac/szkicuj-i-zgaduj',
           bingo:   '/jak-grac/korporacyjne-bingo',
-          whoami:  '/kim-jestem',
-          memory:  '/jak-grac/znajdz-pary' }
+          whoami:  '/jak-grac/kim-jestem',
+          memory:  '/jak-grac/znajdz-pary',
+          charades:'/jak-grac#kalambury' }
       : lp === 'de'
       ? { pm:      '/wie-man-spielt',
           tabu:    '/wie-man-spielt/verbotene-woerter',
@@ -824,8 +825,9 @@ window._buildFooterLangBtns = function() {
           tt:      '/wie-man-spielt/zwei-wahrheiten-eine-luege',
           drawing: '/wie-man-spielt/zeichnen-und-raten',
           bingo:   '/wie-man-spielt/unternehmens-bingo',
-          whoami:  '/wer-bin-ich',
-          memory:  '/wie-man-spielt/memo-spiel' }
+          whoami:  '/wie-man-spielt/wer-bin-ich',
+          memory:  '/wie-man-spielt/memo-spiel',
+          charades:'/wie-man-spielt#charades' }
       : lp === 'sv'
       ? { pm:      '/hur-man-spelar',
           tabu:    '/hur-man-spelar/forbjudna-ord',
@@ -834,8 +836,9 @@ window._buildFooterLangBtns = function() {
           tt:      '/hur-man-spelar/tva-sanningar-en-logn',
           drawing: '/hur-man-spelar/skissa-och-gissa',
           bingo:   '/hur-man-spelar/foretagsbingo',
-          whoami:  '/vem-ar-jag',
-          memory:  '/hur-man-spelar/memo-spel' }
+          whoami:  '/hur-man-spelar/vem-ar-jag',
+          memory:  '/hur-man-spelar/memo-spel',
+          charades:'/hur-man-spelar#charades' }
       : { pm:      '/how-to-play',
           tabu:    '/how-to-play/forbidden-words',
           hang:    '/how-to-play/hangman',
@@ -843,8 +846,9 @@ window._buildFooterLangBtns = function() {
           tt:      '/how-to-play/two-truths-one-lie',
           drawing: '/how-to-play/sketch-and-guess',
           bingo:   '/how-to-play/corporate-bingo',
-          whoami:  '/who-am-i',
-          memory:  '/how-to-play/find-pairs' };
+          whoami:  '/how-to-play/who-am-i',
+          memory:  '/how-to-play/find-pairs',
+          charades:'/how-to-play#charades' };
 
     var L = {
       pl: { games:'Gry', rules:'Zasady gry', about:'O grze',
@@ -862,7 +866,7 @@ window._buildFooterLangBtns = function() {
             howto_drawing:'Jak grać — Szkicuj i Zgaduj',
             howto_bingo:'Jak grać — Korporacyjne Bingo',
             howto_whoami:'Jak grać — Kim Jestem?',
-            howto_memory:'Jak grać — Znajdź Pary',
+            howto_memory:'Jak grać — Znajdź Pary', howto_charades:'Jak grać — Kalambury',
             home:'Strona główna', words:'Słowa na literę', bug:'🐛 Zgłoś błąd' },
       en: { games:'Games', rules:'Rules', about:'About',
             cats:'Categories', tagline:'Free online multiplayer games for friends and family',
@@ -879,7 +883,7 @@ window._buildFooterLangBtns = function() {
             howto_drawing:'How to play — Sketch & Guess',
             howto_bingo:'How to play — Corporate Bingo',
             howto_whoami:'How to play — Who Am I?',
-            howto_memory:'How to play — Find Pairs', home:'Home', blog:'Blog', words:'Words by letter', bug:'🐛 Report a Bug' },
+            howto_memory:'How to play — Find Pairs', howto_charades:'How to play — Charades', home:'Home', blog:'Blog', words:'Words by letter', bug:'🐛 Report a Bug' },
       de: { games:'Spiele', rules:'Regeln', about:'Über',
             cats:'Kategorien', tagline:'Kostenlose Multiplayer-Spiele online',
             privacy:'Datenschutz',
@@ -895,7 +899,7 @@ window._buildFooterLangBtns = function() {
             howto_drawing:'Spielregeln — Zeichnen & Raten',
             howto_bingo:'Spielregeln — Unternehmens-Bingo',
             howto_whoami:'Spielregeln — Wer bin ich?',
-            howto_memory:'Spielregeln — Memo-Spiel',
+            howto_memory:'Spielregeln — Memo-Spiel', howto_charades:'Spielregeln — Scharade',
             blog:'Blog', words:'Wörter nach Buchstabe', bug:'🐛 Fehler melden' },
       sv: { games:'Spel', rules:'Regler', about:'Om',
             cats:'Kategorier', tagline:'Gratis multiplayer-spel online för vänner och familj',
@@ -912,7 +916,7 @@ window._buildFooterLangBtns = function() {
             howto_drawing:'Spelregler — Skissa & Gissa',
             howto_bingo:'Spelregler — Företagsbingo',
             howto_whoami:'Spelregler — Vem är jag?',
-            howto_memory:'Spelregler — Memo-spel',
+            howto_memory:'Spelregler — Memo-spel', howto_charades:'Spelregler — Charader',
             blog:'Blog', words:'Ord per bokstav', bug:'🐛 Rapportera fel' },
     };
     var t = L[lp] || L['en'];
@@ -931,6 +935,7 @@ window._buildFooterLangBtns = function() {
             '<a href="' + (footerLang==='pl'?'/szkicuj-i-zgaduj':footerLang==='de'?'/zeichnen-und-raten':footerLang==='sv'?'/skissa-och-gissa':'/sketch-and-guess') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎨 ' + (t.gdrawing||'Sketch & Guess') + '</a>' +
             '<a href="' + (footerLang==='pl'?'/kim-jestem':footerLang==='de'?'/wer-bin-ich':footerLang==='sv'?'/vem-ar-jag':'/who-am-i') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">❓ ' + (t.gwhoami||'Who Am I?') + '</a>' +
             '<a href="' + (footerLang==='pl'?'/znajdz-pary':footerLang==='de'?'/memo-spiel-online':footerLang==='sv'?'/memo-spel-online':'/find-pairs-online') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🧩 ' + (t.gmemory||'Find Pairs') + '</a>' +
+            '<a href="' + (footerLang==='pl'?'/kalambury':footerLang==='de'?'/scharade':footerLang==='sv'?'/charader':'/charades-online') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎬 ' + (t.gcharades||'Charades') + '</a>' +
             '<a href="/games?lang=' + footerLang + '" style="color:var(--accent);font-size:13px;font-weight:700;text-decoration:none;">→ ' + t.games + '</a>' +
             '<a href="/rooms?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔴 ' + (t.rooms||'Live Rooms') + '</a>' +
           '</div>' +
@@ -947,6 +952,7 @@ window._buildFooterLangBtns = function() {
             '<a href="' + rulesLinks.bingo + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + (t.howto_bingo||'How to play — Corporate Bingo') + '</a>' +
             '<a href="' + rulesLinks.whoami + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + (t.howto_whoami||'How to play — Who Am I?') + '</a>' +
             '<a href="' + rulesLinks.memory + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + (t.howto_memory||'How to play — Find Pairs') + '</a>' +
+            '<a href="' + rulesLinks.charades + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">' + (t.howto_charades||'How to play — Charades') + '</a>' +
           '</div>' +
         '</div>' +
         '<div>' +

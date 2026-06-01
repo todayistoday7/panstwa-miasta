@@ -152,6 +152,9 @@
     <a class="game-pill" onclick="return showGame('twotruth')" href="#twotruth"><span class="game-pill-icon">🤥</span> 2 Truths 1 Lie</a>
     <a class="game-pill" onclick="return showGame('sketch')" href="#sketch"><span class="game-pill-icon">🎨</span> Sketch &amp; Guess</a>
     <a class="game-pill" onclick="return showGame('bingo')" href="#bingo"><span class="game-pill-icon">🎯</span> Corporate Bingo</a>
+    <a class="game-pill" onclick="return showGame('whoami')" href="#whoami"><span class="game-pill-icon">🕵️</span> Who Am I?</a>
+    <a class="game-pill" onclick="return showGame('pairs')" href="#pairs"><span class="game-pill-icon">🃏</span> Find Pairs</a>
+    <a class="game-pill" onclick="return showGame('charades')" href="#charades"><span class="game-pill-icon">🎬</span> Charades</a>
   </div>
 
   <div id="pm" class="game-section active">
@@ -290,6 +293,69 @@
   </div>
 
   
+  
+  <div id="whoami" class="game-section">
+    <div class="game-section-header"><span class="game-section-icon">🕵️</span><div><div class="game-section-title">Who Am I?</div><div class="game-section-sub">2–16 players · voice or chat · PL/EN/DE/SV</div></div></div>
+    <p class="rules-p">Each player gets a secret character assigned to them — but they can't see who it is. Take turns asking yes/no questions to figure out your identity. Guess correctly to score a point!</p>
+    <div class="rules-h2">How It Works</div>
+    <ul class="rules-ul">
+      <li><strong>Create a room</strong> — choose categories, difficulty, and game mode (voice or chat)</li>
+      <li><strong>Everyone gets a character</strong> — visible to everyone except the player themselves</li>
+      <li><strong>Ask yes/no questions</strong> — "Am I a real person?", "Am I from a movie?"</li>
+      <li><strong>Guess or surrender</strong> — correct guess = 1 point, surrender = 0</li>
+    </ul>
+    <div class="rules-h2">Game Modes</div>
+    <ul class="rules-ul">
+      <li><strong>Voice mode</strong> — ask questions out loud via Zoom, Teams, or in person</li>
+      <li><strong>Chat mode</strong> — type questions in the built-in chat, other players vote yes/no/maybe</li>
+    </ul>
+    <div class="rules-tip"><p>💡 Start with broad questions — "Am I alive?", "Am I fictional?" — to narrow down quickly.</p></div>
+    <div class="game-cta"><p>Ready to play?</p><a href="/who-am-i" class="btn">🕵️ Play Who Am I?</a></div>
+  </div>
+
+  <div id="pairs" class="game-section">
+    <div class="game-section-header"><span class="game-section-icon">🃏</span><div><div class="game-section-title">Find Pairs</div><div class="game-section-sub">2–6 players · memory game · 6 themes</div></div></div>
+    <p class="rules-p">The classic card-matching memory game. Flip two cards — if they match, you score a pair and go again. If not, they flip back and it's the next player's turn.</p>
+    <div class="rules-h2">How It Works</div>
+    <ul class="rules-ul">
+      <li><strong>Host picks theme and board size</strong> — animals, food, flags, and more</li>
+      <li><strong>Take turns flipping two cards</strong> — remember where they are!</li>
+      <li><strong>Match a pair</strong> — score a point and flip again</li>
+      <li><strong>Game ends</strong> — when all pairs are found. Most pairs wins!</li>
+    </ul>
+    <div class="rules-h2">Game Length</div>
+    <ul class="rules-ul">
+      <li><strong>Quick</strong> — 1 board</li>
+      <li><strong>Standard</strong> — 2 boards, scores accumulate</li>
+      <li><strong>Marathon</strong> — 3 boards, scores accumulate</li>
+    </ul>
+    <div class="rules-tip"><p>💡 Pay attention to cards other players flip — you can use that information on your turn!</p></div>
+    <div class="game-cta"><p>Ready to play?</p><a href="/find-pairs-online" class="btn">🃏 Play Find Pairs</a></div>
+  </div>
+
+  <div id="charades" class="game-section">
+    <div class="game-section-header"><span class="game-section-icon">🎬</span><div><div class="game-section-title">Charades</div><div class="game-section-sub">4–40 players · 2 teams · PL/EN/DE/SV</div></div></div>
+    <p class="rules-p">The classic party game — act out a word using only gestures while your team tries to guess it. No talking, no pointing at objects, no mouthing words!</p>
+    <div class="rules-h2">How It Works</div>
+    <ul class="rules-ul">
+      <li><strong>Players split into 2 teams</strong> — the host can move players between teams</li>
+      <li><strong>One player acts</strong> — they see the word on their screen</li>
+      <li><strong>Their team guesses</strong> — call out answers before the timer runs out</li>
+      <li><strong>Teams alternate</strong> — each team takes turns acting and guessing</li>
+    </ul>
+    <div class="rules-h2">Scoring</div>
+    <ul class="rules-ul">
+      <li><strong>Correct guess</strong> — team scores a point</li>
+      <li><strong>Time runs out</strong> — no points, next team's turn</li>
+      <li><strong>Skip</strong> — actor can skip a difficult word (limited skips)</li>
+    </ul>
+    <div class="rules-h2">Word Categories</div>
+    <p class="rules-p">Choose from multiple categories: animals, actions, movies, sports, food, and more. Words are available in multiple difficulty levels — family-friendly, adults, or mixed mode with 700+ words.</p>
+    <div class="rules-tip"><p>💡 Use big, exaggerated gestures. Act out the concept, not the individual letters!</p></div>
+    <div class="game-cta"><p>Ready to play?</p><a href="/charades-online" class="btn">🎬 Play Charades</a></div>
+  </div>
+
+  
   <!-- AGE GUIDE SECTION -->
   <div style="margin-top:40px;padding-top:28px;border-top:2px solid var(--border);">
     <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--accent2);margin-bottom:8px;">Who Are These Games For?</div>
@@ -393,6 +459,9 @@ function showGame(id) {
     'twotruth': '/how-to-play/two-truths-one-lie',
     'sketch':   '/how-to-play/sketch-and-guess',
     'bingo':    '/how-to-play/corporate-bingo'
+    'whoami': '/how-to-play/who-am-i',
+    'pairs': '/how-to-play/find-pairs',
+    'charades': '/how-to-play/charades',
   };
   document.querySelectorAll('.game-section').forEach(function(s){s.classList.remove('active');});
   document.querySelectorAll('.game-pill').forEach(function(p){p.classList.remove('active');});
