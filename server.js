@@ -166,6 +166,12 @@ app.get('/hur-man-spelar/punkter-och-linjer-online',(req,res) => res.sendFile(pa
 app.get('/hur-man-spelar/tva-sanningar-en-logn',  (req,res) => res.sendFile(path.join(__dirname,'public/hur-man-spelar/tva-sanningar-en-logn.html')));
 app.get('/hur-man-spelar/foretagsbingo',          (req,res) => res.sendFile(path.join(__dirname,'public/hur-man-spelar/foretagsbingo.html')));
 
+// ── How to play — Charades ──────────────────────────────────────
+app.get('/jak-grac/kalambury',                    (req,res) => res.sendFile(path.join(__dirname,'public/jak-grac/kalambury.html')));
+app.get('/how-to-play/charades',                  (req,res) => res.sendFile(path.join(__dirname,'public/how-to-play/charades.html')));
+app.get('/wie-man-spielt/scharade',               (req,res) => res.sendFile(path.join(__dirname,'public/wie-man-spielt/scharade.html')));
+app.get('/hur-man-spelar/charader',               (req,res) => res.sendFile(path.join(__dirname,'public/hur-man-spelar/charader.html')));
+
 // ── SEO Landing Pages — Forbidden Words ─────────────────────────
 app.get('/zakazane-slowa',    seoInject('taboo', 'pl'));
 app.get('/forbidden-words',   seoInject('taboo', 'en'));

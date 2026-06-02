@@ -816,7 +816,7 @@ window._buildFooterLangBtns = function() {
           bingo:   '/jak-grac/korporacyjne-bingo',
           whoami:  '/jak-grac/kim-jestem',
           memory:  '/jak-grac/znajdz-pary',
-          charades:'/jak-grac#kalambury' }
+          charades:'/jak-grac/kalambury' }
       : lp === 'de'
       ? { pm:      '/wie-man-spielt',
           tabu:    '/wie-man-spielt/verbotene-woerter',
@@ -827,7 +827,7 @@ window._buildFooterLangBtns = function() {
           bingo:   '/wie-man-spielt/unternehmens-bingo',
           whoami:  '/wie-man-spielt/wer-bin-ich',
           memory:  '/wie-man-spielt/memo-spiel',
-          charades:'/wie-man-spielt#charades' }
+          charades:'/wie-man-spielt/scharade' }
       : lp === 'sv'
       ? { pm:      '/hur-man-spelar',
           tabu:    '/hur-man-spelar/forbjudna-ord',
@@ -838,7 +838,7 @@ window._buildFooterLangBtns = function() {
           bingo:   '/hur-man-spelar/foretagsbingo',
           whoami:  '/hur-man-spelar/vem-ar-jag',
           memory:  '/hur-man-spelar/memo-spel',
-          charades:'/hur-man-spelar#charades' }
+          charades:'/hur-man-spelar/charader' }
       : { pm:      '/how-to-play',
           tabu:    '/how-to-play/forbidden-words',
           hang:    '/how-to-play/hangman',
@@ -848,7 +848,7 @@ window._buildFooterLangBtns = function() {
           bingo:   '/how-to-play/corporate-bingo',
           whoami:  '/how-to-play/who-am-i',
           memory:  '/how-to-play/find-pairs',
-          charades:'/how-to-play#charades' };
+          charades:'/how-to-play/charades' };
 
     var L = {
       pl: { games:'Gry', rules:'Zasady gry', about:'O grze',
