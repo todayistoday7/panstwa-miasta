@@ -747,6 +747,11 @@ const LANGS = {
     nextRound: '➡️ Następna runda',
     lengthQuick: '⚡ Szybka (każdy pokazuje raz)', lengthStandard: '🎮 Standardowa (każdy pokazuje 2x)', lengthMarathon: '🏆 Maraton (każdy pokazuje 3x)', gameLength: 'Długość gry',
     waitForTeam: 'Drużyna przeciwna pokazuje...',
+    guessNow: '🗣️ ZGADUJ! Krzycz odpowiedź!',
+    watchOther: '👀 Obserwuj — gra drużyna przeciwna',
+    yourTeamLabel: 'Twoja drużyna',
+    otherTeamLabel: 'Przeciwnicy',
+    actorLabel: '🎭 POKAZUJE',
   },
   en: {
     name: '🇬🇧 EN',
@@ -776,6 +781,11 @@ const LANGS = {
     nextRound: '➡️ Next Round',
     lengthQuick: '⚡ Quick (everyone acts once)', lengthStandard: '🎮 Standard (everyone acts twice)', lengthMarathon: '🏆 Marathon (everyone acts 3x)', gameLength: 'Game length',
     waitForTeam: 'Other team is acting...',
+    guessNow: '🗣️ GUESS NOW! Shout your answer!',
+    watchOther: '👀 Watch — the other team is playing',
+    yourTeamLabel: 'Your team',
+    otherTeamLabel: 'Other team',
+    actorLabel: '🎭 ACTING',
   },
   de: {
     name: '🇩🇪 DE',
@@ -805,6 +815,11 @@ const LANGS = {
     nextRound: '➡️ Nächste Runde',
     lengthQuick: '⚡ Kurz (jeder einmal)', lengthStandard: '🎮 Standard (jeder 2x)', lengthMarathon: '🏆 Marathon (jeder 3x)', gameLength: 'Spiellänge',
     waitForTeam: 'Das andere Team zeigt...',
+    guessNow: '🗣️ RATEN! Rufe deine Antwort!',
+    watchOther: '👀 Zuschauen — das andere Team spielt',
+    yourTeamLabel: 'Dein Team',
+    otherTeamLabel: 'Gegner',
+    actorLabel: '🎭 ZEIGT',
   },
   sv: {
     name: '🇸🇪 SV',
@@ -834,6 +849,11 @@ const LANGS = {
     nextRound: '➡️ Nästa runda',
     lengthQuick: '⚡ Snabb (alla visar en gång)', lengthStandard: '🎮 Standard (alla visar 2 ggr)', lengthMarathon: '🏆 Maraton (alla visar 3 ggr)', gameLength: 'Spellängd',
     waitForTeam: 'Andra laget visar...',
+    guessNow: '🗣️ GISSA NU! Ropa ditt svar!',
+    watchOther: '👀 Titta — andra laget spelar',
+    yourTeamLabel: 'Ditt lag',
+    otherTeamLabel: 'Motståndare',
+    actorLabel: '🎭 VISAR',
   },
 };
 
@@ -1193,11 +1213,59 @@ function renderPlaying(data) {
     if (waitMsg) {
       waitMsg.style.display = '';
       if (isMyTeamActing) {
-        waitMsg.innerHTML = '<div class="wait-icon">🎭</div><p>' + esc(data.actorName) + ' ' + L.teamIsActing + '</p><p style="font-size:12px;color:var(--muted);">💡 ' + L.wordsGuessed + ' ' + data.wordsThisTurn + '</p>';
+        // YOUR TEAM — you need to GUESS!
+        waitMsg.innerHTML =
+          '<div style="background:rgba(6,214,160,0.15);border:2px solid var(--green);border-radius:14px;padding:16px;text-align:center;margin-bottom:12px;">' +
+            '<div style="font-size:36px;margin-bottom:6px;">🗣️</div>' +
+            '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:24px;letter-spacing:2px;color:var(--green);">' + L.guessNow + '</div>' +
+            '<p style="font-size:14px;color:var(--muted);font-weight:700;margin:8px 0 0;">' + esc(data.actorName) + ' ' + L.teamIsActing + '</p>' +
+          '</div>' +
+          '<p style="font-size:13px;color:var(--muted);font-weight:700;text-align:center;">💡 ' + L.wordsGuessed + ' ' + data.wordsThisTurn + '</p>';
       } else {
-        waitMsg.innerHTML = '<div class="wait-icon">👀</div><p>' + L.waitForTeam + '</p><p style="font-size:12px;color:var(--muted);">' + L.wordsGuessed + ' ' + data.wordsThisTurn + '</p>';
+        // OTHER TEAM — just watch
+        waitMsg.innerHTML =
+          '<div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;margin-bottom:12px;">' +
+            '<div style="font-size:36px;margin-bottom:6px;">👀</div>' +
+            '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:20px;letter-spacing:2px;color:var(--muted);">' + L.watchOther + '</div>' +
+            '<p style="font-size:13px;color:var(--muted);font-weight:600;margin:8px 0 0;">' + esc(data.actorName) + ' (' + (data.actorTeam === 'red' ? L.teamRed : L.teamBlue) + ') ' + L.teamIsActing + '</p>' +
+          '</div>' +
+          '<p style="font-size:13px;color:var(--muted);font-weight:700;text-align:center;">💡 ' + L.wordsGuessed + ' ' + data.wordsThisTurn + '</p>';
       }
     }
+  }
+
+  // Team roster — always visible during play
+  var rosterEl = document.getElementById('team-roster');
+  if (rosterEl && data.players) {
+    var redPlayers = data.players.filter(function(p) { return p.team === 'red' && p.connected; });
+    var bluePlayers = data.players.filter(function(p) { return p.team === 'blue' && p.connected; });
+    var renderTeamList = function(players, teamColor) {
+      return players.map(function(p) {
+        var isActorP = p.id === data.actorId;
+        var isMe = p.id === myId;
+        var badge = isActorP ? ' <span style="font-size:10px;background:var(--accent);color:#000;padding:1px 6px;border-radius:8px;font-weight:900;">' + L.actorLabel + '</span>' : '';
+        var meBadge = isMe ? ' <span style="font-size:10px;background:var(--accent2);color:#000;padding:1px 6px;border-radius:8px;font-weight:900;">' + L.youBadge + '</span>' : '';
+        return '<div style="font-size:12px;font-weight:700;color:' + (isActorP ? 'var(--accent)' : 'var(--muted)') + ';padding:2px 0;">' + esc(p.name) + badge + meBadge + '</div>';
+      }).join('');
+    };
+    var myTeamFirst = myTeam === 'blue';
+    var leftTeam = myTeamFirst ? bluePlayers : redPlayers;
+    var leftLabel = myTeamFirst ? '🔵 ' + L.yourTeamLabel : '🔴 ' + (myTeam === 'red' ? L.yourTeamLabel : L.otherTeamLabel);
+    var rightTeam = myTeamFirst ? redPlayers : bluePlayers;
+    var rightLabel = myTeamFirst ? '🔴 ' + L.otherTeamLabel : '🔵 ' + (myTeam === 'blue' ? L.yourTeamLabel : L.otherTeamLabel);
+    rosterEl.innerHTML =
+      '<div style="display:flex;gap:12px;margin-top:16px;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;">' +
+        '<div style="flex:1;">' +
+          '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:14px;letter-spacing:1px;color:' + (myTeam === (myTeamFirst ? 'blue' : 'red') ? 'var(--green)' : 'var(--muted)') + ';margin-bottom:6px;">' + leftLabel + '</div>' +
+          renderTeamList(leftTeam, myTeamFirst ? 'blue' : 'red') +
+        '</div>' +
+        '<div style="width:1px;background:var(--border);"></div>' +
+        '<div style="flex:1;">' +
+          '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:14px;letter-spacing:1px;color:var(--muted);margin-bottom:6px;">' + rightLabel + '</div>' +
+          renderTeamList(rightTeam, myTeamFirst ? 'red' : 'blue') +
+        '</div>' +
+      '</div>';
+  }
   }
   
   // Last result flash
