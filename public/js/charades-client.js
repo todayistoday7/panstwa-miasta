@@ -1266,7 +1266,6 @@ function renderPlaying(data) {
         '</div>' +
       '</div>';
   }
-  }
   
   // Last result flash
   var flash = document.getElementById('result-flash');
@@ -1418,8 +1417,11 @@ window.movePlayer = function(id, team) { socket.emit('charades_move_team', { cod
 function setUiLang(code) {
   // If we have SEO language URLs (injected by seo-inject), redirect to the correct page
   if (window._seoLangUrls && window._seoLangUrls[code]) {
-    window.location.href = window._seoLangUrls[code];
-    return;
+    var target = window._seoLangUrls[code];
+    if (window.location.pathname !== target) {
+      window.location.href = target + window.location.search;
+      return;
+    }
   }
   // Fallback for non-SEO pages (e.g. /charades?lang=pl)
   var langUrls = { pl: '/kalambury', en: '/charades-online', de: '/scharade', sv: '/charader' };
