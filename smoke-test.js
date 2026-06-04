@@ -321,20 +321,22 @@ async function testFooterLinks(browser) {
 // ─── 9. Language switch ───────────────────────────────────────────
 async function testLanguageSwitch(browser) {
   section('Language switching (PM home)');
+  // On PM home, clicking a flag redirects to the SEO URL for that language
   const tests = [
-    ['/?lang=pl', '🇬🇧', 'lang=en'],
-    ['/?lang=en', '🇵🇱', 'lang=pl'],
-    ['/?lang=pl', '🇩🇪', 'lang=de'],
-    ['/?lang=pl', '🇸🇪', 'lang=sv'],
+    ['/?lang=pl', '🇬🇧', '/countries-cities-game'],
+    ['/?lang=en', '🇵🇱', '/?lang=pl'],
+    ['/?lang=pl', '🇩🇪', '/stadt-land-fluss-online'],
+    ['/?lang=pl', '🇸🇪', '/laender-och-staeder'],
   ];
-  for (const [path, flag, param] of tests) {
+  for (const [path, flag, expectedUrl] of tests) {
     const { page, ctx } = await openPage(browser, BASE + path);
-    await check(`${flag} — URL has ${param}`, async () => {
+    await check(`${flag} — redirects correctly`, async () => {
       const btn = await page.$(`button:has-text("${flag}")`);
       if (!btn) throw new Error(`Flag ${flag} not found`);
       await btn.click();
-      await page.waitForTimeout(600);
-      if (!page.url().includes(param)) throw new Error(`URL: ${page.url()}`);
+      await page.waitForTimeout(1500);
+      const url = page.url();
+      if (!url.includes(expectedUrl)) throw new Error(`URL: ${url}, expected to contain ${expectedUrl}`);
     });
     await ctx.close();
   }
@@ -402,7 +404,7 @@ async function testGameLobbies(browser) {
     { name: 'Bingo EN',     path: '/corporate-bingo',            btn: '#lbl-create-btn' },
     { name: 'Who Am I EN',  path: '/who-am-i',                   btn: '#lbl-create-btn', needsCat: true },
     { name: 'Find Pairs EN',path: '/find-pairs-online',          btn: '#lbl-create-btn' },
-    { name: 'Charades EN',  path: '/charades-online',            btn: '#lbl-create-btn' },
+    { name: 'Charades EN',  path: '/charades-online',            btn: '#lbl-create-btn', nameField: '#create-name' },
   ];
 
   for (const g of games) {
@@ -417,8 +419,9 @@ async function testGameLobbies(browser) {
     try {
       await check(`${g.name} — host creates room`, async () => {
         await p1.goto(BASE + g.path, { waitUntil: 'domcontentloaded', timeout: TIMEOUT });
-        await p1.waitForSelector('#host-name', { timeout: TIMEOUT });
-        await p1.fill('#host-name', 'SmokeHost');
+        const nameSelector = g.nameField || '#host-name';
+        await p1.waitForSelector(nameSelector, { timeout: TIMEOUT });
+        await p1.fill(nameSelector, 'SmokeHost');
         if (g.needsCat) await p1.click('[data-cat="mixed"]').catch(() => {});
         const btnEl = await p1.$(g.btn);
         if (!btnEl) throw new Error(`Button ${g.btn} not found`);
