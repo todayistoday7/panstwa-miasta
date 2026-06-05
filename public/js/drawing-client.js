@@ -21,7 +21,7 @@ const LANGS = {
     playersTitle:'Gracze', settings:'Ustawienia',
     drawTime:'Czas rysowania', writeTime:'Czas pisania / zgadywania',
     startBtn:'▶ Rozpocznij grę', leaveRoom:'🚪 Wyjdź',
-    waitingForHost:'Czekam na hosta...', needPlayers:'Potrzeba minimum 3 graczy',
+    waitingForHost:'Czekam na hosta...', waitingTitle:'CZEKAM NA HOSTA...', waitingDetail:'Host (twórca pokoju) rozpocznie grę, gdy dołączy wystarczająco dużo graczy.', waitingNudge:'Kliknij 👋 Szturchnij, żeby dać znać, że jesteś gotowy!', playersConnected:'graczy w pokoju', needPlayers:'Potrzeba minimum 3 graczy',
     howToPlay:'Jak grać',
     rule1:'Każdy gracz wpisuje tajne słowo',
     rule2:'Kartki się mieszają — rysujesz słowo które dostałeś',
@@ -74,7 +74,7 @@ const LANGS = {
     playersTitle:'Players', settings:'Settings',
     drawTime:'Drawing time', writeTime:'Writing / guessing time',
     startBtn:'▶ Start Game', leaveRoom:'🚪 Leave',
-    waitingForHost:'Waiting for host...', needPlayers:'Need at least 3 players',
+    waitingForHost:'Waiting for host...', waitingTitle:'WAITING FOR HOST TO START...', waitingDetail:'The host (room creator) will start once enough players join.', waitingNudge:'Tap 👋 Nudge to let them know you are ready!', playersConnected:'players connected', needPlayers:'Need at least 3 players',
     howToPlay:'How to play',
     rule1:'Each player writes a secret word',
     rule2:'Papers shuffle — you draw the word you received',
@@ -127,7 +127,7 @@ const LANGS = {
     playersTitle:'Spieler', settings:'Einstellungen',
     drawTime:'Zeichenzeit', writeTime:'Schreib- / Ratezeit',
     startBtn:'▶ Spiel starten', leaveRoom:'🚪 Verlassen',
-    waitingForHost:'Warte auf den Host...', needPlayers:'Mindestens 3 Spieler erforderlich',
+    waitingForHost:'Warte auf den Host...', waitingTitle:'WARTE AUF DEN HOST...', waitingDetail:'Der Host (Ersteller des Raums) startet, wenn genügend Spieler beigetreten sind.', waitingNudge:'Tippe auf 👋 Anstupsen, um zu zeigen, dass du bereit bist!', playersConnected:'Spieler im Raum', needPlayers:'Mindestens 3 Spieler erforderlich',
     howToPlay:'Spielregeln',
     rule1:'Jeder Spieler schreibt ein geheimes Wort',
     rule2:'Zettel mischen — du zeichnest das Wort das du bekommen hast',
@@ -180,7 +180,7 @@ const LANGS = {
     playersTitle:'Spelare', settings:'Inställningar',
     drawTime:'Rittid', writeTime:'Skriv- / gissingstid',
     startBtn:'▶ Starta spelet', leaveRoom:'🚪 Lämna',
-    waitingForHost:'Väntar på värden...', needPlayers:'Minst 3 spelare krävs',
+    waitingForHost:'Väntar på värden...', waitingTitle:'VÄNTAR PÅ VÄRDEN...', waitingDetail:'Värden (rumskaparen) startar när tillräckligt många spelare har gått med.', waitingNudge:'Tryck på 👋 Puffa för att visa att du är redo!', playersConnected:'spelare i rummet', needPlayers:'Minst 3 spelare krävs',
     howToPlay:'Spelregler',
     rule1:'Varje spelare skriver ett hemligt ord',
     rule2:'Lappar blandas — du ritar ordet du fick',
@@ -360,7 +360,7 @@ function renderLobby(data) {
   } else {
     if (lobbySettings) lobbySettings.style.display = 'none';
     if (btnRow) btnRow.style.display = 'none';
-    if (waitMsg) { waitMsg.style.display = 'block'; waitMsg.textContent = L.waitingForHost; }
+    if (waitMsg) { renderWaitingForHost(waitMsg, L, connected.length); }
   }
 }
 
@@ -796,8 +796,10 @@ function playAgain() {
 
 // ── Settings ──────────────────────────────────────────────────────
 function updateSettings() {
-  const drawTime  = parseInt(document.getElementById('settings-draw-time').value);
-  const writeTime = parseInt(document.getElementById('settings-write-time').value);
+  var dtEl = document.getElementById('settings-draw-time');
+  var wtEl = document.getElementById('settings-write-time');
+  var drawTime  = dtEl ? parseInt(dtEl.value) : 60;
+  var writeTime = wtEl ? parseInt(wtEl.value) : 30;
   socket.emit('drawing_settings', { code: roomCode, settings: { drawTime, writeTime, isPublic: _isPublic } });
 }
 

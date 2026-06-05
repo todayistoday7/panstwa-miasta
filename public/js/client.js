@@ -290,8 +290,8 @@ function renderLobby(data) {
     renderCatGrid(settings.categories, false);
     renderLangPills(settings.lang, false);
     document.getElementById('lobby-btn-row').style.display = 'none';
-    document.getElementById('waiting-msg').style.display   = 'block';
-    document.getElementById('waiting-msg').textContent     = L.waitingForHost;
+    var _wpc = (data.players || []).filter(function(p){return p.connected !== false;}).length;
+    renderWaitingForHost(document.getElementById('waiting-msg'), L, _wpc);
   }
 }
 
@@ -343,7 +343,8 @@ function setGameLang(code) {
 }
 
 function updateSettings() {
-  const rounds = parseInt(document.getElementById('settings-rounds').value);
+  var roundsEl = document.getElementById('settings-rounds');
+  var rounds = roundsEl ? parseInt(roundsEl.value) : 0;
   const graceEl = document.getElementById('settings-grace');
   const grace = graceEl ? parseInt(graceEl.value) : 20;
   socket.emit('update_settings', { code: roomCode, settings: { totalRounds: rounds, gracePeriod: grace, isPublic: getIsPublic() } });

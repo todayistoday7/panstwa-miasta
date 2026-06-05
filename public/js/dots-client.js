@@ -39,7 +39,7 @@ const LANGS = {
     copyCode:     'Skopiuj kod',
     createDisclaimer: 'Stwórz pokój otwarty lub prywatny. Zaproś znajomych — otrzymasz kod pokoju, który przekażesz innym graczom.',
     joinDisclaimer: 'Masz kod od znajomego lub z listy otwartych pokoi? Wpisz go tutaj i graj razem!',
-    waitingForHost: 'Czekam na hosta...',
+    waitingForHost: 'Czekam na hosta...', waitingTitle:'CZEKAM NA HOSTA...', waitingDetail:'Host (twórca pokoju) rozpocznie grę, gdy dołączy wystarczająco dużo graczy.', waitingNudge:'Kliknij 👋 Szturchnij, żeby dać znać, że jesteś gotowy!', playersConnected:'graczy w pokoju',
     needPlayers:  'Potrzeba minimum 2 graczy',
     roundsLabel:  'Rundy',
     howToPlay:    'Zasady gry',
@@ -91,7 +91,7 @@ const LANGS = {
     copyCode:     'Copy Code',
     createDisclaimer: 'Create a public or private room. Invite friends — you\'ll get a room code to share with other players.',
     joinDisclaimer: 'Have a code from a friend or from the Live Rooms page? Enter it here and join the game!',
-    waitingForHost: 'Waiting for host...',
+    waitingForHost: 'Waiting for host...', waitingTitle:'WAITING FOR HOST TO START...', waitingDetail:'The host (room creator) will start once enough players join.', waitingNudge:'Tap 👋 Nudge to let them know you are ready!', playersConnected:'players connected',
     needPlayers:  'Need at least 2 players',
     roundsLabel:  'Rounds',
     howToPlay:    'How to play',
@@ -143,7 +143,7 @@ const LANGS = {
     copyCode:     'Code kopieren',
     createDisclaimer: 'Erstelle einen öffentlichen oder privaten Raum. Lade Freunde ein — du erhältst einen Code zum Teilen.',
     joinDisclaimer: 'Hast du einen Code von einem Freund oder von der Seite mit offenen Räumen? Gib ihn hier ein und spiel mit!',
-    waitingForHost: 'Warte auf den Host...',
+    waitingForHost: 'Warte auf den Host...', waitingTitle:'WARTE AUF DEN HOST...', waitingDetail:'Der Host (Ersteller des Raums) startet, wenn genügend Spieler beigetreten sind.', waitingNudge:'Tippe auf 👋 Anstupsen, um zu zeigen, dass du bereit bist!', playersConnected:'Spieler im Raum',
     needPlayers:  'Mindestens 2 Spieler erforderlich',
     roundsLabel:  'Runden',
     howToPlay:    'Spielregeln',
@@ -195,7 +195,7 @@ const LANGS = {
     copyCode:     'Kopiera kod',
     createDisclaimer: 'Skapa ett offentligt eller privat rum. Bjud in vänner — du får en kod att dela.',
     joinDisclaimer: 'Har du en kod från en vän eller från sidan med aktiva rum? Skriv in den här och gå med i spelet!',
-    waitingForHost: 'Väntar på värden...',
+    waitingForHost: 'Väntar på värden...', waitingTitle:'VÄNTAR PÅ VÄRDEN...', waitingDetail:'Värden (rumskaparen) startar när tillräckligt många spelare har gått med.', waitingNudge:'Tryck på 👋 Puffa för att visa att du är redo!', playersConnected:'spelare i rummet',
     needPlayers:  'Minst 2 spelare krävs',
     roundsLabel:  'Rundor',
     howToPlay:    'Spelregler',
@@ -534,8 +534,8 @@ function renderLobby(data) {
       }
     } else {
       if (waitMsg) {
-        waitMsg.style.display = 'block';
-        waitMsg.textContent = L.waitingForHost;
+        var _wpc = (data.players || []).filter(function(p){return p.connected;}).length;
+        renderWaitingForHost(waitMsg, L, _wpc);
       }
     }
   }
@@ -887,10 +887,12 @@ function rematch() {
 }
 
 function updateSettings() {
-  const gridSize    = parseInt(document.getElementById('settings-grid').value);
-  const maxPlayers  = parseInt(document.getElementById('settings-maxplayers').value);
-  const roundsSel   = document.getElementById('settings-rounds');
-  const totalRounds = roundsSel ? parseInt(roundsSel.value) : 1;
+  var gridEl = document.getElementById('settings-grid');
+  var maxEl  = document.getElementById('settings-maxplayers');
+  var gridSize    = gridEl ? parseInt(gridEl.value) : 5;
+  var maxPlayers  = maxEl  ? parseInt(maxEl.value)  : 2;
+  var roundsSel   = document.getElementById('settings-rounds');
+  var totalRounds = roundsSel ? parseInt(roundsSel.value) : 1;
   socket.emit('dots_update_settings', { code: roomCode, settings: { gridSize, maxPlayers, totalRounds, isPublic: getIsPublic() } });
 }
 

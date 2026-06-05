@@ -20,7 +20,7 @@ const LANGS_BINGO = {
     startBtn:        '▶ Zacznij grę',
     shareRoom:       '📤 Udostępnij pokój',
     roomCodeHint:    'Udostępnij kod znajomym',
-    waitingHost:     'Czekaj na rozpoczęcie gry przez hosta...',
+    waitingHost:     'Czekaj na rozpoczęcie gry przez hosta...', waitingTitle:'CZEKAM NA HOSTA...', waitingDetail:'Host (twórca pokoju) rozpocznie grę, gdy dołączy wystarczająco dużo graczy.', waitingNudge:'Kliknij 👋 Szturchnij, żeby dać znać, że jesteś gotowy!', playersConnected:'graczy w pokoju',
     needPlayers:     'Potrzeba minimum 2 graczy',
     callBingo:       '🎉 BINGO!',
     falseBingo:      '❌ To nie jest jeszcze Bingo! Sprawdź swoją kartę.',
@@ -62,7 +62,7 @@ const LANGS_BINGO = {
     roomCodeHint:    'Share code with friends',
     homeRejoinTip:   'If you accidentally leave, rejoin with the same name and room code.',
     createDisclaimer: 'Stwórz publiczny lub prywatny pokój. Zaproś znajomych — otrzymasz kod pokoju, który przekażesz innym graczom.',
-    waitingHost:     'Waiting for host to start the game...',
+    waitingHost:     'Waiting for host to start the game...', waitingTitle:'WAITING FOR HOST TO START...', waitingDetail:'The host (room creator) will start once enough players join.', waitingNudge:'Tap 👋 Nudge to let them know you are ready!', playersConnected:'players connected',
     needPlayers:     'Need at least 2 players',
     callBingo:       '🎉 BINGO!',
     falseBingo:      "❌ Not quite Bingo yet! Check your card.",
@@ -102,7 +102,7 @@ const LANGS_BINGO = {
     shareRoom:       '📤 Raum teilen',
     roomCodeHint:    'Code mit Freunden teilen',
     homeRejoinTip:   'Falls du den Raum verlässt, tritt mit demselben Namen und Code wieder bei.',
-    waitingHost:     'Warte auf den Host...',
+    waitingHost:     'Warte auf den Host...', waitingTitle:'WARTE AUF DEN HOST...', waitingDetail:'Der Host (Ersteller des Raums) startet, wenn genügend Spieler beigetreten sind.', waitingNudge:'Tippe auf 👋 Anstupsen, um zu zeigen, dass du bereit bist!', playersConnected:'Spieler im Raum',
     needPlayers:     'Mindestens 2 Spieler erforderlich',
     callBingo:       '🎉 BINGO!',
     falseBingo:      '❌ Noch kein Bingo! Überprüfe deine Karte.',
@@ -169,7 +169,7 @@ const LANGS_BINGO = {
     navHome:         'Startsida',
     navAllGames:     'Alla spel',
     playersInRoom:   'Spelare i rummet',
-    waitingHost:     'Väntar på att värden startar spelet...',
+    waitingHost:     'Väntar på att värden startar spelet...', waitingTitle:'VÄNTAR PÅ VÄRDEN...', waitingDetail:'Värden (rumskaparen) startar när tillräckligt många spelare har gått med.', waitingNudge:'Tryck på 👋 Puffa för att visa att du är redo!', playersConnected:'spelare i rummet',
     youWon:          '🎉 Du fick BINGO! Du vinner!',
     falseBingo:      '❌ Inte riktigt Bingo än! Kontrollera ditt kort.',
     winnerMsg:       (n) => `🏆 ${n} fick BINGO!`,
@@ -299,7 +299,7 @@ function renderLobby(data) {
     if (needMsg)  needMsg.style.display  = connected < 2 ? 'block' : 'none';
   } else {
     if (startBtn) startBtn.style.display = 'none';
-    if (waitMsg)  waitMsg.style.display  = 'block';
+    if (waitMsg) { L.waitingForHost = L.waitingHost; renderWaitingForHost(waitMsg, L, connected); }
     if (needMsg)  needMsg.style.display  = 'none';
   }
 

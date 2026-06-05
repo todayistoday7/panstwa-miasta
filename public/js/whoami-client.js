@@ -138,6 +138,7 @@ const LANGS = {
     needPlayers:'Potrzebujesz minimum 2 graczy',
     waitingPlayers: (cur, min) => `Czekamy na graczy... ${cur}/${min} dołączyło. Udostępnij kod znajomym!`,
     enoughPlayers:  (n) => `✅ ${n} graczy gotowych — można zaczynać!`,
+    waitingHostStart: (n) => `✅ ${n} graczy gotowych — czekam aż host rozpocznie grę. Użyj 👋 Szturchnij!`,
     selectCat:'Wybierz przynajmniej jedną kategorię',
     modeLabel:'Tryb:', catsLabel:'Kategorie:', diffLabel:'Trudność:', timerLabel:'Timer:',
     voiceModeTip:'🎤 Tryb głosowy — pytajcie się nawzajem na żywo lub przez telefon',
@@ -201,6 +202,7 @@ const LANGS = {
     needPlayers:'You need at least 2 players',
     waitingPlayers: (cur, min) => `Waiting for players... ${cur}/${min} joined. Share the code to invite friends!`,
     enoughPlayers:  (n) => `✅ ${n} players ready — good to go!`,
+    waitingHostStart: (n) => `✅ ${n} players ready — waiting for host to start. Tap 👋 Nudge!`,
     selectCat:'Select at least one category',
     modeLabel:'Mode:', catsLabel:'Categories:', diffLabel:'Difficulty:', timerLabel:'Timer:',
     voiceModeTip:'🎤 Voice mode — ask questions out loud or on a call',
@@ -264,6 +266,7 @@ const LANGS = {
     needPlayers:'Du brauchst mindestens 2 Spieler',
     waitingPlayers: (cur, min) => `Warte auf Spieler... ${cur}/${min} beigetreten. Teile den Code mit Freunden!`,
     enoughPlayers:  (n) => `✅ ${n} Spieler bereit — los geht's!`,
+    waitingHostStart: (n) => `✅ ${n} Spieler bereit — warte auf den Host. Tippe 👋 Anstupsen!`,
     selectCat:'Wähle mindestens eine Kategorie',
     modeLabel:'Modus:', catsLabel:'Kategorien:', diffLabel:'Schwierigkeit:', timerLabel:'Timer:',
     voiceModeTip:'🎤 Sprachmodus — Fragen laut stellen oder per Anruf',
@@ -327,6 +330,7 @@ const LANGS = {
     needPlayers:'Du behöver minst 2 spelare',
     waitingPlayers: (cur, min) => `Väntar på spelare... ${cur}/${min} har gått med. Dela koden med vänner!`,
     enoughPlayers:  (n) => `✅ ${n} spelare redo — sätt igång!`,
+    waitingHostStart: (n) => `✅ ${n} spelare redo — väntar på värden. Tryck 👋 Puffa!`,
     selectCat:'Välj minst en kategori',
     modeLabel:'Läge:', catsLabel:'Kategorier:', diffLabel:'Svårighet:', timerLabel:'Timer:',
     voiceModeTip:'🎤 Röstläge — ställ frågor högt eller via samtal',
@@ -439,7 +443,11 @@ function renderLobby(data) {
     warn.classList.remove('flash');
     if (count >= min) {
       warn.classList.add('ready');
-      warn.textContent = L.enoughPlayers ? L.enoughPlayers(count) : '✅ ' + count + ' players ready!';
+      if (isHost) {
+        warn.textContent = L.enoughPlayers ? L.enoughPlayers(count) : '✅ ' + count + ' players ready!';
+      } else {
+        warn.textContent = (L.waitingHostStart ? L.waitingHostStart(count) : '✅ ' + count + ' players ready — waiting for host to start the game.');
+      }
     } else {
       warn.classList.remove('ready');
       warn.textContent = L.waitingPlayers ? L.waitingPlayers(count, min) : 'Waiting for players... ' + count + '/' + min + ' joined.';

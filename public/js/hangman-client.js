@@ -37,7 +37,7 @@ const LANGS = {
     roundsLabel:   'Długość gry',
     roundsDefault: 'Jedna tura na gracza (domyślnie)',
     lengthQuick: '⚡ Szybka (1×)', lengthStandard: '🎮 Standardowa (2×)', lengthMarathon: '🏆 Maraton (3×)',
-    waitingForHost:    'Czekam na hosta...',
+    waitingForHost:    'Czekam na hosta...', waitingTitle:'CZEKAM NA HOSTA...', waitingDetail:'Host (twórca pokoju) rozpocznie grę, gdy dołączy wystarczająco dużo graczy.', waitingNudge:'Kliknij 👋 Szturchnij, żeby dać znać, że jesteś gotowy!', playersConnected:'graczy w pokoju',
     needPlayers:       'Potrzeba min. 2 graczy',
     howToPlay:         'Zasady gry',
     rule1:             'Stwórz pokój — 2 do 10 graczy',
@@ -112,7 +112,7 @@ const LANGS = {
     roundsLabel:   'Game length',
     roundsDefault: 'One round per player (default)',
     lengthQuick: '⚡ Quick (1×)', lengthStandard: '🎮 Standard (2×)', lengthMarathon: '🏆 Marathon (3×)',
-    waitingForHost:    'Waiting for host...',
+    waitingForHost:    'Waiting for host...', waitingTitle:'WAITING FOR HOST TO START...', waitingDetail:'The host (room creator) will start once enough players join.', waitingNudge:'Tap 👋 Nudge to let them know you are ready!', playersConnected:'players connected',
     needPlayers:       'Need at least 2 players',
     howToPlay:         'How to play',
     rule1:             'Create a room — 2 to 10 players',
@@ -257,7 +257,7 @@ const LANGS = {
     yourName:          'Ditt namn',      joinName:          'Ditt namn',
     roomCode:          'Rumskod',        createBtn:         'Skapa rum',
     joinBtn:           'Gå med',
-    waitingForHost:    'Väntar på värden...',
+    waitingForHost:    'Väntar på värden...', waitingTitle:'VÄNTAR PÅ VÄRDEN...', waitingDetail:'Värden (rumskaparen) startar när tillräckligt många spelare har gått med.', waitingNudge:'Tryck på 👋 Puffa för att visa att du är redo!', playersConnected:'spelare i rummet',
     needPlayers:       'Minst 2 spelare krävs',
     playersInRoom:     'Spelare i rummet',
     startBtn:          '▶ Starta spelet',
@@ -566,8 +566,8 @@ function renderLobby(data) {
     }
   } else {
     document.getElementById('lobby-btn-row').style.display = 'none';
-    document.getElementById('waiting-msg').style.display   = 'block';
-    document.getElementById('waiting-msg').textContent     = L.waitingForHost;
+    var _wpc = (data.players || []).filter(function(p){return p.connected !== false;}).length;
+    renderWaitingForHost(document.getElementById('waiting-msg'), L, _wpc);
   }
 }
 

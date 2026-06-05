@@ -752,6 +752,7 @@ const LANGS = {
     yourTeamLabel: 'Twoja drużyna',
     otherTeamLabel: 'Przeciwnicy',
     actorLabel: '🎭 POKAZUJE',
+    waitingForHost: 'Czekam na hosta...', waitingTitle:'CZEKAM NA HOSTA...', waitingDetail:'Host (twórca pokoju) rozpocznie grę, gdy dołączy wystarczająco dużo graczy.', waitingNudge:'Kliknij 👋 Szturchnij, żeby dać znać, że jesteś gotowy!', playersConnected:'graczy w pokoju',
   },
   en: {
     name: '🇬🇧 EN',
@@ -786,6 +787,7 @@ const LANGS = {
     yourTeamLabel: 'Your team',
     otherTeamLabel: 'Other team',
     actorLabel: '🎭 ACTING',
+    waitingForHost: 'Waiting for host...', waitingTitle:'WAITING FOR HOST TO START...', waitingDetail:'The host (room creator) will start once enough players join.', waitingNudge:'Tap 👋 Nudge to let them know you are ready!', playersConnected:'players connected',
   },
   de: {
     name: '🇩🇪 DE',
@@ -820,6 +822,7 @@ const LANGS = {
     yourTeamLabel: 'Dein Team',
     otherTeamLabel: 'Gegner',
     actorLabel: '🎭 ZEIGT',
+    waitingForHost: 'Warte auf den Host...', waitingTitle:'WARTE AUF DEN HOST...', waitingDetail:'Der Host (Ersteller des Raums) startet, wenn genügend Spieler beigetreten sind.', waitingNudge:'Tippe auf 👋 Anstupsen, um zu zeigen, dass du bereit bist!', playersConnected:'Spieler im Raum',
   },
   sv: {
     name: '🇸🇪 SV',
@@ -854,6 +857,7 @@ const LANGS = {
     yourTeamLabel: 'Ditt lag',
     otherTeamLabel: 'Motståndare',
     actorLabel: '🎭 VISAR',
+    waitingForHost: 'Väntar på värden...', waitingTitle:'VÄNTAR PÅ VÄRDEN...', waitingDetail:'Värden (rumskaparen) startar när tillräckligt många spelare har gått med.', waitingNudge:'Tryck på 👋 Puffa för att visa att du är redo!', playersConnected:'spelare i rummet',
   },
 };
 
@@ -1042,13 +1046,21 @@ function renderLobby(data) {
     wcEl.textContent = '📚 ' + data.wordCount + ' ' + (lang === 'pl' ? 'słów dostępnych' : lang === 'de' ? 'Wörter verfügbar' : lang === 'sv' ? 'ord tillgängliga' : 'words available');
   }
   
-  // Start button
+  // Start button / waiting message
   var startBtn = document.getElementById('start-btn');
-  if (startBtn) {
-    startBtn.style.display = isHost ? '' : 'none';
-    var canStart = redCount >= 2 && blueCount >= 2;
-    startBtn.disabled = !canStart;
-    startBtn.style.opacity = canStart ? '1' : '0.4';
+  var waitMsg = document.getElementById('waiting-msg');
+  if (isHost) {
+    if (startBtn) {
+      startBtn.style.display = '';
+      var canStart = redCount >= 2 && blueCount >= 2;
+      startBtn.disabled = !canStart;
+      startBtn.style.opacity = canStart ? '1' : '0.4';
+    }
+    if (waitMsg) waitMsg.style.display = 'none';
+  } else {
+    if (startBtn) startBtn.style.display = 'none';
+    var _totalConnected = data.players.filter(function(p){return p.connected;}).length;
+    renderWaitingForHost(waitMsg, L, _totalConnected);
   }
 }
 

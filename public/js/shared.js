@@ -413,6 +413,29 @@ function renderOtherGames(currentGame) {
 
 // ─── URL JOIN CODE PRE-FILL ──────────────────────────────────────
 // Call on page load — reads ?join=XXXXX and pre-fills the join code input
+// ─── WAITING FOR HOST MESSAGE ─────────────────────────────────────
+// Shared helper — renders a clear waiting-for-host message for non-host players
+function renderWaitingForHost(el, L, playerCount) {
+  if (!el) return;
+  var title = L.waitingTitle || 'WAITING FOR HOST TO START...';
+  var detail = L.waitingDetail || 'The host (room creator) will start once enough players join.';
+  var nudgeLine = '';
+  // Only show nudge hint if the game has a nudge button
+  if (document.getElementById('nudge-container') || document.querySelector('[onclick*="nudge"]')) {
+    nudgeLine = '<p style="font-size:13px;color:var(--accent);font-weight:700;margin:6px 0 0;">' + (L.waitingNudge || 'Tap 👋 Nudge to let them know you are ready!') + '</p>';
+  }
+  var countText = playerCount ? ('<div style="font-size:13px;color:var(--green);font-weight:800;margin-top:8px;">✅ ' + playerCount + ' ' + (L.playersConnected || 'players connected') + '</div>') : '';
+  el.style.display = 'block';
+  el.innerHTML =
+    '<div style="text-align:center;padding:16px 12px;">' +
+      '<div style="font-size:28px;margin-bottom:6px;">⏳</div>' +
+      '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:20px;letter-spacing:2px;color:var(--accent2);">' + esc(title) + '</div>' +
+      '<p style="font-size:13px;color:var(--muted);font-weight:600;margin:8px 0 0;line-height:1.6;">' + esc(detail) + '</p>' +
+      nudgeLine +
+      countText +
+    '</div>';
+}
+
 function prefillJoinCode() {
   const params = new URLSearchParams(window.location.search);
   const join   = params.get('join');
