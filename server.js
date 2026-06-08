@@ -175,6 +175,12 @@ app.get('/how-to-play/charades',                  (req,res) => res.sendFile(path
 app.get('/wie-man-spielt/scharade',               (req,res) => res.sendFile(path.join(__dirname,'public/wie-man-spielt/scharade.html')));
 app.get('/hur-man-spelar/charader',               (req,res) => res.sendFile(path.join(__dirname,'public/hur-man-spelar/charader.html')));
 
+// ── Blog Articles ───────────────────────────────────────────────
+app.get('/blog/what-to-play-online',             (req,res) => res.sendFile(path.join(__dirname,'public/blog/what-to-play-online.html')));
+app.get('/blog/w-co-grac-online',                (req,res) => res.sendFile(path.join(__dirname,'public/blog/w-co-grac-online.html')));
+app.get('/blog/was-online-spielen',              (req,res) => res.sendFile(path.join(__dirname,'public/blog/was-online-spielen.html')));
+app.get('/blog/vad-spela-online',                (req,res) => res.sendFile(path.join(__dirname,'public/blog/vad-spela-online.html')));
+
 // ── SEO Landing Pages — Forbidden Words ─────────────────────────
 app.get('/zakazane-slowa',    seoInject('taboo', 'pl'));
 app.get('/forbidden-words',   seoInject('taboo', 'en'));
