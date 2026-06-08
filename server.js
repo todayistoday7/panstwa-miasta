@@ -78,6 +78,9 @@ app.use((req, res, next) => {
     if (body.includes('<script') && !body.includes('window._rfgDomain')) {
       body = body.replace(/<script/, '<script>window._rfgDomain=true;</script>\n<script');
     }
+    // Swap canonical + og:url so Google indexes RFG independently
+    body = body.replace(/(rel="canonical"[^>]*href="https?:\/\/)panstwamiastagra\.com/g, '$1roomforgames.com');
+    body = body.replace(/(property="og:url"[^>]*content="https?:\/\/)panstwamiastagra\.com/g, '$1roomforgames.com');
     return body;
   }
 
