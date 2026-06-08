@@ -255,7 +255,7 @@ function gamesHubUrl(langCode) {
   if (l === 'pl') return '/gry';
   if (l === 'de') return '/spiele';
   if (l === 'sv') return '/spel';
-  return '/games?lang=' + l;
+  return '/games';
 }
 
 // Updates all nav-home links on the page to point to the games hub
