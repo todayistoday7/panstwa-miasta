@@ -1,445 +1,473 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Spelregler — Hur man spelar | panstwamiastagra.com</title>
-<meta name="description" content="Spelregler för gratis onlinesällskapsspel — Länder & Städer, Förbjudna ord, Hänga gubbe och mer. Roliga isbrytarspel för fester, teambuilding och familjekvällar.">
-<meta property="og:title" content="Spelregler — panstwamiastagra.com">
-<meta property="og:description" content="Hur man spelar Länder & Städer, Förbjudna ord, Hänga gubbe och andra online multiplayer-spel. Fullständiga regler på svenska.">
-<meta property="og:url" content="https://panstwamiastagra.com/hur-man-spelar">
-<meta property="og:type" content="article">
-<link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/hur-man-spelar">
-<link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/how-to-play">
-<link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/jak-grac">
-<link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/wie-man-spielt">
-<link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/how-to-play">
-<link rel="canonical" href="https://panstwamiastagra.com/hur-man-spelar">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Państwa Miasta Online — Darmowa Gra Multiplayer</title>
+<meta name="description" content="Graj w Państwa Miasta online za darmo! Klasyczna polska gra towarzyska w wersji multiplayer. Stwórz pokój i wpisuj państwa, miasta, zwierzęta na wylosowaną literę.">
+<meta name="keywords" content="państwa miasta, panstwa miasta, państwa miasta online, państwa miasta za darmo, panstwa miasta gra darmowa online, darmowa gra online panstwa miasta, gra towarzyska online, gra imprezowa online, gra słowna online, gra wieloosobowa online, gra z przyjaciółmi online, countries cities game, countries cities online free, free multiplayer word game, gra integracyjna online, gra dla firm online, team building gra online, gra na imprezę online, klasyczna gra polska online">
+<meta name="author" content="panstwamiastagra.com">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Państwa Miasta — Zagraj Online ze Znajomymi!">
+<meta property="og:description" content="Klasyczna gra Państwa Miasta teraz online i za darmo! Idealna na spotkania ze znajomymi, rodzinne wieczory i imprezy. Stwórz pokój i graj z dowolnego telefonu lub komputera.">
+<meta property="og:url" content="https://panstwamiastagra.com">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:locale:alternate" content="en_GB">
+<link rel="canonical" href="https://panstwamiastagra.com/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="apple-touch-icon" href="/favicon.svg">
+<!-- Google tag (gtag.js) -->
 <script async data-cfasync="false" src="https://www.googletagmanager.com/gtag/js?id=G-BJ79ZM6WPQ"></script>
-<script data-cfasync="false">window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BJ79ZM6WPQ');</script>
-<style>
-  .rules-page { max-width:820px; margin:0 auto; padding:0 16px 80px; }
-  .rules-topbar { display:flex; align-items:center; justify-content:space-between; padding:16px 0 8px; flex-wrap:wrap; gap:8px; }
-  .rules-lang { display:flex; gap:6px; }
-  .rules-lang a { font-size:13px; font-weight:700; color:var(--muted); text-decoration:none; padding:5px 12px; border-radius:20px; border:1px solid var(--border); transition:all 0.2s; }
-  .rules-lang a.active, .rules-lang a:hover { border-color:var(--accent); color:var(--accent); }
-  .rules-hero { text-align:center; padding:28px 0 32px; }
-  .rules-hero h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(40px,9vw,64px); letter-spacing:4px; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin:0 0 8px; }
-  .rules-hero p { color:var(--muted); font-size:15px; font-weight:600; }
-  .game-pills { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:36px; }
-  .game-pill { display:flex; align-items:center; gap:8px; background:var(--card); border:2px solid var(--border); border-radius:50px; padding:10px 20px; font-weight:800; font-size:14px; color:var(--muted); text-decoration:none; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
-  .game-pill:hover, .game-pill.active { border-color:var(--accent); color:var(--accent); background:rgba(255,107,53,0.07); transform:translateY(-2px); box-shadow:0 4px 16px rgba(255,107,53,0.2); }
-  .game-pill-icon { font-size:20px; }
-  .game-section { display:none; border-top:2px solid var(--border); padding-top:28px; margin-top:4px; animation:fadeIn 0.25s ease; }
-  .game-section.active { display:block; }
-  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
-  .game-section-header { display:flex; align-items:center; gap:14px; margin-bottom:18px; }
-  .game-section-icon { font-size:38px; }
-  .game-section-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(26px,6vw,42px); letter-spacing:3px; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; }
-  .game-section-sub { color:var(--muted); font-size:13px; font-weight:700; margin-top:2px; }
-  .rules-h2 { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; color:var(--accent2); margin:24px 0 10px; }
-  .rules-p { color:var(--muted); font-size:15px; line-height:1.8; margin-bottom:12px; font-weight:600; }
-  .rules-ul { color:var(--muted); font-size:15px; line-height:1.8; margin:0 0 12px 20px; font-weight:600; }
-  .rules-ul li { margin-bottom:5px; }
-  .rules-p strong, .rules-ul strong { color:var(--text); }
-  .rules-tip { background:rgba(255,107,53,0.07); border-left:3px solid var(--accent); border-radius:0 10px 10px 0; padding:10px 14px; margin:12px 0; }
-  .rules-tip p { margin:0; color:var(--text); font-size:14px; font-weight:600; }
-  .score-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:14px; }
-  .score-table th { background:var(--surface); color:var(--accent); font-size:11px; text-transform:uppercase; letter-spacing:1px; padding:8px 12px; text-align:left; border:1px solid var(--border); }
-  .score-table td { padding:8px 12px; border:1px solid var(--border); color:var(--muted); font-weight:600; }
-  .score-table tr:nth-child(even) td { background:var(--surface); }
-  .game-cta { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px 20px; text-align:center; margin:24px 0 0; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
-  .game-cta p { color:var(--text); font-size:14px; font-weight:800; margin:0; }
-  .game-cta a { text-decoration:none; }
-  @media(max-width:500px){ .game-pill{padding:8px 14px;font-size:13px;} .game-cta{flex-direction:column;text-align:center;} }
-</style>
+<script data-cfasync="false">
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-BJ79ZM6WPQ');
+</script>
+<link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/">
+<link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/countries-cities-game">
+<link rel="alternate" hreflang="de" href="https://panstwamiastagra.com/stadt-land-fluss-online">
+<link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/laender-och-staeder">
+<link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/">
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "Hur spelar man Länder & Städer online?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Värden skapar ett rum och delar en 5-siffrig kod med vänner. Värden drar en slumpmässig bokstav, sedan fyller alla samtidigt i kategorier (Land, Stad, Djur osv.) med ord som börjar med den bokstaven. Den som är klar först ropar STOPP. Unika svar ger 10 poäng, dubbla svar 5 poäng, tomma svar 0 poäng."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Hur många spelare kan spela Länder & Städer online?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Mellan 2 och 12 spelare per rum."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Är Länder & Städer gratis?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Ja, helt gratis. Ingen registrering eller betalning krävs."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Hur spelar man Förbjudna ord online?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Spelarna delas in i två lag. Beskrivaren ser ett hemligt ord och en lista med förbjudna ord — de måste beskriva ordet utan att använda något förbjudet ord. Deras lag gissar, medan en motståndares domare håller utkik efter regelbrott."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Hur spelar man Hänga gubbe online?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Varje spelare tar tur att välja ett hemligt ord. Alla andra gissar en bokstav i taget. 7 fel slutför gubben och väljaren vinner den rundan."
-      }
-    }
-  ]
+  "@type": "VideoGame",
+  "name": "Państwa-Miasta Online",
+  "alternateName": [
+    "Countries and Cities Online",
+    "Państwa Miasta",
+    "Countries Cities Game"
+  ],
+  "description": "Klasyczna polska gra słowna online. Wpisuj państwa, miasta, zwierzęta i inne słowa na wylosowaną literę — szybciej niż inni! Free multiplayer word game.",
+  "url": "https://panstwamiastagra.com/",
+  "applicationCategory": "Game",
+  "genre": [
+    "Word Game",
+    "Party Game",
+    "Multiplayer",
+    "Gra integracyjna"
+  ],
+  "numberOfPlayers": {
+    "@type": "QuantitativeValue",
+    "minValue": 2,
+    "maxValue": 12
+  },
+  "isAccessibleForFree": true,
+  "inLanguage": [
+    "pl",
+    "en",
+    "de",
+    "fr",
+    "es"
+  ],
+  "playMode": "MultiPlayer",
+  "gamePlatform": "Web browser",
+  "publisher": {
+    "@type": "Organization",
+    "name": "panstwamiastagra.com",
+    "url": "https://panstwamiastagra.com"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "PLN",
+    "availability": "https://schema.org/InStock"
+  },
+  "aggregateRating": null
 }
 </script>
 </head>
 <body>
+
+<!-- CONFIRM LEAVE MODAL -->
+<div id="confirm-modal" class="modal-overlay" style="display:none;">
+  <div class="modal" style="max-width:360px;text-align:center;">
+    <h2 id="confirm-title" style="color:var(--accent2);">Leave Game?</h2>
+    <p id="confirm-msg" style="margin:12px 0 20px;"></p>
+    <div class="btn-row" style="margin-top:0;">
+      <button class="btn red-btn" onclick="doGoHome()" id="confirm-yes">Yes, leave</button>
+      <button class="btn secondary" onclick="closeConfirm()" id="confirm-no">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHALLENGE MODAL -->
+<div id="challenge-modal" class="modal-overlay" style="display:none;">
+  <div class="modal">
+    <h2 id="modal-title">⚠ Challenge!</h2>
+    <p id="modal-desc"></p>
+    <div id="modal-word-area"></div>
+    <div class="vote-grid" id="vote-grid"></div>
+    <div class="vote-tally" id="vote-tally"></div>
+    <div id="verdict-area"></div>
+    <div class="btn-row" style="margin-top:16px;">
+      <button class="btn red-btn" onclick="closeChallenge()" id="lbl-close-challenge">Close</button>
+    </div>
+  </div>
+</div>
+
 <div class="container">
-<div class="rules-page">
+  <div class="lang-bar" id="lang-bar"></div>
 
-  <div class="rules-topbar">
-    <a href="/?lang=sv" class="nav-home-btn" style="text-decoration:none;">← Tillbaka till spelet</a>
-    <div class="rules-lang">
-      <a href="/jak-grac">🇵🇱 PL</a>
-      <a href="/how-to-play">🇬🇧 EN</a>
-      <a href="/wie-man-spielt">🇩🇪 DE</a>
-      <a href="/hur-man-spelar" class="active">🇸🇪 SV</a>
+  <!-- TOP NAV — shown during game, hidden on home screen -->
+  <div id="top-nav" style="display:none;">
+    <button class="nav-home-btn" onclick="confirmGoHome()" id="lbl-nav-home">🏠 Home</button>
+    <div class="nav-room-code" id="nav-room-code"></div>
+    <button class="nav-share-btn" id="nav-share-btn" onclick="copyRoomCode()" style="display:none;">📋 Copy Code</button>
+  </div>
+
+  <header>
+    <div class="logo-wrap">
+      <div class="logo-globe">
+        <svg viewBox="0 0 80 80" width="52" height="52" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="40" cy="40" r="34" fill="none" stroke="#ff6b35" stroke-width="3"/>
+          <path d="M6 40 Q40 24 74 40" fill="none" stroke="rgba(255,107,53,0.35)" stroke-width="1.5"/>
+          <path d="M6 40 Q40 56 74 40" fill="none" stroke="rgba(255,107,53,0.35)" stroke-width="1.5"/>
+          <ellipse cx="40" cy="40" rx="17" ry="34" fill="none" stroke="rgba(255,107,53,0.35)" stroke-width="1.5"/>
+          <line x1="6" y1="40" x2="74" y2="40" stroke="rgba(255,107,53,0.35)" stroke-width="1.5"/>
+          <circle cx="32" cy="22" r="5" fill="#06d6a0"/>
+          <circle cx="55" cy="32" r="5" fill="#06d6a0"/>
+          <circle cx="27" cy="50" r="5" fill="#06d6a0"/>
+          <circle cx="50" cy="56" r="4" fill="#06d6a0"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <h1 id="game-title">Państwa-Miasta Online</h1>
+        <p id="game-subtitle">Multiplayer word game</p>
+      </div>
+    </div>
+  </header>
+  <div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);" aria-hidden="true">
+    <h2>Państwa Miasta — Darmowa Gra Towarzyska i Imprezowa Online</h2>
+    <p>Państwa Miasta to klasyczna polska gra towarzyska i imprezowa dostępna online za darmo. 
+    Graj z przyjaciółmi, rodziną lub zespołem w trybie multiplayer w czasie rzeczywistym.
+    Wpisuj państwa, miasta, zwierzęta, rośliny i inne słowa na wylosowaną literę szybciej niż inni gracze.
+    Panstwa miasta gra darmowa online — bez rejestracji i bez reklam.
+    Darmowa gra online panstwa miasta dla 2 do 12 osób.
+    Idealna gra imprezowa online, gra integracyjna i team building online.
+    Countries Cities free online multiplayer word game in Polish, English, German, French and Spanish.</p>
+  </div>
+
+  <!-- ══ SCREEN: HOME ══ -->
+  <div id="screen-home" class="screen active">
+    <div style="display:flex;gap:10px;margin-bottom:16px;">
+      <a href="/games" class="nav-home-btn nav-home-link" style="text-decoration:none;">🏠 <span id="lbl-nav-home">Home</span></a>
+    </div>
+    <div class="home-grid">
+      <div class="card">
+        <h3 id="lbl-create-room">Create Room</h3>
+        <p id="lbl-create-disclaimer" style="color:var(--muted);font-size:12px;font-weight:600;line-height:1.5;margin:6px 0 10px;"></p>
+        <label class="field-label" id="lbl-your-name">Your name</label>
+        <input type="text" id="host-name" class="field-input" placeholder="Enter your name" maxlength="20" oninput="clearHomeError()"/>
+        <input type="text" id="hp-website" name="website" style="display:none;position:absolute;left:-9999px;" tabindex="-1" autocomplete="off"/>
+
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn" onclick="createRoom()" id="lbl-create-btn">🎮 Create Room</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3 id="lbl-join-room">Join Room</h3>
+        <p id="lbl-join-disclaimer" style="font-size:12px;color:var(--muted);font-weight:700;margin-top:4px;margin-bottom:8px;line-height:1.5;"></p>
+        <label class="field-label" id="lbl-join-name">Your name</label>
+        <input type="text" id="join-name" class="field-input" placeholder="Enter your name" maxlength="20" oninput="clearJoinError()"/>
+        <div id="join-name-error" class="error-box" style="display:none;margin-top:8px;"></div>
+        <label class="field-label" style="margin-top:12px;" id="lbl-room-code">Room code</label>
+        <input type="text" id="join-code" class="field-input code-input" placeholder="e.g. WOLF4" maxlength="5"
+          oninput="this.value=this.value.toUpperCase()"/>
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn green" onclick="joinRoom()" id="lbl-join-btn">🚪 Join Room</button>
+        </div>
+      </div>
+    </div>
+    <div id="home-error" class="error-box" style="display:none;"></div>
+    <div style="margin-top:14px;padding:10px 14px;background:rgba(6,214,160,0.07);border:1px solid rgba(6,214,160,0.25);border-radius:10px;font-size:12px;font-weight:700;color:var(--muted);text-align:center;">💡 <span id="lbl-home-rejoin-tip">Jeśli przypadkowo opuścisz grę, wróć z tym samym imieniem i kodem pokoju.</span></div>
+    <div class="rules-box" id="rules-text"></div>
+
+    <!-- VISIBLE ABOUT + RULES SECTION -->
+    <div class="about-section" id="about-section">
+      <div class="about-grid">
+        <div class="about-card">
+          <div class="about-icon">🎮</div>
+          <h3 id="lbl-about-title">Co to jest Państwa Miasta?</h3>
+          <p id="lbl-about-desc">Klasyczna polska gra towarzyska w wersji online. Wpisuj państwa, miasta, zwierzęta i inne słowa na wylosowaną literę — szybciej niż inni gracze!</p>
+        </div>
+        <div class="about-card">
+          <div class="about-icon">👥</div>
+          <h3 id="lbl-about-players">Dla kogo?</h3>
+          <p id="lbl-about-players-desc">Idealna gra na imprezę, spotkanie z rodziną, integrację firmową lub team event. Graj z 2 do 12 osób z dowolnego urządzenia!</p>
+        </div>
+        <div class="about-card">
+          <div class="about-icon">🆓</div>
+          <h3 id="lbl-about-free">Za darmo!</h3>
+          <p id="lbl-about-free-desc">Całkowicie darmowa gra online — bez rejestracji, bez reklam, bez opłat. Stwórz pokój i zaproś znajomych w 30 sekund.</p>
+        </div>
+      </div>
+
+      <div class="rules-section">
+        <h2 id="lbl-rules-title">Zasady gry</h2>
+        <div class="rules-steps">
+          <div class="rule-step">
+            <div class="step-num">1</div>
+            <p id="lbl-rule-1">Stwórz pokój i udostępnij kod znajomym</p>
+          </div>
+          <div class="rule-step">
+            <div class="step-num">2</div>
+            <p id="lbl-rule-2">Losuj literę — ta litera obowiązuje w całej rundzie</p>
+          </div>
+          <div class="rule-step">
+            <div class="step-num">3</div>
+            <p id="lbl-rule-3">Wpisuj słowa na tę literę w każdej kategorii jak najszybciej</p>
+          </div>
+          <div class="rule-step">
+            <div class="step-num">4</div>
+            <p id="lbl-rule-4">Pierwszy który wypełni wszystkie kolumny woła STOP!</p>
+          </div>
+          <div class="rule-step">
+            <div class="step-num">5</div>
+            <p id="lbl-rule-5">Punkty: unikalne słowo = 10 pkt, powtórzone = 5 pkt, puste = 0 pkt</p>
+          </div>
+        </div>
+
+        <!-- OFFLINE / PRINT VERSION -->
+        <div id="pm-offline-section" style="margin-top:20px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;">
+          <h3 style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent2);margin-bottom:8px;" id="pm-offline-title">🖨️ Wersja offline</h3>
+          <p style="color:var(--muted);font-size:13px;line-height:1.7;font-weight:600;margin-bottom:12px;" id="pm-offline-text">Chcesz zagrać bez internetu? Wydrukuj gotową kartę do gry (najlepiej w trybie poziomym) i graj z rodziną, przyjaciółmi, a jeśli jesteś nauczycielem — z uczniami na lekcji, wycieczce czy przerwie.</p>
+          <a href="/downloads/panstwa-miasta-karta-do-druku.html" id="pm-offline-href" target="_blank" class="btn secondary" style="text-decoration:none;font-size:13px;padding:10px 20px;">📄 <span id="pm-offline-btn">Pobierz kartę do druku</span></a>
+        </div>
+
+      </div>
     </div>
   </div>
 
-  <div class="rules-hero">
-    <h1>Spelregler</h1>
-    <p>Välj ett spel för att se reglerna</p>
+  <!-- ══ SCREEN: LOBBY ══ -->
+  <div id="screen-lobby" class="screen">
+    <div class="lobby-header">
+      <div>
+        <div class="room-code-display" id="room-code-display"></div>
+        <p class="room-code-hint" id="lbl-share-code">Share this code with your friends</p>
+        <button class="btn share-btn" onclick="shareRoom('')">📤 <span id="lbl-share-room">Udostępnij pokój</span></button>
+        <div id="rejoin-tip" style="margin-top:12px;padding:10px 14px;background:rgba(6,214,160,0.07);border:1px solid rgba(6,214,160,0.25);border-radius:10px;font-size:12px;font-weight:700;color:var(--muted);display:none;">💡 <span id="lbl-rejoin-tip">Jeśli przypadkowo opuścisz grę, wróć z tym samym imieniem i kodem.</span></div>
+      </div>
+      <div id="lobby-status"></div>
+    </div>
+
+    <div class="lobby-grid">
+      <div class="card">
+        <h3 id="lbl-players-in-room">Players</h3>
+        <div id="lobby-players"></div>
+        <div id="nudge-container" style="text-align:center;margin-top:10px;"></div>
+      </div>
+      <div class="card" id="settings-card">
+        <h3 id="lbl-settings">Settings</h3>
+        <label class="field-label" id="lbl-rounds-title">Rounds</label>
+        <select id="settings-rounds" class="field-select" onchange="updateSettings()">
+          <option value="3">3</option><option value="5" selected>5</option><option value="7">7</option><option value="10">10</option>
+        </select>
+        <label class="field-label" style="margin-top:14px;" id="lbl-grace-title">Time after STOP</label>
+        <select id="settings-grace" class="field-select" onchange="updateSettings()">
+          <option value="10">10 seconds</option>
+          <option value="20" selected>20 seconds</option>
+          <option value="30">30 seconds</option>
+          <option value="45">45 seconds</option>
+          <option value="60">60 seconds</option>
+        </select>
+        <label class="field-label" style="margin-top:14px;" id="lbl-categories">Categories</label>
+        <div class="cat-grid" id="lobby-cat-grid"></div>
+        <label class="field-label" style="margin-top:14px;" id="lbl-language">Language</label>
+        <div class="lang-pills" id="lobby-lang-pills"></div>
+        <label class="field-label" style="margin-top:14px;" id="lbl-room-visibility">Room visibility</label>
+        <div class="visibility-toggle" id="visibility-toggle">
+          <div class="vis-option" id="vis-private" style="border-radius:8px 0 0 8px;" onclick="setVisibility(false)">🔒 <span id="lbl-vis-private">Private</span></div>
+          <div class="vis-option" id="vis-public"  style="border-radius:0 8px 8px 0;" onclick="setVisibility(true)">🌐 <span id="lbl-vis-public">Public</span></div>
+        </div>
+        <p id="lbl-vis-hint" style="font-size:11px;color:var(--muted);margin-top:6px;font-weight:700;"></p>
+      </div>
+    </div>
+
+    <div id="player-warning" class="player-warning" style="display:none;"></div>
+
+    <div class="btn-row" id="lobby-btn-row">
+      <button class="btn" onclick="startGame()" id="lbl-start-btn">🎮 Start Game</button>
+      <button class="btn secondary" onclick="confirmGoHome()" id="lbl-leave-room">🚪 Leave Room</button>
+    </div>
+
+    <!-- Rules in lobby -->
+    <div class="rules-section" style="margin-top:24px;">
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent2);text-align:center;margin-bottom:12px;" id="lbl-lobby-rules-title">Jak grać w Państwa-Miasta</h2>
+      <div class="rules-steps">
+        <div class="rule-step"><div class="step-num">1</div><p id="lbl-lobby-rule-1">Stwórz pokój i udostępnij kod znajomym</p></div>
+        <div class="rule-step"><div class="step-num">2</div><p id="lbl-lobby-rule-2">Losuj literę — obowiązuje przez całą rundę</p></div>
+        <div class="rule-step"><div class="step-num">3</div><p id="lbl-lobby-rule-3">Wpisuj słowa na tę literę w każdej kategorii</p></div>
+        <div class="rule-step"><div class="step-num">4</div><p id="lbl-lobby-rule-4">Pierwszy który wypełni kolumny woła STOP!</p></div>
+        <div class="rule-step"><div class="step-num">5</div><p id="lbl-lobby-rule-5">Punkty: unikalne = 10 pkt, powtórzone = 5 pkt, puste = 0 pkt</p></div>
+      </div>
+    </div>
+    <p class="waiting-msg" id="waiting-msg" style="display:none;"></p>
   </div>
 
-  <div class="game-pills">
-    <a class="game-pill active" onclick="return showGame('pm')" href="#pm"><span class="game-pill-icon">🌍</span> Länder &amp; Städer</a>
-    <a class="game-pill" onclick="return showGame('taboo')" href="#taboo"><span class="game-pill-icon">🎭</span> Förbjudna ord</a>
-    <a class="game-pill" onclick="return showGame('hangman')" href="#hangman"><span class="game-pill-icon">🪢</span> Hänga gubbe</a>
-    <a class="game-pill" onclick="return showGame('dots')" href="#dots"><span class="game-pill-icon">🔵</span> Punkter &amp; Linjer</a>
-    <a class="game-pill" onclick="return showGame('twotruth')" href="#twotruth"><span class="game-pill-icon">🤥</span> 2 Sanningar 1 Lögn</a>
-    <a class="game-pill" onclick="return showGame('skissa')" href="#skissa"><span class="game-pill-icon">🎨</span> Skissa &amp; Gissa</a>
-    <a class="game-pill" onclick="return showGame('bingo')" href="#bingo"><span class="game-pill-icon">🎯</span> Företagsbingo</a>
-    <a class="game-pill" onclick="return showGame('whoami')" href="#whoami"><span class="game-pill-icon">🕵️</span> Vem är jag?</a>
-    <a class="game-pill" onclick="return showGame('pairs')" href="#pairs"><span class="game-pill-icon">🃏</span> Memo-Spel</a>
-    <a class="game-pill" onclick="return showGame('charades')" href="#charades"><span class="game-pill-icon">🎬</span> Charader</a>
-    
+  <!-- ══ SCREEN: DRAWING ══ -->
+  <div id="screen-drawing" class="screen">
+    <div class="letter-stage">
+      <div id="drawing-round-badge" class="round-badge"></div>
+      <div id="drawing-letter" class="letter-display">?</div>
+      <div class="rounds-indicator" id="drawing-rounds-ind"></div>
+      <div id="drawing-host-controls" style="display:none;">
+        <div class="btn-row" style="margin-top:28px;">
+          <button class="btn" id="draw-btn" onclick="drawLetter()">🎲 <span id="lbl-draw">Draw Letter</span></button>
+          <button class="btn green" id="play-btn" onclick="startRound()" style="display:none;">▶ <span id="lbl-play">Play!</span></button>
+        </div>
+      </div>
+      <p id="drawing-waiting" class="waiting-msg" style="display:none;"></p>
+    </div>
   </div>
 
-  <div id="pm" class="game-section active">
-    <div class="game-section-header"><span class="game-section-icon">🌍</span><div><div class="game-section-title">Länder &amp; Städer</div><div class="game-section-sub">2–12 spelare · PL/EN/DE/SV</div></div></div>
-    <p class="rules-p">Ett klassiskt ordspel. En bokstav dras — alla fyller samtidigt i kategorier med ord som börjar med den bokstaven. Den som är klar först ropar STOPP!</p>
-    <div class="rules-h2">En rundes förlopp</div>
-    <ul class="rules-ul">
-      <li><strong>Värden drar en bokstav</strong> — varje bokstav förekommer bara en gång per spel</li>
-      <li><strong>Alla skriver</strong> — fyller i kategorier (Land, Stad, Djur…)</li>
-      <li><strong>STOPP!</strong> — den som är klar först stoppar rundan. Andra har några sekunder till</li>
-      <li><strong>Poängräkning</strong> — svar jämförs och poängsätts</li>
-    </ul>
-    <div class="rules-h2">Poäng</div>
-    <table class="score-table">
-      <tr><th>Situation</th><th>Poäng</th></tr>
-      <tr><td>Unikt svar (bara du skrev det)</td><td><strong style="color:var(--green)">10 p</strong></td></tr>
-      <tr><td>Dubbelt svar (någon annan skrev samma)</td><td><strong style="color:var(--accent2)">5 p</strong></td></tr>
-      <tr><td>Inget svar / tomt</td><td><strong style="color:var(--red)">0 p</strong></td></tr>
+  <!-- ══ SCREEN: PLAYING ══ -->
+  <div id="screen-playing" class="screen">
+    <div class="game-header">
+      <div class="game-letter-badge">
+        <span id="lbl-letter-word">Letter</span>
+        <span id="play-letter" style="font-size:64px;color:var(--accent);font-family:'Bebas Neue',sans-serif;"></span>
+      </div>
+      <div id="timer" class="timer">—</div>
+    </div>
+    <div id="stop-banner" class="stop-banner" style="display:none;"></div>
+    <table class="answer-table">
+      <thead><tr><th id="lbl-category-col">Category</th><th id="lbl-answer-col">Your Answer</th></tr></thead>
+      <tbody id="answer-body"></tbody>
     </table>
-    <div class="rules-h2">Protester</div>
-    <p class="rules-p">Du kan protestera mot ett svar genom att klicka på ⚠ Protestera. Alla röstar — majoriteten bestämmer. Ett avvisat svar ger 0 poäng.</p>
-    <div class="rules-tip"><p>💡 Skriv ovanliga, specifika svar — ett unikt svar ger 10 p istället för 5!</p></div>
-    <div class="game-cta"><p>Redo att spela?</p><a href="/?lang=sv" class="btn">🎮 Spela Länder &amp; Städer</a></div>
+    <div class="btn-row">
+      <button class="btn green" id="stop-btn" onclick="callStop()">🛑 STOP!</button>
+    </div>
+
   </div>
 
-  <div id="taboo" class="game-section">
-    <div class="game-section-header"><span class="game-section-icon">🎭</span><div><div class="game-section-title">Förbjudna ord</div><div class="game-section-sub">4–12 spelare · 2 lag · PL/EN/DE/SV</div></div></div>
-    <p class="rules-p">Ett lagspel för fester. Beskriv ord för ditt lag utan att använda de förbjudna uttrycken. Motståndarlaget bevakar och upprätthåller reglerna.</p>
-    <div class="rules-h2">Roller</div>
-    <ul class="rules-ul">
-      <li><strong>Beskrivare</strong> — ser ordet och förbudslistan. Beskriver med valfria andra ord, gester eller kontext</li>
-      <li><strong>Gissare</strong> — resten av laget försöker gissa ordet</li>
-      <li><strong>Domare</strong> — en spelare från motståndarlaget som håller utkik efter förbjudna ord</li>
-    </ul>
-    <div class="rules-h2">Poäng</div>
-    <ul class="rules-ul">
-      <li><strong>+1 för laget</strong> — för varje korrekt gissat ord</li>
-      <li><strong>+1 för motståndarlaget</strong> — när domaren fångar ett förbjudet ord</li>
-    </ul>
-    <div class="rules-tip"><p>💡 Beskriv via syfte eller sammanhang — istället för att namnge saken, säg vad den används till eller när man stöter på den.</p></div>
-    <div class="game-cta"><p>Redo att spela?</p><a href="/forbjudna-ord" class="btn">🎮 Spela Förbjudna ord</a></div>
+  <!-- ══ SCREEN: STOPPED ══ -->
+  <div id="screen-stopped" class="screen">
+    <div style="text-align:center;padding:32px 0;">
+      <div class="stop-banner" id="stopped-banner"></div>
+      <p style="color:var(--muted);margin-top:12px;" id="lbl-stopped-hint"></p>
+    </div>
+    <table class="answer-table">
+      <thead><tr><th id="lbl-sc2">Category</th><th id="lbl-ac2">Your Answer</th></tr></thead>
+      <tbody id="stopped-answer-body"></tbody>
+    </table>
+    <div class="btn-row" id="stopped-host-btns" style="display:none;">
+      <button class="btn" onclick="forceScoring()" id="lbl-force-scoring">✔ Go to Scoring</button>
+    </div>
   </div>
 
-  <div id="hangman" class="game-section">
-    <div class="game-section-header"><span class="game-section-icon">🪢</span><div><div class="game-section-title">Hänga gubbe</div><div class="game-section-sub">2–10 spelare · roterande · PL/EN/DE/SV</div></div></div>
-    <p class="rules-p">Klassiskt ordgissande med rotation. Varje spelare tar tur att välja ett hemligt ord medan alla andra gissar bokstav för bokstav. 7 fel och gubben är klar.</p>
-    <div class="rules-h2">En rundes förlopp</div>
-    <ul class="rules-ul">
-      <li><strong>Väljaren skriver ett ord</strong> — bara de ser det. Ett valfritt tips/kategori kan läggas till</li>
-      <li><strong>Gissarna trycker på bokstäver</strong> — rätta bokstäver visas i ordet</li>
-      <li><strong>7 fel = rundan slut</strong> — väljaren vinner rundan</li>
-      <li><strong>Gissa hela ordet</strong> — när som helst. Fel svar = omedelbar förlust!</li>
-    </ul>
-    <div class="rules-h2">Poäng</div>
-    <ul class="rules-ul">
-      <li><strong>+1 för gissaren</strong> — den som gissar ordet först</li>
-      <li><strong>+1 för väljaren</strong> — om ingen gissar</li>
-    </ul>
-    <div class="rules-tip"><p>💡 Som gissare: börja med vanliga bokstäver (E, N, A, R, S, T). Som väljare: välj ord med ovanliga bokstäver.</p></div>
-    <div class="game-cta"><p>Redo att spela?</p><a href="/hanga-gubbe-online" class="btn">🎮 Spela Hänga gubbe</a></div>
+  <!-- ══ SCREEN: CALCULATING ══ -->
+  <div id="screen-calculating" class="screen">
+    <div class="calculating-stage">
+      <div class="calc-spinner"></div>
+      <h2 id="lbl-calculating">Calculating scores...</h2>
+      <p id="lbl-calculating-sub">Comparing all answers, please wait!</p>
+    </div>
   </div>
 
-  <div id="dots" class="game-section">
-    <div class="game-section-header"><span class="game-section-icon">🔵</span><div><div class="game-section-title">Punkter &amp; Linjer</div><div class="game-section-sub">2–4 spelare · strategi · PL/EN/DE/SV</div></div></div>
-    <p class="rules-p">Ett klassiskt strategispel. Rita linjer mellan punkter och ta rutor — spelaren med flest rutor vinner.</p>
-    <div class="rules-h2">Regler</div>
-    <ul class="rules-ul">
-      <li><strong>Ta turvis och rita en linje</strong> — en horisontell eller vertikal linje mellan angränsande punkter</li>
-      <li><strong>Stäng en ruta = poäng + extra tur</strong> — du kan poängsätta flera gånger i rad!</li>
-      <li><strong>Spelet slutar</strong> — när alla rutor är tagna. Flest rutor vinner</li>
-    </ul>
-    <div class="rules-h2">Rutnätsstorlekar</div>
-    <ul class="rules-ul">
-      <li><strong>3×3</strong> — 9 rutor, snabbt spel (~5 min)</li>
-      <li><strong>4×4</strong> — 16 rutor, standardspel (~10 min)</li>
-      <li><strong>5×5 / 6×6</strong> — längre strategispel (15–25 min)</li>
-    </ul>
-    <div class="rules-tip"><p>💡 Undvik att rita den tredje linjen på en ofullständig ruta — du ger din motståndare en enkel poäng!</p></div>
-    <div class="game-cta"><p>Redo att spela?</p><a href="/punkter-och-linjer-online" class="btn">🎮 Spela Punkter &amp; Linjer</a></div>
+  <!-- ══ SCREEN: SCORING ══ -->
+  <div id="screen-scoring" class="screen">
+    <div style="padding-top:20px;">
+      <div class="round-badge" id="scoring-round-badge"></div>
+      <p id="lbl-scoring-hint" style="color:var(--muted);font-size:14px;margin-top:8px;"></p>
+    </div>
+    <div class="scoring-grid" id="scoring-grid"></div>
+    <p class="section-title" id="lbl-current-ranking"></p>
+    <div id="leaderboard-mini"></div>
+    <div class="btn-row" id="scoring-next-btn" style="display:none;">
+      <button class="btn" onclick="nextRound()" id="lbl-next-round">Next Round →</button>
+    </div>
+    <p class="waiting-msg" id="scoring-waiting" style="display:none;"></p>
   </div>
 
-  <div id="twotruth" class="game-section">
-    <div class="game-section-header"><span class="game-section-icon">🤥</span><div><div class="game-section-title">2 Sanningar 1 Lögn</div><div class="game-section-sub">3–20 spelare · isbrytare · PL/EN/DE/SV</div></div></div>
-    <p class="rules-p">En klassisk isbrytare. Varje spelare skriver i tur och ordning 2 sanningar och 1 lögn om sig själv — alla röstar på vilken som är lögnen.</p>
-    <div class="rules-h2">En rundes förlopp</div>
-    <ul class="rules-ul">
-      <li><strong>Aktiv spelare skriver 3 påståenden</strong> — 2 sanna, 1 lögn. De väljer vilken som är lögnen</li>
-      <li><strong>Alla röstar</strong> — trycker på påståendet de tror är lögnen</li>
-      <li><strong>Avslöjande</strong> — den aktiva spelaren avslöjar lögnen. Alla ser vem som gissade rätt</li>
-    </ul>
-    <div class="rules-h2">Poäng</div>
-    <ul class="rules-ul">
-      <li><strong>+1 för gissare</strong> — för att korrekt identifiera lögnen</li>
-      <li><strong>+1 för den aktiva spelaren</strong> — för varje person de lurade</li>
-    </ul>
-    <div class="rules-tip"><p>💡 De bästa lögnerna låter trovärdiga — välj något andra faktiskt skulle kunna tro om dig.</p></div>
-    <div class="game-cta"><p>Redo att spela?</p><a href="/tva-sanningar-en-logn" class="btn">🎮 Spela 2 Sanningar 1 Lögn</a></div>
-  </div>
-
-  <div id="skissa" class="game-section">
-    <div class="game-section-header"><span class="game-section-icon">🎨</span><div><div class="game-section-title">Skissa &amp; Gissa</div><div class="game-section-sub">3–10 spelare · inga poäng · alla enheter</div></div></div>
-    <p class="rules-p">Ett sällskapsspel utan poäng där ord vandrar genom en kedja av teckningar och gissningar — och förvandlas till något oigenkännligt på vägen.</p>
-    <div class="rules-h2">Så fungerar det</div>
-    <p class="rules-p">Varje spelare skriver ett hemligt ord. Det skickas vidare, nästa ritar det, nästa gissar — och så vidare tills kedjan är komplett. Sedan ser alla hur deras ursprungliga ord förvandlades.</p>
-    <div class="rules-h2">Steg för steg</div>
-    <ul class="rules-ul">
-      <li><strong>Skriv ett ord</strong> — vad som helst: djur, föremål, kända personer (30 sekunder)</li>
-      <li><strong>Rita det</strong> — du får någon annans ord och ritar det (80 sekunder)</li>
-      <li><strong>Gissa det</strong> — du får en teckning och skriver vad du tror den föreställer (30 sekunder)</li>
-      <li><strong>Avslöjning</strong> — alla ser hela kedjan och skrattar</li>
-    </ul>
-    <div class="rules-tip"><p>💡 Du behöver inte vara bra på att rita — dåliga teckningar gör spelet roligare.</p></div>
-    <div class="rules-h2">Inga poäng</div>
-    <p class="rules-p">Det finns ingen vinnare. Fungerar bäst med 5–8 spelare.</p>
-    <div class="game-cta"><p>Redo att spela?</p><a href="/skissa-och-gissa" class="btn">🎨 Spela Skissa &amp; Gissa</a></div>
-  </div>
-
-  <div id="bingo" class="game-section">
-    <div class="game-section-header"><span class="game-section-icon">🎯</span><div><div class="game-section-title">Företagsbingo</div><div class="game-section-sub">2–50 spelare · möten · alla enheter</div></div></div>
-    <p class="rules-p">För alla som suttit igenom ett möte för många fullt av tomma fraser. Företagsbingo gör även det tråkigaste mötet roligt.</p>
-    <div class="rules-h2">Så fungerar det</div>
-    <ul class="rules-ul">
-      <li><strong>Värden skapar ett rum</strong> — dela koden med teamet</li>
-      <li><strong>Alla får ett unikt 5×5-kort</strong> — fyllt med företagsfraser</li>
-      <li><strong>Under mötet</strong> — tryck på en fras när du hör den</li>
-      <li><strong>Fem i rad</strong> — vågrätt, lodrätt eller diagonalt — BINGO!</li>
-    </ul>
-    <div class="rules-tip"><p>💡 Ha appen öppen i en flik medan kameran är på — ett snabbt blick på mobilen märks inte.</p></div>
-    <div class="rules-h2">Inställningar</div>
-    <ul class="rules-ul">
-      <li><strong>2–50 spelare</strong> — passar alla teamstorlekar</li>
-      <li><strong>Privat eller offentligt rum</strong></li>
-      <li><strong>Ingen registrering krävs</strong></li>
-    </ul>
-    <div class="game-cta"><p>Redo att spela?</p><a href="/foretagsbingo" class="btn">🎯 Spela Företagsbingo</a></div>
-  </div>
-
-  <div id="whoami" class="game-section">
-    <div class="game-section-header"><span class="game-section-icon">🕵️</span><div><div class="game-section-title">Vem är jag?</div><div class="game-section-sub">2–16 spelare · röst eller chatt · PL/EN/DE/SV</div></div></div>
-    <p class="rules-p">Varje spelare får en hemlig karaktär — men kan inte se den! Ställ ja/nej-frågor för att lista ut vem du är. Gissa rätt och få en poäng!</p>
-    <div class="rules-h2">Så fungerar det</div>
-    <ul class="rules-ul">
-      <li><strong>Skapa ett rum</strong> — välj kategorier, svårighetsgrad och spelläge</li>
-      <li><strong>Alla får en karaktär</strong> — synlig för alla utom spelaren själv</li>
-      <li><strong>Ställ ja/nej-frågor</strong> — "Är jag en riktig person?", "Är jag från en film?"</li>
-      <li><strong>Gissa eller ge upp</strong> — rätt gissning = 1 poäng, ge upp = 0</li>
-    </ul>
-    <div class="rules-tip"><p>💡 Börja med breda frågor — "Lever jag?", "Är jag fiktiv?" — för att snabbt begränsa.</p></div>
-    <div class="game-cta"><p>Redo att spela?</p><a href="/vem-ar-jag" class="btn">🕵️ Spela Vem är jag?</a></div>
-  </div>
-
-  <div id="pairs" class="game-section">
-    <div class="game-section-header"><span class="game-section-icon">🃏</span><div><div class="game-section-title">Memo-Spel</div><div class="game-section-sub">2–6 spelare · minnesspel · 6 teman</div></div></div>
-    <p class="rules-p">Det klassiska kortmatchningsspelet. Vänd två kort — matchar de, får du paret och spelar igen. Om inte, vänds de tillbaka och nästa spelare får tur.</p>
-    <div class="rules-h2">Så fungerar det</div>
-    <ul class="rules-ul">
-      <li><strong>Värden väljer tema och brädstorlek</strong> — djur, mat, flaggor och mer</li>
-      <li><strong>Turas om att vända två kort</strong> — kom ihåg var de ligger!</li>
-      <li><strong>Hittat ett par</strong> — poäng och spela igen</li>
-      <li><strong>Spelet slut</strong> — när alla par hittats. Flest par vinner!</li>
-    </ul>
-    <div class="rules-tip"><p>💡 Håll koll på kort som andra spelare vänder — du kan använda den informationen!</p></div>
-    <div class="game-cta"><p>Redo att spela?</p><a href="/memo-spel-online" class="btn">🃏 Spela Memo-Spel</a></div>
-  </div>
-
-  <div id="charades" class="game-section">
-    <div class="game-section-header"><span class="game-section-icon">🎬</span><div><div class="game-section-title">Charader</div><div class="game-section-sub">4–40 spelare · 2 lag · PL/EN/DE/SV</div></div></div>
-    <p class="rules-p">Det klassiska sällskapsspelet — visa ett ord med bara gester medan ditt lag gissar. Ingen prat, ingen pekning på föremål!</p>
-    <div class="rules-h2">Så fungerar det</div>
-    <ul class="rules-ul">
-      <li><strong>Spelare delas in i 2 lag</strong></li>
-      <li><strong>En spelare agerar</strong> — ser ordet på skärmen</li>
-      <li><strong>Laget gissar</strong> — ropar svar innan tiden tar slut</li>
-      <li><strong>Lagen turas om</strong></li>
-    </ul>
-    <div class="rules-tip"><p>💡 Använd stora, överdrivna gester. Visa konceptet, inte enskilda bokstäver!</p></div>
-    <div class="game-cta"><p>Redo att spela?</p><a href="/charader" class="btn">🎬 Spela Charader</a></div>
-  </div>
-
-
-  <div style="margin-top:40px;padding-top:28px;border-top:2px solid var(--border);">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--accent2);margin-bottom:8px;">För vem passar dessa spel?</div>
-    <p style="color:var(--muted);font-size:14px;font-weight:600;line-height:1.7;margin-bottom:20px;">
-      Nedan är föreslagna åldersgränser. Dessa är <strong style="color:var(--text)">riktlinjer, inte hårda regler</strong> — varje barn är annorlunda.
-    </p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;">
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-          <span style="font-size:24px;">🌍</span>
-          <div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--text);">Länder &amp; Städer</div>
-            <div style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;background:rgba(6,214,160,0.1);border:1px solid rgba(6,214,160,0.3);color:var(--green);border-radius:20px;padding:2px 8px;margin-top:2px;">👶 Från 7 år</div>
-          </div>
-        </div>
-        <p style="color:var(--muted);font-size:13px;font-weight:600;line-height:1.6;margin:0;">Kräver läsning, skrivning och grundläggande geografikunskaper. Bra för klassrum, familjekvällar och team-isbrytare.</p>
-      </div>
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-          <span style="font-size:24px;">🎭</span>
-          <div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--text);">Förbjudna ord</div>
-            <div style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;background:rgba(6,214,160,0.1);border:1px solid rgba(6,214,160,0.3);color:var(--green);border-radius:20px;padding:2px 8px;margin-top:2px;">👶 Från 11 år</div>
-          </div>
-        </div>
-        <p style="color:var(--muted);font-size:13px;font-weight:600;line-height:1.6;margin:0;">Kräver ett starkt ordförråd och förmågan att beskriva begrepp indirekt. Utmärkt för teambuilding och gruppevenemang.</p>
-      </div>
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-          <span style="font-size:24px;">🤥</span>
-          <div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--text);">2 Sanningar 1 Lögn</div>
-            <div style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;background:rgba(6,214,160,0.1);border:1px solid rgba(6,214,160,0.3);color:var(--green);border-radius:20px;padding:2px 8px;margin-top:2px;">👶 Från 12 år</div>
-          </div>
-        </div>
-        <p style="color:var(--muted);font-size:13px;font-weight:600;line-height:1.6;margin:0;">Den klassiska isbrytaren för tonåringar och vuxna på fester och team-events.</p>
-      </div>
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-          <span style="font-size:24px;">🔵</span>
-          <div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--text);">Punkter &amp; Linjer</div>
-            <div style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;background:rgba(6,214,160,0.1);border:1px solid rgba(6,214,160,0.3);color:var(--green);border-radius:20px;padding:2px 8px;margin-top:2px;">👶 Från 5 år</div>
-          </div>
-        </div>
-        <p style="color:var(--muted);font-size:13px;font-weight:600;line-height:1.6;margin:0;">Helt visuellt — ingen läsning eller skrivning behövs. Ett äkta familjespel för alla generationer.</p>
-      </div>
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-          <span style="font-size:24px;">🪢</span>
-          <div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--text);">Hänga gubbe</div>
-            <div style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;background:rgba(6,214,160,0.1);border:1px solid rgba(6,214,160,0.3);color:var(--green);border-radius:20px;padding:2px 8px;margin-top:2px;">👶 Från 8 år</div>
-          </div>
-        </div>
-        <p style="color:var(--muted);font-size:13px;font-weight:600;line-height:1.6;margin:0;">Kräver läsförmåga och alfabetskunskaper. Ett bra lärandespel för stavningsövningar.</p>
+  <!-- ══ SCREEN: FINAL ══ -->
+  <div id="screen-final" class="screen">
+    <div style="text-align:center;padding-top:28px;">
+      <div class="winner-crown">🏆</div>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:50px;letter-spacing:2px;color:var(--accent2);" id="lbl-game-over">Game Over!</h2>
+      <p id="lbl-final-sub" style="color:var(--muted);margin-top:4px;"></p>
+    </div>
+    <p class="section-title" id="lbl-final-ranking"></p>
+    <div id="final-leaderboard"></div>
+    <div class="btn-row" style="flex-direction:column;align-items:center;gap:12px;">
+      <button class="btn" style="font-size:18px;padding:16px 36px;width:100%;max-width:400px;" onclick="playAgainGroup()" id="lbl-play-again-group">🔄 Zagraj jeszcze raz z tą grupą</button>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+        <button class="btn secondary" onclick="goHome(); window.location.href=gamesHubUrl();" id="lbl-new-game">🏠 Home</button>
+        <button class="btn share-btn" onclick="shareGame()" id="lbl-share-game">📤 Udostępnij wynik</button>
       </div>
     </div>
   </div>
 
-  <div style="margin-top:40px;padding-top:28px;border-top:2px solid var(--border);">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--accent2);margin-bottom:8px;">Tappade anslutningen? Så här återgår du</div>
-    <p style="color:var(--muted);font-size:14px;font-weight:600;line-height:1.7;margin-bottom:16px;">
-      Om du av misstag stänger fliken eller tappar anslutningen — <strong style="color:var(--text)">du kan komma tillbaka</strong>. Spelet håller din plats i minst 15 sekunder.
-    </p>
-    <div style="background:var(--card);border:1px solid rgba(6,214,160,0.3);border-radius:14px;padding:18px 20px;margin-bottom:16px;">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--green);margin-bottom:10px;">✅ Återgå i 3 steg:</div>
-      <ol style="color:var(--muted);font-size:14px;font-weight:600;line-height:1.9;margin:0;padding-left:20px;">
-        <li>Gå tillbaka till spelsidan (t.ex. panstwamiastagra.com/dots)</li>
-        <li>Ange <strong style="color:var(--text)">exakt samma namn</strong> som du använde i spelet</li>
-        <li>Ange <strong style="color:var(--text)">samma rumskod</strong> och klicka Gå med</li>
-      </ol>
+  <div id="reaction-container" style="max-width:500px;margin:0 auto;"></div>
+  <div id="other-games-strip"></div>
+</div>
+
+  <!-- DISCOVER OTHER GAMES -->
+  <div style="max-width:780px;margin:0 auto;padding:32px 16px 0;border-top:1px solid var(--border);margin-top:40px;">
+    <h2 id="lbl-discover-games" style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--accent2);text-align:center;margin-bottom:6px;">Inne gry na panstwamiastagra.com</h2>
+    <p id="lbl-discover-games-desc" style="color:var(--muted);font-size:13px;font-weight:700;text-align:center;margin-bottom:16px;">Wszystkie za darmo, bez rejestracji, na każdym urządzeniu.</p>
+    <div id="discover-games-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:20px;">
+      <a href="/kim-jestem" id="discover-game-1" style="display:flex;align-items:center;gap:10px;text-decoration:none;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <span style="font-size:24px;">❓</span>
+        <div>
+          <div id="discover-name-1" style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--text);">Kim Jestem?</div>
+          <div id="discover-players-1" style="font-size:11px;color:var(--muted);font-weight:700;">2-16 graczy</div>
+        </div>
+      </a>
+      <a href="/zakazane-slowa" id="discover-game-2" style="display:flex;align-items:center;gap:10px;text-decoration:none;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <span style="font-size:24px;">🎭</span>
+        <div>
+          <div id="discover-name-2" style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--text);">Zakazane Słowa</div>
+          <div id="discover-players-2" style="font-size:11px;color:var(--muted);font-weight:700;">4-12 graczy</div>
+        </div>
+      </a>
+      <a href="/wisielec" id="discover-game-3" style="display:flex;align-items:center;gap:10px;text-decoration:none;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <span style="font-size:24px;">🪢</span>
+        <div>
+          <div id="discover-name-3" style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--text);">Wisielec</div>
+          <div id="discover-players-3" style="font-size:11px;color:var(--muted);font-weight:700;">2-10 graczy</div>
+        </div>
+      </a>
+      <a href="/szkicuj-i-zgaduj" id="discover-game-4" style="display:flex;align-items:center;gap:10px;text-decoration:none;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <span style="font-size:24px;">🎨</span>
+        <div>
+          <div id="discover-name-4" style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--text);">Szkicuj i Zgaduj</div>
+          <div id="discover-players-4" style="font-size:11px;color:var(--muted);font-weight:700;">3-10 graczy</div>
+        </div>
+      </a>
+      <a href="/znajdz-pary" id="discover-game-5" style="display:flex;align-items:center;gap:10px;text-decoration:none;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <span style="font-size:24px;">🧩</span>
+        <div>
+          <div id="discover-name-5" style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--text);">Znajdź Pary</div>
+          <div id="discover-players-5" style="font-size:11px;color:var(--muted);font-weight:700;">2-6 graczy</div>
+        </div>
+      </a>
+    </div>
+    <div style="text-align:center;margin-bottom:20px;">
+      <a href="/games" id="lbl-seo-all-games" style="color:var(--accent);font-weight:700;font-size:14px;text-decoration:none;">🎮 <span id="lbl-discover-all">Zobacz wszystkie gry →</span></a>
     </div>
   </div>
 
-  <div style="text-align:center;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);">
-    <a href="/spel" style="color:var(--accent);font-weight:700;font-size:14px;text-decoration:none;">🎮 Se alla spel →</a>
+  <!-- SEO FOOTER LINKS -->
+  <div style="text-align:center;padding:20px 0 8px;border-top:1px solid var(--border);">
+    <p id="lbl-more-about" style="color:var(--muted);font-size:13px;font-weight:600;margin-bottom:10px;">Więcej o grze</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a id="lbl-seo-rules" href="/jak-grac" style="color:var(--accent);font-weight:700;font-size:13px;text-decoration:none;">📖 <span id="lbl-seo-rules-text">Jak grać?</span></a>
+      <a href="/kategorie" style="color:var(--accent);font-weight:700;font-size:13px;text-decoration:none;">📋 <span id="lbl-seo-cats">Kategorie</span></a>
+      <a href="/games" id="lbl-seo-other-games" style="color:var(--muted);font-weight:700;font-size:13px;text-decoration:none;">🎮 <span id="lbl-seo-other-text">Inne gry</span></a>
+    </div>
   </div>
 
-
-
-<script>
-function showGame(id) {
-  var SLUGS = {
-    'pm': '/hur-man-spelar',
-    'taboo': '/hur-man-spelar/forbjudna-ord',
-    'hangman': '/hur-man-spelar/hanga-gubbe-online',
-    'dots': '/hur-man-spelar/punkter-och-linjer-online',
-    'twotruth': '/hur-man-spelar/tva-sanningar-en-logn',
-    'skissa':   '/hur-man-spelar/skissa-och-gissa',
-    'bingo': '/hur-man-spelar/foretagsbingo',
-    'whoami': '/hur-man-spelar/vem-ar-jag',
-    'pairs': '/hur-man-spelar/memo-spel',
-    'charades': '/hur-man-spelar/charader',
-  };
-  document.querySelectorAll('.game-section').forEach(function(s){s.classList.remove('active');});
-  document.querySelectorAll('.game-pill').forEach(function(p){p.classList.remove('active');});
-  var sec = document.getElementById(id);
-  if(sec) sec.classList.add('active');
-  document.querySelectorAll('.game-pill').forEach(function(p){
-    if(p.getAttribute('href')==='#'+id) p.classList.add('active');
-  });
-  if(SLUGS[id]) history.replaceState(null, '', SLUGS[id]);
-  window.scrollTo({top:0,behavior:'smooth'});
-  return false;
-}
-(function() {
-  var pathMap = {
-    'forbjudna-ord': 'taboo',
-    'hanga-gubbe-online': 'hangman',
-    'punkter-och-linjer-online': 'dots',
-    'tva-sanningar-en-logn': 'twotruth',
-    'skissa-och-gissa': 'skissa',
-    'foretagsbingo': 'bingo'
-  };
-  var pathSeg = window.location.pathname.split('/').pop();
-  var hash = window.location.hash.replace('#','');
-  var gameId = pathMap[pathSeg] || hash || '';
-  if(gameId) showGame(gameId);
-})();
-</script>
-<script>window._forceLang="sv";</script>
-<script src="/js/shared.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/langs.js?v=2"></script>
+<script src="/js/shared.js?v=4"></script>
+<script src="/js/client.js?v=4"></script>
 </body>
 </html>
