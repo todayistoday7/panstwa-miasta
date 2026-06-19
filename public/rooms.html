@@ -181,7 +181,7 @@
   <div id="rooms-list"><div class="loading" id="loading-msg">Ładowanie...</div></div>
 
   <div class="page-footer">
-    <a href="/games?lang=pl" id="link-all-games">🎮 <span id="lbl-all-games">Wszystkie gry</span></a>
+    <a href="/gry" id="link-all-games">🎮 <span id="lbl-all-games">Wszystkie gry</span></a>
     <a href="/?lang=pl" id="link-pm">🌍 <span id="lbl-pm">Państwa-Miasta</span></a>
     <a href="/taboo?lang=pl" id="link-taboo">🎭 <span id="lbl-taboo">Zakazane Słowa</span></a>
     <a href="/dots?lang=pl" id="link-dots">🔵 <span id="lbl-dots">Kropki i Kreski</span></a>
@@ -353,7 +353,7 @@ function applyTranslations() {
 function updateLinks() {
   var ql = '?lang=' + lang;
   var links = {
-    'link-all-games': '/games' + ql,
+    'link-all-games': (typeof gamesHubUrl === 'function') ? gamesHubUrl(lang) : '/games' + ql,
     'link-pm':        '/' + ql,
     'link-taboo':     '/taboo' + ql,
     'link-dots':      '/dots' + ql,
@@ -405,7 +405,7 @@ function renderRooms() {
         '<div class="empty-icon">🎲</div>' +
         '<div class="empty-title">' + L.emptyTitle + '</div>' +
         '<p class="empty-desc">' + L.emptyDesc.replace('\n', '<br/>') + '</p>' +
-        '<a href="/games?lang=' + lang + '" class="empty-btn">' + L.emptyBtn + '</a>' +
+        '<a href="' + ((typeof gamesHubUrl === 'function') ? gamesHubUrl(lang) : '/games?lang=' + lang) + '" class="empty-btn">' + L.emptyBtn + '</a>' +
       '</div>';
     return;
   }

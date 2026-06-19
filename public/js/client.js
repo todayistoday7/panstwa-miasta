@@ -1068,7 +1068,7 @@ function applyTranslations() {
                         lang === 'de' ? '/wie-man-spielt' :
                         lang === 'sv' ? '/hur-man-spelar' : '/how-to-play';
   }
-  if (hubLink) hubLink.href = '/games?lang=' + lang;
+  if (hubLink) hubLink.href = (typeof gamesHubUrl === 'function') ? gamesHubUrl(lang) : '/games?lang=' + lang;
   const calcEl = document.getElementById('lbl-calculating');
   if (calcEl && L.calculating) calcEl.textContent = L.calculating;
   const calcSub = document.getElementById('lbl-calculating-sub');
@@ -1132,7 +1132,7 @@ function applyTranslations() {
   };
   const dg = discoverData[lang] || discoverData['pl'];
   const allGamesLink = document.getElementById('lbl-seo-all-games');
-  if (allGamesLink) allGamesLink.href = '/games?lang=' + lang;
+  if (allGamesLink) allGamesLink.href = (typeof gamesHubUrl === 'function') ? gamesHubUrl(lang) : '/games?lang=' + lang;
   const allGamesLabel = document.getElementById('lbl-discover-all');
   if (allGamesLabel) allGamesLabel.textContent = lang==='pl'?'Zobacz wszystkie gry →':lang==='de'?'Alle Spiele ansehen →':lang==='sv'?'Se alla spel →':'See all games →';
   dg.forEach((g, i) => {
