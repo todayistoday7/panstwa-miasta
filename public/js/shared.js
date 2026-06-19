@@ -255,7 +255,7 @@ function gamesHubUrl(langCode) {
   if (l === 'pl') return '/gry';
   if (l === 'de') return '/spiele';
   if (l === 'sv') return '/spel';
-  return '/games';
+  return '/games?lang=' + l;
 }
 
 // Updates all nav-home links on the page to point to the games hub
@@ -635,7 +635,7 @@ function initVisibilityToggle() {
     nav.innerHTML =
       '<div class="gb-sec">' + t.sg + '</div>' +
       '<a href="' + gamesHubUrl(lang) + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
-      '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
+      '<a href="' + gamesHubUrl(lang) + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
       '<div class="gb-div"></div>' +
       '<a href="' + (window._rfgDomain ? '/' : (lang==='pl'?'/':lang==='de'?'/stadt-land-fluss-online':lang==='sv'?'/laender-och-staeder':'/countries-cities-game')) + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
       '<a href="' + (lang==='pl'?'/zakazane-slowa':lang==='de'?'/verbotene-woerter':lang==='sv'?'/forbjudna-ord':'/forbidden-words') + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
@@ -768,7 +768,7 @@ window._rebuildBurger = function(newLang) {
   nav.innerHTML =
     '<div class="gb-sec">' + t.sg + '</div>' +
     '<a href="' + gamesHubUrl(newLang) + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
-    '<a href="/games' + ql + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
+    '<a href="' + gamesHubUrl(newLang) + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
     '<div class="gb-div"></div>' +
     '<a href="' + (window._rfgDomain ? '/' : (newLang==='pl'?'/':newLang==='de'?'/stadt-land-fluss-online':newLang==='sv'?'/laender-och-staeder':'/countries-cities-game')) + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
     '<a href="' + (newLang==='pl'?'/zakazane-slowa':newLang==='de'?'/verbotene-woerter':newLang==='sv'?'/forbjudna-ord':'/forbidden-words') + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
@@ -959,7 +959,7 @@ window._buildFooterLangBtns = function() {
             '<a href="' + (footerLang==='pl'?'/kim-jestem':footerLang==='de'?'/wer-bin-ich':footerLang==='sv'?'/vem-ar-jag':'/who-am-i') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">❓ ' + (t.gwhoami||'Who Am I?') + '</a>' +
             '<a href="' + (footerLang==='pl'?'/znajdz-pary':footerLang==='de'?'/memo-spiel-online':footerLang==='sv'?'/memo-spel-online':'/find-pairs-online') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🧩 ' + (t.gmemory||'Find Pairs') + '</a>' +
             '<a href="' + (footerLang==='pl'?'/kalambury':footerLang==='de'?'/scharade':footerLang==='sv'?'/charader':'/charades-online') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎬 ' + (t.gcharades||'Charades') + '</a>' +
-            '<a href="/games?lang=' + footerLang + '" style="color:var(--accent);font-size:13px;font-weight:700;text-decoration:none;">→ ' + t.games + '</a>' +
+            '<a href="' + gamesHubUrl(footerLang) + '" style="color:var(--accent);font-size:13px;font-weight:700;text-decoration:none;">→ ' + t.games + '</a>' +
             '<a href="/rooms?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔴 ' + (t.rooms||'Live Rooms') + '</a>' +
           '</div>' +
         '</div>' +
