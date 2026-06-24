@@ -345,7 +345,12 @@
       window.location.href = _hubUrls[l];
       return;
     }
-    history.replaceState(null, '', _hubUrls[l] + '?lang=' + l);
+    var _langPaths = ['/gry','/spiele','/spel'];
+    if (_langPaths.indexOf(window.location.pathname) === -1) {
+      history.replaceState(null, '', _hubUrls[l] + '?lang=' + l);
+    } else {
+      history.replaceState(null, '', window.location.pathname);
+    }
     if (window.hubRerenderRooms) window.hubRerenderRooms();
     if (typeof buildRulesGrid === 'function') buildRulesGrid(l);
     // Update burger menu and footer language
