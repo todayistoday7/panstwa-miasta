@@ -1004,7 +1004,7 @@ function goHome() {
 function doGoHome() { closeConfirm(); goHome(); }
 
 // ── Language ──────────────────────────────────────────────────────
-function setUiLang(code) {
+function setUiLang(code, skipUrlUpdate) {
   // Redirect to SEO page if available (Option B) — but not if already on that page
   if (window._seoLangUrls && window._seoLangUrls[code]) {
     var target = window._seoLangUrls[code];
@@ -1018,7 +1018,9 @@ function setUiLang(code) {
     b.classList.toggle('active', b.textContent === LANGS[code].name));
   applyTranslations();
   if (roomState) applyState(roomState);
-  history.replaceState(null, '', window.location.pathname + '?lang=' + code);
+  if (!skipUrlUpdate) {
+    history.replaceState(null, '', window.location.pathname + '?lang=' + code);
+  }
   window.lang = lang;
   if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
   if (typeof window._refreshFooter  === 'function') window._refreshFooter();
@@ -1162,6 +1164,6 @@ function showError(msg) {
 
 // ── Init ──────────────────────────────────────────────────────────
 buildLangBar();
-setUiLang(lang);
+setUiLang(lang, true);
 window.lang = lang;
 initVisibilityToggle();
