@@ -283,9 +283,9 @@
       card(l==='pl'?'/kalambury':l==='de'?'/scharade':l==='sv'?'/charader':'/charades-online', '🎬', g.charades ? g.charades.title : 'Charades', g.charades ? g.charades.desc : '', g.charades ? g.charades.players : '4-40', 'PL/EN/DE/SV', g.charades ? g.charades.tag1 : 'Party', false, g.charades ? g.charades.play : '🎮 Play now', l, g.charades ? g.charades.age : '4+', 'party family kids4 team-event ice-breaker', true);
   }
 
-  function card(href, icon, title, desc, players, lang_tag, tag1, comingSoon, btnLabel, l, age, filterTags) {
+  function card(href, icon, title, desc, players, lang_tag, tag1, comingSoon, btnLabel, l, age, filterTags, noLangSuffix) {
     var ft = filterTags ? ' data-tags="' + filterTags + '"' : '';
-    var wrap_open  = comingSoon ? '<div class="game-card coming-soon"' + ft + '>' : '<a href="' + href + '?lang=' + l + '" class="game-card"' + ft + '>';
+    var wrap_open  = comingSoon ? '<div class="game-card coming-soon"' + ft + '>' : '<a href="' + href + (noLangSuffix ? '' : ('?lang=' + l)) + '" class="game-card"' + ft + '>';
     var wrap_close = comingSoon ? '</div>' : '</a>';
     var t1lower = (tag1 || '').toLowerCase();
     var t1class = (t1lower.indexOf('ice') !== -1 || t1lower.indexOf('brise') !== -1 || t1lower.indexOf('eisbrecher') !== -1 || t1lower.indexOf('rompe') !== -1)
