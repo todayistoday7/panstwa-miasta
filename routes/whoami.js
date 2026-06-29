@@ -4,6 +4,7 @@
 // ════════════════════════════════════════════════════════
 
 const { isBotName, isHoneypot } = require('./botfilter');
+const { logWhoamiEvent } = require('../db/stats');
 
 // ── Character Database ────────────────────────────────────────────
 const CHARACTERS = {
@@ -1083,6 +1084,11 @@ function startNextTurn(io, room) {
       if (room.state.phase === 'playing') {
         room.state.phase = 'turn_result';
         room.state.chat.push({ type:'system', text:'⏱️ Time is up!', ts: Date.now() });
+        logWhoamiEvent({
+          roomCode: room.code, lang: room.lang,
+          category: (room.settings.categories || [])[0], difficulty: room.settings.difficulty,
+          character: room.state.activeChar, outcome: 'timeout'
+        });
         emitState(io, room);
       }
     }, room.settings.timerSecs * 1000 + 500);
@@ -1249,6 +1255,11 @@ function register(io, socket) {
     if (room._turnTimer) clearTimeout(room._turnTimer);
     room.state.phase = 'turn_result';
     room.state.chat.push({ type:'system', text:`✅ ${activePlayer.name} guessed correctly! It was ${room.state.activeChar}!`, ts: Date.now() });
+    logWhoamiEvent({
+      roomCode: code, lang: room.lang,
+      category: (room.settings.categories || [])[0], difficulty: room.settings.difficulty,
+      character: room.state.activeChar, outcome: 'guessed'
+    });
     emitState(io, room);
   });
 
@@ -1270,6 +1281,11 @@ function register(io, socket) {
       if (room._turnTimer) clearTimeout(room._turnTimer);
       room.state.phase = 'turn_result';
       room.state.chat.push({ type:'system', text:`✅ Correct! It was ${room.state.activeChar}!`, ts: Date.now() });
+      logWhoamiEvent({
+        roomCode: code, lang: room.lang,
+        category: (room.settings.categories || [])[0], difficulty: room.settings.difficulty,
+        character: room.state.activeChar, outcome: 'guessed'
+      });
     } else {
       room.state.chat.push({ type:'system', text:`❌ Wrong guess: "${guess}"`, ts: Date.now() });
     }
@@ -1281,6 +1297,12 @@ function register(io, socket) {
     const room = whoamiRooms[code];
     if (!room || room.state.phase !== 'playing') return;
     if (socket.id !== room.hostId) return; // host only
+    // Log the character being abandoned BEFORE it gets overwritten below.
+    logWhoamiEvent({
+      roomCode: code, lang: room.lang,
+      category: (room.settings.categories || [])[0], difficulty: room.settings.difficulty,
+      character: room.state.activeChar, outcome: 'skipped'
+    });
     // Pick new character, reset timer, keep same active player
     const pool = getCharacters(room.settings.categories, room.settings.difficulty, room.lang);
     const charObj = pickCharacter(pool, room.state.usedChars);
@@ -1299,6 +1321,11 @@ function register(io, socket) {
           room.state.chat.push({ type:'system', text:'⏱️ ' + room.state.activeChar, ts: Date.now() });
           room.state.phase = 'turn_result';
           room.state.turnCount++;
+          logWhoamiEvent({
+            roomCode: code, lang: room.lang,
+            category: (room.settings.categories || [])[0], difficulty: room.settings.difficulty,
+            character: room.state.activeChar, outcome: 'timeout'
+          });
           const total = room.settings.turnsEach * room.players.filter(p=>p.connected).length;
           if (room.state.turnCount >= total) room.state.phase = 'final';
           emitState(io, room);
@@ -1317,6 +1344,11 @@ function register(io, socket) {
     if (room._turnTimer) clearTimeout(room._turnTimer);
     room.state.phase = 'turn_result';
     room.state.chat.push({ type:'system', text:`🏳️ Surrendered. It was ${room.state.activeChar}.`, ts: Date.now() });
+    logWhoamiEvent({
+      roomCode: code, lang: room.lang,
+      category: (room.settings.categories || [])[0], difficulty: room.settings.difficulty,
+      character: room.state.activeChar, outcome: 'surrendered'
+    });
     emitState(io, room);
   });
 
