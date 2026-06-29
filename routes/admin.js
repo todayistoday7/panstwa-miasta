@@ -12,6 +12,7 @@ const fs       = require('fs');
 const path     = require('path');
 const crypto   = require('crypto');
 const router   = express.Router();
+const { getDb, DB_PATH } = require('../db/stats');
 
 const ROOT         = path.join(__dirname, '..');
 const DATA_DIR     = path.join(ROOT, 'data');
@@ -699,6 +700,26 @@ router.get('/bugs', requireAuth, (req, res) => {
     </script>`;
 
   res.send(layout('Bug Reports', body, 'bugs'));
+});
+
+// ─── TEMPORARY: Stats debug check ──────────────────────
+// Quick raw dump to confirm the stats DB is actually receiving
+// writes. Safe to delete once the real dashboard is built.
+router.get('/stats-debug', requireAuth, (req, res) => {
+  try {
+    const db = getDb();
+    const count = db.prepare('SELECT COUNT(*) as n FROM whoami_events').get();
+    const recent = db.prepare('SELECT * FROM whoami_events ORDER BY id DESC LIMIT 20').all();
+    const body = `
+      <h2>Stats debug</h2>
+      <p><strong>DB file:</strong> ${DB_PATH}</p>
+      <p><strong>Total rows:</strong> ${count.n}</p>
+      <pre style="background:#111;color:#0f0;padding:1rem;border-radius:8px;overflow:auto;font-size:13px;">${JSON.stringify(recent, null, 2)}</pre>
+    `;
+    res.send(layout('Stats Debug', body, 'stats-debug'));
+  } catch (err) {
+    res.status(500).send(`<pre>Stats debug error: ${err.message}\n\n${err.stack}</pre>`);
+  }
 });
 
 // ─── Default redirect ─────────────────────────────────
