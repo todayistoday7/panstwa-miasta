@@ -78,6 +78,7 @@ function layout(title, body, activePage) {
     ['translations', '🌍 Translations',  '/admin/translations'],
     ['banner',       '📢 Banner',        '/admin/banner'],
     ['bugs',         '🐛 Bug Reports',   '/admin/bugs'],
+    ['stats',        '📊 Stats',         '/admin/stats'],
   ].map(([id, label, href]) =>
     `<a href="${href}" class="${activePage===id?'active':''}">${label}</a>`
   ).join('');
@@ -702,14 +703,245 @@ router.get('/bugs', requireAuth, (req, res) => {
   res.send(layout('Bug Reports', body, 'bugs'));
 });
 
+// ═══════════════════════════════════════════════════════
+// GAME STATS DASHBOARD
+// ═══════════════════════════════════════════════════════
+
+const STATS_SORT_COLUMNS = {
+  character:   'character',
+  total:       'total',
+  guessed:     'guessed',
+  skipped:     'skipped',
+  surrendered: 'surrendered',
+  timeout:     'timeout',
+  struggled:   'struggled',
+};
+
+router.get('/stats', requireAuth, (req, res) => {
+  try {
+    const db = getDb();
+
+    // ── Read + sanitize filters from query string ──────────
+    const game    = req.query.game || 'whoami';
+    const days     = ['7','30','90'].includes(req.query.days) ? req.query.days : '';
+    const outcome  = ['guessed','skipped','surrendered','timeout'].includes(req.query.outcome) ? req.query.outcome : '';
+    const sort     = STATS_SORT_COLUMNS[req.query.sort] ? req.query.sort : 'struggled';
+    const dir      = req.query.dir === 'asc' ? 'asc' : 'desc';
+    const sortCol  = STATS_SORT_COLUMNS[sort];
+    const sortDir  = dir === 'asc' ? 'ASC' : 'DESC';
+
+    // ── Build shared WHERE clause from filters ──────────────
+    const where = ['game = ?'];
+    const params = [game];
+    let cutoffLabel = 'All time';
+    if (days) {
+      const cutoff = new Date(Date.now() - Number(days) * 24 * 3600 * 1000).toISOString().slice(0, 10);
+      where.push('date >= ?');
+      params.push(cutoff);
+      cutoffLabel = `Last ${days} days`;
+    }
+    if (outcome) {
+      where.push('outcome = ?');
+      params.push(outcome);
+    }
+    const whereSql = where.join(' AND ');
+
+    // ── Available games for the selector (so it grows automatically) ──
+    const availableGames = db.prepare(`SELECT DISTINCT game FROM game_events ORDER BY game`).all().map(r => r.game);
+    if (availableGames.length === 0) availableGames.push('whoami'); // sensible default before any data exists
+
+    const GAME_LABELS = { whoami: 'Who Am I', dots: 'Dots & Boxes', charades: 'Charades', drawing: 'Sketch & Guess' };
+    const gameOpts = availableGames.map(g =>
+      `<option value="${g}" ${game===g?'selected':''}>${GAME_LABELS[g] || g}</option>`
+    ).join('');
+
+    // ── Summary cards (respect filters except the outcome filter,
+    //     which would make "guessed correctly" misleading if active) ──
+    const summaryWhere = days ? 'game = ? AND date >= ?' : 'game = ?';
+    const summaryParams = days ? [game, params[1]] : [game];
+    const summary = db.prepare(`
+      SELECT COUNT(*) as totalEvents,
+             COUNT(DISTINCT room_code) as totalRooms,
+             SUM(CASE WHEN outcome='guessed' THEN 1 ELSE 0 END) as totalGuessed
+      FROM game_events
+      WHERE ${summaryWhere}
+    `).get(...summaryParams);
+
+    const completionPct = summary.totalEvents
+      ? Math.round(100 * summary.totalGuessed / summary.totalEvents)
+      : 0;
+
+    // ── Main filtered + sorted character table ──────────────
+    const byCharacter = db.prepare(`
+      SELECT json_extract(details, '$.character') as character,
+        SUM(CASE WHEN outcome='guessed'     THEN 1 ELSE 0 END) AS guessed,
+        SUM(CASE WHEN outcome='skipped'     THEN 1 ELSE 0 END) AS skipped,
+        SUM(CASE WHEN outcome='surrendered' THEN 1 ELSE 0 END) AS surrendered,
+        SUM(CASE WHEN outcome='timeout'     THEN 1 ELSE 0 END) AS timeout,
+        COUNT(*) AS total,
+        (SUM(CASE WHEN outcome='skipped' THEN 1 ELSE 0 END) +
+         SUM(CASE WHEN outcome='surrendered' THEN 1 ELSE 0 END) +
+         SUM(CASE WHEN outcome='timeout' THEN 1 ELSE 0 END)) AS struggled
+      FROM game_events
+      WHERE ${whereSql} AND json_extract(details, '$.character') IS NOT NULL
+      GROUP BY character
+      ORDER BY ${sortCol} ${sortDir}
+      LIMIT 50
+    `).all(...params);
+
+    const byDifficulty = db.prepare(`
+      SELECT json_extract(details, '$.difficulty') as difficulty,
+        COUNT(*) as total,
+        SUM(CASE WHEN outcome='guessed' THEN 1 ELSE 0 END) as guessed
+      FROM game_events
+      WHERE game = ? AND json_extract(details, '$.difficulty') IS NOT NULL
+      GROUP BY difficulty
+      ORDER BY total DESC
+    `).all(game);
+
+    const byLang = db.prepare(`
+      SELECT lang, COUNT(*) as total
+      FROM game_events
+      WHERE game = ? AND lang IS NOT NULL
+      GROUP BY lang
+      ORDER BY total DESC
+    `).all(game);
+
+    // ── Build query-string helpers for links (filters + sort) ──
+    function qs(overrides) {
+      const merged = { game, days, outcome, sort, dir, ...overrides };
+      const parts = Object.entries(merged)
+        .filter(([,v]) => v !== '' && v !== undefined && v !== null)
+        .map(([k,v]) => `${k}=${encodeURIComponent(v)}`);
+      return '/admin/stats?' + parts.join('&');
+    }
+    function sortLink(col, label) {
+      const nextDir = (sort === col && dir === 'desc') ? 'asc' : 'desc';
+      const arrow = sort === col ? (dir === 'desc' ? ' ▼' : ' ▲') : '';
+      return `<a href="${qs({sort: col, dir: nextDir})}" style="color:#e2e8f0;text-decoration:none">${label}${arrow}</a>`;
+    }
+
+    const charRows = byCharacter.map(r => `<tr>
+        <td>${escapeHtml(r.character)}</td>
+        <td>${r.total}</td>
+        <td><span class="pill pill-green">${r.guessed}</span></td>
+        <td><span class="pill pill-orange">${r.skipped}</span></td>
+        <td><span class="pill pill-red">${r.surrendered}</span></td>
+        <td><span class="pill pill-blue">${r.timeout}</span></td>
+        <td>${r.struggled}</td>
+      </tr>`).join('') || `<tr><td colspan="7" style="text-align:center;color:#64748b;padding:24px">No data for this filter.</td></tr>`;
+
+    const diffRows = byDifficulty.map(r => {
+      const pct = r.total ? Math.round(100 * r.guessed / r.total) : 0;
+      return `<tr>
+        <td>${escapeHtml(r.difficulty)}</td>
+        <td>${r.total}</td>
+        <td>${r.guessed}</td>
+        <td>${pct}%</td>
+      </tr>`;
+    }).join('') || `<tr><td colspan="4" style="text-align:center;color:#64748b;padding:24px">No data yet.</td></tr>`;
+
+    const langRows = byLang.map(r =>
+      `<tr><td>${escapeHtml(r.lang)}</td><td>${r.total}</td></tr>`
+    ).join('') || `<tr><td colspan="2" style="text-align:center;color:#64748b;padding:24px">No data yet.</td></tr>`;
+
+    const body = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <h2>📊 Game Stats</h2>
+        <button class="btn btn-sm" onclick="location.reload()" style="background:#1a1d2e;color:#94a3b8;border:1px solid #2d3152">↻ Refresh</button>
+      </div>
+
+      <div class="card" style="padding:14px">
+        <form method="GET" action="/admin/stats">
+          <div class="filter-bar">
+            <select name="game" onchange="this.form.submit()">${gameOpts}</select>
+            <select name="days" onchange="this.form.submit()">
+              <option value="" ${!days?'selected':''}>All time</option>
+              <option value="7" ${days==='7'?'selected':''}>Last 7 days</option>
+              <option value="30" ${days==='30'?'selected':''}>Last 30 days</option>
+              <option value="90" ${days==='90'?'selected':''}>Last 90 days</option>
+            </select>
+            <select name="outcome" onchange="this.form.submit()">
+              <option value="" ${!outcome?'selected':''}>All outcomes</option>
+              <option value="guessed" ${outcome==='guessed'?'selected':''}>Guessed only</option>
+              <option value="skipped" ${outcome==='skipped'?'selected':''}>Skipped only</option>
+              <option value="surrendered" ${outcome==='surrendered'?'selected':''}>Surrendered only</option>
+              <option value="timeout" ${outcome==='timeout'?'selected':''}>Timed out only</option>
+            </select>
+            <input type="hidden" name="sort" value="${sort}" />
+            <input type="hidden" name="dir" value="${dir}" />
+            <a href="/admin/stats?game=${game}" class="btn btn-sm" style="background:#1a1d2e;color:#94a3b8;border:1px solid #2d3152;text-decoration:none">Clear filters</a>
+          </div>
+        </form>
+      </div>
+
+      <div class="grid2" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+        <div class="card" style="margin-bottom:0">
+          <div style="font-size:12px;color:#64748b;margin-bottom:6px">Turns logged (${escapeHtml(cutoffLabel)})</div>
+          <div style="font-size:26px;font-weight:700">${summary.totalEvents}</div>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <div style="font-size:12px;color:#64748b;margin-bottom:6px">Rooms</div>
+          <div style="font-size:26px;font-weight:700">${summary.totalRooms}</div>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <div style="font-size:12px;color:#64748b;margin-bottom:6px">Guessed correctly</div>
+          <div style="font-size:26px;font-weight:700;color:#86efac">${summary.totalGuessed}</div>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <div style="font-size:12px;color:#64748b;margin-bottom:6px">Completion rate</div>
+          <div style="font-size:26px;font-weight:700">${completionPct}%</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Characters ${outcome ? `— ${escapeHtml(outcome)} only` : '— click a column to sort'}</h3>
+        <table>
+          <tr>
+            <th>${sortLink('character','Character')}</th>
+            <th>${sortLink('total','Total')}</th>
+            <th>${sortLink('guessed','Guessed')}</th>
+            <th>${sortLink('skipped','Skipped')}</th>
+            <th>${sortLink('surrendered','Surrendered')}</th>
+            <th>${sortLink('timeout','Timed out')}</th>
+            <th>${sortLink('struggled','Total struggled')}</th>
+          </tr>
+          ${charRows}
+        </table>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">By difficulty (all time)</h3>
+          <table>
+            <tr><th>Difficulty</th><th>Total</th><th>Guessed</th><th>% guessed</th></tr>
+            ${diffRows}
+          </table>
+        </div>
+        <div class="card">
+          <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">By language (all time)</h3>
+          <table>
+            <tr><th>Language</th><th>Total turns</th></tr>
+            ${langRows}
+          </table>
+        </div>
+      </div>
+    `;
+
+    res.send(layout('Game Stats', body, 'stats'));
+  } catch (err) {
+    res.status(500).send(`<pre>Stats error: ${err.message}\n\n${err.stack}</pre>`);
+  }
+});
+
 // ─── TEMPORARY: Stats debug check ──────────────────────
 // Quick raw dump to confirm the stats DB is actually receiving
 // writes. Safe to delete once the real dashboard is built.
 router.get('/stats-debug', requireAuth, (req, res) => {
   try {
     const db = getDb();
-    const count = db.prepare('SELECT COUNT(*) as n FROM whoami_events').get();
-    const recent = db.prepare('SELECT * FROM whoami_events ORDER BY id DESC LIMIT 20').all();
+    const count = db.prepare('SELECT COUNT(*) as n FROM game_events').get();
+    const recent = db.prepare('SELECT * FROM game_events ORDER BY id DESC LIMIT 20').all();
     const body = `
       <h2>Stats debug</h2>
       <p><strong>DB file:</strong> ${DB_PATH}</p>

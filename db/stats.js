@@ -45,56 +45,79 @@ function getDb() {
   db = new Database(DB_PATH);
   db.pragma('journal_mode = WAL');
   db.exec(`
-    CREATE TABLE IF NOT EXISTS whoami_events (
+    CREATE TABLE IF NOT EXISTS game_events (
       id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      game        TEXT NOT NULL,
       room_code   TEXT,
       ts          INTEGER NOT NULL,
+      date        TEXT NOT NULL,
       lang        TEXT,
-      category    TEXT,
-      difficulty  TEXT,
-      character   TEXT,
-      outcome     TEXT NOT NULL
+      outcome     TEXT NOT NULL,
+      details     TEXT
     );
-    CREATE INDEX IF NOT EXISTS idx_whoami_ts        ON whoami_events(ts);
-    CREATE INDEX IF NOT EXISTS idx_whoami_outcome    ON whoami_events(outcome);
-    CREATE INDEX IF NOT EXISTS idx_whoami_character  ON whoami_events(character);
+    CREATE INDEX IF NOT EXISTS idx_game_date    ON game_events(game, date);
+    CREATE INDEX IF NOT EXISTS idx_game_outcome ON game_events(game, outcome);
   `);
   return db;
 }
 
-let insertWhoamiStmt = null;
+let insertStmt = null;
 
 /**
- * Log a Who Am I character outcome. Fire-and-forget — never throws,
- * never blocks. Safe to call from any socket handler without
- * affecting game responsiveness.
+ * Log a game event. Fire-and-forget — never throws, never blocks.
+ * Safe to call from any socket handler without affecting game
+ * responsiveness.
+ *
+ * @param {string} game       - short game id, e.g. 'whoami', 'dots', 'charades'
+ * @param {string} roomCode
+ * @param {string} lang
+ * @param {string} outcome    - what happened, meaning is game-specific
+ *                               (e.g. 'guessed' / 'skipped' for whoami)
+ * @param {object} details    - any other game-specific fields
+ *                               (e.g. { character, category, difficulty })
  */
-function logWhoamiEvent({ roomCode, lang, category, difficulty, character, outcome }) {
+function logGameEvent({ game, roomCode, lang, outcome, details }) {
   try {
     const conn = getDb();
-    if (!insertWhoamiStmt) {
-      insertWhoamiStmt = conn.prepare(`
-        INSERT INTO whoami_events (room_code, ts, lang, category, difficulty, character, outcome)
-        VALUES (@roomCode, @ts, @lang, @category, @difficulty, @character, @outcome)
+    if (!insertStmt) {
+      insertStmt = conn.prepare(`
+        INSERT INTO game_events (game, room_code, ts, date, lang, outcome, details)
+        VALUES (@game, @roomCode, @ts, @date, @lang, @outcome, @details)
       `);
     }
-    insertWhoamiStmt.run({
-      roomCode:   roomCode   || null,
-      ts:         Date.now(),
-      lang:       lang       || null,
-      category:   category   || null,
-      difficulty: difficulty || null,
-      character:  character  || null,
-      outcome
+    const now = new Date();
+    insertStmt.run({
+      game,
+      roomCode: roomCode || null,
+      ts:       now.getTime(),
+      date:     now.toISOString().slice(0, 10), // YYYY-MM-DD, UTC
+      lang:     lang || null,
+      outcome,
+      details:  details ? JSON.stringify(details) : null,
     });
   } catch (err) {
     // Logging must never break the game. Swallow and report only.
-    console.error('[stats] whoami event log failed:', err.message);
+    console.error(`[stats] ${game || 'unknown'} event log failed:`, err.message);
   }
+}
+
+/**
+ * Back-compat wrapper for the original Who Am I specific call shape,
+ * so existing call sites in routes/whoami.js don't need to change.
+ */
+function logWhoamiEvent({ roomCode, lang, category, difficulty, character, outcome }) {
+  logGameEvent({
+    game: 'whoami',
+    roomCode,
+    lang,
+    outcome,
+    details: { character, category, difficulty },
+  });
 }
 
 module.exports = {
   getDb,
+  logGameEvent,
   logWhoamiEvent,
   DB_PATH, // exposed for debugging/health-check purposes
 };
