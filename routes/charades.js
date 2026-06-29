@@ -574,18 +574,7 @@ function register(io, socket) {
 }
 
 function getCharadesRooms() {
-  return Object.values(rooms)
-    .filter(r => r.state.phase === 'lobby')
-    .map(r => ({
-      code: r.code,
-      game: 'charades',
-      hostName: r.players.find(p => p.id === r.hostId)?.name || '?',
-      lang: r.settings.lang,
-      players: r.players.filter(p => p.connected).length,
-      maxPlayers: 40,
-      isPublic: r.isPublic,
-      createdAt: r.createdAt,
-    }));
+  return Object.values(rooms);
 }
 
 module.exports = { getRooms: () => rooms, register, getCharadesRooms };
