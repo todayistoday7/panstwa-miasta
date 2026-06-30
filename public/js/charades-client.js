@@ -726,6 +726,9 @@ const LANGS = {
     createRoom: 'Stwórz pokój', joinRoom: 'Dołącz do pokoju',
     enterName: 'Twoje imię', enterCode: 'Kod pokoju',
     startGame: '🎬 Start', leaveRoom: '🚪 Wyjdź',
+    leaveTitle:'Opuścić grę?', leaveMsg:'Gra jest w toku. Na pewno chcesz wyjść?',
+    confirmLeave:'Na pewno chcesz opuścić pokój?',
+    leaveYes:'Tak, wyjdź', leaveNo:'Anuluj',
     teamRed: '🔴 Drużyna Czerwona', teamBlue: '🔵 Drużyna Niebieska',
     moveToRed: '→ 🔴', moveToBlue: '→ 🔵',
     settings: 'Ustawienia', category: 'Kategoria', difficulty: 'Poziom', timer: 'Czas', rounds: 'Rundy',
@@ -761,6 +764,9 @@ const LANGS = {
     createRoom: 'Create room', joinRoom: 'Join room',
     enterName: 'Your name', enterCode: 'Room code',
     startGame: '🎬 Start', leaveRoom: '🚪 Leave',
+    leaveTitle:'Leave Game?', leaveMsg:'A game is in progress. Are you sure?',
+    confirmLeave:'Are you sure you want to leave?',
+    leaveYes:'Yes, leave', leaveNo:'Cancel',
     teamRed: '🔴 Red Team', teamBlue: '🔵 Blue Team',
     moveToRed: '→ 🔴', moveToBlue: '→ 🔵',
     settings: 'Settings', category: 'Category', difficulty: 'Difficulty', timer: 'Timer', rounds: 'Rounds',
@@ -796,6 +802,9 @@ const LANGS = {
     createRoom: 'Raum erstellen', joinRoom: 'Beitreten',
     enterName: 'Dein Name', enterCode: 'Raumcode',
     startGame: '🎬 Start', leaveRoom: '🚪 Verlassen',
+    leaveTitle:'Spiel verlassen?', leaveMsg:'Ein Spiel läuft. Bist du sicher?',
+    confirmLeave:'Raum wirklich verlassen?',
+    leaveYes:'Ja, verlassen', leaveNo:'Abbrechen',
     teamRed: '🔴 Team Rot', teamBlue: '🔵 Team Blau',
     moveToRed: '→ 🔴', moveToBlue: '→ 🔵',
     settings: 'Einstellungen', category: 'Kategorie', difficulty: 'Schwierigkeit', timer: 'Zeit', rounds: 'Runden',
@@ -831,6 +840,9 @@ const LANGS = {
     createRoom: 'Skapa rum', joinRoom: 'Gå med',
     enterName: 'Ditt namn', enterCode: 'Rumskod',
     startGame: '🎬 Starta', leaveRoom: '🚪 Lämna',
+    leaveTitle:'Lämna spelet?', leaveMsg:'Ett spel pågår. Är du säker?',
+    confirmLeave:'Vill du verkligen lämna rummet?',
+    leaveYes:'Ja, lämna', leaveNo:'Avbryt',
     teamRed: '🔴 Röda laget', teamBlue: '🔵 Blå laget',
     moveToRed: '→ 🔴', moveToBlue: '→ 🔵',
     settings: 'Inställningar', category: 'Kategori', difficulty: 'Svårighet', timer: 'Tid', rounds: 'Rundor',
@@ -1415,6 +1427,10 @@ function goHome() {
   window.location.href = langUrls[lang] || '/kalambury';
 }
 function leaveRoom() {
+  confirmGoHome();
+}
+function doGoHome() {
+  closeConfirm();
   sessionStorage.removeItem('charades_code');
   sessionStorage.removeItem('charades_name');
   if (roomCode) socket.emit('charades_leave', { code: roomCode });
