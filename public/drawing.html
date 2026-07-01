@@ -409,7 +409,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Nu
     <p style="color:var(--muted);font-size:13px;font-weight:700;margin-bottom:20px;" id="lbl-confirm-msg">Gra jest w toku. Na pewno chcesz wyjść?</p>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-secondary" style="flex:1;" onclick="closeConfirm()" id="lbl-confirm-no">Anuluj</button>
-      <button class="btn btn-primary" style="flex:1;" onclick="goHome()" id="lbl-confirm-yes">Wyjdź</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="_ga('leave_room',{game:'drawing',language:lang});goHome()" id="lbl-confirm-yes">Wyjdź</button>
     </div>
   </div>
 </div>
@@ -417,7 +417,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Nu
 </div><!-- /outer container -->
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/shared.js?v=5"></script>
-<script src="/js/drawing-client.js?v=5"></script>
+<script src="/js/shared.js?v=4"></script>
+<script src="/js/drawing-client.js?v=4"></script>
 </body>
 </html>

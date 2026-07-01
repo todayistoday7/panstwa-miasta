@@ -862,6 +862,7 @@ function confirmGoHome() {
     document.getElementById('lbl-confirm-yes').textContent   = L.confirmYes;
     document.getElementById('lbl-confirm-no').textContent    = L.confirmNo;
   } else {
+    _ga('leave_room', { game:'drawing', language:lang });
     goHome();
   }
 }

@@ -906,7 +906,7 @@ function goHome() {
   sessionStorage.removeItem('hang_name');
   showScreen('screen-home');
 }
-function doGoHome() { closeConfirm(); goHome(); }
+function doGoHome() { closeConfirm(); _ga('leave_room', { game:'hangman', language:lang }); goHome(); }
 
 // ─── LANG ────────────────────────────────────────────────────────
 function setUiLang(code) {

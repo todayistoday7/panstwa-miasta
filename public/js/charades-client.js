@@ -1431,6 +1431,7 @@ function leaveRoom() {
 }
 function doGoHome() {
   closeConfirm();
+  _ga('leave_room', { game:'charades', language:lang });
   sessionStorage.removeItem('charades_code');
   sessionStorage.removeItem('charades_name');
   if (roomCode) socket.emit('charades_leave', { code: roomCode });

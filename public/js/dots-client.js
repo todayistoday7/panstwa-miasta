@@ -907,7 +907,7 @@ function goHome() {
   maybeStartDemo();
 }
 
-function doGoHome()     { closeConfirm(); goHome(); }
+function doGoHome()     { closeConfirm(); _ga('leave_room', { game:'dots', language:lang }); goHome(); }
 
 // ─── LANG BAR ────────────────────────────────────────────────────
 

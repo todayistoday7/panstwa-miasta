@@ -759,7 +759,7 @@ function goHome() {
   showScreen('screen-home');
 }
 
-function doGoHome() { closeConfirm(); goHome(); }
+function doGoHome() { closeConfirm(); _ga('leave_room', { game:'two_truths', language:lang }); goHome(); }
 
 // ─── LANG ────────────────────────────────────────────────────────
 function setUiLang(code) {

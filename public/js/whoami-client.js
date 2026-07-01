@@ -1001,10 +1001,10 @@ function goHome() {
   sessionStorage.removeItem('whoami_name');
   showScreen('screen-home');
 }
-function doGoHome() { closeConfirm(); goHome(); }
+function doGoHome() { closeConfirm(); _ga('leave_room', { game:'whoami', language:lang }); goHome(); }
 
 // ── Language ──────────────────────────────────────────────────────
-function setUiLang(code, skipUrlUpdate) {
+function setUiLang(code) {
   // Redirect to SEO page if available (Option B) — but not if already on that page
   if (window._seoLangUrls && window._seoLangUrls[code]) {
     var target = window._seoLangUrls[code];
@@ -1018,9 +1018,7 @@ function setUiLang(code, skipUrlUpdate) {
     b.classList.toggle('active', b.textContent === LANGS[code].name));
   applyTranslations();
   if (roomState) applyState(roomState);
-  if (!skipUrlUpdate) {
-    history.replaceState(null, '', window.location.pathname + '?lang=' + code);
-  }
+  history.replaceState(null, '', window.location.pathname + '?lang=' + code);
   window.lang = lang;
   if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
   if (typeof window._refreshFooter  === 'function') window._refreshFooter();
@@ -1164,6 +1162,6 @@ function showError(msg) {
 
 // ── Init ──────────────────────────────────────────────────────────
 buildLangBar();
-setUiLang(lang, true);
+setUiLang(lang);
 window.lang = lang;
 initVisibilityToggle();

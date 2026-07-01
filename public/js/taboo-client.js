@@ -828,7 +828,7 @@ function confirmGoHome() {
   } else { doGoHome(); }
 }
 function closeConfirm() { document.getElementById('confirm-modal').style.display = 'none'; }
-function doGoHome()     { closeConfirm(); goHome(); }
+function doGoHome()     { closeConfirm(); _ga('leave_room', { game:'taboo', language:lang }); goHome(); }
 
 // ─── LANG BAR ────────────────────────────────────────────────────
 function buildLangBar() {

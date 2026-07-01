@@ -563,7 +563,7 @@ function goHome() {
   if (keepAliveInterval) { clearInterval(keepAliveInterval); keepAliveInterval = null; }
 }
 
-function doGoHome() { closeConfirm(); goHome(); }
+function doGoHome() { closeConfirm(); _ga('leave_room', { game:'memory', language:lang }); goHome(); }
 
 // ─── SOCKET EVENTS ───────────────────────────────────────────────
 socket.on('connect', function() { myId = socket.id; });
