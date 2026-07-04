@@ -448,11 +448,18 @@
 
   <div id="reaction-container" style="max-width:500px;margin:0 auto;display:none;"></div>
   <div id="other-games-strip" style="display:none;"></div>
+
+  <div style="max-width:600px;margin:32px auto 0;padding:0 16px">
+    <h3 style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--accent2);margin-bottom:12px">Recent Rooms</h3>
+    <div id="recent-rooms-whoami" style="min-height:48px">
+      <p style="color:var(--muted);font-size:13px;text-align:center;padding:12px 0">Loading…</p>
+    </div>
+  </div>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/shared.js?v=4"></script>
-<script src="/js/whoami-client.js?v=5"></script>
+<script src="/js/whoami-client.js?v=4"></script>
 
 
 <script>
@@ -484,6 +491,50 @@ window._seoLangUrls = {'pl':'/kim-jestem', 'en':'/who-am-i', 'de':'/wer-bin-ich'
   }}
   _tryOverride();
 }})();
+</script>
+
+<script>
+(function() {
+  var LABELS = {
+    pl: { title:'Ostatnie pokoje', lobby:'Czeka na graczy', playing:'W trakcie gry', ended:'Zakończona', pub:'Publiczny', priv:'Prywatny', join:'Dołącz →', nobody:'Brak ostatnich pokoi.' },
+    en: { title:'Recent Rooms', lobby:'Waiting for players', playing:'In progress', ended:'Ended', pub:'Public', priv:'Private', join:'Join →', nobody:'No recent rooms.' },
+    de: { title:'Letzte Räume', lobby:'Wartet auf Spieler', playing:'Läuft', ended:'Beendet', pub:'Öffentlich', priv:'Privat', join:'Beitreten →', nobody:'Keine Räume.' },
+    sv: { title:'Senaste rum', lobby:'Väntar på spelare', playing:'Pågår', ended:'Avslutad', pub:'Offentligt', priv:'Privat', join:'Gå med →', nobody:'Inga senaste rum.' }
+  };
+  var lang = (document.documentElement.lang || 'en').slice(0,2);
+  var L = LABELS[lang] || LABELS.en;
+
+  fetch('/api/rooms/whoami')
+    .then(function(r){ return r.json(); })
+    .then(function(rooms) {
+      var wrap = document.getElementById('recent-rooms-whoami');
+      if (!wrap) return;
+      if (!rooms || !rooms.length) { wrap.innerHTML = '<p style="color:var(--muted);font-size:13px;text-align:center;padding:12px 0">' + L.nobody + '</p>'; return; }
+      var now = Date.now();
+      var html = rooms.map(function(r) {
+        var live = r.status === 'lobby' || r.status === 'playing';
+        var statusLabel = r.status === 'lobby' ? L.lobby : r.status === 'playing' ? L.playing : L.ended;
+        var statusColor = r.status === 'lobby' ? 'var(--accent)' : r.status === 'playing' ? '#f59e0b' : 'var(--muted)';
+        var mins = Math.round((now - r.created_ts) / 60000);
+        var timeAgo = mins < 60 ? mins + 'm ago' : Math.round(mins/60) + 'h ago';
+        var opacity = live ? '1' : '0.45';
+        var joinBtn = (live && r.is_public) ? '<a href="/kim-jestem" style="color:var(--accent);font-weight:700;font-size:13px;text-decoration:none">' + L.join + '</a>' : '';
+        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);opacity:' + opacity + '">'
+          + '<div style="display:flex;align-items:center;gap:10px">'
+          + (r.is_public ? '🌐' : '🔒')
+          + '<div>'
+          + '<div style="font-size:13px;font-weight:700;color:var(--text)">' + (r.is_public ? L.pub : L.priv) + ' · ' + r.player_count + ' ' + (r.player_count === 1 ? 'player' : 'players') + '</div>'
+          + '<div style="font-size:11px;color:var(--muted)">' + timeAgo + '</div>'
+          + '</div></div>'
+          + '<div style="display:flex;align-items:center;gap:10px">'
+          + '<span style="font-size:11px;color:' + statusColor + ';font-weight:700">' + statusLabel + '</span>'
+          + joinBtn
+          + '</div></div>';
+      }).join('');
+      wrap.innerHTML = html;
+    })
+    .catch(function(){});
+})();
 </script>
 </body>
 </html>

@@ -4,7 +4,7 @@
 // ════════════════════════════════════════════════════════
 
 const { isBotName, isHoneypot } = require('./botfilter');
-const { logWhoamiEvent } = require('../db/stats');
+const { logWhoamiEvent, logRoomCreated, logRoomEnded } = require('../db/stats');
 
 // ── Character Database ────────────────────────────────────────────
 const CHARACTERS = {
@@ -1113,6 +1113,7 @@ function register(io, socket) {
     whoamiRooms[room.code] = room;
     socket.join(room.code);
     socket.emit('whoami_created', { code: room.code });
+    logRoomCreated({ game: 'whoami', roomCode: room.code, lang: room.lang, isPublic: room.isPublic });
     emitState(io, room);
   });
 
@@ -1327,7 +1328,10 @@ function register(io, socket) {
             character: room.state.activeChar, outcome: 'timeout'
           });
           const total = room.settings.turnsEach * room.players.filter(p=>p.connected).length;
-          if (room.state.turnCount >= total) room.state.phase = 'final';
+          if (room.state.turnCount >= total) {
+            room.state.phase = 'final';
+            logRoomEnded({ roomCode: code, playerCount: room.players.length, status: 'ended' });
+          }
           emitState(io, room);
         }
       }, room.settings.timerSecs * 1000);
@@ -1363,6 +1367,7 @@ function register(io, socket) {
 
     if (room.state.turnCount >= totalTurns) {
       room.state.phase = 'final';
+      logRoomEnded({ roomCode: room.code, playerCount: room.players.length, status: 'ended' });
       emitState(io, room);
       return;
     }
@@ -1421,7 +1426,12 @@ function register(io, socket) {
         emitState(io, room);
         const allGone = room.players.every(pl => !pl.connected);
         if (allGone) {
-          setTimeout(() => { if (whoamiRooms[code]) delete whoamiRooms[code]; }, 3 * 60 * 60 * 1000);
+          setTimeout(() => {
+            if (whoamiRooms[code]) {
+              logRoomEnded({ roomCode: code, playerCount: 0, status: 'ended' });
+              delete whoamiRooms[code];
+            }
+          }, room.state.phase === 'lobby' ? 600000 : 90000);
         }
       }, room.state.phase === 'lobby' ? 600000 : 90000); // 10min lobby, 90s game
       break;

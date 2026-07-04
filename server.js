@@ -453,6 +453,24 @@ app.get('/api/banner', (req, res) => {
   }
 });
 
+// ─── ROOM HISTORY API ─────────────────────────────────────
+app.get('/api/rooms/:game', (req, res) => {
+  try {
+    const { getDb } = require('./db/stats');
+    const game = req.params.game;
+    const rows = getDb().prepare(`
+      SELECT room_code, lang, is_public, player_count, status, created_ts, ended_ts
+      FROM room_history
+      WHERE game = ?
+      ORDER BY created_ts DESC
+      LIMIT 7
+    `).all(game);
+    res.json(rows);
+  } catch(e) {
+    res.json([]);
+  }
+});
+
 
 // ─── BUG REPORT API ──────────────────────────────────────
 const BUG_FILE_PATH = require('path').join(__dirname, 'data', 'bug-reports.json');

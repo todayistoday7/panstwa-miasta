@@ -57,6 +57,19 @@ function getDb() {
     );
     CREATE INDEX IF NOT EXISTS idx_game_date    ON game_events(game, date);
     CREATE INDEX IF NOT EXISTS idx_game_outcome ON game_events(game, outcome);
+
+    CREATE TABLE IF NOT EXISTS room_history (
+      id           INTEGER PRIMARY KEY AUTOINCREMENT,
+      game         TEXT NOT NULL,
+      room_code    TEXT NOT NULL,
+      created_ts   INTEGER NOT NULL,
+      ended_ts     INTEGER,
+      lang         TEXT,
+      is_public    INTEGER NOT NULL DEFAULT 0,
+      player_count INTEGER NOT NULL DEFAULT 1,
+      status       TEXT NOT NULL DEFAULT 'lobby'
+    );
+    CREATE INDEX IF NOT EXISTS idx_rh_game ON room_history(game, created_ts DESC);
   `);
   return db;
 }
@@ -115,9 +128,43 @@ function logWhoamiEvent({ roomCode, lang, category, difficulty, character, outco
   });
 }
 
+/**
+ * Log a room being created. Call once at room creation.
+ */
+function logRoomCreated({ game, roomCode, lang, isPublic }) {
+  try {
+    const conn = getDb();
+    conn.prepare(`
+      INSERT OR IGNORE INTO room_history (game, room_code, created_ts, lang, is_public, player_count, status)
+      VALUES (?, ?, ?, ?, ?, 1, 'lobby')
+    `).run(game, roomCode, Date.now(), lang || null, isPublic ? 1 : 0);
+  } catch (err) {
+    console.error(`[stats] logRoomCreated failed:`, err.message);
+  }
+}
+
+/**
+ * Update room status when game ends or room is deleted.
+ * status: 'playing' | 'ended'
+ */
+function logRoomEnded({ roomCode, playerCount, status }) {
+  try {
+    const conn = getDb();
+    conn.prepare(`
+      UPDATE room_history
+      SET ended_ts = ?, player_count = ?, status = ?
+      WHERE room_code = ?
+    `).run(Date.now(), playerCount || 1, status || 'ended', roomCode);
+  } catch (err) {
+    console.error(`[stats] logRoomEnded failed:`, err.message);
+  }
+}
+
 module.exports = {
   getDb,
   logGameEvent,
   logWhoamiEvent,
-  DB_PATH, // exposed for debugging/health-check purposes
+  logRoomCreated,
+  logRoomEnded,
+  DB_PATH,
 };
