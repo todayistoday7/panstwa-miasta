@@ -131,7 +131,7 @@ const LANGS = {
     roundOf:'Runda', roundLabel:'Runda',
     resultCorrect:'✅ Brawo! Zgadłeś!', resultSurrender:'🏳️ Poddanie się',
     resultTimeout:'⏱️ Czas minął!', itWas:'Postać:',
-    gameOver:'Koniec gry!', playAgain:'🔄 Zagraj ponownie',
+    gameOver:'Koniec gry!', playAgain:'🔄 Zagraj ponownie', newSettings:'🎮 Zagraj ponownie\nnowe ustawienia',
     leaveTitle:'Opuścić grę?', leaveMsg:'Gra jest w toku. Na pewno chcesz wyjść?',
     confirmLeave:'Na pewno chcesz opuścić pokój?',
     leaveYes:'Tak, wyjdź', leaveNo:'Anuluj',
@@ -195,7 +195,7 @@ const LANGS = {
     roundOf:'Round', roundLabel:'Round',
     resultCorrect:'✅ Correct!', resultSurrender:'🏳️ Surrendered',
     resultTimeout:'⏱️ Time\'s up!', itWas:'Character:',
-    gameOver:'Game Over!', playAgain:'🔄 Play Again',
+    gameOver:'Game Over!', playAgain:'🔄 Play Again', newSettings:'🎮 Play Again\nnew settings',
     leaveTitle:'Leave Game?', leaveMsg:'A game is in progress. Are you sure?',
     confirmLeave:'Are you sure you want to leave?',
     leaveYes:'Yes, leave', leaveNo:'Cancel',
@@ -259,7 +259,7 @@ const LANGS = {
     roundOf:'Runde', roundLabel:'Runde',
     resultCorrect:'✅ Richtig!', resultSurrender:'🏳️ Aufgegeben',
     resultTimeout:'⏱️ Zeit abgelaufen!', itWas:'Figur:',
-    gameOver:'Spiel vorbei!', playAgain:'🔄 Nochmal spielen',
+    gameOver:'Spiel vorbei!', playAgain:'🔄 Nochmal spielen', newSettings:'🎮 Nochmal spielen\nneue Einstellungen',
     leaveTitle:'Spiel verlassen?', leaveMsg:'Ein Spiel läuft. Bist du sicher?',
     confirmLeave:'Raum wirklich verlassen?',
     leaveYes:'Ja, verlassen', leaveNo:'Abbrechen',
@@ -323,7 +323,7 @@ const LANGS = {
     roundOf:'Omgång', roundLabel:'Omgång',
     resultCorrect:'✅ Rätt!', resultSurrender:'🏳️ Gav upp',
     resultTimeout:'⏱️ Tiden är slut!', itWas:'Karaktär:',
-    gameOver:'Spelet slut!', playAgain:'🔄 Spela igen',
+    gameOver:'Spelet slut!', playAgain:'🔄 Spela igen', newSettings:'🎮 Spela igen\nnya inställningar',
     leaveTitle:'Lämna spelet?', leaveMsg:'Ett spel pågår. Är du säker?',
     confirmLeave:'Vill du verkligen lämna rummet?',
     leaveYes:'Ja, lämna', leaveNo:'Avbryt',
@@ -990,7 +990,17 @@ function nextTurn() {
 }
 
 function rematch() {
+  _ga('play_again_same_settings', { game:'whoami', language:lang });
   socket.emit('whoami_rematch', { code: roomCode });
+}
+function goToNewSettings() {
+  _ga('play_again_new_settings', { game:'whoami', language:lang });
+  var urls = { pl:'/kim-jestem', en:'/who-am-i', de:'/wer-bin-ich', sv:'/vem-ar-jag' };
+  window.location.href = urls[lang] || '/who-am-i';
+}
+function postGameHome() {
+  _ga('post_game_home', { game:'whoami', language:lang });
+  doGoHome();
 }
 
 function goHome() {
@@ -1115,6 +1125,7 @@ function applyTranslations() {
   set('lbl-next-turn',      'nextTurn');
   set('lbl-game-over',      'gameOver');
   set('lbl-play-again',     'playAgain');
+  set('lbl-new-settings',   'newSettings');
   set('lbl-nav-all-games',  'navAllGames');
 
   const voteYes = document.querySelector('.wa-vote-btn.yes');
