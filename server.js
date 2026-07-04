@@ -323,6 +323,10 @@ app.get('/blog/sv/forbjudna-ord-exempel',          (req,res) => res.sendFile(pat
 app.get('/blog/sv/svara-ord-hanga-gubbe',          (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/svara-ord-hanga-gubbe.html')));
 app.get('/blog/sv/vem-ar-jag-karaktarer',          (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/vem-ar-jag-karaktarer.html')));
 app.get('/blog/sv/kategorier-lansen-staden',       (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/kategorier-lansen-staden.html')));
+app.get('/blog/play-charades-online',              (req,res) => res.sendFile(path.join(__dirname,'public/blog/play-charades-online.html')));
+app.get('/blog/pl/kalambury-online',               (req,res) => res.sendFile(path.join(__dirname,'public/blog/pl/kalambury-online.html')));
+app.get('/blog/de/scharade-online-spielen',        (req,res) => res.sendFile(path.join(__dirname,'public/blog/de/scharade-online-spielen.html')));
+app.get('/blog/sv/spela-charader-online',          (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/spela-charader-online.html')));
 // ── Family/Kids games blog posts ──
 app.get('/blog/free-games-for-kids-and-families',            (req,res) => res.sendFile(path.join(__dirname,'public/blog/free-games-for-kids-and-families.html')));
 app.get('/blog/pl/darmowe-gry-dla-dzieci-i-rodzin',         (req,res) => res.sendFile(path.join(__dirname,'public/blog/pl/darmowe-gry-dla-dzieci-i-rodzin.html')));
