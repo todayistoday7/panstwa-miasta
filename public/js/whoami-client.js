@@ -1062,6 +1062,7 @@ function applyTranslations() {
   set('lbl-cat-cartoons',   'catCartoons'); // cartoons category
   set('lbl-cat-mixed',      'catMixed');
   set('lbl-turns-each',     'turnsEach');
+  set('lbl-skip-btn',       'skipChar');
   
   // Sync game length from server state (for non-host)
   if (typeof data !== 'undefined' && data && data.settings && data.settings.gameLength) window._waGameLength = data.settings.gameLength;
