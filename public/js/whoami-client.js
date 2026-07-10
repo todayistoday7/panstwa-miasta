@@ -833,8 +833,8 @@ function renderFinal(data) {
   // Hide play again button for non-host
   var playAgainBtn = document.getElementById('wa-play-again-btn');
   if (playAgainBtn) playAgainBtn.style.display = isHost ? '' : 'none';
-  var newSettingsBtn = document.getElementById('wa-new-settings-btn');
-  if (newSettingsBtn) newSettingsBtn.style.display = isHost ? '' : 'none';
+  var allGamesBtn = document.getElementById('wa-all-games-btn');
+  if (allGamesBtn) allGamesBtn.style.display = isHost ? '' : 'none';
 
   if (typeof renderOtherGames === 'function') renderOtherGames('whoami');
   var otherGamesEl = document.getElementById('other-games-strip');
@@ -995,14 +995,14 @@ function rematch() {
   _ga('play_again_same_settings', { game:'whoami', language:lang });
   socket.emit('whoami_rematch', { code: roomCode });
 }
+function goToAllGames() {
+  _ga('post_game_all_games', { game:'whoami', language:lang });
+  var urls = { pl:'/gry', en:'/games', de:'/spiele', sv:'/spel' };
+  window.location.href = urls[lang] || '/games';
+}
 function goToNewSettings() {
   _ga('play_again_new_settings', { game:'whoami', language:lang });
-  if (roomCode && socket.connected) { socket.disconnect(); }
-  roomCode = ''; roomState = null; myName = '';
-  sessionStorage.removeItem('whoami_code');
-  sessionStorage.removeItem('whoami_name');
-  var urls = { pl:'/kim-jestem', en:'/who-am-i', de:'/wer-bin-ich', sv:'/vem-ar-jag' };
-  window.location.href = urls[lang] || '/who-am-i';
+  doGoHome();
 }
 function postGameHome() {
   _ga('post_game_home', { game:'whoami', language:lang });
@@ -1132,6 +1132,7 @@ function applyTranslations() {
   set('lbl-game-over',      'gameOver');
   set('lbl-play-again',     'playAgain');
   set('lbl-play-again-sub',  'playAgainSub');
+  set('lbl-all-games',      'allGames');
   set('lbl-new-settings',   'newSettings');
   set('lbl-nav-all-games',  'navAllGames');
 
