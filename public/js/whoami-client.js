@@ -1133,6 +1133,7 @@ function applyTranslations() {
   set('lbl-play-again',     'playAgain');
   set('lbl-play-again-sub',  'playAgainSub');
   set('lbl-all-games',      'allGames');
+  set('lbl-all-games-sub',   'allGamesSub');
   set('lbl-new-settings',   'newSettings');
   set('lbl-nav-all-games',  'navAllGames');
 
