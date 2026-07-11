@@ -126,7 +126,7 @@ const LANGS = {
     guessBtn:'Zgaduję!', surrenderBtn:'🏳️ Poddaję się', iGotIt:'Zgadłem / Zgadłam!', mysteryHint:'Podaj odpowiedź → następnie naciśnij ✅ poniżej ↓',
     voteYes:'✅ TAK', voteNo:'❌ NIE', voteMaybe:'🤷 MOŻE',
     qPlaceholder:'Zadaj pytanie...',
-    qCount:'Liczba pytań:', nextTurn:'Następna tura',
+    qCount:'Liczba pytań:', nextTurn:'Następna tura', hostOnly:'tylko host', waitingHost:'host decyduje',
     skipChar:'Pomiń postać', showFinalScores:'Pokaż wyniki końcowe',
     roundOf:'Runda', roundLabel:'Runda',
     resultCorrect:'✅ Brawo! Zgadłeś!', resultSurrender:'🏳️ Poddanie się',
@@ -190,7 +190,7 @@ const LANGS = {
     guessBtn:'Guess!', surrenderBtn:'🏳️ Surrender', iGotIt:'I guessed it!', mysteryHint:'Say your answer out loud → tap ✅ below',
     voteYes:'✅ YES', voteNo:'❌ NO', voteMaybe:'🤷 MAYBE',
     qPlaceholder:'Ask a question...',
-    qCount:'Questions asked:', nextTurn:'Next Turn',
+    qCount:'Questions asked:', nextTurn:'Next Turn', hostOnly:'host only', waitingHost:'host decides',
     skipChar:'Skip character', showFinalScores:'Show Final Scores',
     roundOf:'Round', roundLabel:'Round',
     resultCorrect:'✅ Correct!', resultSurrender:'🏳️ Surrendered',
@@ -254,7 +254,7 @@ const LANGS = {
     guessBtn:'Raten!', surrenderBtn:'🏳️ Aufgeben', iGotIt:'Ich hab\'s erraten!', mysteryHint:'Sag deine Antwort laut → tippt ✅ unten',
     voteYes:'✅ JA', voteNo:'❌ NEIN', voteMaybe:'🤷 VIELLEICHT',
     qPlaceholder:'Frage stellen...',
-    qCount:'Gestellte Fragen:', nextTurn:'Nächste Runde',
+    qCount:'Gestellte Fragen:', nextTurn:'Nächste Runde', hostOnly:'nur Host', waitingHost:'Host entscheidet',
     skipChar:'Figur überspringen', showFinalScores:'Endergebnis zeigen',
     roundOf:'Runde', roundLabel:'Runde',
     resultCorrect:'✅ Richtig!', resultSurrender:'🏳️ Aufgegeben',
@@ -318,7 +318,7 @@ const LANGS = {
     guessBtn:'Gissa!', surrenderBtn:'🏳️ Ge upp', iGotIt:'Jag gissade rätt!', mysteryHint:'Säg svaret högt → tryck ✅ nedan',
     voteYes:'✅ JA', voteNo:'❌ NEJ', voteMaybe:'🤷 KANSKE',
     qPlaceholder:'Ställ en fråga...',
-    qCount:'Ställda frågor:', nextTurn:'Nästa omgång',
+    qCount:'Ställda frågor:', nextTurn:'Nästa omgång', hostOnly:'endast host', waitingHost:'host bestämmer',
     skipChar:'Hoppa över karaktär', showFinalScores:'Visa slutresultat',
     roundOf:'Omgång', roundLabel:'Omgång',
     resultCorrect:'✅ Rätt!', resultSurrender:'🏳️ Gav upp',
@@ -807,12 +807,25 @@ function renderTurnResult(data) {
 
   // Last turn — change button label to "Show Final Scores"
   if (nextBtn) {
-    nextBtn.style.display = isHost ? '' : 'none';
+    nextBtn.style.display = '';
     const isLastTurn = data.turnsLeft <= 0;
     const nextLabel = nextBtn.querySelector('span');
     if (nextLabel) nextLabel.textContent = isLastTurn
       ? (L.showFinalScores || 'Show Final Scores')
       : (L.nextTurn || 'Next Turn');
+    if (isHost) {
+      nextBtn.disabled = false;
+      nextBtn.style.opacity = '1';
+      nextBtn.style.cursor = 'pointer';
+      var hostSub = document.getElementById('next-turn-host-sub');
+      if (hostSub) hostSub.style.display = 'none';
+    } else {
+      nextBtn.disabled = true;
+      nextBtn.style.opacity = '0.4';
+      nextBtn.style.cursor = 'default';
+      var hostSub = document.getElementById('next-turn-host-sub');
+      if (hostSub) { hostSub.style.display = 'block'; hostSub.textContent = L.waitingHost || 'host decides'; }
+    }
   }
 }
 
@@ -832,9 +845,24 @@ function renderFinal(data) {
 
   // Hide play again button for non-host
   var playAgainBtn = document.getElementById('wa-play-again-btn');
-  if (playAgainBtn) playAgainBtn.style.display = isHost ? '' : 'none';
+  if (playAgainBtn) {
+    playAgainBtn.style.display = '';
+    if (isHost) {
+      playAgainBtn.disabled = false;
+      playAgainBtn.style.opacity = '1';
+      playAgainBtn.style.cursor = 'pointer';
+      var paSub = document.getElementById('wa-play-again-host-sub');
+      if (paSub) paSub.style.display = 'none';
+    } else {
+      playAgainBtn.disabled = true;
+      playAgainBtn.style.opacity = '0.4';
+      playAgainBtn.style.cursor = 'default';
+      var paSub = document.getElementById('wa-play-again-host-sub');
+      if (paSub) { paSub.style.display = 'block'; paSub.textContent = L.hostOnly || 'host only'; }
+    }
+  }
   var allGamesBtn = document.getElementById('wa-all-games-btn');
-  if (allGamesBtn) allGamesBtn.style.display = isHost ? '' : 'none';
+  if (allGamesBtn) { allGamesBtn.style.display = ''; allGamesBtn.disabled = false; allGamesBtn.style.opacity = '1'; }
 
   if (typeof renderOtherGames === 'function') renderOtherGames('whoami');
   var otherGamesEl = document.getElementById('other-games-strip');
