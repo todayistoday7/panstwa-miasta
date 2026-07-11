@@ -1135,6 +1135,7 @@ function applyTranslations() {
   set('lbl-all-games',      'allGames');
   set('lbl-all-games-sub',   'allGamesSub');
   set('lbl-new-settings',   'newSettings');
+  set('lbl-new-settings-sub','newSettingsSub');
   set('lbl-nav-all-games',  'navAllGames');
 
   const voteYes = document.querySelector('.wa-vote-btn.yes');
