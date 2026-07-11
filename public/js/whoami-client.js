@@ -131,7 +131,7 @@ const LANGS = {
     roundOf:'Runda', roundLabel:'Runda',
     resultCorrect:'✅ Brawo! Zgadłeś!', resultSurrender:'🏳️ Poddanie się',
     resultTimeout:'⏱️ Czas minął!', itWas:'Postać:',
-    gameOver:'Koniec gry!', playAgain:'🔄 Zagraj ponownie', newSettings:'🎮 Zagraj ponownie\nnowe ustawienia',
+    gameOver:'Koniec gry!', playAgain:'🔄 Zagraj ponownie', playAgainSub:'te same ustawienia', allGames:'🎮 Wszystkie gry', allGamesSub:'zagraj coś innego', newSettings:'🔄 Zagraj ponownie', newSettingsSub:'nowe ustawienia',
     leaveTitle:'Opuścić grę?', leaveMsg:'Gra jest w toku. Na pewno chcesz wyjść?',
     confirmLeave:'Na pewno chcesz opuścić pokój?',
     leaveYes:'Tak, wyjdź', leaveNo:'Anuluj',
@@ -195,7 +195,7 @@ const LANGS = {
     roundOf:'Round', roundLabel:'Round',
     resultCorrect:'✅ Correct!', resultSurrender:'🏳️ Surrendered',
     resultTimeout:'⏱️ Time\'s up!', itWas:'Character:',
-    gameOver:'Game Over!', playAgain:'🔄 Play Again', newSettings:'🎮 Play Again\nnew settings',
+    gameOver:'Game Over!', playAgain:'🔄 Play Again', playAgainSub:'same settings', allGames:'🎮 All Games', allGamesSub:'try another game', newSettings:'🔄 Play Again', newSettingsSub:'new settings',
     leaveTitle:'Leave Game?', leaveMsg:'A game is in progress. Are you sure?',
     confirmLeave:'Are you sure you want to leave?',
     leaveYes:'Yes, leave', leaveNo:'Cancel',
@@ -259,7 +259,7 @@ const LANGS = {
     roundOf:'Runde', roundLabel:'Runde',
     resultCorrect:'✅ Richtig!', resultSurrender:'🏳️ Aufgegeben',
     resultTimeout:'⏱️ Zeit abgelaufen!', itWas:'Figur:',
-    gameOver:'Spiel vorbei!', playAgain:'🔄 Nochmal spielen', newSettings:'🎮 Nochmal spielen\nneue Einstellungen',
+    gameOver:'Spiel vorbei!', playAgain:'🔄 Nochmal spielen', playAgainSub:'gleiche Einstellungen', allGames:'🎮 Alle Spiele', allGamesSub:'anderes Spiel', newSettings:'🔄 Nochmal spielen', newSettingsSub:'neue Einstellungen',
     leaveTitle:'Spiel verlassen?', leaveMsg:'Ein Spiel läuft. Bist du sicher?',
     confirmLeave:'Raum wirklich verlassen?',
     leaveYes:'Ja, verlassen', leaveNo:'Abbrechen',
@@ -323,7 +323,7 @@ const LANGS = {
     roundOf:'Omgång', roundLabel:'Omgång',
     resultCorrect:'✅ Rätt!', resultSurrender:'🏳️ Gav upp',
     resultTimeout:'⏱️ Tiden är slut!', itWas:'Karaktär:',
-    gameOver:'Spelet slut!', playAgain:'🔄 Spela igen', newSettings:'🎮 Spela igen\nnya inställningar',
+    gameOver:'Spelet slut!', playAgain:'🔄 Spela igen', playAgainSub:'samma inställningar', allGames:'🎮 Alla spel', allGamesSub:'prova ett annat spel', newSettings:'🔄 Spela igen', newSettingsSub:'nya inställningar',
     leaveTitle:'Lämna spelet?', leaveMsg:'Ett spel pågår. Är du säker?',
     confirmLeave:'Vill du verkligen lämna rummet?',
     leaveYes:'Ja, lämna', leaveNo:'Avbryt',
@@ -818,13 +818,13 @@ function renderTurnResult(data) {
       nextBtn.style.opacity = '1';
       nextBtn.style.cursor = 'pointer';
       var hostSub = document.getElementById('next-turn-host-sub');
-      if (hostSub) hostSub.style.display = 'none';
+      if (hostSub) hostSub.style.display = 'none'; hostSub && (hostSub.textContent = '');
     } else {
       nextBtn.disabled = true;
       nextBtn.style.opacity = '0.4';
       nextBtn.style.cursor = 'default';
       var hostSub = document.getElementById('next-turn-host-sub');
-      if (hostSub) { hostSub.style.display = 'block'; hostSub.textContent = L.waitingHost || 'host decides'; }
+      if (hostSub) { hostSub.style.display = 'inline'; hostSub.textContent = L.waitingHost || 'host decides'; }
     }
   }
 }
@@ -858,7 +858,7 @@ function renderFinal(data) {
       playAgainBtn.style.opacity = '0.4';
       playAgainBtn.style.cursor = 'default';
       var paSub = document.getElementById('wa-play-again-host-sub');
-      if (paSub) { paSub.style.display = 'block'; paSub.textContent = L.hostOnly || 'host only'; }
+      if (paSub) { paSub.style.display = 'inline'; paSub.textContent = L.hostOnly || 'host only'; }
     }
   }
   var allGamesBtn = document.getElementById('wa-all-games-btn');
