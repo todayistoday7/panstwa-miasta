@@ -14,6 +14,7 @@ const GAME_INFO = {
   hangman:  { name: 'Hangman',         icon: '🪢', slug: '/hangman' },
   bingo:    { name: 'Corporate Bingo',  icon: '🎯', slug: '/bingo' },
   drawing:  { name: 'Sketch & Guess',    icon: '🎨', slug: '/drawing' },
+  whoami:   { name: 'Who Am I?',           icon: '❓', slug: '/who-am-i' },
 };
 
 // In-memory registry: code → public room entry
@@ -98,6 +99,7 @@ function maxPlayersFor(game, room) {
   if (game === 'dots')     return room.settings && room.settings.maxPlayers || 4;
   if (game === 'twotruth') return 20;
   if (game === 'hangman')  return 10;
+  if (game === 'whoami')   return 16;
   return 12;
 }
 

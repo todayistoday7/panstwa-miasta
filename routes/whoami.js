@@ -5,6 +5,7 @@
 
 const { isBotName, isHoneypot } = require('./botfilter');
 const { logWhoamiEvent, logRoomCreated, logRoomEnded } = require('../db/stats');
+const lobby = require('./lobby');
 
 // ── Character Database ────────────────────────────────────────────
 const CHARACTERS = {
@@ -1060,6 +1061,8 @@ function emitState(io, room) {
     }
     io.to(p.id).emit('whoami_state', playerState);
   });
+  // Update public lobby whenever room state changes
+  try { lobby.announce('whoami', room); } catch(e) {}
 }
 
 function startNextTurn(io, room) {
@@ -1429,6 +1432,7 @@ function register(io, socket) {
           setTimeout(() => {
             if (whoamiRooms[code]) {
               logRoomEnded({ roomCode: code, playerCount: 0, status: 'ended' });
+              try { lobby.remove(code); } catch(e) {}
               delete whoamiRooms[code];
             }
           }, room.state.phase === 'lobby' ? 600000 : 90000);
