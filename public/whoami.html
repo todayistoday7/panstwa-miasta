@@ -426,8 +426,8 @@
         <p class="room-code-hint" id="lbl-share-code">Udostępnij kod znajomym</p>
         <button class="btn share-btn" onclick="shareRoom('who-am-i')" style="margin-top:6px;">📤 <span id="lbl-share-room">Udostępnij pokój</span></button>
         <div style="display:flex;margin-top:8px;border:1px solid var(--border);border-radius:8px;overflow:hidden;max-width:260px;">
-          <div class="vis-option" id="wa-vis-private" style="flex:1;padding:6px 10px;text-align:center;font-size:12px;cursor:pointer;background:rgba(255,107,53,0.1);border-right:1px solid var(--border);color:var(--accent);font-weight:700;" onclick="setWhoamiVisibility(false)">🔒 <span id="lbl-wa-vis-private">Prywatny</span></div>
-          <div class="vis-option" id="wa-vis-public"  style="flex:1;padding:6px 10px;text-align:center;font-size:12px;cursor:pointer;color:var(--muted);font-weight:700;" onclick="setWhoamiVisibility(true)">🌐 <span id="lbl-wa-vis-public">Publiczny</span></div>
+          <div class="vis-option" id="wa-vis-private" style="flex:1;padding:6px 10px;text-align:center;font-size:12px;cursor:pointer;background:rgba(255,107,53,0.1);border-right:1px solid var(--border);color:var(--accent);font-weight:700;" onclick="setWhoamiVisibility(false,true)">🔒 <span id="lbl-wa-vis-private">Prywatny</span></div>
+          <div class="vis-option" id="wa-vis-public"  style="flex:1;padding:6px 10px;text-align:center;font-size:12px;cursor:pointer;color:var(--muted);font-weight:700;" onclick="setWhoamiVisibility(true,true)">🌐 <span id="lbl-wa-vis-public">Publiczny</span></div>
         </div>
         <p id="wa-vis-hint" style="font-size:11px;color:var(--muted);font-weight:600;margin-top:4px;">🔒 <span id="lbl-wa-vis-hint">Prywatny — tylko osoby z kodem</span></p>
       </div>

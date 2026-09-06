@@ -960,8 +960,9 @@ function startGame() {
   socket.emit('whoami_start', { code: roomCode });
 }
 
-function setWhoamiVisibility(isPublic) {
+function setWhoamiVisibility(isPublic, emit) {
   _isPublic = isPublic;
+  if (emit && roomCode) socket.emit('whoami_settings', { code: roomCode, settings: { isPublic } });
   const priv = document.getElementById('wa-vis-private');
   const pub  = document.getElementById('wa-vis-public');
   const hint = document.getElementById('wa-vis-hint');
@@ -1088,6 +1089,9 @@ function applyTranslations() {
   set('lbl-settings',       'settings');
   set('lbl-start-btn',      'startBtn');
   set('lbl-leave-room',     'leaveRoom');
+  set('lbl-wa-vis-private',  'visPrivate');
+  set('lbl-wa-vis-public',   'visPublic');
+  set('lbl-wa-vis-hint',     'visPrivateHint');
   set('lbl-mode',           'mode');
   set('lbl-mode-voice',     'modeVoice');
   set('lbl-mode-voice-desc','modeVoiceDesc');
