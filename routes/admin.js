@@ -79,6 +79,7 @@ function layout(title, body, activePage) {
     ['banner',       '📢 Banner',        '/admin/banner'],
     ['bugs',         '🐛 Bug Reports',   '/admin/bugs'],
     ['stats',        '📊 Stats',         '/admin/stats'],
+    ['memory',       '🧠 Memory',        '/admin/memory'],
   ].map(([id, label, href]) =>
     `<a href="${href}" class="${activePage===id?'active':''}">${label}</a>`
   ).join('');
@@ -954,7 +955,99 @@ router.get('/stats-debug', requireAuth, (req, res) => {
   }
 });
 
+// ═══════════════════════════════════════════════════════
+// MEMORY DEBUG ROUTE
+// ═══════════════════════════════════════════════════════
+router.get('/memory', requireAuth, (req, res) => {
+  const now = Date.now();
+  const mem = process.memoryUsage();
+  const mb  = v => (v / 1024 / 1024).toFixed(1) + ' MB';
+
+  const GAME_NAMES = {
+    pm:'Państwa-Miasta', taboo:'Forbidden Words', dots:'Dots & Boxes',
+    hangman:'Hangman', twotruth:'2 Truths 1 Lie', whoami:'Who Am I?',
+    bingo:'Bingo', drawing:'Sketch & Guess', memory:'Find Pairs', charades:'Charades'
+  };
+
+  let allRoomsHtml = '';
+  let totalRooms = 0;
+
+  try {
+    const allRooms = getRooms();
+    Object.entries(allRooms).forEach(([game, rooms]) => {
+      if (!rooms) return;
+      const roomList = Object.values(rooms);
+      totalRooms += roomList.length;
+      if (!roomList.length) return;
+
+      const rows = roomList.map(room => {
+        const ageMs  = now - (room._createdAt || now);
+        const ageMin = Math.floor(ageMs / 60000);
+        const ageStr = ageMin < 60
+          ? ageMin + 'm'
+          : Math.floor(ageMin/60) + 'h ' + (ageMin%60) + 'm';
+        const players   = (room.players || []).length;
+        const connected = (room.players || []).filter(p => p.connected !== false).length;
+        const phase     = (room.state && room.state.phase) || '?';
+        const pub       = room.isPublic ? '🌐 Public' : '🔒 Private';
+        const color     = ageMin > 120 ? '#f87171' : ageMin > 60 ? '#fbbf24' : '#86efac';
+        return '<tr>'
+          + '<td>' + escapeHtml(room.code || '?') + '</td>'
+          + '<td><span style="color:' + color + ';font-weight:700">' + ageStr + '</span></td>'
+          + '<td>' + phase + '</td>'
+          + '<td>' + connected + '/' + players + '</td>'
+          + '<td>' + pub + '</td>'
+          + '</tr>';
+      }).join('');
+
+      allRoomsHtml += '<div class="card" style="margin-bottom:16px">'
+        + '<h3 style="font-size:14px;color:var(--accent2);margin-bottom:12px">'
+        + escapeHtml(GAME_NAMES[game] || game) + ' — ' + roomList.length + ' room' + (roomList.length !== 1 ? 's' : '')
+        + '</h3>'
+        + '<table><tr><th>Code</th><th>Age</th><th>Phase</th><th>Players</th><th>Visibility</th></tr>'
+        + rows + '</table></div>';
+    });
+  } catch(e) {
+    allRoomsHtml = '<div class="card"><p style="color:#f87171">Error reading rooms: ' + escapeHtml(e.message) + '</p></div>';
+  }
+
+  if (!allRoomsHtml) {
+    allRoomsHtml = '<div class="card"><p style="color:#64748b;text-align:center;padding:24px">No active rooms right now.</p></div>';
+  }
+
+  const uptimeH = Math.floor(process.uptime() / 3600);
+  const uptimeM = Math.floor((process.uptime() % 3600) / 60);
+
+  const body = '<h2>🧠 Memory Debug</h2>'
+    + '<p style="color:var(--muted);font-size:13px;margin-bottom:20px">Read-only snapshot. Refresh page to update. Red age = older than 2h (cleanup threshold).</p>'
+    + '<div class="grid2" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">'
+    + '<div class="card" style="margin-bottom:0"><div style="font-size:12px;color:#64748b;margin-bottom:6px">Heap Used</div><div style="font-size:22px;font-weight:700;color:var(--accent)">' + mb(mem.heapUsed) + '</div></div>'
+    + '<div class="card" style="margin-bottom:0"><div style="font-size:12px;color:#64748b;margin-bottom:6px">Heap Total</div><div style="font-size:22px;font-weight:700">' + mb(mem.heapTotal) + '</div></div>'
+    + '<div class="card" style="margin-bottom:0"><div style="font-size:12px;color:#64748b;margin-bottom:6px">RSS (process total)</div><div style="font-size:22px;font-weight:700">' + mb(mem.rss) + '</div></div>'
+    + '<div class="card" style="margin-bottom:0"><div style="font-size:12px;color:#64748b;margin-bottom:6px">Active Rooms</div><div style="font-size:22px;font-weight:700">' + totalRooms + '</div></div>'
+    + '</div>'
+    + '<div class="card" style="margin-bottom:20px">'
+    + '<h3 style="font-size:14px;color:var(--accent2);margin-bottom:12px">Age legend</h3>'
+    + '<div style="display:flex;gap:20px;font-size:13px;">'
+    + '<span><span style="color:#86efac;font-weight:700">■</span> Under 1h — normal</span>'
+    + '<span><span style="color:#fbbf24;font-weight:700">■</span> 1–2h — watch</span>'
+    + '<span><span style="color:#f87171;font-weight:700">■</span> Over 2h — above cleanup threshold</span>'
+    + '</div></div>'
+    + allRoomsHtml
+    + '<div class="card"><h3 style="font-size:14px;color:var(--accent2);margin-bottom:12px">Process info</h3>'
+    + '<table>'
+    + '<tr><td>Uptime</td><td>' + uptimeH + 'h ' + uptimeM + 'm</td></tr>'
+    + '<tr><td>Node.js version</td><td>' + process.version + '</td></tr>'
+    + '<tr><td>External memory</td><td>' + mb(mem.external) + '</td></tr>'
+    + '<tr><td>Array buffers</td><td>' + mb(mem.arrayBuffers || 0) + '</td></tr>'
+    + '</table></div>';
+
+  res.send(layout('Memory Debug', body, 'memory'));
+});
+
+
 // ─── Default redirect ─────────────────────────────────
 router.get('/', requireAuth, (req, res) => res.redirect('/admin/rooms'));
 
 module.exports = { router, init };
+
