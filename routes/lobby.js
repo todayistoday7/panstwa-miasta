@@ -15,6 +15,8 @@ const GAME_INFO = {
   bingo:    { name: 'Corporate Bingo',  icon: '🎯', slug: '/bingo' },
   drawing:  { name: 'Sketch & Guess',    icon: '🎨', slug: '/drawing' },
   whoami:   { name: 'Who Am I?',           icon: '❓', slug: '/who-am-i' },
+  memory:   { name: 'Find Pairs',            icon: '🧩', slug: '/memory' },
+  charades: { name: 'Charades',              icon: '🎬', slug: '/charades' },
 };
 
 // In-memory registry: code → public room entry
@@ -100,6 +102,8 @@ function maxPlayersFor(game, room) {
   if (game === 'twotruth') return 20;
   if (game === 'hangman')  return 10;
   if (game === 'whoami')   return 16;
+  if (game === 'memory')   return 6;
+  if (game === 'charades') return 40;
   return 12;
 }
 

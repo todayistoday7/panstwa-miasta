@@ -3,6 +3,7 @@
 // ═══════════════════════════════════════════════════════
 
 const rooms = {};
+const lobby = require('./lobby');
 
 // ── Word lists: category → difficulty → lang → words ──
 const WORDS = {
@@ -338,7 +339,7 @@ function register(io, socket) {
     socket.join(code);
     socket.emit('charades_room_created', { code });
     // Small delay to ensure client processes room_created before state arrives
-    setTimeout(() => broadcastState(io, rooms[code]), 50);
+    setTimeout(() => { broadcastState(io, rooms[code]); lobby.announce('charades', rooms[code]); }, 50);
   });
   
   socket.on('charades_join', ({ code, name }) => {
@@ -398,6 +399,7 @@ function register(io, socket) {
     if (settings.gameLength) room.settings.gameLength = settings.gameLength;
     if (settings.isPublic !== undefined) room.isPublic = settings.isPublic;
     broadcastState(io, room);
+    try { lobby.announce('charades', room); } catch(e) {}
   });
   
   socket.on('charades_start', ({ code }) => {
@@ -478,7 +480,7 @@ function register(io, socket) {
         clearTimeout(room.state.timer);
         room._deleteTimer = setTimeout(() => {
           const still = room.players.filter(p => p.connected);
-          if (still.length === 0) delete rooms[code];
+          if (still.length === 0) { try { lobby.remove(code); } catch(e) {} delete rooms[code]; }
         }, 30 * 60 * 1000);
       } else {
         if (socket.id === room.hostId) room.hostId = connected[0].id;
@@ -507,6 +509,7 @@ function register(io, socket) {
       usedWords: new Set(),
     };
     broadcastState(io, room);
+    try { lobby.announce('charades', room); } catch(e) {}
   });
   
   // Disconnect handling
@@ -521,7 +524,7 @@ function register(io, socket) {
           // Grace period — keep room alive for 2 minutes in case everyone comes back
           room._deleteTimer = setTimeout(() => {
             const stillConnected = room.players.filter(p => p.connected);
-            if (stillConnected.length === 0) delete rooms[code];
+            if (stillConnected.length === 0) { try { lobby.remove(code); } catch(e) {} delete rooms[code]; }
           }, 30 * 60 * 1000);
         } else {
           // Cancel delete timer if someone is still here
