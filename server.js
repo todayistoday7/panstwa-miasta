@@ -442,6 +442,8 @@ admin.init(() => {
   try { rooms.twotruth = require('./routes/twotruth').getTTRooms    ? require('./routes/twotruth').getTTRooms()    : []; } catch(e){ rooms.twotruth=[]; }
   try { rooms.memory   = require('./routes/memory').getMemRooms     ? require('./routes/memory').getMemRooms()     : []; } catch(e){ rooms.memory=[]; }
   try { rooms.charades = require('./routes/charades').getCharadesRooms ? require('./routes/charades').getCharadesRooms() : []; } catch(e){ rooms.charades=[]; }
+  try { rooms.whoami   = require('./routes/whoami').getWhoamiRooms    ? require('./routes/whoami').getWhoamiRooms()    : []; } catch(e){ rooms.whoami=[]; }
+  try { rooms.drawing  = require('./routes/drawing').getDrawingRooms  ? require('./routes/drawing').getDrawingRooms()  : []; } catch(e){ rooms.drawing=[]; }
   return rooms;
 });
 app.use('/admin', admin.router);

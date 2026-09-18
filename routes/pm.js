@@ -132,7 +132,7 @@ function computeRoundScores(room) {
 function advanceFromScoring(io, room) {
   const rIdx = room.state.round - 1;
   room.players.forEach(p => {
-    const pScores = (room.state.scores[rIdx] && room.state.scores[rIdx][p.id]) || {};
+    const pScores = room.state.scores[rIdx][p.id] || {};
     room.state.totalScores[p.id] = (room.state.totalScores[p.id] || 0) +
       Object.values(pScores).reduce((a, b) => a + b, 0);
   });
@@ -182,7 +182,7 @@ function endGame(io, room) {
   const rIdx = room.state.round - 1;
   if (room.state.scores[rIdx]) {
     room.players.forEach(p => {
-      const pScores = (room.state.scores[rIdx] && room.state.scores[rIdx][p.id]) || {};
+      const pScores = room.state.scores[rIdx][p.id] || {};
       room.state.totalScores[p.id] = (room.state.totalScores[p.id] || 0) +
         Object.values(pScores).reduce((a, b) => a + b, 0);
     });
@@ -550,6 +550,6 @@ function register(io, socket) {
   });
 }
 
-function getPMRooms() { return Object.values(pmRooms); }
+function getPMRooms() { return Object.values(rooms); }
 
-module.exports = { getRooms: () => pmRooms, getPMRooms, register, getRoomCount, getRoomByCode };
+module.exports = { getRooms: () => rooms, getPMRooms, register, getRoomCount, getRoomByCode };
