@@ -15,7 +15,9 @@ const router   = express.Router();
 const { getDb, DB_PATH } = require('../db/stats');
 
 const ROOT         = path.join(__dirname, '..');
-const DATA_DIR     = path.join(ROOT, 'data');
+const DATA_DIR     = require('fs').existsSync('/data')
+  ? '/data'
+  : path.join(ROOT, 'data');
 const TRANS_FILE   = path.join(DATA_DIR, 'translations.json');
 const BANNER_FILE  = path.join(DATA_DIR, 'banner.json');
 
@@ -621,7 +623,7 @@ router.get('/translations/generate', requireAuth, (req, res) => {
 // ═══════════════════════════════════════════════════════
 // BUG REPORTS
 // ═══════════════════════════════════════════════════════
-const BUG_FILE = path.join(ROOT, 'data', 'bug-reports.json');
+const BUG_FILE = path.join(DATA_DIR, 'bug-reports.json');
 
 function readBugs() {
   try { return JSON.parse(fs.readFileSync(BUG_FILE, 'utf8')); }
