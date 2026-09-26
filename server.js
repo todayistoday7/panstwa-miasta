@@ -449,7 +449,8 @@ admin.init(() => {
 app.use('/admin', admin.router);
 
 // Banner API — served to all game pages
-const BANNER_FILE_PATH = require('path').join(__dirname, 'data', 'banner.json');
+const DATA_DIR_SERVER  = require('fs').existsSync('/data') ? '/data' : require('path').join(__dirname, 'data');
+const BANNER_FILE_PATH = require('path').join(DATA_DIR_SERVER, 'banner.json');
 app.get('/api/banner', (req, res) => {
   try {
     const b = JSON.parse(require('fs').readFileSync(BANNER_FILE_PATH, 'utf8'));
@@ -479,7 +480,7 @@ app.get('/api/rooms/:game', (req, res) => {
 
 
 // ─── BUG REPORT API ──────────────────────────────────────
-const BUG_FILE_PATH = require('path').join(__dirname, 'data', 'bug-reports.json');
+const BUG_FILE_PATH = require('path').join(DATA_DIR_SERVER, 'bug-reports.json');
 const bugRateLimit  = new Map(); // ip -> [timestamps]
 
 function readBugReports() {
