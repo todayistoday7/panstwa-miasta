@@ -847,12 +847,15 @@ function guessFullWord() {
   el.value = '';
 }
 
+var _wordSource = 'custom';
+
 function submitWord() {
   const wordEl = document.getElementById('word-input');
   const hintEl = document.getElementById('hint-input');
   const word = wordEl ? wordEl.value.trim() : '';
   const hint = hintEl ? hintEl.value.trim() : '';
-  socket.emit('hang_set_word', { code: roomCode, word, hint });
+  socket.emit('hang_set_word', { code: roomCode, word, hint, source: _wordSource });
+  _wordSource = 'custom';
 }
 
 function pickRandomWord() {
@@ -861,6 +864,7 @@ function pickRandomWord() {
   const word     = words[Math.floor(Math.random() * words.length)];
   const wordEl   = document.getElementById('word-input');
   if (wordEl) { wordEl.value = word; wordEl.focus(); }
+  _wordSource = 'random';
 }
 
 function nextRound()  { socket.emit('hang_next_round',  { code: roomCode }); }

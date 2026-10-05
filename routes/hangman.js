@@ -9,6 +9,7 @@
 
 const lobby = require('./lobby');
 const { isBotName, isHoneypot } = require('./botfilter');
+const { logGameEvent } = require('../db/stats');
 
 const hangmanRooms = {};
 
@@ -221,7 +222,7 @@ function register(io, socket) {
   });
 
   // Picker submits the word (and optional hint)
-  socket.on('hang_set_word', ({ code, word, hint }) => {
+  socket.on('hang_set_word', ({ code, word, hint, source }) => {
     const room = getHangRoom(code);
     if (!room || room.state.phase !== 'picking') return;
     const picker = getPicker(room);
@@ -233,6 +234,7 @@ function register(io, socket) {
 
     room.state.word           = cleaned;
     room.state.hint           = (hint || '').trim() || null;
+    room.state.wordSource     = (source === 'random') ? 'random' : 'custom';
     room.state.guessedLetters = [];
     room.state.wrongCount     = 0;
     room.state.phase          = 'guessing';
@@ -260,6 +262,10 @@ function register(io, socket) {
         room.state.phase       = 'roundEnd';
         room.state.roundWinner = null; // null = picker wins
         room.state.scores[picker.id] = (room.state.scores[picker.id] || 0) + 1;
+        logGameEvent({ game:'hangman', roomCode:code, lang:room.settings.lang, outcome:'word_failed',
+          details:{ word:room.state.word, word_length:room.state.word.length, wrong_count:room.state.wrongCount,
+            word_source:room.state.wordSource||'custom', game_length:room.settings.gameLength,
+            player_count:room.players.filter(p=>p.connected).length } });
         emitHangState(io, room);
         return;
       }
@@ -269,6 +275,10 @@ function register(io, socket) {
         room.state.phase       = 'roundEnd';
         room.state.roundWinner = socket.id;
         room.state.scores[socket.id] = (room.state.scores[socket.id] || 0) + 1;
+        logGameEvent({ game:'hangman', roomCode:code, lang:room.settings.lang, outcome:'word_guessed',
+          details:{ word:room.state.word, word_length:room.state.word.length, wrong_count:room.state.wrongCount,
+            word_source:room.state.wordSource||'custom', game_length:room.settings.gameLength,
+            player_count:room.players.filter(p=>p.connected).length } });
         emitHangState(io, room);
         return;
       }
@@ -294,12 +304,20 @@ function register(io, socket) {
       room.state.phase          = 'roundEnd';
       room.state.roundWinner    = socket.id;
       room.state.scores[socket.id] = (room.state.scores[socket.id] || 0) + 1;
+      logGameEvent({ game:'hangman', roomCode:code, lang:room.settings.lang, outcome:'word_guessed',
+        details:{ word:room.state.word, word_length:room.state.word.length, wrong_count:room.state.wrongCount,
+          word_source:room.state.wordSource||'custom', game_length:room.settings.gameLength,
+          player_count:room.players.filter(p=>p.connected).length } });
     } else {
       // Wrong full-word guess — instant loss (add remaining wrong count to complete hangman)
       room.state.wrongCount  = MAX_WRONG;
       room.state.phase       = 'roundEnd';
       room.state.roundWinner = null; // picker wins
       room.state.scores[picker.id] = (room.state.scores[picker.id] || 0) + 1;
+      logGameEvent({ game:'hangman', roomCode:code, lang:room.settings.lang, outcome:'word_failed',
+        details:{ word:room.state.word, word_length:room.state.word.length, wrong_count:room.state.wrongCount,
+          word_source:room.state.wordSource||'custom', game_length:room.settings.gameLength,
+          player_count:room.players.filter(p=>p.connected).length } });
     }
     emitHangState(io, room);
   });
