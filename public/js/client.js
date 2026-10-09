@@ -182,7 +182,7 @@ function applyRoomState(data) {
     case 'stopped':     showScreen('screen-stopped');     renderStoppedScreen(data); break;
     case 'calculating': showScreen('screen-calculating'); window.scrollTo(0,0); break;
     case 'scoring':     _scoringCatIdx = 0; showScreen('screen-scoring');     renderScoringScreen(data); break;
-    case 'final':       showScreen('screen-final');       renderFinalScreen(data);   _ga('game_completed', { game:'panstwa_miasta', language:lang }); window._gaGameStarted=false; break;
+    case 'final':       showScreen('screen-final');       renderFinalScreen(data);   _ga('game_completed', { game:'panstwa_miasta', language:lang }); window._gaGameStarted=false; clearSession(); break;
   }
 }
 
@@ -398,6 +398,7 @@ function renderDrawingScreen(data) {
 // ─── PLAYING SCREEN ───────────────────────────────────────────────
 function renderPlayingScreen(data) {
   const { state, settings } = data;
+  document.getElementById('playing-round-badge').textContent = L.roundLabel(state.round, settings.totalRounds);
   document.getElementById('play-letter').textContent = state.letter;
   const body = document.getElementById('answer-body');
   if (!body.dataset.letter || body.dataset.letter !== state.letter) {
@@ -1199,6 +1200,7 @@ function saveSession() {
 }
 function clearSession() {
   try { localStorage.removeItem('pm_session'); } catch(e) {}
+  try { sessionStorage.removeItem('pm_code'); sessionStorage.removeItem('pm_name'); } catch(e) {}
 }
 
 // ─── INIT ───────────────────────────────────────────────
