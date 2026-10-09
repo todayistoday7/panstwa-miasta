@@ -46,6 +46,7 @@ socket.on('connect', () => {
   const savedName = sessionStorage.getItem('pm_name');
   if (savedCode && savedName && !roomCode) {
     myName = savedName;
+    window._autoRejoinPending = true;
     socket.emit('rejoin', { code: savedCode, name: savedName });
   }
 });
@@ -191,13 +192,21 @@ function applyRoomState(data) {
   if (me) isHost = me.isHost;
 
   switch (data.state.phase) {
-    case 'lobby':       showScreen('screen-lobby');       renderLobby(data);       break;
-    case 'drawing':     showScreen('screen-drawing');     renderDrawingScreen(data); break;
-    case 'playing':     showScreen('screen-playing');     renderPlayingScreen(data); break;
-    case 'stopped':     showScreen('screen-stopped');     renderStoppedScreen(data); break;
-    case 'calculating': showScreen('screen-calculating'); window.scrollTo(0,0); break;
-    case 'scoring':     _scoringCatIdx = 0; showScreen('screen-scoring');     renderScoringScreen(data); break;
-    case 'final':       showScreen('screen-final');       renderFinalScreen(data);   _ga('game_completed', { game:'panstwa_miasta', language:lang }); window._gaGameStarted=false; clearSession(); break;
+    case 'lobby':       window._autoRejoinPending = false; showScreen('screen-lobby');       renderLobby(data);       break;
+    case 'drawing':     window._autoRejoinPending = false; showScreen('screen-drawing');     renderDrawingScreen(data); break;
+    case 'playing':     window._autoRejoinPending = false; showScreen('screen-playing');     renderPlayingScreen(data); break;
+    case 'stopped':     window._autoRejoinPending = false; showScreen('screen-stopped');     renderStoppedScreen(data); break;
+    case 'calculating': window._autoRejoinPending = false; showScreen('screen-calculating'); window.scrollTo(0,0); break;
+    case 'scoring':     window._autoRejoinPending = false; _scoringCatIdx = 0; showScreen('screen-scoring'); renderScoringScreen(data); break;
+    case 'final':
+      if (window._autoRejoinPending) {
+        window._autoRejoinPending = false;
+        clearSession();
+        showScreen('screen-home');
+      } else {
+        showScreen('screen-final'); renderFinalScreen(data); _ga('game_completed', { game:'panstwa_miasta', language:lang }); window._gaGameStarted=false; clearSession();
+      }
+      break;
   }
 }
 
@@ -413,7 +422,8 @@ function renderDrawingScreen(data) {
 // ─── PLAYING SCREEN ───────────────────────────────────────────────
 function renderPlayingScreen(data) {
   const { state, settings } = data;
-  document.getElementById('playing-round-badge').textContent = L.roundLabel(state.round, settings.totalRounds);
+  var _rpb = document.getElementById('playing-round-badge');
+  if (_rpb) { _rpb.textContent = L.roundLabel(state.round, settings.totalRounds); _rpb.style.display = 'inline-block'; }
   document.getElementById('play-letter').textContent = state.letter;
   const body = document.getElementById('answer-body');
   if (!body.dataset.letter || body.dataset.letter !== state.letter) {
