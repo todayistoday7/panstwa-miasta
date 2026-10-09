@@ -926,6 +926,190 @@ router.get('/stats', requireAuth, (req, res) => {
     }
     // ── END HANGMAN VIEW ───────────────────────────────────
 
+    // ── PM (Państwa-Miasta) VIEW ───────────────────────────
+    if (game === 'pm') {
+      const pwhere  = days ? 'game = ? AND date >= ?' : 'game = ?';
+      const pparams = days ? ['pm', params[1]] : ['pm'];
+
+      const pSummary = db.prepare(`
+        SELECT
+          COUNT(DISTINCT room_code) as totalRooms,
+          SUM(CASE WHEN outcome='game_complete' THEN 1 ELSE 0 END) as totalGames,
+          SUM(CASE WHEN outcome='round_complete' THEN 1 ELSE 0 END) as totalRounds
+        FROM game_events WHERE ${pwhere}
+      `).get(...pparams);
+
+      const avgPlayers = db.prepare(`
+        SELECT AVG(CAST(json_extract(details,'$.playerCount') AS REAL)) as avg
+        FROM game_events WHERE ${pwhere} AND outcome='game_complete'
+      `).get(...pparams);
+
+      const avgRounds = db.prepare(`
+        SELECT AVG(CAST(json_extract(details,'$.totalRounds') AS REAL)) as avg
+        FROM game_events WHERE ${pwhere} AND outcome='game_complete'
+      `).get(...pparams);
+
+      // Top winners (from game_complete events)
+      const topWinners = db.prepare(`
+        SELECT json_extract(details,'$.winner') as winner,
+               COUNT(*) as wins
+        FROM game_events
+        WHERE ${pwhere} AND outcome='game_complete'
+          AND json_extract(details,'$.winner') IS NOT NULL
+        GROUP BY winner ORDER BY wins DESC LIMIT 20
+      `).all(...pparams);
+
+      // Most used letters (from round_complete events)
+      const byLetter = db.prepare(`
+        SELECT json_extract(details,'$.letter') as letter,
+               COUNT(*) as total
+        FROM game_events
+        WHERE ${pwhere} AND outcome='round_complete'
+          AND json_extract(details,'$.letter') IS NOT NULL
+        GROUP BY letter ORDER BY total DESC LIMIT 26
+      `).all(...pparams);
+
+      // Games by language
+      const byLangPm = db.prepare(`
+        SELECT lang, COUNT(*) as total
+        FROM game_events
+        WHERE game='pm' AND outcome='game_complete' AND lang IS NOT NULL
+        GROUP BY lang ORDER BY total DESC
+      `).all();
+
+      // Games by round count
+      const byRoundCount = db.prepare(`
+        SELECT json_extract(details,'$.totalRounds') as rounds,
+               COUNT(*) as total
+        FROM game_events
+        WHERE ${pwhere} AND outcome='game_complete'
+          AND json_extract(details,'$.totalRounds') IS NOT NULL
+        GROUP BY rounds ORDER BY CAST(rounds AS INTEGER) ASC
+      `).all(...pparams);
+
+      // Recent games
+      const recentGames = db.prepare(`
+        SELECT room_code, date, lang,
+               json_extract(details,'$.totalRounds') as rounds,
+               json_extract(details,'$.playerCount') as players,
+               json_extract(details,'$.winner') as winner,
+               json_extract(details,'$.winnerScore') as winnerScore
+        FROM game_events
+        WHERE ${pwhere} AND outcome='game_complete'
+        ORDER BY ts DESC LIMIT 20
+      `).all(...pparams);
+
+      const winnerRows = topWinners.map(r =>
+        '<tr><td style="font-weight:700">' + escapeHtml(r.winner||'?') + '</td><td>' + r.wins + '</td></tr>'
+      ).join('') || '<tr><td colspan="2" style="text-align:center;color:#64748b;padding:24px">No data yet.</td></tr>';
+
+      const letterRows = byLetter.map(r =>
+        '<tr><td style="font-family:monospace;font-weight:700;font-size:16px">' + escapeHtml(r.letter||'?') + '</td><td>' + r.total + '</td></tr>'
+      ).join('') || '<tr><td colspan="2" style="text-align:center;color:#64748b;padding:24px">No data yet.</td></tr>';
+
+      const langRowsPm = byLangPm.map(r =>
+        '<tr><td>' + escapeHtml(r.lang) + '</td><td>' + r.total + '</td></tr>'
+      ).join('') || '<tr><td colspan="2" style="text-align:center;color:#64748b;padding:24px">No data yet.</td></tr>';
+
+      const roundCountRows = byRoundCount.map(r =>
+        '<tr><td>' + r.rounds + ' rounds</td><td>' + r.total + '</td></tr>'
+      ).join('') || '<tr><td colspan="2" style="text-align:center;color:#64748b;padding:24px">No data yet.</td></tr>';
+
+      const recentRows = recentGames.map(r => {
+        return '<tr>'
+          + '<td style="font-family:monospace;font-size:12px">' + escapeHtml(r.room_code||'?') + '</td>'
+          + '<td style="font-size:12px;color:#64748b">' + escapeHtml(r.date||'') + '</td>'
+          + '<td>' + escapeHtml(r.lang||'?') + '</td>'
+          + '<td>' + (r.players||'?') + '</td>'
+          + '<td>' + (r.rounds||'?') + '</td>'
+          + '<td style="font-weight:700;color:#a78bfa">' + escapeHtml(r.winner||'—') + '</td>'
+          + '<td>' + (r.winnerScore||'—') + '</td>'
+          + '</tr>';
+      }).join('') || '<tr><td colspan="7" style="text-align:center;color:#64748b;padding:24px">No games logged yet.</td></tr>';
+
+      const pmBody = `
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+          <h2>📊 Game Stats</h2>
+          <button class="btn btn-sm" onclick="location.reload()" style="background:#1a1d2e;color:#94a3b8;border:1px solid #2d3152">↻ Refresh</button>
+        </div>
+
+        <div class="card" style="padding:14px">
+          <form method="GET" action="/admin/stats">
+            <div class="filter-bar">
+              <select name="game" onchange="this.form.submit()">${gameOpts}</select>
+              <select name="days" onchange="this.form.submit()">
+                <option value="" ${!days?'selected':''}>All time</option>
+                <option value="7" ${days==='7'?'selected':''}>Last 7 days</option>
+                <option value="30" ${days==='30'?'selected':''}>Last 30 days</option>
+                <option value="90" ${days==='90'?'selected':''}>Last 90 days</option>
+              </select>
+              <a href="/admin/stats?game=pm" class="btn btn-sm" style="background:#1a1d2e;color:#94a3b8;border:1px solid #2d3152;text-decoration:none">Clear filters</a>
+            </div>
+          </form>
+        </div>
+
+        <div class="grid2" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+          <div class="card" style="margin-bottom:0">
+            <div style="font-size:12px;color:#64748b;margin-bottom:6px">Games finished (${escapeHtml(cutoffLabel)})</div>
+            <div style="font-size:26px;font-weight:700">${pSummary.totalGames}</div>
+          </div>
+          <div class="card" style="margin-bottom:0">
+            <div style="font-size:12px;color:#64748b;margin-bottom:6px">Rooms created</div>
+            <div style="font-size:26px;font-weight:700">${pSummary.totalRooms}</div>
+          </div>
+          <div class="card" style="margin-bottom:0">
+            <div style="font-size:12px;color:#64748b;margin-bottom:6px">Rounds played</div>
+            <div style="font-size:26px;font-weight:700;color:#a78bfa">${pSummary.totalRounds}</div>
+          </div>
+          <div class="card" style="margin-bottom:0">
+            <div style="font-size:12px;color:#64748b;margin-bottom:6px">Avg players/game</div>
+            <div style="font-size:26px;font-weight:700">${avgPlayers.avg ? avgPlayers.avg.toFixed(1) : '—'}</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px">
+          <div style="display:flex;gap:24px;flex-wrap:wrap;font-size:13px;color:#94a3b8">
+            <span>Avg rounds per game: <strong style="color:#e2e8f0">${avgRounds.avg ? avgRounds.avg.toFixed(1) : '—'}</strong></span>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px">
+          <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Recent games (last 20)</h3>
+          <div style="overflow-x:auto">
+            <table>
+              <tr><th>Room</th><th>Date</th><th>Lang</th><th>Players</th><th>Rounds</th><th>Winner</th><th>Score</th></tr>
+              ${recentRows}
+            </table>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="card">
+            <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Top winners (${escapeHtml(cutoffLabel)})</h3>
+            <table><tr><th>Player</th><th>Wins</th></tr>${winnerRows}</table>
+          </div>
+          <div class="card">
+            <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Games by round count</h3>
+            <table><tr><th>Setting</th><th>Games</th></tr>${roundCountRows}</table>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="card">
+            <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Letters drawn (round_complete)</h3>
+            <table><tr><th>Letter</th><th>Times drawn</th></tr>${letterRows}</table>
+          </div>
+          <div class="card">
+            <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">By language (all time)</h3>
+            <table><tr><th>Language</th><th>Games</th></tr>${langRowsPm}</table>
+          </div>
+        </div>
+      `;
+
+      return res.send(layout('Game Stats', pmBody, 'stats'));
+    }
+    // ── END PM VIEW ────────────────────────────────────────
+
 
     // ── Main filtered + sorted character table ──────────────
 
