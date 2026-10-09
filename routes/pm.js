@@ -190,6 +190,7 @@ function startNextRound(io, room) {
   room.state.letter = letter;
   room.state.usedLetters.push(letter);
   emitRoomState(io, room);
+  lobby.announce('pm', room);
   io.to(room.code).emit('letter_drawn', { letter });
 }
 
@@ -200,6 +201,7 @@ function moveToScoring(io, room) {
   setTimeout(() => {
     room.state.phase = 'scoring';
     emitRoomState(io, room);
+    lobby.announce('pm', room);
   }, 800);
 }
 
@@ -384,8 +386,6 @@ function register(io, socket) {
       socket.emit('error', { msg: 'Need at least 2 players.' }); return;
     }
     if (room._lobbyTimer) { clearTimeout(room._lobbyTimer); room._lobbyTimer = null; }
-    if (room._lobbyTimer) { clearTimeout(room._lobbyTimer); room._lobbyTimer = null; }
-    lobby.remove(room.code);
     room.state.phase            = 'drawing';
     room.state.round            = 0;
     room.state.usedLetters      = [];
