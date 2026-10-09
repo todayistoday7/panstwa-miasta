@@ -155,7 +155,7 @@ function advanceFromScoring(io, room) {
         letter:       room.state.letter,
         totalRounds:  room.settings.totalRounds,
         playerCount:  room.players.filter(p => p.connected).length,
-        categories:   room.settings.categories.length,
+        categories:   room.settings.categories,
         roundScores,
       },
     });
@@ -232,7 +232,7 @@ function endGame(io, room) {
       details: {
         totalRounds:  room.settings.totalRounds,
         playerCount:  room.players.filter(p => p.connected).length,
-        categories:   room.settings.categories.length,
+        categories:   room.settings.categories,
         winner,
         winnerScore,
         finalScores,

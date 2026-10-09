@@ -969,6 +969,15 @@ router.get('/stats', requireAuth, (req, res) => {
         GROUP BY letter ORDER BY total DESC LIMIT 26
       `).all(...pparams);
 
+      // Most used categories (from game_complete events, categories is a JSON array)
+      const byCategory = db.prepare(`
+        SELECT jval.value as category, COUNT(*) as total
+        FROM game_events, json_each(json_extract(details,'$.categories')) as jval
+        WHERE ${pwhere} AND outcome='game_complete'
+          AND json_type(details,'$.categories') = 'array'
+        GROUP BY category ORDER BY total DESC LIMIT 20
+      `).all(...pparams);
+
       // Games by language
       const byLangPm = db.prepare(`
         SELECT lang, COUNT(*) as total
@@ -1005,6 +1014,10 @@ router.get('/stats', requireAuth, (req, res) => {
 
       const letterRows = byLetter.map(r =>
         '<tr><td style="font-family:monospace;font-weight:700;font-size:16px">' + escapeHtml(r.letter||'?') + '</td><td>' + r.total + '</td></tr>'
+      ).join('') || '<tr><td colspan="2" style="text-align:center;color:#64748b;padding:24px">No data yet.</td></tr>';
+
+      const categoryRows = byCategory.map(r =>
+        '<tr><td>' + escapeHtml(r.category||'?') + '</td><td>' + r.total + '</td></tr>'
       ).join('') || '<tr><td colspan="2" style="text-align:center;color:#64748b;padding:24px">No data yet.</td></tr>';
 
       const langRowsPm = byLangPm.map(r =>
@@ -1096,8 +1109,8 @@ router.get('/stats', requireAuth, (req, res) => {
 
         <div class="grid2">
           <div class="card">
-            <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Letters drawn (round_complete)</h3>
-            <table><tr><th>Letter</th><th>Times drawn</th></tr>${letterRows}</table>
+            <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Most played categories</h3>
+            <table><tr><th>Category</th><th>Times played</th></tr>${categoryRows}</table>
           </div>
           <div class="card">
             <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">By language (all time)</h3>
