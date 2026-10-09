@@ -4,6 +4,7 @@
 'use strict';
 const lobby = require('./lobby');
 const { isBotName, isHoneypot } = require('./botfilter');
+const { logGameEvent } = require('../db/stats');
 
 const rooms   = {};
 const ALPHABET = 'ABCDEFGHIJKLMNOPRSTUWZ'.split('');
@@ -136,6 +137,30 @@ function advanceFromScoring(io, room) {
     room.state.totalScores[p.id] = (room.state.totalScores[p.id] || 0) +
       Object.values(pScores).reduce((a, b) => a + b, 0);
   });
+
+  // Log round stats — wrapped in try/catch so a logging failure never affects the game
+  try {
+    const roundScores = {};
+    room.players.forEach(p => {
+      const pScores = (room.state.scores[rIdx] && room.state.scores[rIdx][p.id]) || {};
+      roundScores[p.name] = Object.values(pScores).reduce((a, b) => a + b, 0);
+    });
+    logGameEvent({
+      game: 'pm',
+      roomCode: room.code,
+      lang: room.settings.lang || 'en',
+      outcome: 'round_complete',
+      details: {
+        round:        room.state.round,
+        letter:       room.state.letter,
+        totalRounds:  room.settings.totalRounds,
+        playerCount:  room.players.filter(p => p.connected).length,
+        categories:   room.settings.categories.length,
+        roundScores,
+      },
+    });
+  } catch (e) { /* stats never break the game */ }
+
   if (room.state.round >= room.settings.totalRounds) {
     endGame(io, room);
   } else {
@@ -187,9 +212,36 @@ function endGame(io, room) {
         Object.values(pScores).reduce((a, b) => a + b, 0);
     });
   }
+
+  // Log game stats — wrapped in try/catch so a logging failure never affects the game
+  try {
+    let winner = null, winnerScore = -1;
+    const finalScores = {};
+    room.players.forEach(p => {
+      const s = room.state.totalScores[p.id] || 0;
+      finalScores[p.name] = s;
+      if (s > winnerScore) { winnerScore = s; winner = p.name; }
+    });
+    logGameEvent({
+      game: 'pm',
+      roomCode: room.code,
+      lang: room.settings.lang || 'en',
+      outcome: 'game_complete',
+      details: {
+        totalRounds:  room.settings.totalRounds,
+        playerCount:  room.players.filter(p => p.connected).length,
+        categories:   room.settings.categories.length,
+        winner,
+        winnerScore,
+        finalScores,
+        lettersUsed:  room.state.usedLetters,
+      },
+    });
+  } catch (e) { /* stats never break the game */ }
+
   room.state.phase = 'final';
   emitRoomState(io, room);
-  // 1h after game ends, delete room so code can't be reused
+  // 10 min after game ends, delete room so code can't be reused
   lobby.remove(room.code);
   setTimeout(() => { if (rooms[room.code]) delete rooms[room.code]; }, 10 * 60 * 1000);
 }

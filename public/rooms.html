@@ -97,6 +97,14 @@
     text-decoration:none;display:inline-flex;align-items:center;
   }
   .room-join:hover{opacity:.9;}
+  .room-inprogress-badge{
+    background:rgba(100,116,139,.18);color:var(--muted);
+    border:1px solid var(--border);border-radius:8px;
+    padding:7px 12px;font-size:12px;font-weight:800;
+    white-space:nowrap;flex-shrink:0;letter-spacing:.3px;
+  }
+  .room-card.in-progress{opacity:.78;}
+  .room-card.in-progress:hover{border-color:var(--muted);transform:none;}
 
   /* Empty state */
   .empty-state{
@@ -165,7 +173,7 @@
     </div>
     <div class="ex-row">
       <span class="ex-icon">💡</span>
-      <span id="exp-tip">Ta strona pokazuje tylko pokoje w fazie oczekiwania. Gry w trakcie nie są widoczne.</span>
+      <span id="exp-tip">Ta strona pokazuje pokoje oczekujące na graczy oraz gry w toku. Dołącz do oczekujących lub obserwuj aktywne gry!</span>
     </div>
   </div>
 
@@ -202,7 +210,8 @@ const ROOMS_LANGS = {
     expPublicDesc:  'widoczny tutaj z kodem. Kliknij żeby dołączyć — świetny sposób na poznanie nowych graczy!',
     expPrivateTitle:'Pokój prywatny',
     expPrivateDesc: 'widoczny tutaj, ale bez kodu i bez nazwy hosta. Możesz dołączyć tylko jeśli masz kod od hosta.',
-    expTip:         'Ta strona pokazuje tylko pokoje w fazie oczekiwania. Gry w trakcie nie są widoczne.',
+    expTip:         'Ta strona pokazuje pokoje oczekujące na graczy oraz gry w toku.',
+    inProgress:     '🎮 Gra w toku',
     roomsLabel:     ' aktywnych pokoi',
     refresh:        '↻ Odśwież',
     join:           'Dołącz →',
@@ -228,7 +237,8 @@ const ROOMS_LANGS = {
     expPublicDesc:  'visible here with the room code. Click to join — great way to meet new players!',
     expPrivateTitle:'Private room',
     expPrivateDesc: 'visible here, but without the code or host name. You can only join if you have the code from the host.',
-    expTip:         'This page only shows rooms waiting for players. Games in progress are not listed.',
+    expTip:         'This page shows rooms waiting for players and games in progress.',
+    inProgress:     '🎮 Game in progress',
     roomsLabel:     ' active rooms',
     refresh:        '↻ Refresh',
     join:           'Join →',
@@ -254,7 +264,8 @@ const ROOMS_LANGS = {
     expPublicDesc:  'hier mit dem Raumcode sichtbar. Klicke zum Beitreten — tolle Möglichkeit neue Spieler kennenzulernen!',
     expPrivateTitle:'Privater Raum',
     expPrivateDesc: 'hier sichtbar, aber ohne Code und Hostname. Du kannst nur beitreten wenn du den Code vom Host hast.',
-    expTip:         'Diese Seite zeigt nur Räume, die auf Spieler warten. Laufende Spiele werden nicht angezeigt.',
+    expTip:         'Diese Seite zeigt Räume, die auf Spieler warten, und laufende Spiele.',
+    inProgress:     '🎮 Spiel läuft',
     roomsLabel:     ' aktive Räume',
     refresh:        '↻ Aktualisieren',
     join:           'Beitreten →',
@@ -280,7 +291,8 @@ const ROOMS_LANGS = {
     expPublicDesc:  'synligt här med kod. Klicka för att gå med — bra sätt att träffa nya spelare!',
     expPrivateTitle:'Privat rum',
     expPrivateDesc: 'synligt här, men utan kod och värdnamn. Du kan bara gå med om du har koden från värden.',
-    expTip:         'Denna sida visar bara rum som väntar på spelare. Pågående spel visas inte.',
+    expTip:         'Denna sida visar rum som väntar på spelare och pågående spel.',
+    inProgress:     '🎮 Spel pågår',
     roomsLabel:     ' aktiva rum',
     refresh:        '↻ Uppdatera',
     join:           'Gå med →',
@@ -411,10 +423,11 @@ function renderRooms() {
   }
 
   list.innerHTML = rooms.map(function(r) {
-    var isPublic = r.isPublic;
-    var joinUrl  = isPublic ? (r.gameSlug + '?join=' + r.code + '&lang=' + lang) : null;
-    var langPill = r.lang ? '<span class="pill pill-blue">' + r.lang.toUpperCase() + '</span>' : '';
-    var privPill = isPublic ? '' : '<span class="pill pill-orange">🔒 ' + (L.private || 'Private') + '</span>';
+    var isPublic    = r.isPublic;
+    var isInProgress = r.inProgress === true;
+    var joinUrl     = (isPublic && !isInProgress) ? (r.gameSlug + '?join=' + r.code + '&lang=' + lang) : null;
+    var langPill    = r.lang ? '<span class="pill pill-blue">' + r.lang.toUpperCase() + '</span>' : '';
+    var privPill    = isPublic ? '' : '<span class="pill pill-orange">🔒 ' + (L.private || 'Private') + '</span>';
     var card =
       '<div class="room-icon">' + r.gameIcon + '</div>' +
       '<div class="room-info">' +
@@ -427,12 +440,19 @@ function renderRooms() {
           '<span class="pill pill-green">' + L.players(r.players, r.maxPlayers) + '</span>' +
           langPill + privPill +
         '</div>' +
-      '</div>' +
-      (isPublic ? '<span class="room-join">' + L.join + '</span>' : '<span style="font-size:12px;color:var(--muted);font-weight:700;flex-shrink:0;">🔒</span>');
+      '</div>';
 
-    return isPublic
-      ? '<a href="' + joinUrl + '" class="room-card">' + card + '</a>'
-      : '<div class="room-card" style="cursor:default;opacity:0.6;">' + card + '</div>';
+    if (isInProgress) {
+      // Game already running — show badge, no join link
+      card += '<span class="room-inprogress-badge">' + (L.inProgress || '🎮 In progress') + '</span>';
+      return '<div class="room-card in-progress" style="cursor:default;">' + card + '</div>';
+    } else if (isPublic) {
+      card += '<span class="room-join">' + L.join + '</span>';
+      return '<a href="' + joinUrl + '" class="room-card">' + card + '</a>';
+    } else {
+      card += '<span style="font-size:12px;color:var(--muted);font-weight:700;flex-shrink:0;">🔒</span>';
+      return '<div class="room-card" style="cursor:default;opacity:0.6;">' + card + '</div>';
+    }
   }).join('');
 }
 

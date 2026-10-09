@@ -19,9 +19,15 @@ const GAME_INFO = {
   charades: { name: 'Charades',              icon: '🎬', slug: '/charades' },
 };
 
+// Phases that mean a game is actively being played (not lobby, not final)
+const IN_PROGRESS_PHASES = new Set([
+  'drawing', 'playing', 'guessing', 'scoring', 'calculating',
+  'stopped', 'review', 'voting', 'results', 'intermission',
+]);
+
 // In-memory registry: code → public room entry
 // { code, game, hostName, hostMasked, lang, players, maxPlayers,
-//   isPublic, phase, createdAt, lastActivity }
+//   isPublic, phase, inProgress, createdAt, lastActivity }
 const publicRooms = {};
 
 let _io = null;  // set by init()
@@ -44,16 +50,19 @@ function init(io) {
 
 // Called by game routes whenever a room's public state changes
 function announce(game, room) {
-  const code = room.code;
+  const code  = room.code;
+  const phase = room.state.phase;
 
-  // Remove from registry once game ends or room disappears
-  if (room.state.phase === 'final') {
+  // Remove from registry once game ends
+  if (phase === 'final') {
     if (publicRooms[code]) { delete publicRooms[code]; broadcast(); }
     return;
   }
 
-  // Only show rooms that are still in lobby phase
-  if (room.state.phase !== 'lobby') {
+  // Show lobby rooms (joinable) and in-progress rooms (spectate/info)
+  const isLobby      = phase === 'lobby';
+  const isInProgress = IN_PROGRESS_PHASES.has(phase);
+  if (!isLobby && !isInProgress) {
     if (publicRooms[code]) { delete publicRooms[code]; broadcast(); }
     return;
   }
@@ -66,16 +75,18 @@ function announce(game, room) {
   publicRooms[code] = {
     code,
     game,
-    gameName:    info.name,
-    gameIcon:    info.icon,
-    gameSlug:    info.slug,
+    gameName:     info.name,
+    gameIcon:     info.icon,
+    gameSlug:     info.slug,
     hostName,
-    hostMasked:  maskName(hostName),
-    lang:        (room.settings && room.settings.lang) || 'en',
+    hostMasked:   maskName(hostName),
+    lang:         (room.settings && room.settings.lang) || 'en',
     players,
-    maxPlayers:  maxPlayersFor(game, room),
-    isPublic:    room.isPublic === true,
-    createdAt:   publicRooms[code] ? publicRooms[code].createdAt : Date.now(),
+    maxPlayers:   maxPlayersFor(game, room),
+    isPublic:     room.isPublic === true,
+    phase,
+    inProgress:   isInProgress,
+    createdAt:    publicRooms[code] ? publicRooms[code].createdAt : Date.now(),
     lastActivity: Date.now(),
   };
 
@@ -117,7 +128,11 @@ function buildList() {
   });
 
   return Object.values(publicRooms)
-    .sort((a, b) => b.createdAt - a.createdAt)  // newest first
+    .sort((a, b) => {
+      // Lobby (joinable) rooms first, then in-progress; newest first within each group
+      if (a.inProgress !== b.inProgress) return a.inProgress ? 1 : -1;
+      return b.createdAt - a.createdAt;
+    })
     .slice(0, 20);  // cap at 20 rooms shown
 }
 
