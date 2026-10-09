@@ -774,7 +774,161 @@ router.get('/stats', requireAuth, (req, res) => {
       ? Math.round(100 * summary.totalGuessed / summary.totalEvents)
       : 0;
 
+
+    // ── HANGMAN-SPECIFIC VIEW ─────────────────────────────
+    if (game === 'hangman') {
+      const hwhere = days ? 'game = ? AND date >= ?' : 'game = ?';
+      const hparams = days ? ['hangman', params[1]] : ['hangman'];
+
+      const hSummary = db.prepare(`
+        SELECT COUNT(*) as totalWords,
+               COUNT(DISTINCT room_code) as totalRooms,
+               SUM(CASE WHEN outcome='word_guessed' THEN 1 ELSE 0 END) as totalGuessed,
+               SUM(CASE WHEN outcome='word_failed'  THEN 1 ELSE 0 END) as totalFailed
+        FROM game_events WHERE ${hwhere}
+      `).get(...hparams);
+
+      const hGuessPct = hSummary.totalWords
+        ? Math.round(100 * hSummary.totalGuessed / hSummary.totalWords) : 0;
+
+      const avgWrong = db.prepare(`
+        SELECT AVG(CAST(json_extract(details,'$.wrong_count') AS REAL)) as avg
+        FROM game_events WHERE ${hwhere} AND outcome IN ('word_guessed','word_failed')
+      `).get(...hparams);
+
+      const byWord = db.prepare(`
+        SELECT json_extract(details,'$.word') as word,
+               COUNT(*) as total,
+               SUM(CASE WHEN outcome='word_guessed' THEN 1 ELSE 0 END) as guessed,
+               SUM(CASE WHEN outcome='word_failed'  THEN 1 ELSE 0 END) as failed,
+               AVG(CAST(json_extract(details,'$.wrong_count') AS REAL)) as avg_wrong
+        FROM game_events WHERE ${hwhere} AND json_extract(details,'$.word') IS NOT NULL
+        GROUP BY word ORDER BY total DESC LIMIT 50
+      `).all(...hparams);
+
+      const byLangH = db.prepare(`
+        SELECT lang, COUNT(*) as total FROM game_events
+        WHERE game='hangman' AND lang IS NOT NULL GROUP BY lang ORDER BY total DESC
+      `).all();
+
+      const bySource = db.prepare(`
+        SELECT json_extract(details,'$.word_source') as src, COUNT(*) as total
+        FROM game_events WHERE game='hangman' AND json_extract(details,'$.word_source') IS NOT NULL
+        GROUP BY src ORDER BY total DESC
+      `).all();
+
+      const byLength = db.prepare(`
+        SELECT json_extract(details,'$.word_length') as len,
+               COUNT(*) as total,
+               SUM(CASE WHEN outcome='word_guessed' THEN 1 ELSE 0 END) as guessed
+        FROM game_events WHERE game='hangman' AND json_extract(details,'$.word_length') IS NOT NULL
+        GROUP BY len ORDER BY CAST(len AS INTEGER) ASC
+      `).all();
+
+      const wordRows = byWord.map(r => {
+        const pct = r.total ? Math.round(100 * r.guessed / r.total) : 0;
+        return '<tr>'
+          + '<td style="font-family:monospace;font-weight:700">' + escapeHtml(r.word||'') + '</td>'
+          + '<td>' + r.total + '</td>'
+          + '<td><span class="pill pill-green">' + r.guessed + '</span></td>'
+          + '<td><span class="pill pill-red">' + r.failed + '</span></td>'
+          + '<td>' + pct + '%</td>'
+          + '<td>' + (r.avg_wrong ? r.avg_wrong.toFixed(1) : '—') + '</td>'
+          + '</tr>';
+      }).join('') || '<tr><td colspan="6" style="text-align:center;color:#64748b;padding:24px">No data yet.</td></tr>';
+
+      const langRowsH = byLangH.map(r =>
+        '<tr><td>' + escapeHtml(r.lang) + '</td><td>' + r.total + '</td></tr>'
+      ).join('') || '<tr><td colspan="2" style="text-align:center;color:#64748b;padding:24px">No data yet.</td></tr>';
+
+      const sourceRows = bySource.map(r =>
+        '<tr><td>' + escapeHtml(r.src||'unknown') + '</td><td>' + r.total + '</td></tr>'
+      ).join('') || '<tr><td colspan="2" style="text-align:center;color:#64748b;padding:24px">No data yet.</td></tr>';
+
+      const lenRows = byLength.map(r => {
+        const pct = r.total ? Math.round(100 * r.guessed / r.total) : 0;
+        return '<tr><td>' + r.len + ' letters</td><td>' + r.total + '</td><td>' + r.guessed + '</td><td>' + pct + '%</td></tr>';
+      }).join('') || '<tr><td colspan="4" style="text-align:center;color:#64748b;padding:24px">No data yet.</td></tr>';
+
+      const hBody = `
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+          <h2>📊 Game Stats</h2>
+          <button class="btn btn-sm" onclick="location.reload()" style="background:#1a1d2e;color:#94a3b8;border:1px solid #2d3152">↻ Refresh</button>
+        </div>
+
+        <div class="card" style="padding:14px">
+          <form method="GET" action="/admin/stats">
+            <div class="filter-bar">
+              <select name="game" onchange="this.form.submit()">${gameOpts}</select>
+              <select name="days" onchange="this.form.submit()">
+                <option value="" ${!days?'selected':''}>All time</option>
+                <option value="7" ${days==='7'?'selected':''}>Last 7 days</option>
+                <option value="30" ${days==='30'?'selected':''}>Last 30 days</option>
+                <option value="90" ${days==='90'?'selected':''}>Last 90 days</option>
+              </select>
+              <a href="/admin/stats?game=hangman" class="btn btn-sm" style="background:#1a1d2e;color:#94a3b8;border:1px solid #2d3152;text-decoration:none">Clear filters</a>
+            </div>
+          </form>
+        </div>
+
+        <div class="grid2" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+          <div class="card" style="margin-bottom:0">
+            <div style="font-size:12px;color:#64748b;margin-bottom:6px">Words played (${escapeHtml(cutoffLabel)})</div>
+            <div style="font-size:26px;font-weight:700">${hSummary.totalWords}</div>
+          </div>
+          <div class="card" style="margin-bottom:0">
+            <div style="font-size:12px;color:#64748b;margin-bottom:6px">Rooms</div>
+            <div style="font-size:26px;font-weight:700">${hSummary.totalRooms}</div>
+          </div>
+          <div class="card" style="margin-bottom:0">
+            <div style="font-size:12px;color:#64748b;margin-bottom:6px">Words guessed</div>
+            <div style="font-size:26px;font-weight:700;color:#86efac">${hSummary.totalGuessed}</div>
+          </div>
+          <div class="card" style="margin-bottom:0">
+            <div style="font-size:12px;color:#64748b;margin-bottom:6px">Guess rate</div>
+            <div style="font-size:26px;font-weight:700">${hGuessPct}%</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px">
+          <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:#94a3b8">
+            <span>Words failed: <strong style="color:#fca5a5">${hSummary.totalFailed}</strong></span>
+            <span>Avg wrong guesses per word: <strong style="color:#e2e8f0">${avgWrong.avg ? avgWrong.avg.toFixed(1) : '—'}</strong></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Words played (top 50)</h3>
+          <table>
+            <tr><th>Word</th><th>Times used</th><th>Guessed</th><th>Failed</th><th>Guess %</th><th>Avg wrong</th></tr>
+            ${wordRows}
+          </table>
+        </div>
+
+        <div class="grid2">
+          <div class="card">
+            <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">By language</h3>
+            <table><tr><th>Language</th><th>Words</th></tr>${langRowsH}</table>
+          </div>
+          <div class="card">
+            <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Word source</h3>
+            <table><tr><th>Source</th><th>Words</th></tr>${sourceRows}</table>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">By word length</h3>
+          <table><tr><th>Length</th><th>Total</th><th>Guessed</th><th>Guess %</th></tr>${lenRows}</table>
+        </div>
+      `;
+
+      return res.send(layout('Game Stats', hBody, 'stats'));
+    }
+    // ── END HANGMAN VIEW ───────────────────────────────────
+
+
     // ── Main filtered + sorted character table ──────────────
+
     const byCharacter = db.prepare(`
       SELECT json_extract(details, '$.character') as character,
         SUM(CASE WHEN outcome='guessed'     THEN 1 ELSE 0 END) AS guessed,
