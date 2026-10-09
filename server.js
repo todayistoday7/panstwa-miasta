@@ -451,6 +451,33 @@ app.use('/admin', admin.router);
 // Banner API — served to all game pages
 const DATA_DIR_SERVER  = require('fs').existsSync('/data') ? '/data' : require('path').join(__dirname, 'data');
 const BANNER_FILE_PATH = require('path').join(DATA_DIR_SERVER, 'banner.json');
+// ─── PUBLIC STATS SUMMARY ─────────────────────────────────
+app.get('/api/stats-summary', (req, res) => {
+  try {
+    const { getDb } = require('./db/stats');
+    const db = getDb();
+    // Current week: Sunday 00:00 to now
+    const now = new Date();
+    const day = now.getDay(); // 0=Sun
+    const sunday = new Date(now);
+    sunday.setDate(now.getDate() - day);
+    sunday.setHours(0, 0, 0, 0);
+    const sundayStr = sunday.toISOString().slice(0, 10);
+
+    const week = db.prepare(
+      `SELECT COUNT(*) as total FROM game_events WHERE outcome IN ('game_complete','guessed','won') AND date >= ?`
+    ).get(sundayStr);
+
+    const allTime = db.prepare(
+      `SELECT COUNT(*) as total FROM game_events WHERE outcome IN ('game_complete','guessed','won')`
+    ).get();
+
+    res.json({ week: week.total, allTime: allTime.total });
+  } catch(e) {
+    res.json({ week: 0, allTime: 0 });
+  }
+});
+
 app.get('/api/banner', (req, res) => {
   try {
     const b = JSON.parse(require('fs').readFileSync(BANNER_FILE_PATH, 'utf8'));

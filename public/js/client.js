@@ -1,3 +1,18 @@
+// ─── Stats badge ──────────────────────────────────────────
+(function() {
+  try {
+    fetch('/api/stats-summary').then(r => r.json()).then(d => {
+      const badge = document.getElementById('stats-badge');
+      const count = document.getElementById('stats-count');
+      if (!badge || !count) return;
+      if (d.week > 0) {
+        count.textContent = d.week + (d.week === 1 ? ' game' : ' games') + ' played this week';
+        badge.style.display = 'block';
+      }
+    }).catch(function(){});
+  } catch(e) {}
+})();
+
 // ═══════════════════════════════════════════════════════
 // CLIENT STATE
 // ═══════════════════════════════════════════════════════
