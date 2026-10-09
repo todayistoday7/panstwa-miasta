@@ -426,11 +426,15 @@ function renderWaitingForHost(el, L, playerCount) {
   }
   var countText = playerCount ? ('<div style="font-size:13px;color:var(--green);font-weight:800;margin-top:8px;">✅ ' + playerCount + ' ' + (L.playersConnected || 'players connected') + '</div>') : '';
   el.style.display = 'block';
+  var settingsLine = L.waitingSettings
+    ? '<p style="font-size:12px;color:var(--muted);font-weight:600;margin:4px 0 0;line-height:1.5;opacity:0.75;">⚙️ ' + esc(L.waitingSettings) + '</p>'
+    : '';
   el.innerHTML =
     '<div style="text-align:center;padding:16px 12px;">' +
       '<div style="font-size:28px;margin-bottom:6px;">⏳</div>' +
       '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:20px;letter-spacing:2px;color:var(--accent2);">' + esc(title) + '</div>' +
       '<p style="font-size:13px;color:var(--muted);font-weight:600;margin:8px 0 0;line-height:1.6;">' + esc(detail) + '</p>' +
+      settingsLine +
       nudgeLine +
       countText +
     '</div>';
