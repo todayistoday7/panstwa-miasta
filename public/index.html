@@ -141,7 +141,7 @@
       <div class="logo-text">
         <h1 id="game-title">Państwa-Miasta Online</h1>
         <p id="game-subtitle">Multiplayer word game</p>
-        <p id="stats-badge" style="font-size:12px;color:var(--muted);margin-top:4px;display:none;">🎮 <span id="stats-count"></span></p>
+        <span id="stats-badge" style="display:none;margin-top:6px;"><span id="stats-count" style="display:inline-block;background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.3);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.3px;">🎮 <span id="stats-num"></span></span></span>
       </div>
     </div>
   </header>
@@ -257,7 +257,6 @@
         <div id="rejoin-tip" style="margin-top:12px;padding:10px 14px;background:rgba(6,214,160,0.07);border:1px solid rgba(6,214,160,0.25);border-radius:10px;font-size:12px;font-weight:700;color:var(--muted);display:none;">💡 <span id="lbl-rejoin-tip">Jeśli przypadkowo opuścisz grę, wróć z tym samym imieniem i kodem.</span></div>
       </div>
       <div id="lobby-status"></div>
-      <p class="waiting-msg" id="waiting-msg" style="display:none;"></p>
     </div>
 
     <div class="lobby-grid">
@@ -294,6 +293,7 @@
     </div>
 
     <div id="player-warning" class="player-warning" style="display:none;"></div>
+    <p class="waiting-msg" id="waiting-msg" style="display:none;"></p>
 
     <div class="btn-row" id="lobby-btn-row">
       <button class="btn" onclick="startGame()" id="lbl-start-btn">🎮 Start Game</button>

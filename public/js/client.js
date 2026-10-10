@@ -3,11 +3,11 @@
   try {
     fetch('/api/stats-summary').then(r => r.json()).then(d => {
       const badge = document.getElementById('stats-badge');
-      const count = document.getElementById('stats-count');
-      if (!badge || !count) return;
+      const num = document.getElementById('stats-num');
+      if (!badge || !num) return;
       if (d.week > 0) {
-        count.textContent = d.week + (d.week === 1 ? ' game' : ' games') + ' played this week';
-        badge.style.display = 'block';
+        num.textContent = d.week + (d.week === 1 ? ' game this week' : ' games this week');
+        badge.style.display = 'inline-block';
       }
     }).catch(function(){});
   } catch(e) {}
@@ -741,11 +741,19 @@ function renderFinalScreen(data) {
   el.innerHTML = '';
   var sorted = players.map(p => ({ name: p.name, id: p.id, total: state.totalScores[p.id]||0 }))
     .sort((a,b) => b.total-a.total);
-  
+  // Assign true ranks respecting ties (two players on 105 both get rank 0)
+  var trueRanks = [];
+  var curRank = 0;
+  sorted.forEach(function(p, i) {
+    if (i > 0 && p.total < sorted[i-1].total) curRank = i;
+    trueRanks.push(curRank);
+  });
+
   if (sorted.length >= 6) {
     // Condensed final leaderboard
     var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">';
-    sorted.forEach(function(p, rank) {
+    sorted.forEach(function(p, i) {
+      var rank = trueRanks[i];
       var medal = rank===0?'🥇':rank===1?'🥈':rank===2?'🥉':'';
       var isFirst = rank === 0;
       var isMe = p.id === myId;
@@ -760,7 +768,8 @@ function renderFinalScreen(data) {
     html += '</div>';
     el.innerHTML = html;
   } else {
-    sorted.forEach(function(p, rank) {
+    sorted.forEach(function(p, i) {
+      var rank = trueRanks[i];
       var medal = rank===0?'🥇':rank===1?'🥈':rank===2?'🥉':'';
       el.innerHTML += '<div class="lb-row' + (rank===0?' first':'') + '">' +
         '<div class="lb-rank' + (rank===0?' gold':'') + '">' + (medal||rank+1) + '</div>' +
