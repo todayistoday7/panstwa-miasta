@@ -456,20 +456,16 @@ app.get('/api/stats-summary', (req, res) => {
   try {
     const { getDb } = require('./db/stats');
     const db = getDb();
-    // Current week: Sunday 00:00 to now
-    const now = new Date();
-    const day = now.getDay(); // 0=Sun
-    const sunday = new Date(now);
-    sunday.setDate(now.getDate() - day);
-    sunday.setHours(0, 0, 0, 0);
-    const sundayStr = sunday.toISOString().slice(0, 10);
+    // Rolling last 7 days (today + 6 previous days, UTC dates) — never drops to ~0 on Mondays
+    const since = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    const COUNTED = `outcome IN ('game_complete','guessed','won','word_guessed')`;
 
     const week = db.prepare(
-      `SELECT COUNT(*) as total FROM game_events WHERE outcome IN ('game_complete','guessed','won') AND date >= ?`
-    ).get(sundayStr);
+      `SELECT COUNT(*) as total FROM game_events WHERE ${COUNTED} AND date >= ?`
+    ).get(since);
 
     const allTime = db.prepare(
-      `SELECT COUNT(*) as total FROM game_events WHERE outcome IN ('game_complete','guessed','won')`
+      `SELECT COUNT(*) as total FROM game_events WHERE ${COUNTED}`
     ).get();
 
     res.json({ week: week.total, allTime: allTime.total });

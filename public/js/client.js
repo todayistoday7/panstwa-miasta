@@ -2,14 +2,24 @@
 (function() {
   try {
     fetch('/api/stats-summary').then(r => r.json()).then(d => {
-      const badge = document.getElementById('stats-badge');
-      const num = document.getElementById('stats-num');
-      if (!badge || !num) return;
-      if (d.week > 0) {
-        // L is defined synchronously below; fetch is async so L is ready by now
-        var _lw = (typeof L !== 'undefined' && L && L.statsWeek) ? L.statsWeek : (function(n){return n===1?'1 game this week':n+' games this week';});
-        num.textContent = _lw(d.week);
-        badge.style.display = 'inline-block';
+      // One rule: show all-time total of games played, hide if under 6
+      var txt = null;
+      if (d.allTime >= 6) {
+        txt = (typeof L !== 'undefined' && L && L.statsAll) ? L.statsAll(d.allTime) : d.allTime + ' games played so far';
+      }
+      if (txt) {
+        var numB = document.getElementById('stats-num');
+        if (numB) {
+          // make the number big and green, rest of the sentence normal
+          var sp = txt.indexOf(' ');
+          numB.textContent = '';
+          var big = document.createElement('span'); big.className = 'stats-n';
+          big.textContent = sp > 0 ? txt.slice(0, sp) : txt;
+          numB.appendChild(big);
+          if (sp > 0) numB.appendChild(document.createTextNode(txt.slice(sp + 1)));
+        }
+        var badgeB = document.getElementById('stats-badge');
+        if (badgeB) badgeB.classList.add('stats-ready');
       }
     }).catch(function(){});
   } catch(e) {}
