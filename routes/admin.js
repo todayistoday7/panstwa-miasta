@@ -760,7 +760,7 @@ router.get('/stats', requireAuth, (req, res) => {
 
     // ── Summary cards (respect filters except the outcome filter,
     //     which would make "guessed correctly" misleading if active) ──
-    const summaryWhere = days ? 'game = ? AND date >= ?' : 'game = ?';
+    const summaryWhere = (days ? 'game = ? AND date >= ?' : 'game = ?') + (game === 'whoami' ? " AND outcome != 'game_complete'" : '');
     const summaryParams = days ? [game, params[1]] : [game];
     const summary = db.prepare(`
       SELECT COUNT(*) as totalEvents,
@@ -777,7 +777,7 @@ router.get('/stats', requireAuth, (req, res) => {
 
     // ── HANGMAN-SPECIFIC VIEW ─────────────────────────────
     if (game === 'hangman') {
-      const hwhere = days ? 'game = ? AND date >= ?' : 'game = ?';
+      const hwhere = (days ? 'game = ? AND date >= ?' : 'game = ?') + " AND outcome != 'game_complete'";
       const hparams = days ? ['hangman', params[1]] : ['hangman'];
 
       const hSummary = db.prepare(`
@@ -808,7 +808,7 @@ router.get('/stats', requireAuth, (req, res) => {
 
       const byLangH = db.prepare(`
         SELECT lang, COUNT(*) as total FROM game_events
-        WHERE game='hangman' AND lang IS NOT NULL GROUP BY lang ORDER BY total DESC
+        WHERE game='hangman' AND lang IS NOT NULL AND outcome != 'game_complete' GROUP BY lang ORDER BY total DESC
       `).all();
 
       const bySource = db.prepare(`
@@ -1156,7 +1156,7 @@ router.get('/stats', requireAuth, (req, res) => {
     const byLang = db.prepare(`
       SELECT lang, COUNT(*) as total
       FROM game_events
-      WHERE game = ? AND lang IS NOT NULL
+      WHERE game = ? AND lang IS NOT NULL ${game === 'whoami' ? " AND outcome != 'game_complete'" : ''}
       GROUP BY lang
       ORDER BY total DESC
     `).all(game);

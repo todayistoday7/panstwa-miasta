@@ -292,6 +292,8 @@ function endRound(io, room) {
   room.state.currentTeam = room.state.currentTeam === 'red' ? 'blue' : 'red';
   
   if (room.state.round > getRounds(room)) {
+    // Stats: count finished game (never breaks the game; skips if already finished)
+    if (room.state.phase !== 'final') { try { require('../db/stats').logGameEvent({ game: 'charades', roomCode: room.code, lang: (room.settings && room.settings.lang) || room.lang || null, outcome: 'game_complete', details: { players: (room.players || []).length } }); } catch (e) {} }
     room.state.phase = 'final';
     clearTimeout(room.state.timer);
     broadcastState(io, room);

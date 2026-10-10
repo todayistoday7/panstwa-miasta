@@ -1332,6 +1332,8 @@ function register(io, socket) {
           });
           const total = room.settings.turnsEach * room.players.filter(p=>p.connected).length;
           if (room.state.turnCount >= total) {
+            // Stats: count finished game (never breaks the game)
+            if (room.state.phase !== 'final') { try { require('../db/stats').logGameEvent({ game: 'whoami', roomCode: code, lang: room.lang || null, outcome: 'game_complete', details: { players: (room.players || []).length } }); } catch (e) {} }
             room.state.phase = 'final';
             logRoomEnded({ roomCode: code, playerCount: room.players.length, status: 'ended' });
           }
@@ -1369,6 +1371,8 @@ function register(io, socket) {
     const totalTurns = room.settings.turnsEach * room.players.filter(p=>p.connected).length;
 
     if (room.state.turnCount >= totalTurns) {
+      // Stats: count finished game (never breaks the game)
+      if (room.state.phase !== 'final') { try { require('../db/stats').logGameEvent({ game: 'whoami', roomCode: room.code, lang: room.lang || null, outcome: 'game_complete', details: { players: (room.players || []).length } }); } catch (e) {} }
       room.state.phase = 'final';
       logRoomEnded({ roomCode: room.code, playerCount: room.players.length, status: 'ended' });
       emitState(io, room);

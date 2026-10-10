@@ -312,6 +312,8 @@ function register(io, socket) {
     const room = getRoom(code);
     if (!room || socket.id !== room.hostId) return;
     if (room.state.phase !== 'reveal') return;
+    // Stats: count finished game (never breaks the game; skips if already finished)
+    if (room.state.phase !== 'final') { try { require('../db/stats').logGameEvent({ game: 'drawing', roomCode: room.code, lang: (room.settings && room.settings.lang) || room.lang || null, outcome: 'game_complete', details: { players: (room.players || []).length } }); } catch (e) {} }
     room.state.phase = 'final';
     emitState(io, room);
   });

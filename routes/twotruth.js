@@ -293,6 +293,8 @@ function register(io, socket) {
 
     // Check if everyone has had a turn
     if (room.state.roundsPlayed >= connected.length) {
+      // Stats: count finished game (never breaks the game; skips if already finished)
+      if (room.state.phase !== 'final') { try { require('../db/stats').logGameEvent({ game: 'twotruth', roomCode: room.code, lang: (room.settings && room.settings.lang) || room.lang || null, outcome: 'game_complete', details: { players: (room.players || []).length } }); } catch (e) {} }
       room.state.phase = 'final';
       lobby.remove(room.code);
       emitTTState(io, room);

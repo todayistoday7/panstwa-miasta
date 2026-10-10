@@ -273,6 +273,8 @@ function register(io, socket) {
       room.state.totalRoundsAccum = (room.state.totalRoundsAccum || 0) + 1;
       if (room.state.totalRoundsAccum >= totalRounds) {
         // All rounds done — go to final
+        // Stats: count finished game (never breaks the game; skips if already finished)
+        if (room.state.phase !== 'final') { try { require('../db/stats').logGameEvent({ game: 'dots', roomCode: room.code, lang: (room.settings && room.settings.lang) || room.lang || null, outcome: 'game_complete', details: { players: (room.players || []).length } }); } catch (e) {} }
         room.state.phase = 'final';
         emitDotsState(io, room);
         lobby.remove(room.code);

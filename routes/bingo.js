@@ -194,6 +194,8 @@ function register(io, socket) {
 
       if (checkBingo(player.marked)) {
         player.bingo = true;
+        // Stats: count finished game (never breaks the game; skips if already finished)
+        if (room.phase !== 'final') { try { require('../db/stats').logGameEvent({ game: 'bingo', roomCode: code, lang: (room.settings && room.settings.lang) || room.lang || null, outcome: 'game_complete', details: { players: (room.players || []).length } }); } catch (e) {} }
         room.phase   = 'final';
         emitBingoState(io, room);
         // Clean up after 2 hours

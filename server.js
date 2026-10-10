@@ -458,7 +458,7 @@ app.get('/api/stats-summary', (req, res) => {
     const db = getDb();
     // Rolling last 7 days (today + 6 previous days, UTC dates) — never drops to ~0 on Mondays
     const since = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-    const COUNTED = `outcome IN ('game_complete','guessed','won','word_guessed')`;
+    const COUNTED = `outcome = 'game_complete'`; // one row per finished game, all 10 games
 
     const week = db.prepare(
       `SELECT COUNT(*) as total FROM game_events WHERE ${COUNTED} AND date >= ?`

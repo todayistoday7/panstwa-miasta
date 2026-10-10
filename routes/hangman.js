@@ -335,6 +335,8 @@ function register(io, socket) {
 
     if (room.state.roundsPlayed >= totalRounds) {
       // All rounds played — game over
+      // Stats: count finished game (never breaks the game)
+      if (room.state.phase !== 'final') { try { logGameEvent({ game: 'hangman', roomCode: room.code, lang: room.settings.lang, outcome: 'game_complete', details: { players: (room.players || []).length } }); } catch (e) {} }
       room.state.phase = 'final';
       lobby.remove(room.code);
       emitHangState(io, room);

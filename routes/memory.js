@@ -230,6 +230,8 @@ function register(io, socket) {
 
           if (room.state.roundsPlayed >= totalRounds) {
             // All rounds done — final screen
+            // Stats: count finished game (never breaks the game; skips if already finished)
+            if (room.state.phase !== 'final') { try { require('../db/stats').logGameEvent({ game: 'memory', roomCode: room.code, lang: (room.settings && room.settings.lang) || room.lang || null, outcome: 'game_complete', details: { players: (room.players || []).length } }); } catch (e) {} }
             room.state.phase = 'final';
             io.to(room.code).emit('mem_game_over', {
               players: room.players.map(p => ({ name: p.name, score: p.score, color: p.color })),
