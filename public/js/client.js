@@ -6,7 +6,9 @@
       const num = document.getElementById('stats-num');
       if (!badge || !num) return;
       if (d.week > 0) {
-        num.textContent = d.week + (d.week === 1 ? ' game this week' : ' games this week');
+        // L is defined synchronously below; fetch is async so L is ready by now
+        var _lw = (typeof L !== 'undefined' && L && L.statsWeek) ? L.statsWeek : (function(n){return n===1?'1 game this week':n+' games this week';});
+        num.textContent = _lw(d.week);
         badge.style.display = 'inline-block';
       }
     }).catch(function(){});
