@@ -452,6 +452,30 @@ app.use('/admin', admin.router);
 const DATA_DIR_SERVER  = require('fs').existsSync('/data') ? '/data' : require('path').join(__dirname, 'data');
 const BANNER_FILE_PATH = require('path').join(DATA_DIR_SERVER, 'banner.json');
 // ─── PUBLIC STATS SUMMARY ─────────────────────────────────
+// Cached count of historic played rooms (changes rarely; recomputed every 10 min)
+let _histCache = { value: 0, at: 0 };
+function getHistoricGames(db) {
+  if (Date.now() - _histCache.at < 10 * 60 * 1000) return _histCache.value;
+  try {
+    const first = db.prepare(
+      `SELECT MIN(ts) AS t FROM game_events WHERE outcome = 'game_complete' AND game != 'pm'`
+    ).get();
+    const cutoff = (first && first.t) ? first.t : Date.now();
+    const row = db.prepare(`
+      SELECT COUNT(*) AS n FROM (
+        SELECT game, room_code FROM game_events
+        WHERE game IN ('whoami','hangman') AND outcome != 'game_complete' AND room_code IS NOT NULL
+        GROUP BY game, room_code
+        HAVING COUNT(*) >= 5 AND MAX(ts) < ?
+      )
+    `).get(cutoff);
+    _histCache = { value: row ? row.n : 0, at: Date.now() };
+  } catch (e) {
+    _histCache = { value: 0, at: Date.now() };
+  }
+  return _histCache.value;
+}
+
 app.get('/api/stats-summary', (req, res) => {
   try {
     const { getDb } = require('./db/stats');
@@ -468,7 +492,12 @@ app.get('/api/stats-summary', (req, res) => {
       `SELECT COUNT(*) as total FROM game_events WHERE ${COUNTED}`
     ).get();
 
-    res.json({ week: week.total, allTime: allTime.total });
+    // History: before finished-game tracking existed, Who Am I / Hangman only logged turns.
+    // Each old room with 5+ turns counts as 1 game played. "Before" = before the first
+    // finished game recorded by any non-PM game (i.e. the deploy that added tracking).
+    const history = getHistoricGames(db);
+
+    res.json({ week: week.total, allTime: allTime.total + history });
   } catch(e) {
     res.json({ week: 0, allTime: 0 });
   }
