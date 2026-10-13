@@ -202,6 +202,9 @@ socket.on('challenge_closed', () => {
 function applyRoomState(data) {
   const me = data.players.find(p => p.id === myId);
   if (me) isHost = me.isHost;
+  // Remember previous phase so scoring only resets to category 1 when the scoring screen first opens
+  var _prevPhase = window._pmPhase;
+  window._pmPhase = data.state.phase;
 
   switch (data.state.phase) {
     case 'lobby':       window._autoRejoinPending = false; showScreen('screen-lobby');       renderLobby(data);       break;
@@ -209,7 +212,7 @@ function applyRoomState(data) {
     case 'playing':     window._autoRejoinPending = false; showScreen('screen-playing');     renderPlayingScreen(data); break;
     case 'stopped':     window._autoRejoinPending = false; showScreen('screen-stopped');     renderStoppedScreen(data); break;
     case 'calculating': window._autoRejoinPending = false; showScreen('screen-calculating'); window.scrollTo(0,0); break;
-    case 'scoring':     window._autoRejoinPending = false; _scoringCatIdx = 0; showScreen('screen-scoring'); renderScoringScreen(data); break;
+    case 'scoring':     window._autoRejoinPending = false; if (_prevPhase !== 'scoring') _scoringCatIdx = 0; showScreen('screen-scoring'); renderScoringScreen(data); break;
     case 'final':
       if (window._autoRejoinPending) {
         window._autoRejoinPending = false;
