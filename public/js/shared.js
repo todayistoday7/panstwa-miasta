@@ -1669,11 +1669,9 @@ window._buildFooterLangBtns = function() {
 })();
 
 // ═══════════════════════════════════════════════════════════
-// HALLOWEEN DECORATIONS — switches on/off by itself
+// HALLOWEEN — small rocking pumpkin next to the site name
 // Active 15 Oct – 1 Nov, off from 2 Nov (visitor's local date).
 // Test any day: add ?halloween=1 to the address (?halloween=0 forces off).
-// Uses the device's own emoji (🎃 🦇 🕷️ 🕸️) — light on CPU, looks native everywhere.
-// Pure decoration: never clickable, never covers buttons, no sound.
 // ═══════════════════════════════════════════════════════════
 (function() {
   try {
@@ -1684,40 +1682,14 @@ window._buildFooterLangBtns = function() {
     if (q !== '1' && !inSeason) return;
     if (window.location.pathname.indexOf('/admin') === 0) return;
 
-    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
     var css = document.createElement('style');
     css.textContent =
-      '.hw-e{position:fixed;pointer-events:none;user-select:none;line-height:1;' +
-        'font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;}' +
-      '.hw-web{top:52px;right:-6px;font-size:84px;opacity:.55;z-index:40;transform:scaleX(-1);}' +
-      '.hw-spider{top:52px;right:34px;z-index:41;display:flex;flex-direction:column;align-items:center;' +
-        'animation:hwDrop 6s ease-in-out infinite;will-change:transform;}' +
-      '.hw-spider .th{width:1px;height:46px;background:rgba(220,220,235,.45);}' +
-      '.hw-spider .sp{font-size:22px;margin-top:-3px;text-shadow:0 0 6px rgba(255,140,90,.6);}' +
-      '@keyframes hwDrop{0%,100%{transform:translateY(-14px)}50%{transform:translateY(22px)}}' +
-      '.hw-bat{top:0;left:0;z-index:42;font-size:34px;will-change:transform;' +
-        'text-shadow:0 0 6px rgba(255,140,90,.9),0 0 14px rgba(255,107,53,.5);}' +
       '.hw-pumpkin{display:inline-block;margin-left:6px;font-size:17px;line-height:1;' +
         'animation:hwBob 3s ease-in-out infinite;will-change:transform;}' +
       '@keyframes hwBob{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}' +
-      '@media (max-width:700px){.hw-web,.hw-spider{display:none}.hw-bat{font-size:26px}}' +
-      '@media (prefers-reduced-motion:reduce){.hw-spider,.hw-pumpkin{animation:none}}';
+      '@media (prefers-reduced-motion:reduce){.hw-pumpkin{animation:none}}';
     document.head.appendChild(css);
 
-    function el(cls, html) {
-      var e = document.createElement('div');
-      e.className = 'hw-e ' + cls; e.setAttribute('aria-hidden', 'true'); e.innerHTML = html;
-      document.body.appendChild(e); return e;
-    }
-
-    // ── Cobweb + hanging spider, top-right below the top bar (computers only) ──
-    function corner() {
-      el('hw-web', '🕸️');
-      el('hw-spider', '<div class="th"></div><div class="sp">🕷️</div>');
-    }
-
-    // ── Pumpkin next to the site name in the top bar ──
     function pumpkin(tries) {
       var logoText = document.querySelector('.gb-logo-text');
       if (!logoText) { if (tries < 20) setTimeout(function() { pumpkin(tries + 1); }, 150); return; }
@@ -1726,38 +1698,7 @@ window._buildFooterLangBtns = function() {
       s.className = 'hw-pumpkin'; s.setAttribute('aria-hidden', 'true'); s.textContent = '🎃';
       logoText.parentNode.insertBefore(s, logoText.nextSibling);
     }
-
-    // ── A few bats flutter across now and then (moved only with transform = cheap) ──
-    function flyBats() {
-      if (document.hidden) return;
-      var n = 2 + Math.floor(Math.random() * 2);
-      var vw = window.innerWidth, vh = window.innerHeight;
-      for (var i = 0; i < n; i++) {
-        (function(i) {
-          var bat = el('hw-bat', '🦇');
-          var y = vh * (0.12 + Math.random() * 0.35), w = 25 + Math.random() * 35;
-          var frames = [];
-          for (var k = 0; k <= 8; k++) {
-            var x = -60 + (vw + 120) * k / 8;
-            var yy = y + Math.sin(k * 1.3 + i) * w;
-            var tilt = (k % 2 ? 10 : -10);                 // little flutter
-            frames.push({ transform: 'translate(' + x.toFixed(0) + 'px,' + yy.toFixed(0) + 'px) rotate(' + tilt + 'deg)' });
-          }
-          var anim = bat.animate(frames, { duration: 7000 + Math.random() * 3000, delay: i * 600, easing: 'linear', fill: 'both' });
-          anim.onfinish = function() { if (bat.parentNode) bat.parentNode.removeChild(bat); };
-        })(i);
-      }
-    }
-
-    function start() {
-      corner();
-      pumpkin(0);
-      if (!reduceMotion && typeof document.body.animate === 'function') {
-        setTimeout(flyBats, 2500);                       // once shortly after the page opens
-        setInterval(flyBats, 3 * 60 * 1000);            // then once every 3 minutes
-      }
-    }
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
-    else start();
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function() { pumpkin(0); });
+    else pumpkin(0);
   } catch (e) { /* decorations must never break the site */ }
 })();
