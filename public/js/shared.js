@@ -1672,6 +1672,7 @@ window._buildFooterLangBtns = function() {
 // HALLOWEEN DECORATIONS — switches on/off by itself
 // Active 15 Oct – 1 Nov, off from 2 Nov (visitor's local date).
 // Test any day: add ?halloween=1 to the address (?halloween=0 forces off).
+// Uses the device's own emoji (🎃 🦇 🕷️ 🕸️) — light on CPU, looks native everywhere.
 // Pure decoration: never clickable, never covers buttons, no sound.
 // ═══════════════════════════════════════════════════════════
 (function() {
@@ -1687,63 +1688,33 @@ window._buildFooterLangBtns = function() {
 
     var css = document.createElement('style');
     css.textContent =
-      '.hw-layer{position:fixed;pointer-events:none;z-index:40;}' +
-      '.hw-web{top:52px;right:0;width:120px;height:120px;opacity:.38;}' +
-      '.hw-spider{position:fixed;pointer-events:none;z-index:41;right:46px;top:52px;width:20px;' +
-        'animation:hwDrop 7s ease-in-out infinite;transform-origin:top center;}' +
-      '@keyframes hwDrop{0%,100%{transform:translateY(-6px)}50%{transform:translateY(26px)}}' +
-      '.hw-bat{position:fixed;pointer-events:none;z-index:42;left:-80px;width:60px;' +
-        'filter:drop-shadow(0 0 6px rgba(255,107,53,.85)) drop-shadow(0 0 14px rgba(255,107,53,.35));}' +
-      '.hw-bat .w{transform-origin:50% 60%;animation:hwFlap .22s ease-in-out infinite alternate;}' +
-      '@keyframes hwFlap{from{transform:scaleY(1)}to{transform:scaleY(.35)}}' +
+      '.hw-e{position:fixed;pointer-events:none;user-select:none;line-height:1;' +
+        'font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;}' +
+      '.hw-web{top:52px;right:-6px;font-size:84px;opacity:.55;z-index:40;transform:scaleX(-1);}' +
+      '.hw-spider{top:52px;right:34px;z-index:41;display:flex;flex-direction:column;align-items:center;' +
+        'animation:hwDrop 6s ease-in-out infinite;will-change:transform;}' +
+      '.hw-spider .th{width:1px;height:46px;background:rgba(220,220,235,.45);}' +
+      '.hw-spider .sp{font-size:22px;margin-top:-3px;text-shadow:0 0 6px rgba(255,140,90,.6);}' +
+      '@keyframes hwDrop{0%,100%{transform:translateY(-14px)}50%{transform:translateY(22px)}}' +
+      '.hw-bat{top:0;left:0;z-index:42;font-size:34px;will-change:transform;' +
+        'text-shadow:0 0 6px rgba(255,140,90,.9),0 0 14px rgba(255,107,53,.5);}' +
       '.hw-pumpkin{display:inline-block;margin-left:6px;font-size:17px;line-height:1;' +
-        'animation:hwBob 3s ease-in-out infinite;}' +
+        'animation:hwBob 3s ease-in-out infinite;will-change:transform;}' +
       '@keyframes hwBob{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}' +
-      '@media (max-width:700px){.hw-web,.hw-spider{display:none}.hw-bat{width:42px}}' +
-      '@media (prefers-reduced-motion:reduce){.hw-spider,.hw-pumpkin,.hw-bat .w{animation:none}}';
+      '@media (max-width:700px){.hw-web,.hw-spider{display:none}.hw-bat{font-size:26px}}' +
+      '@media (prefers-reduced-motion:reduce){.hw-spider,.hw-pumpkin{animation:none}}';
     document.head.appendChild(css);
 
-    // ── Cobweb in the top-right corner (drawn, not an image) ──
-    function cobweb() {
-      var S = 120, lines = '';
-      var angles = [92, 108, 124, 140, 156, 172];
-      angles.forEach(function(a) {
-        var r = a * Math.PI / 180;
-        lines += '<line x1="' + S + '" y1="0" x2="' + (S + Math.cos(r) * 170).toFixed(1) +
-                 '" y2="' + (Math.sin(r) * 170).toFixed(1) + '"/>';
-      });
-      [28, 52, 78, 104].forEach(function(rad) {
-        var pts = angles.map(function(a) {
-          var r = a * Math.PI / 180;
-          return (S + Math.cos(r) * rad).toFixed(1) + ',' + (Math.sin(r) * rad).toFixed(1);
-        });
-        var p = 'M' + pts[0];
-        for (var i = 1; i < pts.length; i++) {
-          var a0 = angles[i - 1], a1 = angles[i], mid = (a0 + a1) / 2 * Math.PI / 180, sag = rad * 0.86;
-          p += ' Q' + (S + Math.cos(mid) * sag).toFixed(1) + ',' + (Math.sin(mid) * sag).toFixed(1) + ' ' + pts[i];
-        }
-        lines += '<path d="' + p + '"/>';
-      });
-      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('viewBox', '0 0 ' + S + ' ' + S);
-      svg.setAttribute('class', 'hw-layer hw-web');
-      svg.setAttribute('aria-hidden', 'true');
-      svg.innerHTML = '<g fill="none" stroke="#c9cbe0" stroke-width="1">' + lines + '</g>';
-      document.body.appendChild(svg);
+    function el(cls, html) {
+      var e = document.createElement('div');
+      e.className = 'hw-e ' + cls; e.setAttribute('aria-hidden', 'true'); e.innerHTML = html;
+      document.body.appendChild(e); return e;
+    }
 
-      var sp = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      sp.setAttribute('viewBox', '0 0 20 60');
-      sp.setAttribute('class', 'hw-spider');
-      sp.setAttribute('aria-hidden', 'true');
-      sp.innerHTML =
-        '<line x1="10" y1="0" x2="10" y2="44" stroke="#c9cbe0" stroke-width=".8" opacity=".6"/>' +
-        '<g stroke="#ff6b35" stroke-width="1.2" fill="none" stroke-linecap="round">' +
-          '<path d="M10 49 L3 44 L1 40"/><path d="M10 50 L2 50 L0 47"/><path d="M10 52 L3 56 L1 59"/>' +
-          '<path d="M10 49 L17 44 L19 40"/><path d="M10 50 L18 50 L20 47"/><path d="M10 52 L17 56 L19 59"/>' +
-        '</g>' +
-        '<ellipse cx="10" cy="51" rx="4.2" ry="5" fill="#1b1326" stroke="#ff6b35" stroke-width=".9"/>' +
-        '<circle cx="8.6" cy="49.5" r=".9" fill="#ffd166"/><circle cx="11.4" cy="49.5" r=".9" fill="#ffd166"/>';
-      document.body.appendChild(sp);
+    // ── Cobweb + hanging spider, top-right below the top bar (computers only) ──
+    function corner() {
+      el('hw-web', '🕸️');
+      el('hw-spider', '<div class="th"></div><div class="sp">🕷️</div>');
     }
 
     // ── Pumpkin next to the site name in the top bar ──
@@ -1756,44 +1727,34 @@ window._buildFooterLangBtns = function() {
       logoText.parentNode.insertBefore(s, logoText.nextSibling);
     }
 
-    // ── A few bats fly across now and then ──
-    var BAT = '<g class="w"><path fill="#3a2352" stroke="#ff8c5a" stroke-width=".7" ' +
-      'd="M20 13 C17 7 11 4 2 6 C6 8 7 11 6 14 C9 12 12 13 14 16 C15 13 17 12 20 15 ' +
-      'C23 12 25 13 26 16 C28 13 31 12 34 14 C33 11 34 8 38 6 C29 4 23 7 20 13 Z"/></g>' +
-      '<circle cx="18.6" cy="12.2" r="1.1" fill="#ffd166"/><circle cx="21.4" cy="12.2" r="1.1" fill="#ffd166"/>';
+    // ── A few bats flutter across now and then (moved only with transform = cheap) ──
     function flyBats() {
       if (document.hidden) return;
       var n = 2 + Math.floor(Math.random() * 2);
       var vw = window.innerWidth, vh = window.innerHeight;
       for (var i = 0; i < n; i++) {
         (function(i) {
-          var bat = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-          bat.setAttribute('viewBox', '0 0 40 20');
-          bat.setAttribute('class', 'hw-bat');
-          bat.setAttribute('aria-hidden', 'true');
-          bat.innerHTML = BAT;
-          var startY = vh * (0.12 + Math.random() * 0.35);
-          bat.style.top = startY + 'px';
-          document.body.appendChild(bat);
-          var dur = 7000 + Math.random() * 3000;
-          var wave = 30 + Math.random() * 40;
-          var anim = bat.animate([
-            { transform: 'translate(0px,0px)' },
-            { transform: 'translate(' + vw * 0.35 + 'px,' + (-wave) + 'px)' },
-            { transform: 'translate(' + vw * 0.7 + 'px,' + wave + 'px)' },
-            { transform: 'translate(' + (vw + 120) + 'px,' + (-wave * 1.5) + 'px)' }
-          ], { duration: dur, delay: i * 700, easing: 'linear', fill: 'both' });
+          var bat = el('hw-bat', '🦇');
+          var y = vh * (0.12 + Math.random() * 0.35), w = 25 + Math.random() * 35;
+          var frames = [];
+          for (var k = 0; k <= 8; k++) {
+            var x = -60 + (vw + 120) * k / 8;
+            var yy = y + Math.sin(k * 1.3 + i) * w;
+            var tilt = (k % 2 ? 10 : -10);                 // little flutter
+            frames.push({ transform: 'translate(' + x.toFixed(0) + 'px,' + yy.toFixed(0) + 'px) rotate(' + tilt + 'deg)' });
+          }
+          var anim = bat.animate(frames, { duration: 7000 + Math.random() * 3000, delay: i * 600, easing: 'linear', fill: 'both' });
           anim.onfinish = function() { if (bat.parentNode) bat.parentNode.removeChild(bat); };
         })(i);
       }
     }
 
     function start() {
-      cobweb();
+      corner();
       pumpkin(0);
       if (!reduceMotion && typeof document.body.animate === 'function') {
-        setTimeout(flyBats, 2500);
-        setInterval(flyBats, 45000 + Math.random() * 30000);
+        setTimeout(flyBats, 2500);                       // once shortly after the page opens
+        setInterval(flyBats, 3 * 60 * 1000);            // then once every 3 minutes
       }
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
