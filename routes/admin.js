@@ -79,7 +79,7 @@ function layout(title, body, activePage) {
     ['rooms',        '🎮 Rooms',        '/admin/rooms'],
     ['translations', '🌍 Translations',  '/admin/translations'],
     ['banner',       '📢 Banner',        '/admin/banner'],
-    ['bugs',         '🐛 Bug Reports',   '/admin/bugs'],
+    ['bugs',         '✉️ Messages',      '/admin/bugs'],
     ['stats',        '📊 Stats',         '/admin/stats'],
     ['memory',       '🧠 Memory',        '/admin/memory'],
   ].map(([id, label, href]) =>
@@ -647,10 +647,17 @@ router.get('/bugs', requireAuth, (req, res) => {
       day:'2-digit', month:'short', year:'numeric',
       hour:'2-digit', minute:'2-digit'
     });
+    const TOPIC_LABEL = { bug: '🐛 Bug', question: '❓ Question', idea: '💡 Idea', business: '🤝 Partnership' };
+    const topicLbl = TOPIC_LABEL[b.topic || 'bug'] || '🐛 Bug';
+    const who = [b.name, b.lang ? b.lang.toUpperCase() : ''].filter(Boolean).join(' · ');
+    const mail = b.email
+      ? `<a href="mailto:${escapeHtml(b.email)}" style="color:var(--accent,#7c3aed);">${escapeHtml(b.email)}</a>`
+      : '—';
     return `<tr class="${b.resolved ? 'resolved-row' : ''}">
-      <td><span class="tag">${escapeHtml(b.game)}</span></td>
-      <td style="max-width:320px;font-size:13px;">${escapeHtml(b.description)}</td>
-      <td style="font-size:12px;color:var(--muted);">${escapeHtml(b.email || '—')}</td>
+      <td style="white-space:nowrap;"><span class="tag">${topicLbl}</span></td>
+      <td><span class="tag">${escapeHtml(b.game || '—')}</span></td>
+      <td style="max-width:360px;font-size:13px;white-space:pre-wrap;">${escapeHtml(b.description)}</td>
+      <td style="font-size:12px;color:var(--muted);">${mail}${who ? '<br><span style="font-size:11px;">' + escapeHtml(who) + '</span>' : ''}</td>
       <td style="font-size:11px;color:var(--muted);white-space:nowrap;">${date}</td>
       <td>
         ${!b.resolved ? `<button class="btn btn-sm btn-success" onclick="resolveReport('${b.id}')">✓ Resolve</button>` : '<span style="color:var(--muted);font-size:11px;">Resolved</span>'}
@@ -661,7 +668,7 @@ router.get('/bugs', requireAuth, (req, res) => {
 
   const body = `
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
-      <h2>🐛 Bug Reports</h2>
+      <h2>✉️ Messages</h2>
       <div style="display:flex;gap:8px;font-size:13px;">
         <span style="color:var(--muted)">
           <strong style="color:#fca5a5">${openCount}</strong> open &nbsp;·&nbsp;
@@ -679,10 +686,10 @@ router.get('/bugs', requireAuth, (req, res) => {
     </div>
     <div class="card" style="padding:0;overflow:hidden;">
       ${shown.length === 0
-        ? '<p style="text-align:center;color:var(--muted);padding:40px;">No bug reports here.</p>'
+        ? '<p style="text-align:center;color:var(--muted);padding:40px;">No messages here.</p>'
         : `<div style="overflow-x:auto;"><table>
             <thead><tr>
-              <th>Game</th><th>Description</th><th>Email</th><th>Date</th><th></th>
+              <th>Topic</th><th>Game</th><th>Message</th><th>From</th><th>Date</th><th></th>
             </tr></thead>
             <tbody>${rows}</tbody>
           </table></div>`
@@ -697,13 +704,13 @@ router.get('/bugs', requireAuth, (req, res) => {
           .then(() => location.reload());
       }
       function deleteReport(id) {
-        if (!confirm('Delete this report?')) return;
+        if (!confirm('Delete this message?')) return;
         fetch('/api/bug-report/' + id, { method: 'DELETE' })
           .then(() => location.reload());
       }
     </script>`;
 
-  res.send(layout('Bug Reports', body, 'bugs'));
+  res.send(layout('Messages', body, 'bugs'));
 });
 
 // ═══════════════════════════════════════════════════════

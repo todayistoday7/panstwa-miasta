@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Kontakt — panstwamiastagra.com</title>
+  <meta name="description" content="Napisz do nas: pytania, błędy, pomysły na nowe gry. Contact us: questions, bug reports, game ideas."/>
+  <meta name="robots" content="index, follow"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BJ79ZM6WPQ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BJ79ZM6WPQ');</script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#0f1117;--surface:#1a1d2e;--border:#2d3152;--text:#e2e8f0;--muted:#8b93a7;--accent:#ff6b35;--accent2:#06d6a0;--red:#ef476f;}
+  body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;min-height:100vh;line-height:1.6;}
+  .page{max-width:640px;margin:0 auto;padding:24px 20px 80px;}
+  h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,7vw,48px);letter-spacing:3px;
+     background:linear-gradient(135deg,var(--accent),var(--accent2));
+     -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+     margin-bottom:8px;line-height:1;}
+  .lead{font-size:15px;color:var(--muted);font-weight:600;margin-bottom:24px;}
+  .lang-bar{display:flex;justify-content:flex-end;gap:6px;padding:10px 20px 0;flex-wrap:wrap;}
+  .lang-btn{background:none;border:1px solid var(--border);color:var(--muted);
+            border-radius:6px;padding:4px 10px;font-size:12px;font-weight:700;
+            cursor:pointer;font-family:'Nunito',sans-serif;}
+  .lang-btn.active,.lang-btn:hover{border-color:var(--accent2);color:var(--accent2);}
+  .back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);
+        font-size:13px;font-weight:700;text-decoration:none;margin-bottom:24px;
+        padding:6px 12px;border:1px solid var(--border);border-radius:8px;}
+  .back:hover{border-color:var(--accent2);color:var(--accent2);}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;}
+  label{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
+        color:var(--muted);margin:16px 0 6px;}
+  label:first-of-type{margin-top:0;}
+  input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;
+        padding:11px 12px;color:var(--text);font-size:14px;font-family:'Nunito',sans-serif;outline:none;}
+  input:focus,select:focus,textarea:focus{border-color:var(--accent);}
+  textarea{resize:vertical;min-height:130px;}
+  .hint{font-size:12px;color:var(--muted);margin-top:4px;}
+  .send{width:100%;margin-top:20px;background:linear-gradient(135deg,var(--accent),#f4a261);color:#fff;border:none;
+        border-radius:10px;padding:14px;font-size:15px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;}
+  .send:disabled{opacity:.6;cursor:default;}
+  .msg-err{display:none;margin-top:14px;background:rgba(239,71,111,.1);border:1px solid rgba(239,71,111,.35);
+           color:#fca5a5;border-radius:8px;padding:10px 12px;font-size:13px;font-weight:700;}
+  .msg-ok{display:none;text-align:center;padding:30px 10px;}
+  .msg-ok .big{font-size:40px;margin-bottom:8px;}
+  .msg-ok .t{font-size:18px;font-weight:900;margin-bottom:6px;}
+  .msg-ok .s{font-size:14px;color:var(--muted);font-weight:600;}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
+</style>
+</head>
+<body>
+<div class="lang-bar">
+  <button class="lang-btn" data-l="pl" onclick="setLang('pl')">🇵🇱 PL</button>
+  <button class="lang-btn" data-l="en" onclick="setLang('en')">🇬🇧 EN</button>
+  <button class="lang-btn" data-l="de" onclick="setLang('de')">🇩🇪 DE</button>
+  <button class="lang-btn" data-l="sv" onclick="setLang('sv')">🇸🇪 SV</button>
+</div>
+
+<div class="page">
+  <a href="/" class="back" id="back-link">← <span id="t-back"></span></a>
+
+  <h1 id="t-title"></h1>
+  <p class="lead" id="t-lead"></p>
+
+  <div class="card">
+    <form id="contact-form" novalidate>
+      <label for="c-topic" id="t-topic"></label>
+      <select id="c-topic"></select>
+
+      <label for="c-game" id="t-game"></label>
+      <select id="c-game"></select>
+
+      <label for="c-msg" id="t-msg"></label>
+      <textarea id="c-msg" maxlength="1000"></textarea>
+
+      <label for="c-name" id="t-name"></label>
+      <input type="text" id="c-name" maxlength="60" autocomplete="name"/>
+
+      <label for="c-email" id="t-email"></label>
+      <input type="email" id="c-email" maxlength="100" autocomplete="email"/>
+      <div class="hint" id="t-email-hint"></div>
+
+      <!-- Anti-spam trap: hidden from people, bots fill it -->
+      <div class="hp" aria-hidden="true"><input type="text" id="c-website" name="website" tabindex="-1" autocomplete="off"/></div>
+
+      <button type="submit" class="send" id="c-send"></button>
+      <div class="msg-err" id="c-err"></div>
+    </form>
+    <div class="msg-ok" id="c-ok">
+      <div class="big">✉️</div>
+      <div class="t" id="t-ok"></div>
+      <div class="s" id="t-ok-sub"></div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/shared.js?v=5"></script>
+<script>
+var T = {
+  pl: { back:'Strona główna', title:'Kontakt', lead:'Masz pytanie, znalazłeś błąd albo pomysł na nową grę? Napisz do nas!',
+        topic:'Temat', topics:{question:'Pytanie', bug:'Zgłoszenie błędu', idea:'Pomysł / sugestia', business:'Współpraca'},
+        game:'Gra (opcjonalnie)', gameNone:'— Nie dotyczy —',
+        msg:'Wiadomość', msgHint:'Napisz, w czym możemy pomóc...',
+        name:'Imię (opcjonalnie)', email:'Twój email (opcjonalnie)', emailHint:'Podaj, jeśli chcesz otrzymać odpowiedź.',
+        send:'Wyślij wiadomość', sending:'Wysyłanie...',
+        ok:'Dziękujemy za wiadomość!', okSub:'Przeczytamy ją najszybciej, jak to możliwe.',
+        errShort:'Wiadomość jest za krótka (min. 10 znaków).', errEmail:'Ten adres email wygląda na niepoprawny.',
+        errLimit:'Za dużo wiadomości. Spróbuj ponownie za godzinę.', errFail:'Coś poszło nie tak. Spróbuj ponownie za chwilę.' },
+  en: { back:'Home', title:'Contact', lead:'Got a question, found a bug or have an idea for a new game? Write to us!',
+        topic:'Topic', topics:{question:'Question', bug:'Bug report', idea:'Idea / suggestion', business:'Partnership'},
+        game:'Game (optional)', gameNone:'— Not about a game —',
+        msg:'Message', msgHint:'Tell us how we can help...',
+        name:'Name (optional)', email:'Your email (optional)', emailHint:'Add it if you would like a reply.',
+        send:'Send message', sending:'Sending...',
+        ok:'Thanks for your message!', okSub:'We will read it as soon as we can.',
+        errShort:'Your message is too short (min 10 characters).', errEmail:'This email address looks incorrect.',
+        errLimit:'Too many messages. Please try again in an hour.', errFail:'Something went wrong. Please try again in a moment.' },
+  de: { back:'Startseite', title:'Kontakt', lead:'Du hast eine Frage, einen Fehler gefunden oder eine Idee für ein neues Spiel? Schreib uns!',
+        topic:'Thema', topics:{question:'Frage', bug:'Fehlermeldung', idea:'Idee / Vorschlag', business:'Zusammenarbeit'},
+        game:'Spiel (optional)', gameNone:'— Kein bestimmtes Spiel —',
+        msg:'Nachricht', msgHint:'Wie können wir helfen?',
+        name:'Name (optional)', email:'Deine E-Mail (optional)', emailHint:'Gib sie an, wenn du eine Antwort möchtest.',
+        send:'Nachricht senden', sending:'Senden...',
+        ok:'Danke für deine Nachricht!', okSub:'Wir lesen sie so bald wie möglich.',
+        errShort:'Die Nachricht ist zu kurz (min. 10 Zeichen).', errEmail:'Diese E-Mail-Adresse sieht falsch aus.',
+        errLimit:'Zu viele Nachrichten. Bitte versuche es in einer Stunde erneut.', errFail:'Etwas ist schiefgelaufen. Bitte versuche es gleich noch einmal.' },
+  sv: { back:'Startsida', title:'Kontakt', lead:'Har du en fråga, hittat ett fel eller en idé till ett nytt spel? Skriv till oss!',
+        topic:'Ämne', topics:{question:'Fråga', bug:'Felrapport', idea:'Idé / förslag', business:'Samarbete'},
+        game:'Spel (valfritt)', gameNone:'— Inget specifikt spel —',
+        msg:'Meddelande', msgHint:'Berätta hur vi kan hjälpa till...',
+        name:'Namn (valfritt)', email:'Din e-post (valfritt)', emailHint:'Fyll i om du vill ha ett svar.',
+        send:'Skicka meddelande', sending:'Skickar...',
+        ok:'Tack för ditt meddelande!', okSub:'Vi läser det så snart vi kan.',
+        errShort:'Meddelandet är för kort (minst 10 tecken).', errEmail:'E-postadressen ser felaktig ut.',
+        errLimit:'För många meddelanden. Försök igen om en timme.', errFail:'Något gick fel. Försök igen om en stund.' }
+};
+// Game names per language (value sent to admin is the English name)
+var GAMES = [
+  ['Państwa-Miasta',  {pl:'Państwa-Miasta', en:'Countries & Cities', de:'Stadt Land Fluss', sv:'Länder & Städer'}],
+  ['Forbidden Words', {pl:'Zakazane Słowa', en:'Forbidden Words', de:'Verbotene Wörter', sv:'Förbjudna ord'}],
+  ['Hangman',         {pl:'Wisielec', en:'Hangman', de:'Galgenmännchen', sv:'Hänga gubbe'}],
+  ['Dots & Boxes',    {pl:'Kropki i Kreski', en:'Dots & Boxes', de:'Punkte & Linien', sv:'Punkter & Linjer'}],
+  ['2 Truths 1 Lie',  {pl:'Dwie Prawdy Jedno Kłamstwo', en:'2 Truths 1 Lie', de:'2 Wahrheiten 1 Lüge', sv:'2 Sanningar 1 Lögn'}],
+  ['Corporate Bingo', {pl:'Korporacyjne Bingo', en:'Corporate Bingo', de:'Unternehmens-Bingo', sv:'Företagsbingo'}],
+  ['Sketch & Guess',  {pl:'Szkicuj i Zgaduj', en:'Sketch & Guess', de:'Zeichnen & Raten', sv:'Skissa & Gissa'}],
+  ['Who Am I?',       {pl:'Kim Jestem?', en:'Who Am I?', de:'Wer bin ich?', sv:'Vem är jag?'}],
+  ['Find Pairs',      {pl:'Znajdź Pary', en:'Find Pairs', de:'Memo-Spiel', sv:'Memo-spel'}],
+  ['Charades',        {pl:'Kalambury', en:'Charades', de:'Scharade', sv:'Charader'}]
+];
+
+var qs = new URLSearchParams(window.location.search);
+var currentLang = qs.get('lang') || (window._rfgDomain ? 'en' : 'pl');
+if (!T[currentLang]) currentLang = 'pl';
+
+function txt(id, v) { var el = document.getElementById(id); if (el) el.textContent = v; }
+
+function setLang(code) {
+  if (!T[code]) code = 'pl';
+  currentLang = code;
+  var t = T[code];
+  document.documentElement.lang = code;
+  txt('t-back', t.back); txt('t-title', t.title); txt('t-lead', t.lead);
+  txt('t-topic', t.topic); txt('t-game', t.game); txt('t-msg', t.msg);
+  txt('t-name', t.name); txt('t-email', t.email); txt('t-email-hint', t.emailHint);
+  txt('c-send', t.send); txt('t-ok', t.ok); txt('t-ok-sub', t.okSub);
+  document.getElementById('c-msg').placeholder = t.msgHint;
+  document.title = t.title + ' — ' + (window._rfgDomain ? 'roomforgames.com' : 'panstwamiastagra.com');
+
+  // Topic options (keep current selection)
+  var topicSel = document.getElementById('c-topic');
+  var prevTopic = topicSel.value || qs.get('topic') || 'question';
+  topicSel.innerHTML = '';
+  ['question','bug','idea','business'].forEach(function(k) {
+    var o = document.createElement('option'); o.value = k; o.textContent = t.topics[k];
+    if (k === prevTopic) o.selected = true; topicSel.appendChild(o);
+  });
+
+  // Game options (keep current selection)
+  var gameSel = document.getElementById('c-game');
+  var prevGame = gameSel.value || qs.get('game') || '';
+  gameSel.innerHTML = '';
+  var none = document.createElement('option'); none.value = ''; none.textContent = t.gameNone; gameSel.appendChild(none);
+  GAMES.forEach(function(g) {
+    var o = document.createElement('option'); o.value = g[0]; o.textContent = g[1][code];
+    if (g[0] === prevGame) o.selected = true; gameSel.appendChild(o);
+  });
+
+  document.querySelectorAll('.lang-btn').forEach(function(b) {
+    b.classList.toggle('active', b.getAttribute('data-l') === code);
+  });
+  try { history.replaceState(null, '', '/contact?lang=' + code); } catch (e) {}
+  if (typeof window._rebuildBurger === 'function') window._rebuildBurger(code);
+  if (typeof window._refreshFooter  === 'function') window._refreshFooter();
+}
+
+
+document.getElementById('contact-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var t = T[currentLang];
+  var err = document.getElementById('c-err');
+  var btn = document.getElementById('c-send');
+  var msg = document.getElementById('c-msg').value.trim();
+  var email = document.getElementById('c-email').value.trim();
+  err.style.display = 'none';
+
+  if (msg.length < 10) { err.textContent = t.errShort; err.style.display = 'block'; return; }
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = t.errEmail; err.style.display = 'block'; return; }
+
+  btn.disabled = true; btn.textContent = t.sending;
+  fetch('/api/bug-report', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      topic: document.getElementById('c-topic').value,
+      game: document.getElementById('c-game').value,
+      description: msg,
+      name: document.getElementById('c-name').value.trim(),
+      email: email,
+      lang: currentLang,
+      website: document.getElementById('c-website').value
+    })
+  }).then(function(r) {
+    if (r.status === 429) throw new Error('limit');
+    if (!r.ok) throw new Error('fail');
+    return r.json();
+  }).then(function() {
+    document.getElementById('contact-form').style.display = 'none';
+    document.getElementById('c-ok').style.display = 'block';
+    try { if (typeof gtag === 'function') gtag('event', 'contact_sent', { topic: document.getElementById('c-topic').value }); } catch (e) {}
+  }).catch(function(ex) {
+    err.textContent = ex && ex.message === 'limit' ? t.errLimit : t.errFail;
+    err.style.display = 'block';
+    btn.disabled = false; btn.textContent = t.send;
+  });
+});
+
+setLang(currentLang);
+</script>
+</body>
+</html>

@@ -340,6 +340,8 @@ app.get('/blog/sv/spel-for-klassrummet',                    (req,res) => res.sen
 
 app.get('/rooms',       (req, res) => res.sendFile(path.join(__dirname, 'public/rooms.html')));
 app.get('/privacy',     (req, res) => res.sendFile(path.join(__dirname, 'public/privacy.html')));
+app.get('/contact',     (req, res) => res.sendFile(path.join(__dirname, 'public/contact.html')));
+app.get('/kontakt',     (req, res) => res.redirect(301, '/contact' + (req.url.indexOf('?') > -1 ? req.url.slice(req.url.indexOf('?')) : '?lang=pl')));
 app.get('/games',       (req, res) => res.sendFile(path.join(__dirname, 'public/games.html')));
 app.get('/jak-grac/tabu',                      (req, res) => res.redirect(301, '/jak-grac/zakazane-slowa'));
 app.get('/jak-grac/zakazane-slowa',            (req, res) => res.sendFile(path.join(__dirname, 'public/jak-grac/tabu.html')));
@@ -567,18 +569,26 @@ app.post('/api/bug-report', express.json(), (req, res) => {
   const game = (req.body.game || '').slice(0, 50).trim();
   const desc = (req.body.description || '').slice(0, 1000).trim();
   const email = (req.body.email || '').slice(0, 100).trim();
+  // Contact page extras (bug popup doesn't send these → treated as a bug report)
+  const TOPICS = ['question', 'bug', 'idea', 'business'];
+  const topic = TOPICS.indexOf(req.body.topic) > -1 ? req.body.topic : 'bug';
+  const name  = (req.body.name || '').slice(0, 60).trim();
+  const lang  = ['pl', 'en', 'de', 'sv'].indexOf(req.body.lang) > -1 ? req.body.lang : null;
 
-  if (desc.length < 20) {
-    return res.status(400).json({ error: 'Please describe the bug in more detail (min 20 characters).' });
+  if (desc.length < 10) {
+    return res.status(400).json({ error: 'Please write a little more (min 10 characters).' });
   }
 
   // Save
   const reports = readBugReports();
   reports.unshift({
     id:        Date.now(),
-    game:      game || 'Unknown',
+    topic:     topic,
+    game:      game || (topic === 'bug' ? 'Unknown' : '—'),
     description: desc,
+    name:      name || null,
     email:     email || null,
+    lang:      lang,
     timestamp: new Date().toISOString(),
     resolved:  false,
   });

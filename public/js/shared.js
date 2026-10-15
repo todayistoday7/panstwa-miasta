@@ -537,22 +537,22 @@ function initVisibilityToggle() {
     '.gb-div{height:1px;background:var(--border);margin:4px 6px;}';
 
   var LABELS = {
-    pl: { home:'Strona główna', games:'Wszystkie gry', rooms:'Aktywne pokoje', privacy:'Prywatność', bug:'🐛 Zgłoś błąd', rules:'Zasady gier',
+    pl: { home:'Strona główna', games:'Wszystkie gry', rooms:'Aktywne pokoje', privacy:'Prywatność', bug:'🐛 Zgłoś błąd', contact:'Kontakt', rules:'Zasady gier',
           cats:'Kategorie', howto_drawing:'Jak grać — Szkicuj i Zgaduj', home:'Strona główna', blog:'Blog', words:'Słowa na literę',
           sg:'Gry', sr:'Zasady', sm:'Więcej',
           gpm:'Państwa-Miasta', gtaboo:'Zakazane Słowa',
           ghang:'Wisielec', gdots:'Kropki i Kreski', gtt:'Dwie Prawdy Jedno Kłamstwo', gbingo:'Korporacyjne Bingo', gdrawing:'Szkicuj i Zgaduj', gwhoami:'Kim Jestem?', gmemory:'Znajdź Pary', gcharades:'Kalambury' },
-    en: { home:'Home', games:'All Games', rooms:'Live Rooms', privacy:'Privacy', bug:'🐛 Report a Bug', rules:'Game Rules',
+    en: { home:'Home', games:'All Games', rooms:'Live Rooms', privacy:'Privacy', bug:'🐛 Report a Bug', contact:'Contact', rules:'Game Rules',
           cats:'Categories', words:'Words by Letter',
           sg:'Games', sr:'Rules', sm:'More',
           gpm:'Countries & Cities', gtaboo:'Forbidden Words',
           ghang:'Hangman', gdots:'Dots & Boxes', gtt:'2 Truths 1 Lie', gbingo:'Corporate Bingo', gdrawing:'Sketch & Guess', gwhoami:'Who Am I?', gmemory:'Find Pairs', gcharades:'Charades' },
-    de: { home:'Startseite', games:'Alle Spiele', rooms:'Aktive Räume', privacy:'Datenschutz', bug:'🐛 Fehler melden', rules:'Spielregeln',
+    de: { home:'Startseite', games:'Alle Spiele', rooms:'Aktive Räume', privacy:'Datenschutz', bug:'🐛 Fehler melden', contact:'Kontakt', rules:'Spielregeln',
           cats:'Kategorien', howto_drawing:'Spielregeln — Zeichnen & Raten', home:'Startseite', words:'Wörter nach Buchstabe',
           sg:'Spiele', sr:'Regeln', sm:'Mehr',
           gpm:'Stadt Land Fluss', gtaboo:'Verbotene Wörter',
           ghang:'Galgenmännchen', gdots:'Punkte & Linien', gtt:'2 Wahrheiten 1 Lüge', gbingo:'Unternehmens-Bingo', gdrawing:'Zeichnen & Raten', gwhoami:'Wer bin ich?', gmemory:'Memo-Spiel', gcharades:'Scharade' },
-    sv: { home:'Startsida', games:'Alla spel', rooms:'Aktiva rum', privacy:'Integritetspolicy', bug:'🐛 Rapportera fel', rules:'Spelregler',
+    sv: { home:'Startsida', games:'Alla spel', rooms:'Aktiva rum', privacy:'Integritetspolicy', bug:'🐛 Rapportera fel', contact:'Kontakt', rules:'Spelregler',
           cats:'Kategorier', howto_drawing:'Spelregler — Skissa & Gissa', home:'Startsida', words:'Ord per bokstav',
           sg:'Spel', sr:'Regler', sm:'Mer',
           gpm:'Länder & Städer', gtaboo:'Förbjudna ord',
@@ -658,7 +658,7 @@ function initVisibilityToggle() {
       '<div class="gb-div"></div>' +
       '<a href="/privacy' + ql + '"><span class="gb-ico">🔒</span>' + t.privacy + '</a>' +
       '<a href="/blog' + (lang==='pl'?'/pl':lang==='de'?'/de':lang==='sv'?'/sv':'') + '" ><span class="gb-ico">✍️</span>' + (t.blog||'Blog') + '</a>' +
-      '<a href="#" onclick="event.preventDefault();openBugModal();" style="cursor:pointer;"><span class="gb-ico">🐛</span>' + (t.bug||'Report a Bug') + '</a>';
+      '<a href="/contact?lang=' + lang + '" target="_blank" rel="noopener"><span class="gb-ico">✉️</span>' + (t.contact||'Contact') + '</a>';
 
     // ── Wrap and insert ──────────────────────────────────────────
     var wrap = document.createElement('div');
@@ -791,7 +791,7 @@ window._rebuildBurger = function(newLang) {
     '<div class="gb-div"></div>' +
     '<a href="/blog' + (newLang==='pl'?'/pl':newLang==='de'?'/de':newLang==='sv'?'/sv':'') + '"><span class="gb-ico">✍️</span>' + (t.blog||'Blog') + '</a>' +
     '<a href="/privacy' + ql + '"><span class="gb-ico">🔒</span>' + t.privacy + '</a>' +
-    '<a href="#" onclick="event.preventDefault();openBugModal();" style="cursor:pointer;"><span class="gb-ico">🐛</span>' + (t.bug||'Report a Bug') + '</a>';
+    '<a href="/contact?lang=' + newLang + '" target="_blank" rel="noopener"><span class="gb-ico">✉️</span>' + (t.contact||'Contact') + '</a>';
   // Update logo href
   if (logo) logo.href = window._rfgDomain ? '/' : (newLang==='pl'?'/':newLang==='de'?'/stadt-land-fluss-online':newLang==='sv'?'/laender-och-staeder':'/countries-cities-game');
 };
@@ -894,7 +894,7 @@ window._buildFooterLangBtns = function() {
             howto_bingo:'Jak grać — Korporacyjne Bingo',
             howto_whoami:'Jak grać — Kim Jestem?',
             howto_memory:'Jak grać — Znajdź Pary', howto_charades:'Jak grać — Kalambury',
-            home:'Strona główna', words:'Słowa na literę', bug:'🐛 Zgłoś błąd' },
+            home:'Strona główna', words:'Słowa na literę', bug:'🐛 Zgłoś błąd', contact:'Kontakt' },
       en: { games:'Games', rules:'Rules', about:'About',
             cats:'Categories', tagline:'Free online multiplayer games for friends and family',
             privacy:'Privacy',
@@ -910,7 +910,7 @@ window._buildFooterLangBtns = function() {
             howto_drawing:'How to play — Sketch & Guess',
             howto_bingo:'How to play — Corporate Bingo',
             howto_whoami:'How to play — Who Am I?',
-            howto_memory:'How to play — Find Pairs', howto_charades:'How to play — Charades', home:'Home', blog:'Blog', words:'Words by letter', bug:'🐛 Report a Bug' },
+            howto_memory:'How to play — Find Pairs', howto_charades:'How to play — Charades', home:'Home', blog:'Blog', words:'Words by letter', bug:'🐛 Report a Bug', contact:'Contact' },
       de: { games:'Spiele', rules:'Regeln', about:'Über',
             cats:'Kategorien', tagline:'Kostenlose Multiplayer-Spiele online',
             privacy:'Datenschutz',
@@ -927,7 +927,7 @@ window._buildFooterLangBtns = function() {
             howto_bingo:'Spielregeln — Unternehmens-Bingo',
             howto_whoami:'Spielregeln — Wer bin ich?',
             howto_memory:'Spielregeln — Memo-Spiel', howto_charades:'Spielregeln — Scharade',
-            blog:'Blog', words:'Wörter nach Buchstabe', bug:'🐛 Fehler melden' },
+            blog:'Blog', words:'Wörter nach Buchstabe', bug:'🐛 Fehler melden', contact:'Kontakt' },
       sv: { games:'Spel', rules:'Regler', about:'Om',
             cats:'Kategorier', tagline:'Gratis multiplayer-spel online för vänner och familj',
             privacy:'Integritetspolicy',
@@ -944,7 +944,7 @@ window._buildFooterLangBtns = function() {
             howto_bingo:'Spelregler — Företagsbingo',
             howto_whoami:'Spelregler — Vem är jag?',
             howto_memory:'Spelregler — Memo-spel', howto_charades:'Spelregler — Charader',
-            blog:'Blog', words:'Ord per bokstav', bug:'🐛 Rapportera fel' },
+            blog:'Blog', words:'Ord per bokstav', bug:'🐛 Rapportera fel', contact:'Kontakt' },
     };
     var t = L[lp] || L['en'];
 
@@ -988,7 +988,7 @@ window._buildFooterLangBtns = function() {
             '<a href="' + gamesHubUrl(footerLang) + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🏠 ' + (t.home||'Home') + '</a>' +
             '<a href="/privacy" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔒 ' + t.privacy + '</a>' +
             '<a href="/blog' + (footerLang==='pl'?'/pl':footerLang==='de'?'/de':footerLang==='sv'?'/sv':'') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">✍️ ' + (t.blog||'Blog') + '</a>' +
-            '<a href="#" onclick="event.preventDefault();if(typeof openBugModal===\'function\')openBugModal();" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;">' + (t.bug||'🐛 Report a Bug') + '</a>' +
+            '<a href="/contact?lang=' + footerLang + '" target="_blank" rel="noopener" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">✉️ ' + (t.contact||'Contact') + '</a>' +
           '</div>' +
         '</div>' +
       '</div>' +
