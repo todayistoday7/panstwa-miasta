@@ -73,8 +73,11 @@ app.use((req, res, next) => {
     return ct.includes('text/html') || ct.includes('application/javascript');
   }
 
+  // Blog pages: every mention of the PM domain becomes roomforgames.com (text, links, Google data)
+  const isBlogPage = (req.path || '').indexOf('/blog') === 0;
   function swapBody(body) {
     if (body.includes(GA_DEFAULT)) body = body.split(GA_DEFAULT).join(GA_RFG);
+    if (isBlogPage && body.indexOf('panstwamiastagra.com') > -1) body = body.split('panstwamiastagra.com').join('roomforgames.com');
     if (body.includes('<script') && !body.includes('window._rfgDomain')) {
       body = body.replace(/<script/, '<script>window._rfgDomain=true;</script>\n<script');
     }
@@ -328,6 +331,11 @@ app.get('/blog/pl/kalambury-online',               (req,res) => res.sendFile(pat
 app.get('/blog/de/scharade-online-spielen',        (req,res) => res.sendFile(path.join(__dirname,'public/blog/de/scharade-online-spielen.html')));
 app.get('/blog/sv/spela-charader-online',          (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/spela-charader-online.html')));
 // ── Family/Kids games blog posts ──
+// ── Halloween posts (Oct 2026) ──
+app.get('/blog/halloween-games-for-kids-teens-adults',        (req,res) => res.sendFile(path.join(__dirname,'public/blog/halloween-games-for-kids-teens-adults.html')));
+app.get('/blog/pl/gry-i-zabawy-na-halloween',                  (req,res) => res.sendFile(path.join(__dirname,'public/blog/pl/gry-i-zabawy-na-halloween.html')));
+app.get('/blog/de/halloween-spiele-fuer-kinder-und-erwachsene',(req,res) => res.sendFile(path.join(__dirname,'public/blog/de/halloween-spiele-fuer-kinder-und-erwachsene.html')));
+app.get('/blog/sv/halloweenlekar-for-barn-och-vuxna',          (req,res) => res.sendFile(path.join(__dirname,'public/blog/sv/halloweenlekar-for-barn-och-vuxna.html')));
 app.get('/blog/free-games-for-kids-and-families',            (req,res) => res.sendFile(path.join(__dirname,'public/blog/free-games-for-kids-and-families.html')));
 app.get('/blog/pl/darmowe-gry-dla-dzieci-i-rodzin',         (req,res) => res.sendFile(path.join(__dirname,'public/blog/pl/darmowe-gry-dla-dzieci-i-rodzin.html')));
 app.get('/blog/de/kostenlose-spiele-fuer-kinder-und-familien',(req,res) => res.sendFile(path.join(__dirname,'public/blog/de/kostenlose-spiele-fuer-kinder-und-familien.html')));
