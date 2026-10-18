@@ -131,6 +131,9 @@ function layout(title, body, activePage) {
   .alert-success{background:rgba(20,83,45,.3);border:1px solid #14532d;color:#86efac}
   .filter-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
   .filter-bar input,.filter-bar select{width:auto;flex:1;min-width:140px}
+  select{color-scheme:dark}
+  .filter-bar .btn{background:#2d3152!important;color:#e2e8f0!important;border:1px solid #475569!important}
+  .filter-bar .btn:hover{background:#3b4170!important}
   .trans-val{font-family:monospace;font-size:12px;color:#a5b4fc}
   .trans-edit{width:100%;min-height:36px;resize:vertical;font-size:12px;padding:4px 6px}
   .editing td{background:rgba(76,29,149,.08)}
@@ -727,12 +730,298 @@ const STATS_SORT_COLUMNS = {
   struggled:   'struggled',
 };
 
+// ─── Stats helpers: overview + generic per-game view ─────
+const STATS_GAME_LABELS = {
+  all: '🗂 All games — overview', pm: 'Państwa-Miasta', whoami: 'Who Am I', hangman: 'Hangman',
+  taboo: 'Taboo', dots: 'Dots & Boxes', twotruth: '2 Truths 1 Lie', bingo: 'Bingo',
+  drawing: 'Sketch & Guess', memory: 'Find Pairs', charades: 'Charades',
+};
+// Rows that are not "turns" (finished games + room funnel events)
+const NON_TURN = "outcome NOT IN ('game_complete','room_created','room_started')";
+
+function statsEmptyRow(cols, msg) {
+  return `<tr><td colspan="${cols}" style="text-align:center;color:#64748b;padding:24px">${msg || 'No data yet.'}</td></tr>`;
+}
+function statsCard(label, value, color) {
+  return `<div class="card" style="margin-bottom:0">
+    <div style="font-size:12px;color:#64748b;margin-bottom:6px">${label}</div>
+    <div style="font-size:26px;font-weight:700${color ? ';color:' + color : ''}">${value}</div>
+  </div>`;
+}
+function statsHeader(gameOpts, days, game) {
+  return `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h2>📊 Game Stats</h2>
+      <button class="btn btn-sm" onclick="location.reload()" style="background:#1a1d2e;color:#94a3b8;border:1px solid #2d3152">↻ Refresh</button>
+    </div>
+    <div class="card" style="padding:14px">
+      <form method="GET" action="/admin/stats">
+        <div class="filter-bar" style="margin-bottom:0">
+          <select name="game" onchange="this.form.submit()">${gameOpts}</select>
+          <select name="days" onchange="this.form.submit()">
+            <option value="" ${!days?'selected':''}>All time</option>
+            <option value="7" ${days==='7'?'selected':''}>Last 7 days</option>
+            <option value="30" ${days==='30'?'selected':''}>Last 30 days</option>
+            <option value="90" ${days==='90'?'selected':''}>Last 90 days</option>
+          </select>
+          <a href="/admin/stats?game=${encodeURIComponent(game)}" class="btn btn-sm" style="text-decoration:none">Clear filters</a>
+        </div>
+      </form>
+    </div>`;
+}
+function statsDayCutoff(days) {
+  return days ? new Date(Date.now() - Number(days) * 24 * 3600 * 1000).toISOString().slice(0, 10) : '0000-00-00';
+}
+function statsFunnelSince(db) {
+  const r = db.prepare(`SELECT MIN(date) AS d FROM game_events WHERE outcome IN ('room_created','room_started')`).get();
+  return r && r.d ? r.d : null;
+}
+function statsPct(a, b) { return b ? Math.round(100 * a / b) + '%' : '—'; }
+
+// Rooms that started AND finished at least one game (funnel-tracked rooms only)
+function statsFinishedOfStarted(db, game, since) {
+  const r = db.prepare(`
+    SELECT COUNT(DISTINCT s.room_code) AS n FROM game_events s
+    WHERE s.game = ? AND s.outcome = 'room_started' AND s.date >= ?
+      AND EXISTS (SELECT 1 FROM game_events c WHERE c.game = s.game AND c.room_code = s.room_code
+                  AND c.outcome = 'game_complete' AND c.ts >= s.ts)
+  `).get(game, since);
+  return r ? r.n : 0;
+}
+
+function renderOverview(db, days, cutoffLabel, gameOpts) {
+  const since = statsDayCutoff(days);
+  const since7 = new Date(Date.now() - 6 * 24 * 3600 * 1000).toISOString().slice(0, 10);
+  const rows = db.prepare(`
+    SELECT game,
+      SUM(CASE WHEN outcome='room_created'  THEN 1 ELSE 0 END) AS created,
+      SUM(CASE WHEN outcome='room_started'  THEN 1 ELSE 0 END) AS started,
+      SUM(CASE WHEN outcome='game_complete' THEN 1 ELSE 0 END) AS finished,
+      SUM(CASE WHEN outcome='game_complete' AND date >= ? THEN 1 ELSE 0 END) AS last7,
+      AVG(CASE WHEN outcome='game_complete'
+          THEN CAST(COALESCE(json_extract(details,'$.players'), json_extract(details,'$.playerCount')) AS REAL) END) AS avgp,
+      MAX(CASE WHEN outcome='game_complete' THEN date END) AS lastPlayed
+    FROM game_events WHERE date >= ?
+    GROUP BY game
+  `).all(since7, since);
+
+  const known = Object.keys(STATS_GAME_LABELS).filter(g => g !== 'all');
+  known.forEach(g => { if (!rows.find(r => r.game === g)) rows.push({ game: g, created: 0, started: 0, finished: 0, last7: 0, avgp: null, lastPlayed: null }); });
+  rows.sort((a, b) => (b.finished - a.finished) || (b.created - a.created));
+
+  let tCreated = 0, tStarted = 0, tFinished = 0, t7 = 0;
+  const tableRows = rows.map(r => {
+    tCreated += r.created; tStarted += r.started; tFinished += r.finished; t7 += r.last7;
+    const fin = r.started ? statsFinishedOfStarted(db, r.game, since) : 0;
+    const noFunnel = r.game === 'bingo';
+    return `<tr>
+      <td><a href="/admin/stats?game=${encodeURIComponent(r.game)}${days ? '&days=' + days : ''}" style="color:#c4b5fd;text-decoration:none;font-weight:700">${escapeHtml(STATS_GAME_LABELS[r.game] || r.game)}</a></td>
+      <td>${noFunnel ? '<span style="color:#64748b">n/a</span>' : r.created}</td>
+      <td>${noFunnel ? '<span style="color:#64748b">n/a</span>' : r.started}</td>
+      <td><span class="pill pill-green">${r.finished}</span></td>
+      <td>${noFunnel ? '<span style="color:#64748b">n/a</span>' : statsPct(fin, r.started)}</td>
+      <td>${r.last7}</td>
+      <td>${r.avgp ? r.avgp.toFixed(1) : '—'}</td>
+      <td style="color:#64748b;font-size:12px">${escapeHtml(r.lastPlayed || '—')}</td>
+    </tr>`;
+  }).join('');
+
+  const byDay = db.prepare(`
+    SELECT date,
+      SUM(CASE WHEN outcome='room_created'  THEN 1 ELSE 0 END) AS created,
+      SUM(CASE WHEN outcome='room_started'  THEN 1 ELSE 0 END) AS started,
+      SUM(CASE WHEN outcome='game_complete' THEN 1 ELSE 0 END) AS finished
+    FROM game_events WHERE date >= ?
+    GROUP BY date ORDER BY date DESC LIMIT 14
+  `).all(new Date(Date.now() - 13 * 24 * 3600 * 1000).toISOString().slice(0, 10));
+  const dayRows = byDay.map(r => `<tr><td>${escapeHtml(r.date)}</td><td>${r.created}</td><td>${r.started}</td><td>${r.finished}</td></tr>`).join('') || statsEmptyRow(4);
+
+  const byLang = db.prepare(`
+    SELECT lang, COUNT(*) AS n FROM game_events
+    WHERE outcome='game_complete' AND lang IS NOT NULL AND date >= ?
+    GROUP BY lang ORDER BY n DESC
+  `).all(since);
+  const langRows = byLang.map(r => `<tr><td>${escapeHtml(r.lang)}</td><td>${r.n}</td></tr>`).join('') || statsEmptyRow(2);
+
+  const funnelSince = statsFunnelSince(db);
+
+  return statsHeader(gameOpts, days, 'all') + `
+    <div class="grid2" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+      ${statsCard('Games finished (' + escapeHtml(cutoffLabel) + ')', tFinished, '#86efac')}
+      ${statsCard('Finished, last 7 days', t7)}
+      ${statsCard('Rooms created', tCreated)}
+      ${statsCard('Rooms started', tStarted, '#a78bfa')}
+    </div>
+    <div class="card" style="font-size:12px;color:#94a3b8;line-height:1.6">
+      <strong style="color:#e2e8f0">How to read this:</strong>
+      <em>Created</em> = someone opened a room. <em>Started</em> = the game left the lobby.
+      <em>Finished</em> = reached the final screen. <em>Finish rate</em> = started rooms that finished at least one game.<br>
+      Created/started tracking began ${funnelSince ? 'on <strong>' + escapeHtml(funnelSince) + '</strong>' : '<strong>after this deploy</strong> (no data yet)'} — older periods show only finished games.
+      Finished-game tracking for the 7 newer games began mid-October 2026. Bingo has no created/started tracking.
+    </div>
+    <div class="card">
+      <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">All games — click a name for details</h3>
+      <div style="overflow-x:auto">
+      <table>
+        <tr><th>Game</th><th>Rooms created</th><th>Started</th><th>Games finished</th><th>Finish rate</th><th>Last 7 days</th><th>Avg players</th><th>Last finished</th></tr>
+        ${tableRows}
+      </table>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Last 14 days — all games</h3>
+        <table><tr><th>Date</th><th>Created</th><th>Started</th><th>Finished</th></tr>${dayRows}</table>
+      </div>
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Finished games by language (${escapeHtml(cutoffLabel)})</h3>
+        <table><tr><th>Language</th><th>Games</th></tr>${langRows}</table>
+      </div>
+    </div>`;
+}
+
+function renderGeneric(db, game, days, cutoffLabel, gameOpts) {
+  const since = statsDayCutoff(days);
+  const s = db.prepare(`
+    SELECT
+      SUM(CASE WHEN outcome='room_created'  THEN 1 ELSE 0 END) AS created,
+      SUM(CASE WHEN outcome='room_started'  THEN 1 ELSE 0 END) AS started,
+      SUM(CASE WHEN outcome='game_complete' THEN 1 ELSE 0 END) AS finished,
+      COUNT(DISTINCT CASE WHEN outcome='game_complete' THEN room_code END) AS finRooms,
+      AVG(CASE WHEN outcome='game_complete'
+          THEN CAST(COALESCE(json_extract(details,'$.players'), json_extract(details,'$.playerCount')) AS REAL) END) AS avgp
+    FROM game_events WHERE game = ? AND date >= ?
+  `).get(game, since);
+  const created = s.created || 0, started = s.started || 0, finished = s.finished || 0;
+  const fin = started ? statsFinishedOfStarted(db, game, since) : 0;
+  const noFunnel = game === 'bingo';
+
+  const pub = db.prepare(`
+    SELECT SUM(CASE WHEN json_extract(details,'$.isPublic') = 1 THEN 1 ELSE 0 END) AS pub, COUNT(*) AS n
+    FROM game_events WHERE game = ? AND outcome='room_created' AND date >= ?
+  `).get(game, since);
+
+  const byDay = db.prepare(`
+    SELECT date,
+      SUM(CASE WHEN outcome='room_created'  THEN 1 ELSE 0 END) AS created,
+      SUM(CASE WHEN outcome='room_started'  THEN 1 ELSE 0 END) AS started,
+      SUM(CASE WHEN outcome='game_complete' THEN 1 ELSE 0 END) AS finished
+    FROM game_events WHERE game = ? AND date >= ? AND outcome IN ('room_created','room_started','game_complete')
+    GROUP BY date ORDER BY date DESC LIMIT 14
+  `).all(game, new Date(Date.now() - 13 * 24 * 3600 * 1000).toISOString().slice(0, 10));
+  const dayRows = byDay.map(r => `<tr><td>${escapeHtml(r.date)}</td><td>${r.created}</td><td>${r.started}</td><td>${r.finished}</td></tr>`).join('') || statsEmptyRow(4);
+
+  const byLang = db.prepare(`
+    SELECT lang,
+      SUM(CASE WHEN outcome='room_created'  THEN 1 ELSE 0 END) AS created,
+      SUM(CASE WHEN outcome='game_complete' THEN 1 ELSE 0 END) AS finished
+    FROM game_events WHERE game = ? AND date >= ? AND lang IS NOT NULL
+      AND outcome IN ('room_created','game_complete')
+    GROUP BY lang ORDER BY finished DESC, created DESC
+  `).all(game, since);
+  const langRows = byLang.map(r => `<tr><td>${escapeHtml(r.lang)}</td><td>${r.created}</td><td>${r.finished}</td></tr>`).join('') || statsEmptyRow(3);
+
+  const byPlayers = db.prepare(`
+    SELECT CAST(COALESCE(json_extract(details,'$.players'), json_extract(details,'$.playerCount')) AS INTEGER) AS p, COUNT(*) AS n
+    FROM game_events WHERE game = ? AND date >= ? AND outcome='game_complete'
+    GROUP BY p ORDER BY p ASC
+  `).all(game, since);
+  const playerRows = byPlayers.filter(r => r.p != null).map(r => `<tr><td>${r.p} ${r.p === 1 ? 'player' : 'players'}</td><td>${r.n}</td></tr>`).join('') || statsEmptyRow(2);
+
+  // Time of day (Polish time) for started + finished
+  const tsRows = db.prepare(`
+    SELECT ts, outcome FROM game_events WHERE game = ? AND date >= ? AND outcome IN ('room_started','game_complete')
+  `).all(game, since);
+  const buckets = [['Night (0–6)', 0, 6], ['Morning (6–12)', 6, 12], ['Afternoon (12–18)', 12, 18], ['Evening (18–24)', 18, 24]]
+    .map(([label, from, to]) => ({ label, from, to, started: 0, finished: 0 }));
+  const hourFmt = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', hour12: false, timeZone: 'Europe/Warsaw' });
+  tsRows.forEach(r => {
+    const h = parseInt(hourFmt.format(new Date(r.ts)), 10) % 24;
+    const b = buckets.find(x => h >= x.from && h < x.to);
+    if (!b) return;
+    if (r.outcome === 'room_started') b.started++; else b.finished++;
+  });
+  const timeRows = tsRows.length
+    ? buckets.map(b => `<tr><td>${b.label}</td><td>${b.started}</td><td>${b.finished}</td></tr>`).join('')
+    : statsEmptyRow(3);
+
+  const funnelSince = statsFunnelSince(db);
+  const na = '<span style="color:#64748b">n/a</span>';
+
+  return statsHeader(gameOpts, days, game) + `
+    <h3 style="font-size:16px;margin:0 0 14px;color:#e2e8f0">${escapeHtml(STATS_GAME_LABELS[game] || game)}</h3>
+    <div class="grid2" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+      ${statsCard('Rooms created (' + escapeHtml(cutoffLabel) + ')', noFunnel ? na : created)}
+      ${statsCard('Rooms started', noFunnel ? na : started, '#a78bfa')}
+      ${statsCard('Games finished', finished, '#86efac')}
+      ${statsCard('Finish rate', noFunnel ? na : statsPct(fin, started))}
+    </div>
+    <div class="card" style="margin-bottom:20px">
+      <div style="display:flex;gap:24px;flex-wrap:wrap;font-size:13px;color:#94a3b8">
+        <span>Avg players per finished game: <strong style="color:#e2e8f0">${s.avgp ? s.avgp.toFixed(1) : '—'}</strong></span>
+        <span>Games per room (rematches): <strong style="color:#e2e8f0">${s.finRooms ? (finished / s.finRooms).toFixed(1) : '—'}</strong></span>
+        <span>Started of created: <strong style="color:#e2e8f0">${noFunnel ? 'n/a' : statsPct(started, created)}</strong></span>
+        <span>Public rooms: <strong style="color:#e2e8f0">${pub && pub.n ? statsPct(pub.pub || 0, pub.n) : '—'}</strong></span>
+      </div>
+      <div style="font-size:11px;color:#64748b;margin-top:8px">Created/started tracking since ${funnelSince ? escapeHtml(funnelSince) : 'this deploy'}. Finished games are counted when the final screen is reached — groups that just close the tab are not counted.</div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Last 14 days</h3>
+        <table><tr><th>Date</th><th>Created</th><th>Started</th><th>Finished</th></tr>${dayRows}</table>
+      </div>
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">By language (${escapeHtml(cutoffLabel)})</h3>
+        <table><tr><th>Language</th><th>Rooms created</th><th>Games finished</th></tr>${langRows}</table>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Group size (finished games)</h3>
+        <table><tr><th>Players</th><th>Games</th></tr>${playerRows}</table>
+      </div>
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Time of day (Polish time)</h3>
+        <table><tr><th>When</th><th>Started</th><th>Finished</th></tr>${timeRows}</table>
+      </div>
+    </div>`;
+}
+
+// ─── Who Am I: CSV export of every character's results ─────
+router.get('/stats/whoami.csv', requireAuth, (req, res) => {
+  try {
+    const rows = getDb().prepare(`
+      SELECT json_extract(details,'$.character') AS character,
+        MAX(json_extract(details,'$.category'))   AS category,
+        MAX(json_extract(details,'$.difficulty')) AS difficulty,
+        COUNT(*) AS total,
+        SUM(CASE WHEN outcome='guessed'     THEN 1 ELSE 0 END) AS guessed,
+        SUM(CASE WHEN outcome='skipped'     THEN 1 ELSE 0 END) AS skipped,
+        SUM(CASE WHEN outcome='surrendered' THEN 1 ELSE 0 END) AS surrendered,
+        SUM(CASE WHEN outcome='timeout'     THEN 1 ELSE 0 END) AS timeout,
+        GROUP_CONCAT(DISTINCT lang) AS langs
+      FROM game_events
+      WHERE game='whoami' AND ${NON_TURN} AND json_extract(details,'$.character') IS NOT NULL
+      GROUP BY character ORDER BY total DESC
+    `).all();
+    const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+    const lines = ['character,category,difficulty,total,guessed,skipped,surrendered,timeout,guess_pct,langs'];
+    rows.forEach(r => lines.push([q(r.character), q(r.category), q(r.difficulty), r.total, r.guessed, r.skipped, r.surrendered, r.timeout,
+      r.total ? Math.round(100 * r.guessed / r.total) : 0, q(r.langs)].join(',')));
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="whoami-characters.csv"');
+    res.send('\uFEFF' + lines.join('\n'));
+  } catch (err) {
+    res.status(500).send('Export error: ' + escapeHtml(err.message));
+  }
+});
+
 router.get('/stats', requireAuth, (req, res) => {
   try {
     const db = getDb();
 
     // ── Read + sanitize filters from query string ──────────
-    const game    = req.query.game || 'whoami';
+    const game    = req.query.game || 'all';
     const days     = ['7','30','90'].includes(req.query.days) ? req.query.days : '';
     const outcome  = ['guessed','skipped','surrendered','timeout'].includes(req.query.outcome) ? req.query.outcome : '';
     const sort     = STATS_SORT_COLUMNS[req.query.sort] ? req.query.sort : 'struggled';
@@ -759,15 +1048,16 @@ router.get('/stats', requireAuth, (req, res) => {
     // ── Available games for the selector (so it grows automatically) ──
     const availableGames = db.prepare(`SELECT DISTINCT game FROM game_events ORDER BY game`).all().map(r => r.game);
     if (availableGames.length === 0) availableGames.push('whoami'); // sensible default before any data exists
+    availableGames.unshift('all');
 
-    const GAME_LABELS = { whoami: 'Who Am I', dots: 'Dots & Boxes', charades: 'Charades', drawing: 'Sketch & Guess' };
+    const GAME_LABELS = STATS_GAME_LABELS;
     const gameOpts = availableGames.map(g =>
       `<option value="${g}" ${game===g?'selected':''}>${GAME_LABELS[g] || g}</option>`
     ).join('');
 
     // ── Summary cards (respect filters except the outcome filter,
     //     which would make "guessed correctly" misleading if active) ──
-    const summaryWhere = (days ? 'game = ? AND date >= ?' : 'game = ?') + (game === 'whoami' ? " AND outcome != 'game_complete'" : '');
+    const summaryWhere = (days ? 'game = ? AND date >= ?' : 'game = ?') + (game === 'whoami' ? ' AND ' + NON_TURN : '');
     const summaryParams = days ? [game, params[1]] : [game];
     const summary = db.prepare(`
       SELECT COUNT(*) as totalEvents,
@@ -784,7 +1074,7 @@ router.get('/stats', requireAuth, (req, res) => {
 
     // ── HANGMAN-SPECIFIC VIEW ─────────────────────────────
     if (game === 'hangman') {
-      const hwhere = (days ? 'game = ? AND date >= ?' : 'game = ?') + " AND outcome != 'game_complete'";
+      const hwhere = (days ? 'game = ? AND date >= ?' : 'game = ?') + ' AND ' + NON_TURN;
       const hparams = days ? ['hangman', params[1]] : ['hangman'];
 
       const hSummary = db.prepare(`
@@ -815,7 +1105,7 @@ router.get('/stats', requireAuth, (req, res) => {
 
       const byLangH = db.prepare(`
         SELECT lang, COUNT(*) as total FROM game_events
-        WHERE game='hangman' AND lang IS NOT NULL AND outcome != 'game_complete' GROUP BY lang ORDER BY total DESC
+        WHERE game='hangman' AND lang IS NOT NULL AND ${NON_TURN} GROUP BY lang ORDER BY total DESC
       `).all();
 
       const bySource = db.prepare(`
@@ -1042,10 +1332,9 @@ router.get('/stats', requireAuth, (req, res) => {
           + '<td>' + escapeHtml(r.lang||'?') + '</td>'
           + '<td>' + (r.players||'?') + '</td>'
           + '<td>' + (r.rounds||'?') + '</td>'
-          + '<td style="font-weight:700;color:#a78bfa">' + escapeHtml(r.winner||'—') + '</td>'
           + '<td>' + (r.winnerScore||'—') + '</td>'
           + '</tr>';
-      }).join('') || '<tr><td colspan="7" style="text-align:center;color:#64748b;padding:24px">No games logged yet.</td></tr>';
+      }).join('') || '<tr><td colspan="6" style="text-align:center;color:#64748b;padding:24px">No games logged yet.</td></tr>';
 
       const pmBody = `
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
@@ -1097,7 +1386,7 @@ router.get('/stats', requireAuth, (req, res) => {
           <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Recent games (last 20)</h3>
           <div style="overflow-x:auto">
             <table>
-              <tr><th>Room</th><th>Date</th><th>Lang</th><th>Players</th><th>Rounds</th><th>Winner</th><th>Score</th></tr>
+              <tr><th>Room</th><th>Date</th><th>Lang</th><th>Players</th><th>Rounds</th><th>Top score</th></tr>
               ${recentRows}
             </table>
           </div>
@@ -1105,8 +1394,8 @@ router.get('/stats', requireAuth, (req, res) => {
 
         <div class="grid2">
           <div class="card">
-            <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Top winners (${escapeHtml(cutoffLabel)})</h3>
-            <table><tr><th>Player</th><th>Wins</th></tr>${winnerRows}</table>
+            <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Most used letters (${escapeHtml(cutoffLabel)})</h3>
+            <table><tr><th>Letter</th><th>Rounds</th></tr>${letterRows}</table>
           </div>
           <div class="card">
             <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Games by round count</h3>
@@ -1130,6 +1419,9 @@ router.get('/stats', requireAuth, (req, res) => {
     }
     // ── END PM VIEW ────────────────────────────────────────
 
+
+    if (game === 'all') return res.send(layout('Game Stats', renderOverview(db, days, cutoffLabel, gameOpts), 'stats'));
+    if (game !== 'whoami') return res.send(layout('Game Stats', renderGeneric(db, game, days, cutoffLabel, gameOpts), 'stats'));
 
     // ── Main filtered + sorted character table ──────────────
 
@@ -1163,7 +1455,7 @@ router.get('/stats', requireAuth, (req, res) => {
     const byLang = db.prepare(`
       SELECT lang, COUNT(*) as total
       FROM game_events
-      WHERE game = ? AND lang IS NOT NULL ${game === 'whoami' ? " AND outcome != 'game_complete'" : ''}
+      WHERE game = ? AND lang IS NOT NULL ${game === 'whoami' ? ' AND ' + NON_TURN : ''}
       GROUP BY lang
       ORDER BY total DESC
     `).all(game);
@@ -1256,7 +1548,10 @@ router.get('/stats', requireAuth, (req, res) => {
       </div>
 
       <div class="card">
-        <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Characters ${outcome ? `— ${escapeHtml(outcome)} only` : '— click a column to sort'}</h3>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap">
+          <h3 style="font-size:14px;color:#94a3b8">Characters ${outcome ? `— ${escapeHtml(outcome)} only` : '— click a column to sort'}</h3>
+          <a href="/admin/stats/whoami.csv" class="btn btn-sm" style="background:#2d3152;color:#e2e8f0;text-decoration:none">⬇ Export all characters (CSV)</a>
+        </div>
         <table>
           <tr>
             <th>${sortLink('character','Character')}</th>

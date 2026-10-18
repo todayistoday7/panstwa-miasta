@@ -141,7 +141,12 @@ app.get('/kim-jestem', seoInject('whoami', 'pl'));
 app.get('/who-am-i',   seoInject('whoami', 'en'));
 app.get('/wer-bin-ich',seoInject('whoami', 'de'));
 app.get('/vem-ar-jag', seoInject('whoami', 'sv'));
-app.get('/whoami',     (req, res) => res.redirect(301, '/who-am-i'));
+// Keep a room code (?join=XXXXX) when redirecting old game URLs (Live Rooms "Join" links)
+function joinQs(req) {
+  const j = req.query && typeof req.query.join === 'string' ? req.query.join.replace(/[^A-Za-z0-9]/g, '').slice(0, 10) : '';
+  return j ? '?join=' + j : '';
+}
+app.get('/whoami',     (req, res) => res.redirect(301, '/who-am-i' + joinQs(req)));
 
 // ── Państwa Miasta — SEO pages (EN/DE/SV — PL stays on root /) ──
 app.get('/countries-cities-game', seoInject('pm', 'en'));
@@ -194,7 +199,7 @@ app.get('/forbjudna-ord',     seoInject('taboo', 'sv'));
 app.get('/taboo', (req, res) => {
   const lang = req.query.lang || 'en';
   const map = { pl:'/zakazane-slowa', de:'/verbotene-woerter', sv:'/forbjudna-ord' };
-  res.redirect(301, map[lang] || '/forbidden-words');
+  res.redirect(301, (map[lang] || '/forbidden-words') + joinQs(req));
 });
 
 // ── SEO Landing Pages — Corporate Bingo ──────────────────────────
@@ -207,7 +212,7 @@ app.get('/foretagsbingo',       seoInject('bingo', 'sv'));
 app.get('/bingo', (req, res) => {
   const lang = req.query.lang || 'en';
   const map = { pl:'/korporacyjne-bingo', de:'/unternehmens-bingo', sv:'/foretagsbingo' };
-  res.redirect(301, map[lang] || '/corporate-bingo');
+  res.redirect(301, (map[lang] || '/corporate-bingo') + joinQs(req));
 });
 
 // ── SEO Landing Pages — Sketch & Guess ──────────────────────────
@@ -220,7 +225,7 @@ app.get('/skissa-och-gissa',   seoInject('drawing', 'sv'));
 app.get('/drawing', (req, res) => {
   const lang = req.query.lang || 'pl';
   const map = { pl:'/szkicuj-i-zgaduj', en:'/sketch-and-guess', de:'/zeichnen-und-raten', sv:'/skissa-och-gissa' };
-  res.redirect(301, map[lang] || '/sketch-and-guess');
+  res.redirect(301, (map[lang] || '/sketch-and-guess') + joinQs(req));
 });
 
 // ── SEO Landing Pages — Hangman ─────────────────────────────────
@@ -233,7 +238,7 @@ app.get('/hanga-gubbe-online',      seoInject('hangman', 'sv'));
 app.get('/hangman', (req, res) => {
   const lang = req.query.lang || 'en';
   const map = { pl:'/wisielec', de:'/galgenmaennchen-online', sv:'/hanga-gubbe-online' };
-  res.redirect(301, map[lang] || '/hangman-online');
+  res.redirect(301, (map[lang] || '/hangman-online') + joinQs(req));
 });
 
 // ── SEO Landing Pages — Two Truths One Lie ──────────────────────
@@ -246,7 +251,7 @@ app.get('/tva-sanningar-en-logn',       seoInject('twotruth', 'sv'));
 app.get('/twotruth', (req, res) => {
   const lang = req.query.lang || 'en';
   const map = { pl:'/dwie-prawdy-jedno-klamstwo', de:'/zwei-wahrheiten-eine-luege', sv:'/tva-sanningar-en-logn' };
-  res.redirect(301, map[lang] || '/two-truths-one-lie');
+  res.redirect(301, (map[lang] || '/two-truths-one-lie') + joinQs(req));
 });
 
 // ── SEO Landing Pages — Dots & Boxes ─────────────────────────────
@@ -266,8 +271,8 @@ app.get('/znajdz-pary',          seoInject('memory', 'pl'));
 app.get('/find-pairs-online',    seoInject('memory', 'en'));
 app.get('/memo-spiel-online',    seoInject('memory', 'de'));
 app.get('/memo-spel-online',     seoInject('memory', 'sv'));
-app.get('/paare-finden-online',  (req, res) => res.redirect(301, '/memo-spiel-online'));
-app.get('/hitta-par-online',     (req, res) => res.redirect(301, '/memo-spel-online'));
+app.get('/paare-finden-online',  (req, res) => res.redirect(301, '/memo-spiel-online' + joinQs(req)));
+app.get('/hitta-par-online',     (req, res) => res.redirect(301, '/memo-spel-online' + joinQs(req)));
 
 // ── SEO Games Hub Pages ───────────────────────────────────────────
 app.get('/gry',    (req, res) => res.sendFile(path.join(__dirname, 'public/seo/gry.html')));
@@ -278,19 +283,19 @@ app.get('/spel',   (req, res) => res.sendFile(path.join(__dirname, 'public/seo/s
 app.get('/dots', (req, res) => {
   const lang = req.query.lang || 'en';
   const map = { pl:'/kropki-i-kreski-online', de:'/punkte-und-linien-online', sv:'/punkter-och-linjer-online' };
-  res.redirect(301, map[lang] || '/dots-and-boxes-online');
+  res.redirect(301, (map[lang] || '/dots-and-boxes-online') + joinQs(req));
 });
 
 app.get('/memory', (req, res) => {
   const lang = req.query.lang || 'en';
   const map = { pl:'/znajdz-pary', de:'/memo-spiel-online', sv:'/memo-spel-online' };
-  res.redirect(301, map[lang] || '/find-pairs-online');
+  res.redirect(301, (map[lang] || '/find-pairs-online') + joinQs(req));
 });
 
 app.get('/charades', (req, res) => {
   const lang = req.query.lang || 'en';
   const map = { pl:'/kalambury', de:'/scharade', sv:'/charader' };
-  res.redirect(301, map[lang] || '/charades-online');
+  res.redirect(301, (map[lang] || '/charades-online') + joinQs(req));
 });
 app.get('/kalambury',       seoInject('charades', 'pl'));
 app.get('/charades-online', seoInject('charades', 'en'));
@@ -487,6 +492,7 @@ function getHistoricGames(db) {
 }
 
 app.get('/api/stats-summary', (req, res) => {
+  res.set('Cache-Control', 'no-store');
   try {
     const { getDb } = require('./db/stats');
     const db = getDb();

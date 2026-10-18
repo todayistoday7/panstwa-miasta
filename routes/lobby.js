@@ -48,8 +48,59 @@ function init(io) {
   });
 }
 
+// ─── Room funnel tracking (admin stats only) ─────────────
+// Logs once per room: 'room_created' (first time seen) and
+// 'room_started' (first time it leaves the lobby). Games don't
+// always announce on start, so rooms are also re-checked every
+// 15 s (read-only look at room.state.phase). Never throws.
+const _funnel = new Map(); // game:code → { game, room, started, t }
+function funnelLog(game, room, outcome, details) {
+  try {
+    require('../db/stats').logGameEvent({
+      game, roomCode: room.code,
+      lang: (room.settings && room.settings.lang) || room.lang || null,
+      outcome, details,
+    });
+  } catch (e) { /* never affect games */ }
+}
+function funnelCheckStarted(f) {
+  try {
+    if (f.started || !f.room || !f.room.state) return;
+    const phase = f.room.state.phase;
+    if (phase && phase !== 'lobby') {
+      f.started = true;
+      funnelLog(f.game, f.room, 'room_started', { players: (f.room.players || []).length });
+      f.room = null; // drop reference once started
+    }
+  } catch (e) { /* never affect games */ }
+}
+function trackFunnel(game, room) {
+  try {
+    if (!room || !room.code || !room.state) return;
+    const key = game + ':' + room.code;
+    let f = _funnel.get(key);
+    if (!f) {
+      f = { game, room, started: false, t: Date.now() };
+      _funnel.set(key, f);
+      funnelLog(game, room, 'room_created', { isPublic: room.isPublic === true });
+    }
+    funnelCheckStarted(f);
+  } catch (e) { /* never affect games */ }
+}
+const _funnelTimer = setInterval(() => {
+  try {
+    const old = Date.now() - 12 * 3600 * 1000;
+    for (const [k, f] of _funnel) {
+      funnelCheckStarted(f);
+      if (f.t < old) _funnel.delete(k);
+    }
+  } catch (e) { /* never affect games */ }
+}, 15000);
+if (_funnelTimer.unref) _funnelTimer.unref();
+
 // Called by game routes whenever a room's public state changes
 function announce(game, room) {
+  trackFunnel(game, room);
   const code  = room.code;
   const phase = room.state.phase;
 
