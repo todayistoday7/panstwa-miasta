@@ -893,6 +893,12 @@ function applyTranslations() {
     if (el && L[key] && typeof L[key] === 'string') el.textContent = L[key];
   }
 
+  // Field hints (placeholders) in the page language
+  var _ph = { pl:['Wpisz swoje imię','np. WOLF4'], en:['Enter your name','e.g. WOLF4'],
+              de:['Gib deinen Namen ein','z. B. WOLF4'], sv:['Skriv ditt namn','t.ex. WOLF4'] }[lang] || ['Enter your name','e.g. WOLF4'];
+  ['host-name','join-name'].forEach(function(id){ var e=document.getElementById(id); if (e) e.placeholder=_ph[0]; });
+  var _jc = document.getElementById('join-code'); if (_jc) _jc.placeholder = _ph[1];
+
   document.querySelectorAll('.lbl-nav-home-dup').forEach(function(el) { if (L.navHome) el.textContent = L.navHome; });
   document.querySelectorAll('.lbl-nav-all-games-dup').forEach(function(el) { if (L.navAllGames) el.textContent = L.navAllGames; });
 }
