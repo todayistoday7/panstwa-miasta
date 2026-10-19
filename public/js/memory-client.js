@@ -374,6 +374,15 @@ function renderLobby(data) {
   // Max players dropdown
   var maxSel = document.getElementById('settings-maxplayers');
   if (maxSel) maxSel.disabled = !isHost;
+  // Guests: mirror the host's choices (max players + visibility)
+  if (!isHost) {
+    if (maxSel && settings.maxPlayers) maxSel.value = String(settings.maxPlayers);
+    var _vPriv = document.getElementById('vis-private'), _vPub = document.getElementById('vis-public');
+    if (settings.isPublic !== undefined) {
+      if (_vPriv) _vPriv.classList.toggle('active', !settings.isPublic);
+      if (_vPub)  _vPub.classList.toggle('active',  !!settings.isPublic);
+    }
+  }
 
   // Visibility toggle
   var togWrap = document.getElementById('visibility-toggle');
