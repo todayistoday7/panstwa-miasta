@@ -152,7 +152,8 @@ window._seoLangUrls = ${JSON.stringify(seo.seoLangUrls)};
   
   // 7. Append bottom content after </html>
   if (seo.bottomContent) {
-    html += '\n' + seo.bottomContent + '\n';
+    // Centered wrapper so the SEO text lines up with the game column (was stuck to the left edge)
+    html += '\n<div class="seo-bottom" style="max-width:780px;margin:0 auto;padding:0 16px;box-sizing:border-box;">\n' + seo.bottomContent + '\n</div>\n';
   }
   
   return html;
