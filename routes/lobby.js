@@ -77,6 +77,8 @@ function funnelCheckStarted(f) {
 function trackFunnel(game, room) {
   try {
     if (!room || !room.code || !room.state) return;
+    // Ignore automated smoke-test rooms (player names start with "Smoke")
+    if ((room.players || []).some(p => p && typeof p.name === 'string' && p.name.indexOf('Smoke') === 0)) return;
     const key = game + ':' + room.code;
     let f = _funnel.get(key);
     if (!f) {

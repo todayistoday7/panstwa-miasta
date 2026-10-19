@@ -389,6 +389,54 @@ async function testJoinCodePrefill(browser) {
   }
 }
 
+// ─── 11b. Live Rooms "Join" links (old game URLs + ?join=) ─────────
+// These are the exact links the Live Rooms page builds. The code must
+// survive any redirect and land in the join field.
+async function testLiveRoomsJoinLinks(browser) {
+  section('Live Rooms join links');
+  const slugs = ['/', '/taboo', '/dots', '/twotruth', '/hangman', '/bingo', '/drawing', '/who-am-i', '/memory', '/charades'];
+  for (const slug of slugs) for (const lang of ['pl', 'en']) {
+    await check(`${slug}?join=…&lang=${lang} — code pre-filled`, async () => {
+      const { page, ctx } = await openPage(browser, BASE + slug + '?join=SMOKE&lang=' + lang);
+      await page.waitForTimeout(800);
+      const val = await page.$eval('#join-code', el => el.value).catch(() => '');
+      const url = page.url();
+      await ctx.close();
+      if (val !== 'SMOKE') throw new Error(`Value: "${val}" at ${url}`);
+    });
+  }
+}
+
+// ─── 11c. Banner shown at most once ───────────────────────────────
+async function testSingleBanner(browser) {
+  section('Announcement banner not duplicated');
+  const pages = ['/', '/corporate-bingo', '/korporacyjne-bingo', '/sketch-and-guess', '/hangman-online', '/two-truths-one-lie', '/forbidden-words', '/who-am-i', '/find-pairs-online', '/charades-online', '/rooms'];
+  for (const p of pages) {
+    await check(`${p} — max 1 banner`, async () => {
+      const { page, ctx } = await openPage(browser, BASE + p);
+      await page.waitForTimeout(1200);
+      const n = await page.$$eval('#site-banner', els => els.length).catch(() => 0);
+      await ctx.close();
+      if (n > 1) throw new Error(`${n} banners on the page`);
+    });
+  }
+}
+
+// ─── 11d. Public games counter API ───────────────────────────────
+async function testStatsApi() {
+  section('Games counter API');
+  await check('/api/stats-summary returns numbers', async () => {
+    const res = await fetch(BASE + '/api/stats-summary');
+    if (res.status !== 200) throw new Error(`HTTP ${res.status}`);
+    const d = await res.json();
+    if (typeof d.allTime !== 'number' || typeof d.week !== 'number') throw new Error('Bad JSON: ' + JSON.stringify(d));
+  });
+  await check('/admin/login page loads', async () => {
+    const res = await fetch(BASE + '/admin/login');
+    if (res.status !== 200) throw new Error(`HTTP ${res.status}`);
+  });
+}
+
 // ─── 12. Game lobbies ──────────────────────────────────────────────
 async function testGameLobbies(browser) {
   section('Game lobbies — 2 players connect');
@@ -448,7 +496,7 @@ async function testGameLobbies(browser) {
 
       await check(`${g.name} — host sees 2 players`, async () => {
         await p1.waitForTimeout(1500);
-        const lobbyEl = await p1.$('#lobby-players, #lobby-teams, .player-list');
+        const lobbyEl = await p1.$('#lobby-players, #lobby-teams, .player-list, .team-columns');
         const content = lobbyEl ? await lobbyEl.innerText().catch(() => '') : '';
         if (!content.includes('SmokeGuest') && !content.includes('SmokeHost'))
           throw new Error(`Lobby content: "${content.slice(0, 100)}"`);
@@ -552,6 +600,9 @@ async function testHowToPlayPills(browser) {
     await testFooterLinks(browser);
     await testLanguageSwitch(browser);
     await testJoinCodePrefill(browser);
+    await testLiveRoomsJoinLinks(browser);
+    await testSingleBanner(browser);
+    await testStatsApi();
     await testHowToPlayPills(browser);
     await testGameLobbies(browser);
     await testTabuLobby(browser);
