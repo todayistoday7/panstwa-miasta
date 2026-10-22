@@ -353,13 +353,13 @@ function renderLobby(data) {
 
   if (isHost) {
     if (lobbySettings) lobbySettings.style.display = 'block';
-    if (btnRow) btnRow.style.display = 'flex';
+    _setLobbyBtns(true);
     if (waitMsg) waitMsg.style.display = 'none';
     const startBtn = document.getElementById('lbl-start-btn');
     if (startBtn) { startBtn.disabled = connected.length < 3; startBtn.style.opacity = connected.length >= 3 ? '1' : '0.4'; }
   } else {
     if (lobbySettings) lobbySettings.style.display = 'none';
-    if (btnRow) btnRow.style.display = 'none';
+    _setLobbyBtns(false);
     if (waitMsg) { renderWaitingForHost(waitMsg, L, connected.length); }
   }
 }
@@ -1019,3 +1019,13 @@ function applyTranslations() {
 buildLangBar();
 applyTranslations();
 window.lang = lang;
+
+// Lobby buttons: host sees all; other players still get "Leave room"
+function _setLobbyBtns(isHost) {
+  var row = document.getElementById('lobby-btn-row');
+  if (!row) return;
+  row.style.display = 'flex';
+  Array.prototype.forEach.call(row.children, function(b) {
+    b.style.display = (isHost || b.id === 'lbl-leave-room') ? '' : 'none';
+  });
+}

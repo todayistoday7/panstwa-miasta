@@ -482,7 +482,7 @@ function renderLobby(data) {
     }
     if (gridSel) gridSel.disabled = false;
     if (maxSel)  maxSel.disabled  = false;
-    document.getElementById('lobby-btn-row').style.display = 'flex';
+    _setLobbyBtns(true);
     document.getElementById('waiting-msg').style.display   = 'none';
     var _startBtn = document.getElementById('lobby-start-btn');
     if (_startBtn) {
@@ -515,7 +515,7 @@ function renderLobby(data) {
     if (maxSel)  { maxSel.value  = settings.maxPlayers || 4; maxSel.disabled = true; }
     const roundsSelNH = document.getElementById('settings-rounds');
     if (roundsSelNH) { roundsSelNH.value = settings.totalRounds || 1; roundsSelNH.disabled = true; }
-    document.getElementById('lobby-btn-row').style.display = 'none';
+    _setLobbyBtns(false);
     var waitMsg = document.getElementById('waiting-msg');
     if (isBetweenRounds) {
       // Between rounds — show round info, hide settings
@@ -1020,4 +1020,14 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', maybeStartDemo);
 } else {
   maybeStartDemo();
+}
+
+// Lobby buttons: host sees all; other players still get "Leave room"
+function _setLobbyBtns(isHost) {
+  var row = document.getElementById('lobby-btn-row');
+  if (!row) return;
+  row.style.display = 'flex';
+  Array.prototype.forEach.call(row.children, function(b) {
+    b.style.display = (isHost || b.id === 'lbl-leave-room') ? '' : 'none';
+  });
 }
