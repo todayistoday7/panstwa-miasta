@@ -42,6 +42,7 @@
     font-size:12px; font-weight:800; cursor:pointer; text-align:center; transition:all 0.2s;
   }
   .wa-diff-btn.active { border-color:var(--green); color:var(--green); background:rgba(6,214,160,0.07); }
+  .wa-diff-hint { margin:-4px 0 14px; font-size:12px; font-weight:700; color:var(--muted); line-height:1.5; }
 
   /* Character card */
   .wa-char-card {
@@ -364,6 +365,7 @@
           <div class="wa-diff-btn" data-diff="medium" onclick="setDiff('medium')"><span id="lbl-diff-medium">Średni</span></div>
           <div class="wa-diff-btn" data-diff="hard" onclick="setDiff('hard')"><span id="lbl-diff-hard">Trudny</span></div>
         </div>
+        <p class="wa-diff-hint" id="wa-diff-hint">Tylko znane postacie, idealne dla dzieci.</p>
 
         <!-- Turns & Timer -->
         <div style="margin-top:4px;">
@@ -586,6 +588,6 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/shared.js?v=4"></script>
-<script src="/js/whoami-client.js?v=5"></script>
+<script src="/js/whoami-client.js?v=6"></script>
 </body>
 </html>

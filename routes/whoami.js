@@ -375,7 +375,7 @@ const CHARACTERS = {
       {en:"Toothless",pl:"Szczerbatek",de:"Ohnezahn",sv:"Tandlöse",langs:["en","pl","de","sv"]},
       {en:"Hiccup",pl:"Czkawka",de:"Hicks",sv:"Hicke",langs:["en","pl","de","sv"]},
       {en:"Anna",pl:"Anna",de:"Anna",sv:"Anna",langs:["en","pl","de","sv"]},
-      {en:"Olaf",pl:"Olaf",de:"Olaf",sv:"Olaf",langs:["en","pl","de","sv"]},
+      {en:"Olaf (Frozen)",pl:"Olaf (Kraina Lodu)",de:"Olaf (Die Eiskönigin)",sv:"Olaf (Frost)",langs:["en","pl","de","sv"]},
       {en:"Star Lord",pl:"Star-Lord",de:"Star-Lord",sv:"Star-Lord",langs:["en","pl","de","sv"]},
       {en:"Groot",pl:"Groot",de:"Groot",sv:"Groot",langs:["en","pl","de","sv"]},
       {en:"Rocket",pl:"Rocket",de:"Rocket",sv:"Rocket",langs:["en","pl","de","sv"]},
@@ -383,7 +383,7 @@ const CHARACTERS = {
       {en:"BB-8",pl:"BB-8",de:"BB-8",sv:"BB-8",langs:["en","pl","de","sv"]},
       {en:"Minions",pl:"Minionki",de:"Minions",sv:"Minions",langs:["en","pl","de","sv"]},
       {en:"Dom Toretto",pl:"Dom Toretto",de:"Dom Toretto",sv:"Dom Toretto",langs:["en","pl","de","sv"]},
-      {en:"Moana",pl:"Moana",de:"Moana",sv:"Moana",langs:["en","pl","de","sv"]},
+      {en:"Moana",pl:"Vaiana",de:"Vaiana",sv:"Vaiana",langs:["en","pl","de","sv"]},
       {en:"Doctor Strange",pl:"Doktor Strange",de:"Doctor Strange",sv:"Doctor Strange",langs:["en","pl","de","sv"]},
       {en:"Pennywise",pl:"Pennywise",de:"Pennywise",sv:"Pennywise",langs:["en","pl","de","sv"]},
       {en:"Aquaman",pl:"Aquaman",de:"Aquaman",sv:"Aquaman",langs:["en","pl","de","sv"]},
@@ -844,7 +844,7 @@ const CHARACTERS = {
     {en:"Snow White",pl:"Kr\u00f3lewna \u015anie\u017cka",de:"Schneewittchen",sv:"Sn\u00f6vit",langs:["en", "pl", "de", "sv"]},
     {en:"Bambi",pl:"Bambi",de:"Bambi",sv:"Bambi",langs:["en", "pl", "de", "sv"]},
     {en:"Woody",pl:"Chudy",de:"Woody",sv:"Woody",langs:["en", "pl", "de", "sv"]},
-    {en:"Olaf",pl:"Olaf",de:"Olaf",sv:"Olaf",langs:["en", "pl", "de", "sv"]},
+    {en:"Olaf (Frozen)",pl:"Olaf (Kraina Lodu)",de:"Olaf (Die Eiskönigin)",sv:"Olaf (Frost)",langs:["en", "pl", "de", "sv"]},
     {en:"Moana",pl:"Vaiana",de:"Vaiana",sv:"Vaiana",langs:["en", "pl", "de", "sv"]},
     {en:"Puss in Boots",pl:"Kot w butach",de:"Der gestiefelte Kater",sv:"M\u00e4sterkatten",langs:["en", "pl", "de", "sv"]},
     {en:"Stitch",pl:"Stitch",de:"Stitch",sv:"Stitch",langs:["en", "pl", "de", "sv"]},
@@ -922,7 +922,7 @@ const CHARACTERS = {
       {en:"Hiro Hamada (Big Hero 6)",pl:"Hiro Hamada",de:"Hiro Hamada",sv:"Hiro Hamada",langs:["en","pl","de","sv"]},
       {en:"Bamse",pl:"",de:"",sv:"Bamse",langs:["sv"]},
       {en:"Pippi Longstocking",pl:"Pippi Pończoszanka",de:"Pippi Langstrumpf",sv:"Pippi Långstrump",langs:["en","pl","de","sv"]},
-      {en:"Merida",pl:"Merida",de:"Merida",sv:"Merida",langs:["en", "pl", "de", "sv"]},
+      {en:"Merida",pl:"Merida Waleczna",de:"Merida",sv:"Merida",langs:["en", "pl", "de", "sv"]},
       {en:"Fred Flintstone",pl:"Fred Flinston",de:"Fred Feuerstein",sv:"Fred Flinta",langs:["en", "pl", "de", "sv"]},
       {en:"Asterix",pl:"Asteriks",de:"Asterix",sv:"Asterix",langs:["en", "pl", "de", "sv"]},
       {en:"Smurfette",pl:"Smerfetka",de:"Schlumpfine",sv:"Smurfan",langs:["en","pl","de","sv"]},
@@ -970,6 +970,7 @@ const WIKI_OVERRIDES = {
   'Napoleon Bonaparte': 'Napoleon',
   'Galileo Galilei': 'Galileo Galilei',
   'Nicolaus Copernicus': 'Copernicus',
+  "Olaf (Frozen)": "Olaf (Frozen)",
   "Chase (Paw Patrol)": "PAW Patrol",
   "Masha (Masha and the Bear)": "Masha and the Bear",
   "Rumi (KPop Demon Hunters)": "KPop Demon Hunters",
@@ -1016,6 +1017,7 @@ function getCharacters(categories, difficulty, lang) {
       cartLevels.forEach(lvl => {
         if (catData[lvl]) pool = pool.concat(
           catData[lvl].filter(ch => !ch.langs || ch.langs.includes(activeLang))
+            .map(ch => (typeof ch === 'string' ? ch : Object.assign({}, ch, { cat })))
         );
       });
     } else {
@@ -1025,6 +1027,7 @@ function getCharacters(categories, difficulty, lang) {
       levels.forEach(lvl => {
         if (catData[lvl]) pool = pool.concat(
           catData[lvl].filter(ch => !ch.langs || ch.langs.includes(activeLang))
+            .map(ch => (typeof ch === 'string' ? ch : Object.assign({}, ch, { cat })))
         );
       });
     }
@@ -1097,6 +1100,7 @@ function emitState(io, room) {
     activePlayerId: activePId,
     activeChar:    (room.state.phase === 'playing') ? null : room.state.activeChar,
     wikiSlug:      (room.state.phase === 'playing') ? null : room.state.wikiSlug,
+    charCat:       (room.state.phase === 'playing') ? null : (room.state.charCat || null),
     questionCount: room.state.questionCount,
     chat:          room.state.chat,
     timerEnd:      room.state.timerEnd,
@@ -1115,11 +1119,13 @@ function emitState(io, room) {
       if (p.id === activePId) {
         playerState.activeChar = null;
         playerState.wikiSlug = null;
+        playerState.charCat = null;
       } else {
         const charForLang = (room.state.charByLang && room.state.charByLang[p.lang || 'en'])
           ? room.state.charByLang[p.lang || 'en'] : room.state.activeChar;
         playerState.activeChar = charForLang;
         playerState.wikiSlug = room.state.wikiSlug;
+        playerState.charCat = room.state.charCat || null;
       }
     } else if (room.state.charByLang) {
       // turn_result / final: show character in each player's language
@@ -1141,6 +1147,7 @@ function startNextTurn(io, room) {
   room.state.usedChars.push(charEn);
   room.state.activeChar    = charEn;
   room.state.wikiSlug      = WIKI_OVERRIDES[charEn] || charEn;
+  room.state.charCat      = (charObj && charObj.cat) || null;
   room.state.questionCount = 0;
   room.state.chat          = [];
   room.state.phase         = 'playing';
@@ -1382,6 +1389,7 @@ function register(io, socket) {
     room.state.usedChars.push(charEn);
     room.state.activeChar    = charEn;
     room.state.wikiSlug      = WIKI_OVERRIDES[charEn] || charEn;
+    room.state.charCat      = (charObj && charObj.cat) || null;
     room.state.questionCount = 0;
     room.state.chat          = [];
     if (room.settings.timerSecs > 0) {
@@ -1467,6 +1475,7 @@ function register(io, socket) {
     room.state.chat         = [];
     room.state.activeChar   = null;
     room.state.wikiSlug     = null;
+    room.state.charCat = null;
     room.players.forEach(p => p.score = 0);
     emitState(io, room);
   });

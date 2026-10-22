@@ -140,6 +140,7 @@ const LANGS = {
     enoughPlayers:  (n) => `✅ ${n} graczy gotowych — można zaczynać!`,
     waitingHostStart: (n) => `✅ ${n} graczy gotowych — czekam aż host rozpocznie grę. Użyj 👋 Szturchnij!`,
     selectCat:'Wybierz przynajmniej jedną kategorię',
+    diffHintEasy:'Tylko znane postacie, idealne dla dzieci.', diffHintMedium:'Postacie łatwe + średnie.', diffHintHard:'Wszystkie postacie, także te bardzo trudne.',
     modeLabel:'Tryb:', catsLabel:'Kategorie:', diffLabel:'Trudność:', timerLabel:'Timer:',
     voiceModeTip:'🎤 Tryb głosowy — pytajcie się nawzajem na żywo lub przez telefon',
     chatModeTip:'💬 Tryb czat — wszystko w aplikacji',
@@ -204,6 +205,7 @@ const LANGS = {
     enoughPlayers:  (n) => `✅ ${n} players ready — good to go!`,
     waitingHostStart: (n) => `✅ ${n} players ready — waiting for host to start. Tap 👋 Nudge!`,
     selectCat:'Select at least one category',
+    diffHintEasy:'Only well-known characters, great for kids.', diffHintMedium:'Easy + medium characters.', diffHintHard:'All characters, including the really tricky ones.',
     modeLabel:'Mode:', catsLabel:'Categories:', diffLabel:'Difficulty:', timerLabel:'Timer:',
     voiceModeTip:'🎤 Voice mode — ask questions out loud or on a call',
     chatModeTip:'💬 Chat mode — everything happens in the app',
@@ -268,6 +270,7 @@ const LANGS = {
     enoughPlayers:  (n) => `✅ ${n} Spieler bereit — los geht's!`,
     waitingHostStart: (n) => `✅ ${n} Spieler bereit — warte auf den Host. Tippe 👋 Anstupsen!`,
     selectCat:'Wähle mindestens eine Kategorie',
+    diffHintEasy:'Nur bekannte Charaktere, ideal für Kinder.', diffHintMedium:'Leichte + mittlere Charaktere.', diffHintHard:'Alle Charaktere, auch die richtig schweren.',
     modeLabel:'Modus:', catsLabel:'Kategorien:', diffLabel:'Schwierigkeit:', timerLabel:'Timer:',
     voiceModeTip:'🎤 Sprachmodus — Fragen laut stellen oder per Anruf',
     chatModeTip:'💬 Chat-Modus — alles passiert in der App',
@@ -332,6 +335,7 @@ const LANGS = {
     enoughPlayers:  (n) => `✅ ${n} spelare redo — sätt igång!`,
     waitingHostStart: (n) => `✅ ${n} spelare redo — väntar på värden. Tryck 👋 Puffa!`,
     selectCat:'Välj minst en kategori',
+    diffHintEasy:'Bara kända karaktärer, perfekt för barn.', diffHintMedium:'Lätta + medelsvåra karaktärer.', diffHintHard:'Alla karaktärer, även de riktigt svåra.',
     modeLabel:'Läge:', catsLabel:'Kategorier:', diffLabel:'Svårighet:', timerLabel:'Timer:',
     voiceModeTip:'🎤 Röstläge — ställ frågor högt eller via samtal',
     chatModeTip:'💬 Chattläge — allt sker i appen',
@@ -528,7 +532,7 @@ function renderPlaying(data) {
     if (hintElOther) hintElOther.style.display = 'none';
     if (charCard) {
       charCard.style.display = '';
-      renderCharCard(data.activeChar, data.wikiSlug);
+      renderCharCard(data.activeChar, data.wikiSlug, data.charCat);
     }
   }
 
@@ -586,7 +590,7 @@ function renderPlaying(data) {
   if (mini) mini.textContent = data.players.map(p => p.name + ': ' + p.score).join(' · ');
 }
 
-function renderCharCard(charName, wikiSlug) {
+function renderCharCard(charName, wikiSlug, charCat) {
   const nameEl = document.getElementById('wa-char-name');
   const imgEl  = document.getElementById('wa-char-img');
   const phEl   = document.getElementById('wa-char-placeholder');
@@ -597,6 +601,9 @@ function renderCharCard(charName, wikiSlug) {
   if (imgEl && phEl) {
     imgEl.style.display = 'none';
     phEl.style.display  = 'flex';
+    // No photo (Wikipedia has none for most cartoon/film characters) -> show the category emoji
+    var CAT_EMOJI = { sports:'⚽', music:'🎵', film:'🎬', history:'📚', animals:'🐘', cartoons:'🧸' };
+    phEl.textContent = CAT_EMOJI[charCat] || '🕵️';
     const slug = encodeURIComponent(wikiSlug || charName);
     fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${slug}`)
       .then(r => r.json())
@@ -910,6 +917,15 @@ function setDiff(diff) {
   document.querySelectorAll('.wa-diff-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.diff === diff);
   });
+  updateDiffHint();
+}
+
+// One line under the difficulty buttons explaining what each level includes
+function updateDiffHint() {
+  var el = document.getElementById('wa-diff-hint');
+  if (!el || typeof L === 'undefined' || !L) return;
+  var key = selDiff === 'hard' ? 'diffHintHard' : selDiff === 'medium' ? 'diffHintMedium' : 'diffHintEasy';
+  if (L[key]) el.textContent = L[key];
 }
 
 function createRoom() {
@@ -1102,6 +1118,7 @@ function applyTranslations() {
   set('lbl-diff-easy',      'diffEasy');
   set('lbl-diff-medium',    'diffMedium');
   set('lbl-diff-hard',      'diffHard');
+  updateDiffHint();
   set('lbl-cat-sports',     'catSports');
   set('lbl-cat-music',      'catMusic');
   set('lbl-cat-film',       'catFilm');
