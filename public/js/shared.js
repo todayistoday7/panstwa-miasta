@@ -117,12 +117,43 @@ function showScreen(id) {
 }
 
 // ─── ERROR / TOAST ────────────────────────────────────────────────
+// Tell the server which language this page is in (used for friendly
+// server messages like "this code belongs to another game").
+(function () {
+  if (typeof window.io !== 'function' || window.io._pmLang) return;
+  var orig = window.io;
+  var wrapped = function (url, opts) {
+    if (url && typeof url === 'object' && opts === undefined) { opts = url; url = undefined; }
+    opts = opts || {};
+    try {
+      var q = new URLSearchParams(window.location.search).get('lang') || window._forceLang || document.documentElement.lang || '';
+      opts.query = Object.assign({}, opts.query || {}, { pl_lang: String(q).slice(0, 2) });
+    } catch (e) {}
+    return url === undefined ? orig(opts) : orig(url, opts);
+  };
+  for (var k in orig) { try { wrapped[k] = orig[k]; } catch (e) {} }
+  wrapped._pmLang = true;
+  window.io = wrapped;
+})();
+
+// Medal by score, not by list position: equal scores share the same place.
+function medalFor(list, i, scoreOf, blank) {
+  var s = scoreOf(list[i]);
+  var rank = 0;
+  for (var k = 0; k < list.length; k++) if (scoreOf(list[k]) > s) rank++;
+  return rank === 0 ? '🥇' : rank === 1 ? '🥈' : rank === 2 ? '🥉' : (blank !== undefined ? blank : (rank + 1) + '.');
+}
+function drawLine(lang) {
+  var t = { pl: '🤝 Remis!', en: "🤝 It's a draw!", de: '🤝 Unentschieden!', sv: '🤝 Oavgjort!' }[lang] || "🤝 It's a draw!";
+  return '<div style="text-align:center;font-size:18px;font-weight:900;color:var(--accent2);margin-bottom:12px;">' + t + '</div>';
+}
+
 function showError(msg) {
   const box = document.getElementById('home-error');
   if (!box) return;
   box.textContent = msg; box.style.display = 'block';
   clearTimeout(box._t);
-  box._t = setTimeout(() => box.style.display = 'none', 3500);
+  box._t = setTimeout(() => box.style.display = 'none', Math.max(3500, String(msg || '').length * 80));
 }
 
 function clearHomeError() {
@@ -1763,12 +1794,28 @@ window._buildFooterLangBtns = function() {
     }
     return null;
   }
+  // During play (not start page / lobby / final screen): hide language flags and
+  // the "Home" button, so nobody leaves or switches language mid-game by accident.
+  var CALM = { 'screen-home': 1, 'screen-lobby': 1, 'screen-final': 1 };
   function check() {
     pending = false;
     var id = visibleScreen();
     if (id && last !== null && id !== last) { try { window.scrollTo(0, 0); } catch (e) {} }
-    if (id) last = id;
+    if (id) {
+      last = id;
+      var playing = !CALM[id] && /^screen-/.test(id);
+      if (document.body.classList.contains('pm-inplay') !== playing) document.body.classList.toggle('pm-inplay', playing);
+    }
   }
+  try {
+    var st = document.createElement('style');
+    st.textContent =
+      'body.pm-inplay .lang-bar{display:none!important;}' +
+      'body.pm-inplay .nav-home-btn{display:none!important;}' +
+      '@media(max-width:520px){.lang-bar{gap:6px!important;}' +
+        '.lang-bar button,.lang-bar .lang-btn{font-size:12px!important;padding:4px 10px!important;}}';
+    (document.head || document.documentElement).appendChild(st);
+  } catch (e) {}
   function start() {
     last = visibleScreen();
     try {

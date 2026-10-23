@@ -42,6 +42,7 @@
     font-size:12px; font-weight:800; cursor:pointer; text-align:center; transition:all 0.2s;
   }
   .wa-diff-btn.active { border-color:var(--green); color:var(--green); background:rgba(6,214,160,0.07); }
+  @media (max-width:520px) { body.pm-inplay .wa-play-top { justify-content:center !important; } }
   .wa-diff-hint { margin:-4px 0 14px; font-size:12px; font-weight:700; color:var(--muted); line-height:1.5; }
 
   /* Character card */
@@ -472,7 +473,7 @@
 
   <!-- ══ SCREEN: PLAYING ══ -->
   <div id="screen-playing" class="screen">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+    <div class="wa-play-top" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
       <button class="nav-home-btn" onclick="confirmGoHome()">🚪 <span class="lbl-nav-home-dup">Leave</span></button>
       <div id="wa-score-mini" style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--muted);"></div>
     </div>
@@ -587,7 +588,7 @@
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/shared.js?v=5"></script>
-<script src="/js/whoami-client.js?v=7"></script>
+<script src="/js/shared.js?v=6"></script>
+<script src="/js/whoami-client.js?v=8"></script>
 </body>
 </html>

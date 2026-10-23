@@ -843,9 +843,10 @@ function renderFinal(data) {
   if (!el) return;
   const sorted = [...data.players].sort((a,b) => b.score - a.score);
   const max = sorted[0] ? sorted[0].score : 0;
-  el.innerHTML = sorted.map((p, i) => `
+  const _tie = sorted.length > 1 && sorted[1].score === max;
+  el.innerHTML = (_tie ? drawLine(lang) : '') + sorted.map((p, i) => `
     <div class="wa-score-row ${p.score === max ? 'winner' : ''}">
-      <span style="font-weight:800;">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'  '} ${esc(p.name)}</span>
+      <span style="font-weight:800;">${medalFor(sorted, i, x => x.score, '  ')} ${esc(p.name)}</span>
       <span class="wa-score-pts">${p.score}</span>
     </div>`
   ).join('');

@@ -740,7 +740,7 @@ function renderFinal(data) {
     el.innerHTML +=
       '<div class="hang-final-row' + (isWin ? ' winner' : '') + '">' +
         '<span style="font-weight:800;font-size:15px;">' +
-          (i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.') + ' ' +
+          medalFor(sorted, i, function(x){ return x.score || 0; }) + ' ' +
           p.name + (p.id === myId ? ' (' + L.youBadge + ')' : '') +
         '</span>' +
         '<span class="hang-final-pts">' + s + ' <span style="font-size:14px;font-family:Nunito">' + L.wins + '</span></span>' +

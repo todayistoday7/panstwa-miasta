@@ -928,7 +928,7 @@ socket.on('charades_error', ({ message }) => {
     sessionStorage.removeItem('charades_name');
   }
   var el = document.getElementById('home-error');
-  if (el) { el.textContent = message; el.style.display = 'block'; setTimeout(function(){ el.style.display = 'none'; }, 3500); }
+  if (el) { el.textContent = message; el.style.display = 'block'; setTimeout(function(){ el.style.display = 'none'; }, Math.max(3500, String(message || '').length * 80)); }
 });
 
 socket.on('charades_state', function(data) {

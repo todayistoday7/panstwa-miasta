@@ -158,7 +158,7 @@ function register(io, socket) {
 
   socket.on('tt_join', ({ code, name }) => {
     const room = getTTRoom(code.toUpperCase().trim());
-    if (!room) { socket.emit('tt_error', { msg: 'Room not found.' }); return; }
+    if (!room) { socket.emit('tt_error', { msg: require('./roomhint').notFound(socket, code, 'twotruth') }); return; }
     if (room.state.phase === 'final')  { socket.emit('tt_error', { msg: 'This game has ended.' }); return; }
 
     // Mid-game rejoin by name

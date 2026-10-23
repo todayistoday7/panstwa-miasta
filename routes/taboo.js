@@ -195,7 +195,7 @@ function register(io, socket) {
 
   socket.on('taboo_join', ({ code, name }) => {
     const room = getTabooRoom(code.toUpperCase().trim());
-    if (!room) { socket.emit('taboo_error', { msg: 'Room not found.' }); return; }
+    if (!room) { socket.emit('taboo_error', { msg: require('./roomhint').notFound(socket, code, 'taboo') }); return; }
     if (room.state.phase === 'final')  { socket.emit('taboo_error', { msg: 'This game has ended.' }); return; }
 
     // Mid-game rejoin by name

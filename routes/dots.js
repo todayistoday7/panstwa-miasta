@@ -147,7 +147,7 @@ function register(io, socket) {
 
   socket.on('dots_join', ({ code, name }) => {
     const room = getDotsRoom(code.toUpperCase().trim());
-    if (!room) { socket.emit('dots_error', { msg: 'Room not found.' }); return; }
+    if (!room) { socket.emit('dots_error', { msg: require('./roomhint').notFound(socket, code, 'dots') }); return; }
     if (room.state.phase === 'final') { socket.emit('dots_error', { msg: 'This game has ended.' }); return; }
 
     // Mid-game rejoin: if a player with this name exists (even connected — tab duplication),

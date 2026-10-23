@@ -222,7 +222,7 @@ function register(io, socket) {
   socket.on('drawing_join', ({ name, code }) => {
     const trimmed = (name || '').trim();
     const room = getRoom((code || '').toUpperCase().trim());
-    if (!room)    { socket.emit('drawing_error', { msg: 'Room not found.' }); return; }
+    if (!room)    { socket.emit('drawing_error', { msg: require('./roomhint').notFound(socket, code, 'drawing') }); return; }
     if (!trimmed) { socket.emit('drawing_error', { msg: 'Enter your name.' }); return; }
     if (isBotName(trimmed)) { socket.emit('drawing_error', { msg: 'Invalid name.' }); return; }
 

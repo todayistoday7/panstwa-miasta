@@ -296,7 +296,7 @@ function register(io, socket) {
 
   socket.on('join_room', ({ code, name }) => {
     const room = getRoom(code.toUpperCase().trim());
-    if (!room) { socket.emit('error', { msg: 'Room not found.' }); return; }
+    if (!room) { socket.emit('error', { msg: require('./roomhint').notFound(socket, code, 'pm') }); return; }
     if (room.state.phase === 'final')  { socket.emit('error', { msg: 'This game has ended.' }); return; }
 
     const trimmedName = (name || 'Player').trim();

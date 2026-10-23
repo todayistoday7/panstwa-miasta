@@ -154,7 +154,7 @@ function register(io, socket) {
 
   socket.on('hang_join', ({ code, name }) => {
     const room = getHangRoom(code.toUpperCase().trim());
-    if (!room) { socket.emit('hang_error', { msg: 'Room not found.' }); return; }
+    if (!room) { socket.emit('hang_error', { msg: require('./roomhint').notFound(socket, code, 'hangman') }); return; }
     if (room.state.phase === 'final') { socket.emit('hang_error', { msg: 'This game has already ended.' }); return; }
 
     // Mid-game rejoin by name

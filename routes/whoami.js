@@ -1203,7 +1203,7 @@ function register(io, socket) {
     if (isBotName(trimmed)) { socket.emit('whoami_error', { msg: 'Invalid name.' }); return; }
 
     const room = whoamiRooms[roomCode];
-    if (!room) { socket.emit('whoami_error', { msg: 'Room not found.' }); return; }
+    if (!room) { socket.emit('whoami_error', { msg: require('./roomhint').notFound(socket, code, 'whoami') }); return; }
     // If game in progress, try to rejoin as existing disconnected player
     if (room.state.phase !== 'lobby') {
       const existing = room.players.find(p => p.name.toLowerCase() === trimmed.toLowerCase() && !p.connected);

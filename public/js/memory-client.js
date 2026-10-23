@@ -491,10 +491,11 @@ function renderFinal(state) {
   var maxScore = sorted[0] ? sorted[0].score : 0;
 
   var container = document.getElementById('final-results');
-  container.innerHTML = '<div class="mem-final-players">' +
+  var _tie = sorted.length > 1 && sorted[1].score === maxScore;
+  container.innerHTML = (_tie ? drawLine(lang) : '') + '<div class="mem-final-players">' +
     sorted.map(function(p, i) {
       return '<div class="mem-final-row ' + (p.score === maxScore ? 'winner' : '') + '">' +
-        '<span class="mem-final-name">' + (i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '  ') +
+        '<span class="mem-final-name">' + medalFor(sorted, i, function(x){ return x.score; }, '  ') +
           ' ' + p.name + (p.id === myId ? ' (you)' : '') + '</span>' +
         '<span class="mem-final-score">' + p.score + ' ' + L.pairs + '</span>' +
       '</div>';

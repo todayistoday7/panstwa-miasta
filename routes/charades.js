@@ -347,7 +347,7 @@ function register(io, socket) {
   socket.on('charades_join', ({ code, name }) => {
     code = (code || '').toUpperCase().trim();
     const room = rooms[code];
-    if (!room) return socket.emit('charades_error', { message: 'Room not found' });
+    if (!room) return socket.emit('charades_error', { message: require('./roomhint').notFound(socket, code, 'charades') });
     
     // Check if this is a returning player (same name)
     const existing = room.players.find(p => p.name === (name || '').trim());

@@ -672,7 +672,7 @@ function renderFinal(data) {
     el.innerHTML +=
       '<div class="tt-score-row" style="border:2px solid ' + (isWin ? 'var(--accent2)' : 'var(--border)') + ';' + (isWin ? 'background:rgba(255,209,102,0.06)' : '') + '">' +
         '<span style="font-weight:800;font-size:15px;">' +
-          (i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.') + ' ' +
+          medalFor(sorted, i, function(x){ return totalScores[x.id] || 0; }) + ' ' +
           p.name + (p.id === myId ? ' (' + L.youBadge + ')' : '') +
         '</span>' +
         '<span class="tt-score-pts">' + score + ' <span style="font-size:14px;font-family:Nunito">' + L.pts + '</span></span>' +

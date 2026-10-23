@@ -832,7 +832,7 @@ function renderFinal(data) {
       '<div class="dots-final-row' + (isWinner ? ' winner' : '') + '" style="border-color:' + p.color + '">' +
         '<div class="dots-final-name">' +
           '<div class="dots-color-swatch" style="background:' + p.color + ';width:18px;height:18px;border-radius:4px;"></div>' +
-          (i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1)+'.') + ' ' +
+          medalFor(sorted, i, function(x){ return x.score; }) + ' ' +
           p.name + (p.id === myId ? ' (' + L.youBadge + ')' : '') +
         '</div>' +
         '<div class="dots-final-pts" style="color:' + p.color + '">' + p.score + ' <span style="font-size:14px;font-family:Nunito">' + L.boxes + '</span></div>' +

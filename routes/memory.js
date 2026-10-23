@@ -129,7 +129,7 @@ function register(io, socket) {
 
   socket.on('mem_join', ({ code, name }) => {
     const room = getMemRoom((code || '').toUpperCase().trim());
-    if (!room) { socket.emit('mem_error', { msg: 'Room not found.' }); return; }
+    if (!room) { socket.emit('mem_error', { msg: require('./roomhint').notFound(socket, code, 'memory') }); return; }
     if (room.state.phase === 'final') { socket.emit('mem_error', { msg: 'This game has ended.' }); return; }
     if (isBotName(name)) { socket.emit('mem_error', { msg: 'Invalid name.' }); return; }
 

@@ -1221,7 +1221,7 @@ function showScreen(id) {
 function showError(msg) {
   const box = document.getElementById('home-error');
   box.textContent = msg; box.style.display = 'block';
-  setTimeout(() => box.style.display = 'none', 3500);
+  setTimeout(() => box.style.display = 'none', Math.max(3500, String(msg || '').length * 80));
 }
 
 function clearJoinError() {

@@ -232,7 +232,7 @@ socket.on('bingo_state', (data) => {
 socket.on('bingo_error', ({ msg }) => {
   const el = document.getElementById('home-error');
   if (el) { el.textContent = msg; el.style.display = 'block'; }
-  setTimeout(() => { if (el) el.style.display = 'none'; }, 4000);
+  setTimeout(() => { if (el) el.style.display = 'none'; }, Math.max(4000, String(msg || '').length * 80));
 });
 
 socket.on('bingo_false', () => {
