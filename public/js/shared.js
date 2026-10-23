@@ -1805,6 +1805,8 @@ window._buildFooterLangBtns = function() {
       last = id;
       var playing = !CALM[id] && /^screen-/.test(id);
       if (document.body.classList.contains('pm-inplay') !== playing) document.body.classList.toggle('pm-inplay', playing);
+      var inRoom = id !== 'screen-home' && /^screen-/.test(id);
+      if (document.body.classList.contains('pm-inroom') !== inRoom) document.body.classList.toggle('pm-inroom', inRoom);
     }
   }
   try {
@@ -1813,6 +1815,7 @@ window._buildFooterLangBtns = function() {
       'body.pm-inplay .lang-bar{display:none!important;}' +
       'body.pm-inplay .nav-home-btn{display:none!important;}' +
       '@media(max-width:520px){.lang-bar{gap:6px!important;}' +
+        'body.pm-inroom header{display:none!important;}' +
         '.lang-bar button,.lang-bar .lang-btn{font-size:12px!important;padding:4px 10px!important;}}';
     (document.head || document.documentElement).appendChild(st);
   } catch (e) {}
