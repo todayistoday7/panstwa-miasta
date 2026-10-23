@@ -360,7 +360,7 @@ function renderLobby(data) {
   } else {
     if (lobbySettings) lobbySettings.style.display = 'none';
     _setLobbyBtns(false);
-    if (waitMsg) { renderWaitingForHost(waitMsg, L, connected.length); }
+    if (waitMsg) { renderWaitingForHost(waitMsg, L, connected.length, players.length); }
   }
 }
 

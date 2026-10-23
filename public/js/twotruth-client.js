@@ -429,7 +429,7 @@ function renderLobby(data) {
   } else {
     _setLobbyBtns(false);
     var _wpc = (data.players || []).filter(function(p){return p.connected !== false;}).length;
-    renderWaitingForHost(document.getElementById('waiting-msg'), L, _wpc);
+    renderWaitingForHost(document.getElementById('waiting-msg'), L, _wpc, (data.players || []).length);
   }
 }
 

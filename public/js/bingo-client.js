@@ -278,6 +278,7 @@ function renderLobby(data) {
         '<span>' + escHtml(p.name) +
           (p.id === myId ? ' <span class="you-badge">' + L.youBadge + '</span>' : '') +
           (p.id === hostId ? ' <span class="host-badge">' + L.hostBadge + '</span>' : '') +
+          (p.connected ? '' : ' <span class="offline-badge" style="font-size:10px;font-weight:800;color:var(--muted);border:1px solid var(--border);border-radius:20px;padding:1px 7px;">' + ((typeof L!=='undefined'&&L.offlineBadge)||'offline') + '</span>') +
         '</span>';
       list.appendChild(div);
     });
@@ -299,7 +300,7 @@ function renderLobby(data) {
     if (needMsg)  needMsg.style.display  = connected < 2 ? 'block' : 'none';
   } else {
     if (startBtn) startBtn.style.display = 'none';
-    if (waitMsg) { L.waitingForHost = L.waitingHost; renderWaitingForHost(waitMsg, L, connected); }
+    if (waitMsg) { L.waitingForHost = L.waitingHost; renderWaitingForHost(waitMsg, L, connected, players.length); }
     if (needMsg)  needMsg.style.display  = 'none';
   }
 

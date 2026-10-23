@@ -476,7 +476,7 @@ function renderLobby(data) {
     var catStr = cats.includes('mixed') ? getCatLbl('mixed') : cats.map(getCatLbl).join(', ');
     catsD.textContent = L.catsLabel + ' ' + catStr;
   }
-  if (diffD) diffD.textContent = L.diffLabel + ' ' + (data.settings.difficulty || 'easy');
+  if (diffD) { var _d = data.settings.difficulty || 'easy'; diffD.textContent = L.diffLabel + ' ' + (L['diff' + _d.charAt(0).toUpperCase() + _d.slice(1)] || _d); }
   if (timD)  timD.textContent  = L.timerLabel + ' ' + (data.settings.timerSecs > 0 ? Math.floor(data.settings.timerSecs/60) + ' min' : L.noTimer);
 }
 

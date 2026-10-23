@@ -535,7 +535,7 @@ function renderLobby(data) {
     } else {
       if (waitMsg) {
         var _wpc = (data.players || []).filter(function(p){return p.connected;}).length;
-        renderWaitingForHost(waitMsg, L, _wpc);
+        renderWaitingForHost(waitMsg, L, _wpc, (data.players || []).length);
       }
     }
   }

@@ -415,7 +415,21 @@ function renderOtherGames(currentGame) {
 // Call on page load — reads ?join=XXXXX and pre-fills the join code input
 // ─── WAITING FOR HOST MESSAGE ─────────────────────────────────────
 // Shared helper — renders a clear waiting-for-host message for non-host players
-function renderWaitingForHost(el, L, playerCount) {
+// "2 graczy online · 1 offline" in the right language + Polish plural rules
+function _onlineCountText(L, online, total) {
+  var t = (L && L.waitingTitle) || '';
+  var lg = /^CZEKAM/.test(t) ? 'pl' : /^WARTE/.test(t) ? 'de' : /^VÄNTAR/.test(t) ? 'sv' : 'en';
+  var off = Math.max(0, (total || 0) - online);
+  var plWord = function(n) { var d = n % 10, h = n % 100; return n === 1 ? 'gracz' : (d >= 2 && d <= 4 && (h < 12 || h > 14)) ? 'gracze' : 'graczy'; };
+  var main = lg === 'pl' ? online + ' ' + plWord(online) + ' online'
+           : lg === 'de' ? online + ' Spieler online'
+           : lg === 'sv' ? online + ' spelare online'
+           : online + (online === 1 ? ' player' : ' players') + ' online';
+  if (off > 0) main += ' · ' + off + ' offline';
+  return main;
+}
+
+function renderWaitingForHost(el, L, playerCount, totalPlayers) {
   if (!el) return;
   var title = L.waitingTitle || 'WAITING FOR HOST TO START...';
   var detail = L.waitingDetail || 'The host (room creator) will start once enough players join.';
@@ -424,7 +438,7 @@ function renderWaitingForHost(el, L, playerCount) {
   if (document.getElementById('nudge-container') || document.querySelector('[onclick*="nudge"]')) {
     nudgeLine = '<p style="font-size:13px;color:var(--accent);font-weight:700;margin:6px 0 0;">' + (L.waitingNudge || 'Tap 👋 Nudge to let them know you are ready!') + '</p>';
   }
-  var countText = playerCount ? ('<div style="font-size:13px;color:var(--green);font-weight:800;margin-top:8px;">✅ ' + playerCount + ' ' + (L.playersConnected || 'players connected') + '</div>') : '';
+  var countText = playerCount ? ('<div style="font-size:13px;color:var(--green);font-weight:800;margin-top:8px;">✅ ' + esc(_onlineCountText(L, playerCount, totalPlayers)) + '</div>') : '';
   el.style.display = 'block';
   var settingsLine = L.waitingSettings
     ? '<p style="font-size:12px;color:var(--muted);font-weight:600;margin:4px 0 0;line-height:1.5;opacity:0.75;">⚙️ ' + esc(L.waitingSettings) + '</p>'
@@ -513,6 +527,10 @@ function initVisibilityToggle() {
     '.gb-logo-text{font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:2px;' +
       'background:linear-gradient(135deg,var(--accent),var(--accent2));' +
       '-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}' +
+    '.gb-game{margin-left:auto;margin-right:10px;font-size:12px;font-weight:800;color:var(--accent2);' +
+      'border:1px solid var(--border);border-radius:20px;padding:3px 11px;white-space:nowrap;}' +
+    '.gb-game[hidden]{display:none;}' +
+    '@media(max-width:520px){.gb-topbar{flex-wrap:wrap;}.gb-game{order:3;margin:6px auto 0;font-size:11px;padding:2px 10px;}}' +
     '.gb-btn{display:flex;flex-direction:column;justify-content:center;gap:5px;' +
       'background:none;border:1px solid var(--border);border-radius:8px;' +
       'padding:7px 9px;cursor:pointer;transition:border-color 0.2s;flex-shrink:0;}' +
@@ -630,6 +648,36 @@ function initVisibilityToggle() {
     };
 
     topbar.appendChild(logo);
+    // Game name pill: shown in the room (lobby + play) so players always know which game they're in
+    var _gameKey = (function() {
+      var map = { 'client.js':['gpm','🌍'], 'taboo-client.js':['gtaboo','🎭'], 'dots-client.js':['gdots','🔵'],
+        'twotruth-client.js':['gtt','🤥'], 'hangman-client.js':['ghang','🪢'], 'bingo-client.js':['gbingo','🎯'],
+        'drawing-client.js':['gdrawing','🎨'], 'whoami-client.js':['gwhoami','❓'], 'memory-client.js':['gmemory','🧩'],
+        'charades-client.js':['gcharades','🤫'] };
+      var ss = document.querySelectorAll('script[src*="/js/"]');
+      for (var i = 0; i < ss.length; i++) {
+        var f = (ss[i].getAttribute('src') || '').split('/').pop().split('?')[0];
+        if (map[f]) return map[f];
+      }
+      return null;
+    })();
+    if (_gameKey) {
+      var pill = document.createElement('span');
+      pill.id = 'gb-game';
+      pill.className = 'gb-game';
+      pill.hidden = true;
+      topbar.appendChild(pill);
+      var _syncPill = function() {
+        var home = document.getElementById('screen-home');
+        var onHome = home && home.offsetParent !== null;
+        var L2 = LABELS[getLang()] || LABELS['en'];
+        var txt = _gameKey[1] + ' ' + (L2[_gameKey[0]] || '');
+        if (pill.textContent !== txt) pill.textContent = txt;
+        pill.hidden = !!onHome || !home;
+      };
+      _syncPill();
+      setInterval(_syncPill, 1000);
+    }
     topbar.appendChild(btn);
 
     // ── Build nav ────────────────────────────────────────────────
@@ -1701,4 +1749,33 @@ window._buildFooterLangBtns = function() {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function() { pumpkin(0); });
     else pumpkin(0);
   } catch (e) { /* decorations must never break the site */ }
+})();
+
+// ─── Show the top of the page whenever the game switches screen ─────
+// (e.g. after "Create room" the lobby must start at the top, not where
+// the long create form was scrolled to). Same screen re-rendering = no jump.
+(function () {
+  var last = null, pending = false;
+  function visibleScreen() {
+    var ss = document.querySelectorAll('.screen');
+    for (var i = 0; i < ss.length; i++) {
+      if (ss[i].offsetParent !== null || getComputedStyle(ss[i]).display !== 'none') return ss[i].id || ('#' + i);
+    }
+    return null;
+  }
+  function check() {
+    pending = false;
+    var id = visibleScreen();
+    if (id && last !== null && id !== last) { try { window.scrollTo(0, 0); } catch (e) {} }
+    if (id) last = id;
+  }
+  function start() {
+    last = visibleScreen();
+    try {
+      new MutationObserver(function () {
+        if (!pending) { pending = true; requestAnimationFrame(check); }
+      }).observe(document.body, { attributes: true, attributeFilter: ['style', 'class'], subtree: true });
+    } catch (e) {}
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();

@@ -337,13 +337,15 @@ function renderLobby(data) {
         html += '<div class="team-empty">—</div>';
       } else {
         members.forEach((p, i) => {
-          html += '<div class="team-player' + (p.id === myId ? ' me' : '') + '" style="display:flex;align-items:center;justify-content:space-between;">' +
+          var _off = p.connected === false;
+          html += '<div class="team-player' + (p.id === myId ? ' me' : '') + '" style="display:flex;align-items:center;justify-content:space-between;' + (_off ? 'opacity:0.4;' : '') + '">' +
             '<div style="display:flex;align-items:center;gap:8px;">' +
             '<div class="avatar av-' + (i % 8) + '" style="border:2px solid ' + tc.bg + '">' +
             esc(p.name).charAt(0).toUpperCase() + '</div>' +
             '<span>' + esc(p.name) +
             (p.id === myId  ? ' <span class="you-badge">' + L.youBadge + '</span>' : '') +
             (p.id === hostId ? ' <span class="host-badge">' + L.hostBadge + '</span>' : '') +
+            (_off ? ' <span class="offline-badge" style="font-size:10px;font-weight:800;color:var(--muted);border:1px solid var(--border);border-radius:20px;padding:1px 7px;">' + ((typeof L!=='undefined'&&L.offlineBadge)||'offline') + '</span>' : '') +
             '</span></div>' +
             (p.id === myId ? '<button class="move-btn" onclick="switchTeam()" style="font-size:10px;font-weight:800;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:2px 8px;cursor:pointer;color:var(--muted);">' + (team === 'red' ? '→ 🔵' : '→ 🔴') + '</button>' : '') +
             '</div>';
@@ -432,7 +434,7 @@ function renderLobby(data) {
   } else {
     _setLobbyBtns(false);
     var _wpc = (data.players || []).filter(function(p){return p.connected !== false;}).length;
-    renderWaitingForHost(document.getElementById('waiting-msg'), L, _wpc);
+    renderWaitingForHost(document.getElementById('waiting-msg'), L, _wpc, (data.players || []).length);
   }
 }
 

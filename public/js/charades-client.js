@@ -973,9 +973,11 @@ function renderLobby(data) {
   if (redEl) redEl.innerHTML = '';
   if (blueEl) blueEl.innerHTML = '';
   
-  data.players.filter(function(p) { return p.connected; }).forEach(function(p) {
-    var html = '<div class="lobby-player">' +
-      '<span class="pname">' + p.name +
+  data.players.forEach(function(p) {
+    var _off = p.connected === false;
+    var html = '<div class="lobby-player" style="' + (_off ? 'opacity:0.4;' : '') + '">' +
+      '<span class="pname">' + esc(p.name) +
+        (_off ? ' <span class="offline-badge" style="font-size:10px;font-weight:800;color:var(--muted);border:1px solid var(--border);border-radius:20px;padding:1px 7px;">' + ((typeof L!=='undefined'&&L.offlineBadge)||'offline') + '</span>' : '') +
         (p.id === myId ? ' <span class="you-badge">' + L.youBadge + '</span>' : '') +
         (p.isHost ? ' <span class="host-badge">' + L.hostBadge + '</span>' : '') +
       '</span>' +
@@ -1072,7 +1074,7 @@ function renderLobby(data) {
   } else {
     if (startBtn) startBtn.style.display = 'none';
     var _totalConnected = data.players.filter(function(p){return p.connected;}).length;
-    renderWaitingForHost(waitMsg, L, _totalConnected);
+    renderWaitingForHost(waitMsg, L, _totalConnected, data.players.length);
   }
 }
 

@@ -492,13 +492,15 @@ function renderLobby(data) {
 
   const el = document.getElementById('lobby-players');
   el.innerHTML = '';
-  connected.forEach((p, i) => {
+  (data.players || []).forEach((p, i) => {
+    var _off = p.connected === false;
     el.innerHTML +=
-      '<div class="lobby-player">' +
+      '<div class="lobby-player" style="' + (_off ? 'opacity:0.4;' : '') + '">' +
         '<div class="avatar av-' + (i % 8) + '">' + esc(p.name).charAt(0).toUpperCase() + '</div>' +
         '<span class="pname">' + esc(p.name) +
           (p.id === myId   ? ' <span style="font-size:11px;background:rgba(6,214,160,0.15);border:1px solid rgba(6,214,160,0.4);color:var(--green);border-radius:20px;padding:2px 8px;">' + L.youBadge + '</span>' : '') +
           (p.id === hostId ? ' <span class="host-badge">' + L.hostBadge + '</span>' : '') +
+          (_off ? ' <span class="offline-badge" style="font-size:10px;font-weight:800;color:var(--muted);border:1px solid var(--border);border-radius:20px;padding:1px 7px;">' + ((typeof L!=='undefined'&&L.offlineBadge)||'offline') + '</span>' : '') +
         '</span>' +
       '</div>';
   });
@@ -567,7 +569,7 @@ function renderLobby(data) {
   } else {
     _setLobbyBtns(false);
     var _wpc = (data.players || []).filter(function(p){return p.connected !== false;}).length;
-    renderWaitingForHost(document.getElementById('waiting-msg'), L, _wpc);
+    renderWaitingForHost(document.getElementById('waiting-msg'), L, _wpc, (data.players || []).length);
   }
 }
 

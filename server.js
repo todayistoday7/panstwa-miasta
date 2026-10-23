@@ -463,6 +463,40 @@ admin.init(() => {
 });
 app.use('/admin', admin.router);
 
+// ─── Close empty / abandoned lobby rooms after 5 minutes ──────────
+// A lobby where nobody is connected (or no players left) for 5 min is
+// deleted, so dead rooms disappear from Live Rooms and admin. Rooms with
+// a game in progress are left to each game's own (longer) grace period.
+(function () {
+  const LOBBY_EMPTY_MS = Number(process.env.LOBBY_EMPTY_MS) || 5 * 60 * 1000; // env override only for local tests
+  const mods = ['pm','taboo','dots','hangman','twotruth','memory','charades','whoami','drawing','bingo'];
+  const sweeper = setInterval(() => {
+    const now = Date.now();
+    mods.forEach(name => {
+      let map;
+      try { map = require('./routes/' + name).getRooms(); } catch (e) { return; }
+      if (!map) return;
+      Object.keys(map).forEach(code => {
+        try {
+          const room = map[code];
+          if (!room) return;
+          const phase = (room.state && room.state.phase) || room.phase;
+          if (phase !== 'lobby') { room._emptySince = null; return; }
+          const players = room.players || [];
+          const empty = players.length === 0 || players.every(p => p && p.connected === false);
+          if (!empty) { room._emptySince = null; return; }
+          if (!room._emptySince) { room._emptySince = now; return; }
+          if (now - room._emptySince >= LOBBY_EMPTY_MS) {
+            delete map[code];
+            try { require('./routes/lobby').remove(code); } catch (e) {}
+          }
+        } catch (e) { /* never let cleanup affect games */ }
+      });
+    });
+  }, Math.min(30 * 1000, Math.max(1000, LOBBY_EMPTY_MS / 2)));
+  if (sweeper.unref) sweeper.unref();
+})();
+
 // Banner API — served to all game pages
 const DATA_DIR_SERVER  = require('fs').existsSync('/data') ? '/data' : require('path').join(__dirname, 'data');
 const BANNER_FILE_PATH = require('path').join(DATA_DIR_SERVER, 'banner.json');
