@@ -262,7 +262,7 @@ const LANGS = {
     playersInRoom:     'Spelare i rummet',
     startBtn:          '▶ Starta spelet',
     leaveRoom:         '🚪 Lämna rummet',
-    shareRoom:         '📤 Dela rum',
+    shareRoom:         'Dela rum',
     shareCode:         'Dela koden med vänner',
     rejoinTip:         'Om du lämnar spelet av misstag, gå tillbaka med samma namn och rumskod.',
     howToPlay:         'Spelregler',
@@ -803,6 +803,31 @@ function renderWordDisplay(elId, display, revealAll) {
       el.appendChild(wordWrap);
     }
   });
+  fitHangWord(el);
+  setTimeout(function () { fitHangWord(el); }, 60);
+}
+
+// Phones: shrink letters so the longest word fits on one line; if the
+// title takes several lines, make the gallows smaller so the keyboard fits.
+function fitHangWord(el) {
+  try {
+    var screenW = Math.min(window.innerWidth, screen.width || 9999);
+    var area = el.closest('.screen') || document.body;
+    if (screenW > 520) { el.style.removeProperty('--hl'); area.classList.remove('pm-hang-small'); return; }
+    var groups = el.querySelectorAll('.hang-word-group'), longest = 0;
+    groups.forEach(function (g) { longest = Math.max(longest, g.querySelectorAll('.hang-letter').length); });
+    if (!longest) return;
+    var avail = screenW - 48;
+    var hl = Math.max(11, Math.min(22, Math.floor((avail - (longest - 1) * 4) / longest)));
+    el.style.setProperty('--hl', hl + 'px');
+    el.style.setProperty('--hg', (hl < 16 ? 2 : hl < 18 ? 3 : 4) + 'px');
+    groups.forEach(function (g) { g.style.flexWrap = longest * (hl + 4) > avail ? 'wrap' : 'nowrap'; g.style.justifyContent = 'center'; });
+    // more than one line of letters → smaller gallows
+    var first = el.querySelector('.hang-letter'), last = el.querySelectorAll('.hang-letter');
+    last = last[last.length - 1];
+    var multi = first && last && (last.getBoundingClientRect().top - first.getBoundingClientRect().top) > 10;
+    area.classList.toggle('pm-hang-small', !!multi);
+  } catch (e) {}
 }
 
 function renderWrongPips(elId, wrongCount, maxWrong) {

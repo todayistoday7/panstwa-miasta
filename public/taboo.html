@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
-<link rel="stylesheet" href="/css/taboo.css">
+<link rel="stylesheet" href="/css/taboo.css?v=2">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="apple-touch-icon" href="/favicon.svg">
 <script async data-cfasync="false" src="https://www.googletagmanager.com/gtag/js?id=G-BJ79ZM6WPQ"></script>
@@ -238,7 +238,7 @@
     <!-- DESCRIBER VIEW -->
     <div id="describer-view" style="display:none;">
       <div class="taboo-card">
-        <div class="taboo-target" id="target-word"></div>
+        <div class="taboo-target" id="target-word" data-pm-fit="64"></div>
         <div class="taboo-divider"></div>
         <div class="taboo-forbidden-label" id="lbl-forbidden">Don't say:</div>
         <div id="forbidden-words"></div>
@@ -254,14 +254,14 @@
     <div id="referee-view" style="display:none;">
       <div class="taboo-card referee-card">
         <div class="referee-label" id="lbl-referee-sees">You are the referee — you can see the word:</div>
-        <div class="taboo-target referee-target" id="referee-target-word"></div>
+        <div class="taboo-target referee-target" id="referee-target-word" data-pm-fit="48"></div>
         <div class="taboo-divider"></div>
         <div class="taboo-forbidden-label" id="lbl-forbidden-ref">Forbidden words:</div>
         <div id="referee-forbidden-words"></div>
       </div>
       <div class="taboo-timer" id="referee-timer">60</div>
       <div class="btn-row" style="margin-top:16px;">
-        <button class="btn red-btn taboo-big-btn" onclick="refereePenalty()">⚠️ <span id="lbl-penalty">Forbidden word!</span></button>
+        <button class="btn red-btn taboo-big-btn" onclick="refereePenalty()"><span id="lbl-penalty">Forbidden word!</span></button>
       </div>
     </div>
 
@@ -311,7 +311,7 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/taboo-words.js"></script>
-<script src="/js/shared.js?v=8"></script>
-<script src="/js/taboo-client.js?v=8"></script>
+<script src="/js/shared.js?v=9"></script>
+<script src="/js/taboo-client.js?v=9"></script>
 </body>
 </html>

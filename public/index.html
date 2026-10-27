@@ -21,6 +21,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
+<style>/* Category name drawn by CSS (keeps iPhone from offering contact AutoFill on answers) */ .cat-label[data-cat]::before{content:attr(data-cat);}</style>
 <style>
 /* Stats badge */
 #stats-badge { display: none; margin: 18px auto 4px; text-align: center; font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: 0.2px; }
@@ -473,13 +474,13 @@
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <a id="lbl-seo-rules" href="/jak-grac" style="color:var(--accent);font-weight:700;font-size:13px;text-decoration:none;">📖 <span id="lbl-seo-rules-text">Jak grać?</span></a>
       <a href="/kategorie" style="color:var(--accent);font-weight:700;font-size:13px;text-decoration:none;">📋 <span id="lbl-seo-cats">Kategorie</span></a>
-      <a href="/games" id="lbl-seo-other-games" style="color:var(--muted);font-weight:700;font-size:13px;text-decoration:none;">🎮 <span id="lbl-seo-other-text">Inne gry</span></a>
+      <a href="/games" id="lbl-seo-other-games" style="color:var(--muted);font-weight:700;font-size:13px;text-decoration:none;"><span id="lbl-seo-other-text">Inne gry</span></a>
     </div>
   </div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/langs.js?v=2"></script>
-<script src="/js/shared.js?v=8"></script>
-<script src="/js/client.js?v=8"></script>
+<script src="/js/langs.js?v=3"></script>
+<script src="/js/shared.js?v=9"></script>
+<script src="/js/client.js?v=9"></script>
 </body>
 </html>

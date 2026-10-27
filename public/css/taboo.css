@@ -417,3 +417,17 @@
   letter-spacing: 1px;
   margin-left: 4px;
 }
+
+/* ── Phones: whole turn fits on one screen ── */
+@media (max-width: 520px) {
+  .taboo-target { white-space: nowrap; letter-spacing: 2px; }
+  .taboo-timer { font-size: 40px !important; margin: 2px 0 !important; line-height: 1 !important; }
+  #describer-view .taboo-card, #referee-view .taboo-card { padding: 14px !important; margin-bottom: 4px !important; }
+  .taboo-divider { margin: 8px 0 !important; }
+  #forbidden-words, #referee-forbidden-words { display: grid !important; grid-template-columns: 1fr 1fr; gap: 6px; }
+  #forbidden-words > *, #referee-forbidden-words > * { margin: 0 !important; padding: 7px 10px !important; font-size: 15px !important; }
+  .taboo-big-btn { display: flex !important; align-items: center; justify-content: center; gap: 6px; }
+  #describer-view .taboo-big-btn { white-space: nowrap; }
+  #referee-view .taboo-big-btn { white-space: normal; text-align: center; line-height: 1.2; }
+  .taboo-role-banner { font-size: 17px !important; letter-spacing: 2px !important; padding: 6px 12px !important; margin-bottom: 8px !important; }
+}

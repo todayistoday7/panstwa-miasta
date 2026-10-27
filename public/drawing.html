@@ -162,6 +162,9 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Nu
   .drawing-tools{gap:6px;}
   .color-btn{width:24px;height:24px;}
 }
+
+/* Phones: more room for the canvas */
+@media(max-width:520px){.task-card{padding:12px 14px;margin:8px 0;}.task-hint{font-size:12px;margin:2px 0 8px;}#screen-playing>div:first-child{padding:6px 16px;}#lbl-draw-hint{display:none;}#task-draw .task-card{padding:10px 14px;margin:6px 0 6px!important;}#screen-playing .inner-container{padding-top:6px!important;}}
 </style>
 <link rel="canonical" href="https://panstwamiastagra.com/sketch-and-guess">
 </head>
@@ -417,7 +420,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Nu
 </div><!-- /outer container -->
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/shared.js?v=7"></script>
+<script src="/js/shared.js?v=9"></script>
 <script src="/js/drawing-client.js?v=7"></script>
 </body>
 </html>

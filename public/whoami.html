@@ -455,7 +455,7 @@
     <div id="player-warning" class="player-warning" style="display:none;"></div>
 
     <div class="btn-row" id="lobby-btn-row">
-      <button class="btn" onclick="startGame()" id="lobby-start-btn">🎮 <span id="lbl-start-btn">Rozpocznij grę</span></button>
+      <button class="btn" onclick="startGame()" id="lobby-start-btn"><span id="lbl-start-btn">Rozpocznij grę</span></button>
       <button class="btn secondary" onclick="confirmGoHome()" id="lbl-leave-room">🚪 Wyjdź</button>
     </div>
 
@@ -518,7 +518,7 @@
         <button class="btn" onclick="submitGuess()" style="width:100%;margin-bottom:8px;">✅ <span id="lbl-guess-btn">Zgaduję!</span></button>
       </div>
       <!-- Surrender always visible in both modes -->
-      <button class="btn secondary" onclick="surrender()" style="width:100%;margin-top:4px;">🏳️ <span id="lbl-surrender-btn">Poddaję się</span></button>
+      <button class="btn secondary" onclick="surrender()" style="width:100%;margin-top:4px;"><span id="lbl-surrender-btn">Poddaję się</span></button>
     </div>
 
     <!-- Skip — host only -->
@@ -588,7 +588,7 @@
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/shared.js?v=7"></script>
+<script src="/js/shared.js?v=9"></script>
 <script src="/js/whoami-client.js?v=8"></script>
 </body>
 </html>

@@ -281,6 +281,21 @@
     .hang-key { width: 32px; height: 32px; font-size: 15px; }
     .hang-word-input { font-size: 20px; letter-spacing: 2px; }
   }
+
+  /* ── Phones: smaller gallows, long words and titles always fit ── */
+  @media (max-width: 520px) {
+    #hang-svg { width: 150px !important; height: 150px !important; }
+    .pm-hang-small #hang-svg { width: 90px !important; height: 90px !important; }
+    .hang-role-banner { font-size: 15px !important; letter-spacing: 1px !important; padding: 8px 10px !important; }
+    .pm-hang-small .hang-svg-wrap { padding: 6px !important; }
+    .pm-hang-small .hang-word-display { margin: 2px 0 !important; row-gap: 2px !important; }
+    .hang-word-display { gap: 6px 14px !important; }
+    .hang-word-group { gap: var(--hg, 4px) !important; }
+    .hang-letter-char { min-width: var(--hl, 22px) !important; font-size: calc(var(--hl, 22px) * 1.2) !important; letter-spacing: 0 !important; }
+    .hang-letter-line { width: var(--hl, 22px) !important; }
+    #re-word { letter-spacing: 2px !important; overflow-wrap: anywhere; }
+    #hint-input { font-size: 16px !important; }
+  }
 </style>
 <link rel="alternate" hreflang="pl" href="https://panstwamiastagra.com/hangman?lang=pl">
 <link rel="alternate" hreflang="en" href="https://panstwamiastagra.com/hangman?lang=en">
@@ -585,8 +600,8 @@
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/shared.js?v=8"></script>
+<script src="/js/shared.js?v=9"></script>
 <script src="/js/hangman-words.js?v=4"></script>
-<script src="/js/hangman-client.js?v=8"></script>
+<script src="/js/hangman-client.js?v=9"></script>
 </body>
 </html>

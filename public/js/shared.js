@@ -447,11 +447,15 @@ function renderOtherGames(currentGame) {
 // ─── WAITING FOR HOST MESSAGE ─────────────────────────────────────
 // Shared helper — renders a clear waiting-for-host message for non-host players
 // "2 graczy online · 1 offline" in the right language + Polish plural rules
+function _pmPageLang() {
+  try { var l = String((typeof lang !== 'undefined' && lang) || new URLSearchParams(location.search).get('lang') || window._forceLang || document.documentElement.lang || 'en').slice(0, 2); return ['pl','en','de','sv'].indexOf(l) >= 0 ? l : 'en'; } catch (e) { return 'en'; }
+}
+
 function _onlineCountText(L, online, total) {
   var t = (L && L.waitingTitle) || '';
-  var lg = /^CZEKAM/.test(t) ? 'pl' : /^WARTE/.test(t) ? 'de' : /^VÄNTAR/.test(t) ? 'sv' : 'en';
+  var lg = /^CZEKAM/.test(t) ? 'pl' : /^WARTE/.test(t) ? 'de' : /^VÄNTAR/.test(t) ? 'sv' : /^WAITING/.test(t) ? 'en' : _pmPageLang();
   var off = Math.max(0, (total || 0) - online);
-  var plWord = function(n) { var d = n % 10, h = n % 100; return n === 1 ? 'gracz' : (d >= 2 && d <= 4 && (h < 12 || h > 14)) ? 'gracze' : 'graczy'; };
+  var plWord = function(n) { return n === 1 ? 'gracz' : 'graczy'; }; // "dwóch graczy", "pięciu graczy"
   var main = lg === 'pl' ? online + ' ' + plWord(online) + ' online'
            : lg === 'de' ? online + ' Spieler online'
            : lg === 'sv' ? online + ' spelare online'
@@ -474,6 +478,13 @@ function renderWaitingForHost(el, L, playerCount, totalPlayers) {
   var settingsLine = L.waitingSettings
     ? '<p style="font-size:12px;color:var(--muted);font-weight:600;margin:4px 0 0;line-height:1.5;opacity:0.75;">⚙️ ' + esc(L.waitingSettings) + '</p>'
     : '';
+  try {
+    var _tt = L.waitingTitle || '';
+    var _lg = /^CZEKAM/.test(_tt) ? 'pl' : /^WARTE/.test(_tt) ? 'de' : /^VÄNTAR/.test(_tt) ? 'sv' : /^WAITING/.test(_tt) ? 'en' : _pmPageLang();
+    var _short = { pl: 'Czekamy, aż host rozpocznie grę', en: 'Waiting for the host to start', de: 'Wir warten, bis der Host das Spiel startet', sv: 'Väntar på att värden startar spelet' }[_lg];
+    el.classList.add('pm-bigwait');
+    el.setAttribute('data-pm-short', '⏳ ' + _short + (playerCount ? ' · ✅ ' + _onlineCountText(L, playerCount, totalPlayers) : ''));
+  } catch (e) {}
   el.innerHTML =
     '<div style="text-align:center;padding:16px 12px;">' +
       '<div style="font-size:28px;margin-bottom:6px;">⏳</div>' +
@@ -1807,6 +1818,8 @@ window._buildFooterLangBtns = function() {
       if (document.body.classList.contains('pm-inplay') !== playing) document.body.classList.toggle('pm-inplay', playing);
       var inRoom = id !== 'screen-home' && /^screen-/.test(id);
       if (document.body.classList.contains('pm-inroom') !== inRoom) document.body.classList.toggle('pm-inroom', inRoom);
+      var inLobby = id === 'screen-lobby';
+      if (document.body.classList.contains('pm-inlobby') !== inLobby) document.body.classList.toggle('pm-inlobby', inLobby);
     }
   }
   try {
@@ -1828,4 +1841,189 @@ window._buildFooterLangBtns = function() {
     } catch (e) {}
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
+
+
+// ════════════════════════════════════════════════════════════════
+// PHONE LAYOUT (≤520px) + ROOM CODE CARD
+// - One slim top bar in rooms: logo · game name (centred) · menu,
+//   plus a small "Kod: XXXXX" line during play.
+// - Room code shown once, in a framed card with one invite button.
+// - Main buttons (Start, STOP, Zgadli…) stay at the bottom of the screen.
+// - Tap/click the room code to copy just the 5 letters.
+// Never throws: any problem simply leaves the old layout.
+// ════════════════════════════════════════════════════════════════
+(function () {
+  var T = {
+    pl: { label: 'Kod pokoju', invite: 'Zaproś znajomych', code: 'Kod:', copied: '📋 Kod skopiowany!', tip: 'Kliknij, aby skopiować' },
+    en: { label: 'Room code', invite: 'Invite friends', code: 'Code:', copied: '📋 Code copied!', tip: 'Click to copy' },
+    de: { label: 'Raumcode', invite: 'Freunde einladen', code: 'Code:', copied: '📋 Code kopiert!', tip: 'Zum Kopieren klicken' },
+    sv: { label: 'Rumskod', invite: 'Bjud in vänner', code: 'Kod:', copied: '📋 Koden kopierad!', tip: 'Klicka för att kopiera' }
+  };
+  function pageLang() {
+    var l = '';
+    try { l = (typeof lang !== 'undefined' && lang) || new URLSearchParams(location.search).get('lang') || window._forceLang || document.documentElement.lang || 'pl'; } catch (e) { l = 'pl'; }
+    l = String(l).slice(0, 2);
+    return T[l] ? l : 'en';
+  }
+  function t() { return T[pageLang()]; }
+  function currentCode() {
+    try { if (typeof roomCode !== 'undefined' && roomCode) return String(roomCode); } catch (e) {}
+    var rc = document.getElementById('room-code-display');
+    return rc ? rc.textContent.replace(/[^A-Za-z0-9]/g, '') : '';
+  }
+  function toast(msg) {
+    try { if (typeof showToast === 'function') { showToast(msg); return; } } catch (e) {}
+    var d = document.createElement('div'); d.className = 'pm-toast'; d.textContent = msg; document.body.appendChild(d);
+    setTimeout(function () { d.remove(); }, 2000);
+  }
+  function copyCode(ev) {
+    if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+    var c = currentCode(); if (!c) return;
+    try { _copyText(c); } catch (e) {}
+    toast(t().copied);
+  }
+  window.pmCopyRoomCode = copyCode;
+
+  var CSS =
+    '.pm-hide{display:none!important}' +
+    '.pm-code-card{display:grid;grid-template-columns:1fr auto;grid-template-areas:"lab btn" "code btn";align-items:center;column-gap:14px;row-gap:2px;' +
+      'background:var(--card,#222036);border:1px solid var(--border,#2e2b45);border-radius:14px;padding:12px 16px;max-width:460px;width:100%;box-sizing:border-box;text-align:left;margin:0 0 10px}' +
+    '.pm-code-card.pm-center{margin-left:auto;margin-right:auto}' +
+    '.pm-code-label{grid-area:lab;font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--muted,#8b88a8);text-transform:uppercase}' +
+    '.pm-code-card #room-code-display{grid-area:code;margin:0!important;line-height:1!important;cursor:pointer;-webkit-user-select:none;user-select:none}' +
+    '.pm-invite{grid-area:btn;margin:0!important;white-space:normal;text-align:center;line-height:1.25;max-width:170px}' +
+    '.pm-codewrap{display:none}' +
+    '.pm-toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#1a1828;color:#fff;border:1px solid #06d6a0;border-radius:10px;padding:10px 16px;font-weight:800;font-size:14px;z-index:10000}' +
+    '@media(max-width:520px){' +
+      'html{overflow-x:visible!important}' +
+      '#settings-draw-time,#settings-write-time{font-size:16px!important}' +
+      /* slim top bar */
+      'body.pm-inroom .gb-logo-text{display:none!important}' +
+      'body.pm-inroom .gb-topbar{display:grid!important;grid-template-columns:1fr auto 1fr;align-items:center;padding:6px 0!important;row-gap:5px}' +
+      'body.pm-inroom .gb-logo{justify-self:start}' +
+      'body.pm-inroom .gb-game{order:0!important;margin:0!important;justify-self:center;font-size:13px!important;padding:4px 14px!important}' +
+      'body.pm-inroom #gb-toggle{justify-self:end}' +
+      'body.pm-inroom #top-nav{display:none!important}' +
+      'body.pm-inroom .pm-codewrap{display:flex;grid-column:1/-1;justify-self:center;align-items:center;gap:8px;font-size:12px;font-weight:800;color:var(--muted,#8b88a8);letter-spacing:1px}' +
+      'body.pm-inlobby .pm-codewrap{display:none!important}' +
+      '.pm-code{font-family:Bebas Neue,sans-serif;font-size:19px;letter-spacing:3px;color:#ffd166;line-height:1;cursor:pointer}' +
+      '.pm-mini{background:none;border:1px solid var(--border,#2e2b45);border-radius:7px;padding:2px 7px;font-size:13px;color:var(--text,#fff);cursor:pointer}' +
+      /* code card */
+      'body.pm-inlobby .lobby-header{padding:8px 0 4px!important;margin:0!important;display:block!important}' +
+      '.pm-code-card{padding:12px 14px}' +
+      '.pm-code-card #room-code-display{font-size:40px!important;letter-spacing:5px!important}' +
+      '.pm-invite{padding:10px 12px!important;font-size:13px!important;max-width:150px}' +
+      /* bottom action bar */
+      '.pm-mbar{position:sticky!important;bottom:0!important;z-index:60;margin:12px calc(50% - 50vw) 0!important;width:100vw!important;box-sizing:border-box!important;' +
+        'padding:10px 16px calc(10px + env(safe-area-inset-bottom))!important;background:rgba(15,14,24,.96)!important;border-top:1px solid rgba(255,255,255,.12);' +
+        'box-shadow:0 -6px 18px rgba(0,0,0,.45);display:flex!important;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center}' +
+      '.pm-mbar>.btn,.pm-mbar>button{margin:0!important}' +
+      '.pm-mbar[data-pm-short]::before{content:attr(data-pm-short);width:100%;text-align:center;font-size:13px;font-weight:800;color:#ffd166}' +
+      'body.pm-inlobby .pm-mbar .pm-bigwait,body.pm-hasbar.pm-inlobby .pm-bigwait{display:none!important}' +
+    '}';
+
+  function addCss() {
+    if (document.getElementById('pm-mobile-css')) return;
+    var st = document.createElement('style'); st.id = 'pm-mobile-css'; st.textContent = CSS;
+    (document.head || document.documentElement).appendChild(st);
+  }
+
+  // Room code card (all screen sizes)
+  function buildCard() {
+    var rc = document.getElementById('room-code-display');
+    if (!rc || rc.closest('.pm-code-card') || !rc.parentElement) return;
+    var host = rc.parentElement;
+    var share = null;
+    Array.prototype.forEach.call(host.querySelectorAll('button'), function (b) {
+      if (!share && /share/i.test(b.getAttribute('onclick') || '')) share = b;
+    });
+    Array.prototype.forEach.call(host.querySelectorAll('.room-code-hint, #lbl-share-code, #lbl-room-code-hint'), function (h) { h.classList.add('pm-hide'); });
+    var card = document.createElement('div'); card.className = 'pm-code-card';
+    try { if (getComputedStyle(host).textAlign === 'center') card.classList.add('pm-center'); } catch (e) {}
+    var lab = document.createElement('div'); lab.className = 'pm-code-label';
+    host.insertBefore(card, rc);
+    card.appendChild(lab); card.appendChild(rc);
+    if (share) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'btn share-btn pm-invite';
+      b.onclick = function () { share.click(); };
+      card.appendChild(b); share.classList.add('pm-hide');
+    }
+    rc.addEventListener('click', copyCode);
+    texts();
+  }
+  function texts() {
+    var x = t();
+    var lab = document.querySelector('.pm-code-label'); if (lab && lab.textContent !== x.label) lab.textContent = x.label;
+    var inv = document.querySelector('.pm-invite'); if (inv && inv.textContent !== '📤 ' + x.invite) inv.textContent = '📤 ' + x.invite;
+    var rc = document.getElementById('room-code-display'); if (rc && rc.title !== x.tip) rc.title = x.tip;
+    var cl = document.querySelector('.pm-codewrap .pm-codelab'); if (cl && cl.textContent !== x.code) cl.textContent = x.code;
+  }
+
+  // Slim bar: "Kod: XXXXX 📤" line (phones, during play)
+  function buildCodeLine() {
+    var tb = document.getElementById('gb-topbar');
+    if (!tb || tb.querySelector('.pm-codewrap')) return;
+    var w = document.createElement('div'); w.className = 'pm-codewrap';
+    var l = document.createElement('span'); l.className = 'pm-codelab'; w.appendChild(l);
+    var c = document.createElement('span'); c.className = 'pm-code'; c.title = t().tip; c.addEventListener('click', copyCode); w.appendChild(c);
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'pm-mini'; b.textContent = '📤';
+    b.onclick = function () {
+      var s = document.getElementById('nav-share-btn') || document.querySelector('.pm-invite') || document.getElementById('share-btn');
+      if (s) s.click(); else copyCode();
+    };
+    w.appendChild(b); tb.appendChild(w);
+  }
+
+  // Buttons that must stay on screen (phones)
+  function tagBars() {
+    var sb = document.getElementById('lobby-start-btn') || document.getElementById('lbl-start-btn') || document.getElementById('start-btn');
+    if (sb && sb.closest) sb = sb.closest('button') || sb;
+    var row = sb && sb.closest && sb.closest('.btn-row, #lobby-btn-row');
+    if (row) {
+      row.classList.add('pm-mbar');
+      document.body.classList.add('pm-hasbar');
+      var big = row.querySelector('.pm-bigwait') || document.querySelector('#screen-lobby .pm-bigwait');
+      var guest = !(sb.offsetWidth || sb.offsetHeight);
+      var short = big && guest && big.style.display !== 'none' ? big.getAttribute('data-pm-short') : '';
+      if (short) { if (row.getAttribute('data-pm-short') !== short) row.setAttribute('data-pm-short', short); }
+      else if (row.hasAttribute('data-pm-short')) row.removeAttribute('data-pm-short');
+    }
+    ['#describer-view .btn-row', '#referee-view .btn-row', '#scoring-next-btn'].forEach(function (s) {
+      var e = document.querySelector(s); if (e) e.classList.add('pm-mbar');
+    });
+    var stop = document.getElementById('stop-btn'); if (stop && stop.parentElement) stop.parentElement.classList.add('pm-mbar');
+    ['lbl-submit-word-btn', 'lbl-submit-guess-btn'].forEach(function (id) { var e = document.getElementById(id); if (e && e.parentElement) e.parentElement.classList.add('pm-mbar'); });
+  }
+
+  // Shrink a big word until it fits its box (elements with data-pm-fit="64")
+  function fitWords() {
+    if (Math.min(window.innerWidth, screen.width || 9999) > 520) return;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-pm-fit]'), function (el) {
+      var txt = el.textContent;
+      if (!txt || el._pmFit === txt || !el.offsetWidth) return;
+      var max = parseInt(el.getAttribute('data-pm-fit'), 10) || 64;
+      var p = el.parentElement, cs = getComputedStyle(p);
+      var avail = Math.min(p.clientWidth, Math.min(window.innerWidth, screen.width || 9999) - 32) - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 8;
+      var probe = document.createElement('span');
+      probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font-family:inherit;letter-spacing:inherit';
+      probe.textContent = txt; el.appendChild(probe);
+      var s = max;
+      do { probe.style.fontSize = s + 'px'; if (probe.getBoundingClientRect().width <= avail) break; s -= 2; } while (s > 20);
+      el.removeChild(probe);
+      el.style.setProperty('font-size', s + 'px', 'important');
+      el._pmFit = el.textContent;
+    });
+  }
+
+  function refresh() {
+    try { buildCard(); } catch (e) {}
+    try { buildCodeLine(); } catch (e) {}
+    try { texts(); } catch (e) {}
+    try { var c = document.querySelector('.pm-codewrap .pm-code'), code = currentCode(); if (c && c.textContent !== code) c.textContent = code; } catch (e) {}
+    try { tagBars(); } catch (e) {}
+    try { fitWords(); } catch (e) {}
+  }
+  function start() { addCss(); refresh(); setInterval(refresh, 400); }
+  try { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start(); } catch (e) {}
 })();

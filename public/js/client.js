@@ -446,8 +446,8 @@ function renderPlayingScreen(data) {
     localAnswers = {};
     body.innerHTML = '';
     settings.categories.forEach((cat, ci) => {
-      body.innerHTML += '<tr><td class="cat-label">' + cat + '</td>' +
-        '<td><input type="text" id="ans-' + ci + '" placeholder="' + state.letter + '..." autocomplete="off"' +
+      body.innerHTML += '<tr><td class="cat-label" data-cat="' + String(cat).replace(/"/g,'&quot;') + '"></td>' +
+        '<td><input type="text" id="ans-' + ci + '" name="pmx' + ci + '" placeholder="' + state.letter + '..." autocomplete="off"' +
         ' oninput="submitAnswer(' + ci + ', this.value)"' +
         ' onkeydown="if(event.key===\'Enter\')focusNextInput(' + ci + ')"/></td></tr>';
     });
@@ -537,8 +537,8 @@ function renderStoppedScreen(data) {
   settings.categories.forEach((cat, ci) => {
     const myAns = localAnswers[ci] || (state.answers[myId] || {})[ci] || '';
     const isStopper = myId === state.stopCalledBy;
-    body.innerHTML += '<tr><td class="cat-label">' + cat + '</td>' +
-      '<td><input type="text" id="st-ans-' + ci + '" value="' + myAns.replace(/"/g,'&quot;') + '"' +
+    body.innerHTML += '<tr><td class="cat-label" data-cat="' + String(cat).replace(/"/g,'&quot;') + '"></td>' +
+      '<td><input type="text" id="st-ans-' + ci + '" name="pmy' + ci + '" autocomplete="off" value="' + myAns.replace(/"/g,'&quot;') + '"' +
       ' placeholder="' + state.letter + '..." ' + (isStopper ? 'disabled' : '') +
       ' oninput="submitAnswer(' + ci + ', this.value)"' +
       ' onkeydown="if(event.key===\'Enter\')focusStoppedNext(' + ci + ')"/></td></tr>';
