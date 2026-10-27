@@ -230,7 +230,7 @@ function register(io, socket) {
 
     const cleaned = (word || '').trim().toUpperCase();
     if (!cleaned || cleaned.length < 2) { socket.emit('hang_error', { msg: 'Word must be at least 2 letters.' }); return; }
-    if (!/^[A-ZĄĆĘŁŃÓŚŹŻ ]+$/.test(cleaned)) { socket.emit('hang_error', { msg: 'Letters only (no numbers or punctuation).' }); return; }
+    if (!/^[A-ZĄĆĘŁŃÓŚŹŻÄÖÜÅ ]+$/.test(cleaned)) { socket.emit('hang_error', { msg: 'Letters only (no numbers or punctuation).' }); return; }
 
     room.state.word           = cleaned;
     room.state.hint           = (hint || '').trim() || null;
@@ -249,7 +249,7 @@ function register(io, socket) {
     if (picker && socket.id === picker.id) return; // picker can't guess
 
     const ch = (letter || '').trim().toUpperCase();
-    if (!ch || ch.length !== 1 || !/[A-ZĄĆĘŁŃÓŚŹŻ]/.test(ch)) return;
+    if (!ch || ch.length !== 1 || !/[A-ZĄĆĘŁŃÓŚŹŻÄÖÜÅ]/.test(ch)) return;
     if (room.state.guessedLetters.includes(ch)) return; // already guessed
 
     room.state.guessedLetters.push(ch);
