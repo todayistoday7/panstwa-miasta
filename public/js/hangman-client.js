@@ -386,14 +386,14 @@ function drawGallows(svgEl, wrongCount, isComplete) {
 const ALPHABETS = {
   pl: 'QWERTYUIOPASDFGHJKLZXCVBNMĄĆĘŁŃÓŚŹŻ',
   en: 'QWERTYUIOPASDFGHJKLZXCVBNM',
-  de: 'QWERTZUIOPASDFGHJKLYXCVBNMÄÖÜß',
+  de: 'QWERTZUIOPASDFGHJKLYXCVBNMÄÖÜ', // ß becomes SS in capitals, so no ß key
   sv: 'QWERTYUIOPASDFGHJKLZXCVBNMÅÄÖ',
 };
 // Keyboard rows for QWERTY layout rendering
 const KEYBOARD_ROWS = {
   pl: ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM','ĄĆĘŁŃÓŚŹŻ'],
   en: ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'],
-  de: ['QWERTZUIOP','ASDFGHJKL','YXCVBNM','ÄÖÜß'],
+  de: ['QWERTZUIOP','ASDFGHJKL','YXCVBNM','ÄÖÜ'],
   sv: ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM','ÅÄÖ'],
 };
 
