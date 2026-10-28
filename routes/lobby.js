@@ -66,7 +66,9 @@ function funnelCheckStarted(f) {
     const phase = f.room.state.phase;
     if (phase && phase !== 'lobby') {
       f.started = true;
-      funnelLog(f.game, f.room, 'room_started', { players: (f.room.players || []).length });
+      const st = f.room.settings || {}, extra = {};
+      ['gridSize', 'totalRounds', 'boardSize', 'theme', 'gameLength'].forEach(k => { if (st[k] !== undefined) extra[k] = st[k]; });
+      funnelLog(f.game, f.room, 'room_started', Object.assign({ players: (f.room.players || []).length }, extra));
       f.room = null; // drop reference once started
     }
   } catch (e) { /* never affect games */ }

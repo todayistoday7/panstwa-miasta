@@ -948,6 +948,28 @@ function renderGeneric(db, game, days, cutoffLabel, gameOpts) {
   const funnelSince = statsFunnelSince(db);
   const na = '<span style="color:#64748b">n/a</span>';
 
+  // Most used settings (Kropki i Kreski + Znajdź Pary), counted from started games
+  const SETTING_LABELS = {
+    dots:   [['gridSize', 'Grid size', v => v + '×' + v], ['totalRounds', 'Rounds', v => v]],
+    memory: [['boardSize', 'Board size', v => v + ' cards'], ['theme', 'Theme', v => v], ['gameLength', 'Game length', v => v]],
+  };
+  let settingsCard = '';
+  if (SETTING_LABELS[game]) {
+    const parts = SETTING_LABELS[game].map(([key, label, fmt]) => {
+      const rows = db.prepare(`
+        SELECT json_extract(details,'$.${key}') AS v, COUNT(*) AS n
+        FROM game_events WHERE game = ? AND date >= ? AND outcome='room_started' AND json_extract(details,'$.${key}') IS NOT NULL
+        GROUP BY v ORDER BY n DESC
+      `).all(game, since);
+      const total = rows.reduce((a, r) => a + r.n, 0);
+      const body = rows.map(r => `<tr><td>${escapeHtml(String(fmt(r.v)))}</td><td>${r.n}</td><td>${statsPct(r.n, total)}</td></tr>`).join('') || statsEmptyRow(3);
+      return `<div class="card"><h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">${label} (started games, ${escapeHtml(cutoffLabel)})</h3>
+        <table><tr><th>${label}</th><th>Games</th><th>Share</th></tr>${body}</table></div>`;
+    });
+    settingsCard = `<div class="grid2">${parts.join('')}</div>
+      <div style="font-size:11px;color:#64748b;margin:-8px 0 20px">Settings are recorded from 29 Oct 2026 on - older games are not included.</div>`;
+  }
+
   return statsHeader(gameOpts, days, game) + `
     <h3 style="font-size:16px;margin:0 0 14px;color:#e2e8f0">${escapeHtml(STATS_GAME_LABELS[game] || game)}</h3>
     <div class="grid2" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
@@ -984,7 +1006,7 @@ function renderGeneric(db, game, days, cutoffLabel, gameOpts) {
         <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Time of day (Polish time)</h3>
         <table><tr><th>When</th><th>Started</th><th>Finished</th></tr>${timeRows}</table>
       </div>
-    </div>`;
+    </div>${settingsCard}`;
 }
 
 // ─── Who Am I: CSV export of every character's results ─────
