@@ -19,11 +19,8 @@ const GAME_INFO = {
   charades: { name: 'Charades',              icon: '🎬', slug: '/charades' },
 };
 
-// Phases that mean a game is actively being played (not lobby, not final)
-const IN_PROGRESS_PHASES = new Set([
-  'drawing', 'playing', 'guessing', 'scoring', 'calculating',
-  'stopped', 'review', 'voting', 'results', 'intermission',
-]);
+// Any phase other than 'lobby' and 'final' counts as a game in progress
+const IN_PROGRESS_PHASES = { has: (p) => !!p && p !== 'lobby' && p !== 'final' };
 
 // In-memory registry: code → public room entry
 // { code, game, hostName, hostMasked, lang, players, maxPlayers,
@@ -96,6 +93,7 @@ const _funnelTimer = setInterval(() => {
       funnelCheckStarted(f);
       if (f.t < old) _funnel.delete(k);
     }
+    broadcast();
   } catch (e) { /* never affect games */ }
 }, 15000);
 if (_funnelTimer.unref) _funnelTimer.unref();
@@ -171,16 +169,55 @@ function maxPlayersFor(game, room) {
   return 12;
 }
 
-function buildList() {
-  const now = Date.now();
-  // Drop rooms older than 30 min with no activity
-  Object.keys(publicRooms).forEach(code => {
-    if (now - publicRooms[code].lastActivity > 30 * 60 * 1000) {
-      delete publicRooms[code];
-    }
-  });
+// Live view of every room: reads each game's own room list, so the phase
+// is always current ("lobby" = joinable, anything else = game in progress).
+// Rooms where everyone has left are not shown. Never throws.
+const _firstSeen = {};
+function liveEntry(game, code, room) {
+  const phase = (room.state && room.state.phase) || room.phase || 'lobby';
+  if (phase === 'final') return null;
+  const players = (room.players || []).filter(p => p && p.connected !== false);
+  if (!players.length) return null;
+  const info = GAME_INFO[game] || { name: game, icon: '🎮', slug: '/' + game };
+  const host = (room.players || []).find(p => p.id === room.hostId);
+  const hostName = host ? host.name : '?';
+  const key = game + ':' + code;
+  if (!_firstSeen[key]) _firstSeen[key] = (publicRooms[code] && publicRooms[code].createdAt) || room._createdAt || room.createdAt || Date.now();
+  return {
+    code, game,
+    gameName: info.name, gameIcon: info.icon, gameSlug: info.slug,
+    hostName, hostMasked: maskName(hostName),
+    lang: (room.settings && room.settings.lang) || room.lang || 'en',
+    players: players.length,
+    maxPlayers: maxPlayersFor(game, room),
+    isPublic: room.isPublic === true,
+    phase,
+    inProgress: phase !== 'lobby',
+    createdAt: _firstSeen[key],
+    lastActivity: Date.now(),
+  };
+}
 
-  return Object.values(publicRooms)
+function buildList() {
+  const out = [];
+  const seen = {};
+  Object.keys(GAME_INFO).forEach(game => {
+    let map = null;
+    try { map = require('./' + game).getRooms(); } catch (e) { map = null; }
+    if (!map) return;
+    Object.keys(map).forEach(code => {
+      try {
+        const room = map[code];
+        if (!room) return;
+        // skip automated smoke-test rooms
+        if ((room.players || []).some(p => p && typeof p.name === 'string' && p.name.indexOf('Smoke') === 0)) return;
+        const e = liveEntry(game, code, room);
+        if (e) { out.push(e); seen[game + ':' + code] = 1; }
+      } catch (e) { /* never affect games */ }
+    });
+  });
+  Object.keys(_firstSeen).forEach(k => { if (!seen[k]) delete _firstSeen[k]; });
+  return out
     .sort((a, b) => {
       // Lobby (joinable) rooms first, then in-progress; newest first within each group
       if (a.inProgress !== b.inProgress) return a.inProgress ? 1 : -1;
