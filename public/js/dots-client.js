@@ -394,6 +394,7 @@ socket.on('dots_move_made', (move)  => { applyMove(move); });
 
 // ─── STATE HANDLER ───────────────────────────────────────────────
 function applyState(data) {
+  try { renderRoundSummary(data); } catch (e) {}
   switch (data.phase) {
     case 'lobby':   showScreen('screen-lobby');   renderLobby(data);   break;
     case 'playing': showScreen('screen-playing'); renderPlaying(data); if(!window._gaGameStarted){_ga('game_started',{game:'dots',language:lang});window._gaGameStarted=true;} break;
@@ -493,7 +494,7 @@ function renderLobby(data) {
     if (roundBadge) {
       if (totalRounds > 1) {
         roundBadge.style.display = 'block';
-        roundBadge.textContent = (lang === 'pl' ? 'Runda ' : 'Round ') +
+        roundBadge.textContent = _dotsRoundWord() + ' ' +
           (roundsAccum + 1) + ' / ' + totalRounds;
       } else {
         roundBadge.style.display = 'none';
@@ -504,7 +505,7 @@ function renderLobby(data) {
     if (isBetweenRounds) {
       if (settingsCard) settingsCard.style.display = 'none';
       if (startBtn) startBtn.textContent = lang === 'pl'
-        ? '▶ Następna runda' : lang === 'de' ? '▶ Nächste Runde' : '▶ Next Round';
+        ? '▶ Następna runda' : lang === 'de' ? '▶ Nächste Runde' : lang === 'sv' ? '▶ Nästa runda' : '▶ Next Round';
     } else {
       if (settingsCard) settingsCard.style.display = 'block';
       if (startBtn) startBtn.textContent = L.startBtn || '▶ Start Game';
@@ -522,14 +523,15 @@ function renderLobby(data) {
       if (settingsCard) settingsCard.style.display = 'none';
       if (waitMsg) {
         waitMsg.style.display = 'block';
-        waitMsg.textContent = lang === 'pl' ? '⏳ Czekaj na następną rundę...'
-          : lang === 'de' ? '⏳ Warte auf nächste Runde...'
-          : lang === 'sv' ? '⏳ Väntar på nästa runda...'
-          : '⏳ Waiting for next round...';
+        waitMsg.textContent = lang === 'pl' ? '⏳ Czekamy, aż host rozpocznie następną rundę'
+          : lang === 'de' ? '⏳ Wir warten, bis der Host die nächste Runde startet'
+          : lang === 'sv' ? '⏳ Väntar på att värden startar nästa runda'
+          : '⏳ Waiting for the host to start the next round';
+        waitMsg.setAttribute('data-pm-short', waitMsg.textContent);
       }
       if (roundBadge) {
         roundBadge.style.display = 'block';
-        roundBadge.textContent = (lang === 'pl' ? 'Runda ' : 'Round ') +
+        roundBadge.textContent = _dotsRoundWord() + ' ' +
           (roundsAccum + 1) + ' / ' + totalRounds;
       }
     } else {
@@ -539,6 +541,32 @@ function renderLobby(data) {
       }
     }
   }
+}
+
+// ─── BETWEEN ROUNDS: score so far (numbers only, medals stay for the final) ───
+function _dotsRoundWord() { return lang === 'pl' ? 'Runda' : lang === 'de' ? 'Runde' : lang === 'sv' ? 'Runda' : 'Round'; }
+function renderRoundSummary(data) {
+  var box = document.getElementById('dots-round-summary');
+  var total = (data.settings && data.settings.totalRounds) || data.totalRounds || 1;
+  var done = data.totalRoundsAccum || 0;
+  var between = data.phase === 'lobby' && done > 0 && done < total;
+  document.body.classList.toggle('dots-between', between);
+  if (!box) return;
+  if (!between) { box.style.display = 'none'; box.innerHTML = ''; return; }
+  var t = { pl: ['Koniec rundy', 'z', 'Następna: runda'], en: ['End of round', 'of', 'Next: round'],
+            de: ['Ende von Runde', 'von', 'Als Nächstes: Runde'], sv: ['Slut på runda', 'av', 'Nästa: runda'] }[lang] || ['End of round', 'of', 'Next: round'];
+  var players = (data.players || []).slice().sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
+  var rows = '', rank = 0, prev = null;
+  players.forEach(function (p, i) {
+    if (p.score !== prev) { rank = i + 1; prev = p.score; }
+    rows += '<div class="dots-rs-row"><span class="dots-rs-rank">' + rank + '</span>' +
+      '<span class="dots-rs-dot" style="background:' + esc(p.color || '#888') + '"></span>' +
+      '<span class="dots-rs-name">' + esc(p.name) + (p.id === myId ? ' (' + ({ pl: 'ty', en: 'you', de: 'du', sv: 'du' }[lang] || 'you') + ')' : '') + '</span>' +
+      '<span class="dots-rs-score">' + (p.score || 0) + '</span></div>';
+  });
+  box.innerHTML = '<div class="dots-rs-title">🏁 ' + t[0] + ' ' + done + ' ' + t[1] + ' ' + total + '</div>' + rows +
+    '<div class="dots-rs-next">' + t[2] + ' ' + (done + 1) + ' / ' + total + '</div>';
+  box.style.display = 'block';
 }
 
 // ─── PLAYING: RENDER ─────────────────────────────────────────────

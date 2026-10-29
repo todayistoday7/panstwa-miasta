@@ -227,6 +227,11 @@ function broadcastState(io, room) {
     passesLeft: room.state.passesLeft,
     lastWord: room.state.lastWord,
     lastResult: room.state.lastResult,
+    // 2-3 players: no teams, everyone acts in turn, points for the actor
+    solo: !!room.state.solo,
+    scores: room.state.solo ? room.players.filter(pl => pl.connected || (room.state.indiv && room.state.indiv[pl.name]))
+      .map(pl => ({ name: pl.name, id: pl.id, score: (room.state.indiv && room.state.indiv[pl.name]) || 0 })) : null,
+    groupTotal: room.state.solo ? Object.values(room.state.indiv || {}).reduce((a, b) => a + b, 0) : null,
     settings: room.settings,
     isPublic: room.isPublic,
     wordCount: getWordCount(room),
@@ -242,6 +247,14 @@ function broadcastState(io, room) {
 }
 
 function pickNextActor(room) {
+  if (room.state.solo) {
+    // No teams: everyone acts in turn
+    const list = getConnected(room);
+    if (!list.length) return null;
+    const actor = list[(room.state.soloIdx || 0) % list.length];
+    room.state.soloIdx = (room.state.soloIdx || 0) + 1;
+    return actor;
+  }
   // Alternate between teams, cycle through players within each team
   const team = room.state.currentTeam;
   const teamPlayers = getTeamPlayers(room, team);
@@ -293,7 +306,7 @@ function endRound(io, room) {
   
   if (room.state.round > getRounds(room)) {
     // Stats: count finished game (never breaks the game; skips if already finished)
-    if (room.state.phase !== 'final') { try { require('../db/stats').logGameEvent({ game: 'charades', roomCode: room.code, lang: (room.settings && room.settings.lang) || room.lang || null, outcome: 'game_complete', details: { players: (room.players || []).length } }); } catch (e) {} }
+    if (room.state.phase !== 'final') { try { require('../db/stats').logGameEvent({ game: 'charades', roomCode: room.code, lang: (room.settings && room.settings.lang) || room.lang || null, outcome: 'game_complete', details: { players: (room.players || []).length, solo: !!room.state.solo } }); } catch (e) {} }
     room.state.phase = 'final';
     clearTimeout(room.state.timer);
     broadcastState(io, room);
@@ -409,8 +422,14 @@ function register(io, socket) {
     if (!room || socket.id !== room.hostId) return;
     const redTeam = getTeamPlayers(room, 'red');
     const blueTeam = getTeamPlayers(room, 'blue');
-    if (redTeam.length < 2 || blueTeam.length < 2) { socket.emit("charades_error", { message: "Need at least 2 players per team (4 total)" }); return; }
+    const connectedNow = getConnected(room).length;
+    const solo = connectedNow >= 2 && connectedNow <= 3;
+    if (connectedNow < 2) { socket.emit("charades_error", { message: "Need at least 2 players" }); return; }
+    if (!solo && (redTeam.length < 2 || blueTeam.length < 2)) { socket.emit("charades_error", { message: "Need at least 2 players per team (4 total)" }); return; }
     
+    room.state.solo = solo;
+    room.state.indiv = {};
+    room.state.soloIdx = 0;
     room.state.round = 1;
     room.state.scores = { red: 0, blue: 0 };
     room.state.currentTeam = 'red';
@@ -428,7 +447,12 @@ function register(io, socket) {
     const actor = room.players.find(p => p.id === room.state.actorId);
     if (!actor) return;
     
-    room.state.scores[actor.team]++;
+    if (room.state.solo) {
+      room.state.indiv = room.state.indiv || {};
+      room.state.indiv[actor.name] = (room.state.indiv[actor.name] || 0) + 1;
+    } else {
+      room.state.scores[actor.team]++;
+    }
     room.state.wordsThisTurn++;
     room.state.lastWord = room.state.word;
     room.state.lastResult = 'correct';
@@ -509,6 +533,9 @@ function register(io, socket) {
       timerEnd: null,
       timer: null,
       usedWords: new Set(),
+      solo: false,
+      indiv: {},
+      soloIdx: 0,
     };
     broadcastState(io, room);
     try { lobby.announce('charades', room); } catch(e) {}

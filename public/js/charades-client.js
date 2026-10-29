@@ -955,6 +955,23 @@ function showScreen(id) {
 }
 
 // ── LOBBY ──
+// ── 2-3 PLAYERS: no teams, everyone acts in turn, points for the actor ──
+var SOLO_T = {
+  pl: { note: 'Bez drużyn: każdy pokazuje po kolei, punkty za odgadnięte hasła', need2: 'Potrzeba min. 2 graczy', next: 'Następny', total: 'Razem odgadnięte hasła:', words: '', players: 'Gracze' },
+  en: { note: 'No teams: everyone acts in turn, points for words guessed', need2: 'Need at least 2 players', next: 'Up next', total: 'Words guessed together:', words: '', players: 'Players' },
+  de: { note: 'Ohne Teams: Alle stellen der Reihe nach dar, Punkte für erratene Begriffe', need2: 'Mindestens 2 Spieler nötig', next: 'Als Nächstes', total: 'Zusammen erratene Begriffe:', words: '', players: 'Spieler' },
+  sv: { note: 'Utan lag: alla visar i tur och ordning, poäng för gissade ord', need2: 'Minst 2 spelare behövs', next: 'Nästa', total: 'Gissade ord tillsammans:', words: '', players: 'Spelare' },
+};
+function soloT() { return SOLO_T[lang] || SOLO_T.en; }
+function soloScoreboardHtml(data) {
+  return (data.scores || []).map(function(s) {
+    var active = s.name === data.actorName;
+    return '<div class="score-team' + (active ? ' active-team' : '') + '">' +
+      '<div class="score-label">' + esc(s.name) + (s.id === myId ? ' (' + L.youBadge + ')' : '') + '</div>' +
+      '<div class="score-value">' + s.score + '</div></div>';
+  }).join('');
+}
+
 function renderLobby(data) {
   var isHost = data.hostId === myId;
   window._amHost = isHost;
@@ -966,6 +983,8 @@ function renderLobby(data) {
     window._onPlayerJoined(newest ? newest.name : '?');
   }
   _prevPlayerCount = connectedCount;
+  var soloSize = connectedCount <= 3;
+  document.body.classList.toggle('ch-solo', soloSize);
   
   // Team columns
   var redEl = document.getElementById('team-red-players');
@@ -984,7 +1003,7 @@ function renderLobby(data) {
       (isHost && p.id !== myId ? '<button class="move-btn" onclick="movePlayer(\'' + p.id + '\',\'' + (p.team === 'red' ? 'blue' : 'red') + '\')">' + (p.team === 'red' ? L.moveToBlue : L.moveToRed) + '</button>' : '') +
       (p.id === myId ? '<button class="move-btn" onclick="movePlayer(\'' + p.id + '\',\'' + (p.team === 'red' ? 'blue' : 'red') + '\')">' + (p.team === 'red' ? L.moveToBlue : L.moveToRed) + '</button>' : '') +
     '</div>';
-    if (p.team === 'red' && redEl) redEl.innerHTML += html;
+    if ((soloSize || p.team === 'red') && redEl) redEl.innerHTML += html;
     else if (blueEl) blueEl.innerHTML += html;
   });
   
@@ -993,7 +1012,7 @@ function renderLobby(data) {
   var blueLabel = document.getElementById('team-blue-label');
   var redCount = data.teams.red.players.length;
   var blueCount = data.teams.blue.players.length;
-  if (redLabel) redLabel.textContent = L.teamRed + ' (' + redCount + ')';
+  if (redLabel) redLabel.textContent = soloSize ? soloT().players + ' (' + connectedCount + ')' : L.teamRed + ' (' + redCount + ')';
   if (blueLabel) blueLabel.textContent = L.teamBlue + ' (' + blueCount + ')';
   
   // Nudge
@@ -1006,7 +1025,13 @@ function renderLobby(data) {
   var warn = document.getElementById('player-warning');
   if (warn) {
     warn.style.display = 'block';
-    if (redCount >= 1 && blueCount >= 1) {
+    if (connectedCount < 2) {
+      warn.classList.remove('ready');
+      warn.textContent = soloT().need2;
+    } else if (soloSize) {
+      warn.classList.add('ready');
+      warn.textContent = '✅ ' + soloT().players + ': ' + connectedCount + ' · ' + soloT().note;
+    } else if (redCount >= 1 && blueCount >= 1) {
       warn.classList.add('ready');
       warn.textContent = '✅ ' + connectedCount + ' ' + L.players;
     } else {
@@ -1050,7 +1075,17 @@ function renderLobby(data) {
     sv: ['Dela upp i 2 lag','Varje runda ser en spelare ett hemligt ord','Visa det — inga ljud, inget pekande!','Ditt lag ropar gissningar — tryck ✅ när de gissar rätt','Varje rätt gissning = 1 poäng för laget'],
   };
   if (lobbySteps.length === 5 && lobbyStepTexts[lang]) {
-    lobbySteps.forEach(function(el, i) { el.textContent = lobbyStepTexts[lang][i]; });
+    var _steps = lobbyStepTexts[lang].slice();
+    if (soloSize) {
+      var _solo = {
+        pl: ['Każdy pokazuje po kolei — przy 2-3 graczach bez drużyn', 'Pozostali krzyczą odpowiedzi — kliknij ✅, gdy zgadną', 'Każde odgadnięte hasło = 1 punkt dla pokazującego'],
+        en: ['Everyone acts in turn — no teams with 2-3 players', 'The others shout guesses — tap ✅ when they get it', 'Each word guessed = 1 point for the actor'],
+        de: ['Alle stellen der Reihe nach dar — bei 2-3 Spielern ohne Teams', 'Die anderen rufen Antworten — tippe ✅, wenn sie es haben', 'Jeder erratene Begriff = 1 Punkt für den Darsteller'],
+        sv: ['Alla visar i tur och ordning — utan lag med 2-3 spelare', 'De andra ropar gissningar — tryck ✅ när de gissar rätt', 'Varje gissat ord = 1 poäng för den som visar'],
+      }[lang];
+      if (_solo) { _steps[0] = _solo[0]; _steps[3] = _solo[1]; _steps[4] = _solo[2]; }
+    }
+    lobbySteps.forEach(function(el, i) { el.textContent = _steps[i]; });
   }
   
   // Word count info
@@ -1066,7 +1101,7 @@ function renderLobby(data) {
   if (isHost) {
     if (startBtn) {
       startBtn.style.display = '';
-      var canStart = redCount >= 2 && blueCount >= 2;
+      var canStart = (connectedCount >= 2 && soloSize) || (redCount >= 2 && blueCount >= 2);
       startBtn.disabled = !canStart;
       startBtn.style.opacity = canStart ? '1' : '0.4';
     }
@@ -1099,7 +1134,9 @@ function renderPreparing(data) {
   
   // Scoreboard
   var scoreEl = document.getElementById('scoreboard');
-  if (scoreEl) {
+  if (scoreEl && data.solo) {
+    scoreEl.innerHTML = soloScoreboardHtml(data);
+  } else if (scoreEl) {
     scoreEl.innerHTML =
       '<div class="score-team' + (data.actorTeam === 'red' ? ' active-team' : '') + '">' +
         '<div class="score-label">' + L.teamRed + '</div>' +
@@ -1139,7 +1176,7 @@ function renderPreparing(data) {
   var banner = document.getElementById('turn-banner');
   if (banner) {
     banner.className = 'turn-banner actor-banner';
-    banner.textContent = '⏭️ ' + (lang === 'pl' ? 'Następny' : lang === 'de' ? 'Als Nächstes' : lang === 'sv' ? 'Nästa' : 'Up Next') + ': ' + actorName + ' (' + teamLabel + ')';
+    banner.textContent = '⏭️ ' + (lang === 'pl' ? 'Następny' : lang === 'de' ? 'Als Nächstes' : lang === 'sv' ? 'Nästa' : 'Up Next') + ': ' + actorName + (data.solo ? '' : ' (' + teamLabel + ')');
   }
   
   // Wait message — actor sees "Ready" button, others see "Get ready"
@@ -1171,11 +1208,13 @@ function renderPlaying(data) {
   if (nextBtn) nextBtn.style.display = 'none';
   var myPlayer = data.players.find(function(p) { return p.id === myId; });
   var myTeam = myPlayer ? myPlayer.team : null;
-  var isMyTeamActing = data.actorTeam === myTeam;
+  var isMyTeamActing = data.solo || data.actorTeam === myTeam;
   
   // Scoreboard
   var scoreEl = document.getElementById('scoreboard');
-  if (scoreEl) {
+  if (scoreEl && data.solo) {
+    scoreEl.innerHTML = soloScoreboardHtml(data);
+  } else if (scoreEl) {
     scoreEl.innerHTML =
       '<div class="score-team' + (data.actorTeam === 'red' ? ' active-team' : '') + '">' +
         '<div class="score-label">' + L.teamRed + '</div>' +
@@ -1204,7 +1243,7 @@ function renderPlaying(data) {
       banner.className = 'turn-banner actor-banner';
     } else {
       var teamLabel = data.actorTeam === 'red' ? L.teamRed : L.teamBlue;
-      banner.textContent = data.actorName + ' (' + teamLabel + ') ' + L.teamIsActing;
+      banner.textContent = data.actorName + (data.solo ? ' ' : ' (' + teamLabel + ') ') + L.teamIsActing;
       banner.className = 'turn-banner';
     }
   }
@@ -1262,7 +1301,9 @@ function renderPlaying(data) {
 
   // Team roster — always visible during play
   var rosterEl = document.getElementById('team-roster');
-  if (rosterEl && data.players) {
+  if (rosterEl && data.solo) {
+    rosterEl.innerHTML = '';
+  } else if (rosterEl && data.players) {
     var redPlayers = data.players.filter(function(p) { return p.team === 'red' && p.connected; });
     var bluePlayers = data.players.filter(function(p) { return p.team === 'blue' && p.connected; });
     var renderTeamList = function(players, teamColor) {
@@ -1308,13 +1349,16 @@ function renderPlaying(data) {
   }
   
   // Skip turn — host only
+  var skipBtn = document.getElementById('skip-turn-btn');
   if (skipBtn) skipBtn.style.display = window._amHost ? '' : 'none';
 }
 
 // ── TURN END ──
 function renderTurnEnd(data) {
   var scoreEl = document.getElementById('scoreboard');
-  if (scoreEl) {
+  if (scoreEl && data.solo) {
+    scoreEl.innerHTML = soloScoreboardHtml(data);
+  } else if (scoreEl) {
     scoreEl.innerHTML =
       '<div class="score-team"><div class="score-label">' + L.teamRed + '</div><div class="score-value">' + data.teams.red.score + '</div></div>' +
       '<div class="score-vs">VS</div>' +
@@ -1359,6 +1403,23 @@ function renderTurnEnd(data) {
 function renderFinal(data) {
   var el = document.getElementById('final-scores');
   if (!el) return;
+  if (data.solo) {
+    var list = (data.scores || []).slice().sort(function(a, b) { return b.score - a.score; });
+    var top = list.length ? list[0].score : 0;
+    var tie = list.filter(function(s) { return s.score === top; }).length > 1;
+    el.innerHTML = (tie ? drawLine(lang) : '') + list.map(function(s, i) {
+      return '<div class="final-team-score' + (s.score === top ? ' winner' : '') + '" style="display:flex;align-items:center;gap:12px;text-align:left;padding:14px 18px;margin-bottom:8px;">' +
+        '<span style="font-size:26px;">' + medalFor(list, i, function(x) { return x.score; }) + '</span>' +
+        '<span class="final-team-label" style="flex:1;margin:0;">' + esc(s.name) + (s.id === myId ? ' (' + L.youBadge + ')' : '') + '</span>' +
+        '<span class="final-team-pts" style="margin:0;">' + s.score + '</span></div>';
+    }).join('') +
+      '<div style="text-align:center;color:var(--muted);font-weight:800;font-size:14px;margin-top:6px;">' + soloT().total + ' ' + (data.groupTotal || 0) + '</div>';
+    var pab = document.getElementById('play-again-btn');
+    if (pab) pab.style.display = window._amHost ? '' : 'none';
+    var rEl = document.getElementById('reaction-container');
+    if (rEl && typeof window._buildReactionBar === 'function') window._buildReactionBar(rEl, roomCode, myName || '');
+    return;
+  }
   
   var redScore = data.teams.red.score;
   var blueScore = data.teams.blue.score;
@@ -1376,7 +1437,7 @@ function renderFinal(data) {
       '<div class="final-team-pts">' + blueScore + '</div>' +
       (winner === 'blue' ? '<div class="winner-badge">🏆</div>' : '') +
     '</div>' +
-    (winner === 'tie' ? '<div class="tie-label">🤝 Tie!</div>' : '');
+    (winner === 'tie' ? drawLine(lang) : '');
   
   var playAgainBtn = document.getElementById('play-again-btn');
   if (playAgainBtn) playAgainBtn.style.display = window._amHost ? '' : 'none';

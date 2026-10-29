@@ -83,6 +83,13 @@
   .settings-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); }
   .settings-row label { font-size:13px; font-weight:700; color:var(--muted); }
 </style>
+<style>
+  /* 2-3 players: one plain player list, no team switching */
+  body.ch-solo .team-columns { grid-template-columns:1fr; }
+  body.ch-solo .team-col.blue, body.ch-solo .team-col .move-btn { display:none !important; }
+  body.ch-solo .team-col.red { border-color:var(--border); }
+  #scoreboard .score-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+</style>
 </head>
 <body>
 
@@ -244,6 +251,6 @@
 </div>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/shared.js?v=9"></script>
-<script src="/js/charades-client.js?v=7"></script>
+<script src="/js/charades-client.js?v=8"></script>
 </body>
 </html>
