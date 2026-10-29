@@ -953,6 +953,23 @@ function renderGeneric(db, game, days, cutoffLabel, gameOpts) {
     dots:   [['gridSize', 'Grid size', v => v + '×' + v], ['totalRounds', 'Rounds', v => v]],
     memory: [['boardSize', 'Board size', v => v + ' cards'], ['theme', 'Theme', v => v], ['gameLength', 'Game length', v => v]],
   };
+  // Unfinished games: where did they stop?
+  const UNIT = { pm: 'Round', taboo: 'Turn', dots: 'Round', twotruth: 'Turn', hangman: 'Round', drawing: 'Step', whoami: 'Turn', memory: 'Board', charades: 'Turn' };
+  let stopCard = '';
+  if (UNIT[game]) {
+    const stops = db.prepare(`
+      SELECT CAST(json_extract(details,'$.at') AS INTEGER) AS at, CAST(json_extract(details,'$.of') AS INTEGER) AS ofn, COUNT(*) AS n
+      FROM game_events WHERE game = ? AND date >= ? AND outcome='room_abandoned' AND json_extract(details,'$.at') IS NOT NULL
+      GROUP BY at, ofn ORDER BY n DESC, at ASC LIMIT 12
+    `).all(game, since);
+    const total = stops.reduce((a, r) => a + r.n, 0);
+    const avgPct = total ? Math.round(stops.reduce((a, r) => a + r.n * Math.min(1, r.at / Math.max(1, r.ofn)), 0) / total * 100) : null;
+    const rows = stops.map(r => `<tr><td>${UNIT[game]} ${r.at} of ${r.ofn}</td><td>${r.n}</td><td>${statsPct(r.n, total)}</td></tr>`).join('') || statsEmptyRow(3);
+    stopCard = `<div class="card" style="margin-bottom:20px">
+      <h3 style="font-size:14px;margin-bottom:6px;color:#94a3b8">Unfinished games - where they stopped (${escapeHtml(cutoffLabel)})</h3>
+      <div style="font-size:12px;color:#64748b;margin-bottom:12px">Started games that never reached the final screen.${avgPct !== null ? ' On average they got <strong style="color:#e2e8f0">' + avgPct + '%</strong> of the way.' : ''} Recorded from 29 Oct 2026 on.</div>
+      <table><tr><th>Stopped at</th><th>Games</th><th>Share</th></tr>${rows}</table></div>`;
+  }
   let settingsCard = '';
   if (SETTING_LABELS[game]) {
     const parts = SETTING_LABELS[game].map(([key, label, fmt]) => {
@@ -1006,7 +1023,7 @@ function renderGeneric(db, game, days, cutoffLabel, gameOpts) {
         <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Time of day (Polish time)</h3>
         <table><tr><th>When</th><th>Started</th><th>Finished</th></tr>${timeRows}</table>
       </div>
-    </div>${settingsCard}`;
+    </div>${stopCard}${settingsCard}`;
 }
 
 // ─── Who Am I: CSV export of every character's results ─────

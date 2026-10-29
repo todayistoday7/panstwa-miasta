@@ -78,7 +78,9 @@ app.use((req, res, next) => {
   function swapBody(body) {
     if (body.includes(GA_DEFAULT)) body = body.split(GA_DEFAULT).join(GA_RFG);
     if (isBlogPage && body.indexOf('panstwamiastagra.com') > -1) body = body.split('panstwamiastagra.com').join('roomforgames.com');
-    if (body.includes('<script') && !body.includes('window._rfgDomain')) {
+    // On roomforgames.com "/" is the games hub: Polish Państwa-Miasta = EN page in Polish
+    if (body.indexOf('window._seoLangUrls = {"pl":"/",') > -1) body = body.replace('window._seoLangUrls = {"pl":"/",', 'window._seoLangUrls = {"pl":"/countries-cities-game?lang=pl",');
+    if (/<html/i.test(body) && body.includes('<script') && !body.includes('<script>window._rfgDomain=true;</script>')) {
       body = body.replace(/<script/, '<script>window._rfgDomain=true;</script>\n<script');
     }
     // Swap canonical + og:url so Google indexes RFG independently

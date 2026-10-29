@@ -1,4 +1,11 @@
 // ─── HTML ESCAPE — use for ANY user-provided text inserted via innerHTML ────
+// Link to Państwa-Miasta in a given language. On roomforgames.com "/" is the
+// games hub, so the game lives on its language pages there (PL: EN page + ?lang=pl).
+function _pmHref(l) {
+  if (window._rfgDomain) return l === 'de' ? '/stadt-land-fluss-online' : l === 'sv' ? '/laender-och-staeder' : l === 'pl' ? '/countries-cities-game?lang=pl' : '/countries-cities-game';
+  return l === 'pl' ? '/' : l === 'de' ? '/stadt-land-fluss-online' : l === 'sv' ? '/laender-och-staeder' : '/countries-cities-game';
+}
+
 function esc(s) {
   if (typeof s !== 'string') return '';
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
@@ -731,7 +738,7 @@ function initVisibilityToggle() {
       '<a href="' + gamesHubUrl(lang) + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
       '<a href="' + gamesHubUrl(lang) + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
       '<div class="gb-div"></div>' +
-      '<a href="' + (window._rfgDomain ? '/' : (lang==='pl'?'/':lang==='de'?'/stadt-land-fluss-online':lang==='sv'?'/laender-och-staeder':'/countries-cities-game')) + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
+      '<a href="' + _pmHref(lang) + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
       '<a href="' + (lang==='pl'?'/zakazane-slowa':lang==='de'?'/verbotene-woerter':lang==='sv'?'/forbjudna-ord':'/forbidden-words') + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
       '<a href="' + (lang==='pl'?'/wisielec':lang==='de'?'/galgenmaennchen-online':lang==='sv'?'/hanga-gubbe-online':'/hangman-online') + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
       '<a href="' + (lang==='pl'?'/kropki-i-kreski-online':lang==='de'?'/punkte-und-linien-online':lang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
@@ -864,7 +871,7 @@ window._rebuildBurger = function(newLang) {
     '<a href="' + gamesHubUrl(newLang) + '"><span class="gb-ico">🏠</span>' + t.home + '</a>' +
     '<a href="' + gamesHubUrl(newLang) + '"><span class="gb-ico">🎮</span>' + t.games + '</a>' +
     '<div class="gb-div"></div>' +
-    '<a href="' + (window._rfgDomain ? '/' : (newLang==='pl'?'/':newLang==='de'?'/stadt-land-fluss-online':newLang==='sv'?'/laender-och-staeder':'/countries-cities-game')) + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
+    '<a href="' + _pmHref(newLang) + '"><span class="gb-ico">🌍</span>' + t.gpm + '</a>' +
     '<a href="' + (newLang==='pl'?'/zakazane-slowa':newLang==='de'?'/verbotene-woerter':newLang==='sv'?'/forbjudna-ord':'/forbidden-words') + '"><span class="gb-ico">🎭</span>' + t.gtaboo + '</a>' +
     '<a href="' + (newLang==='pl'?'/wisielec':newLang==='de'?'/galgenmaennchen-online':newLang==='sv'?'/hanga-gubbe-online':'/hangman-online') + '"><span class="gb-ico">🪢</span>' + t.ghang + '</a>' +
     '<a href="' + (newLang==='pl'?'/kropki-i-kreski-online':newLang==='de'?'/punkte-und-linien-online':newLang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '"><span class="gb-ico">🔵</span>' + t.gdots + '</a>' +
@@ -1043,7 +1050,7 @@ window._buildFooterLangBtns = function() {
         '<div>' +
           '<div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:12px;">' + t.games + '</div>' +
           '<div style="display:flex;flex-direction:column;gap:6px;">' +
-            '<a href="/?lang=' + footerLang + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🌍 ' + t.gpm + '</a>' +
+            '<a href="' + (window._rfgDomain ? _pmHref(footerLang) : '/?lang=' + footerLang) + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🌍 ' + t.gpm + '</a>' +
             '<a href="' + (footerLang==='pl'?'/zakazane-slowa':footerLang==='de'?'/verbotene-woerter':footerLang==='sv'?'/forbjudna-ord':'/forbidden-words') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🎭 ' + t.gtaboo + '</a>' +
             '<a href="' + (footerLang==='pl'?'/wisielec':footerLang==='de'?'/galgenmaennchen-online':footerLang==='sv'?'/hanga-gubbe-online':'/hangman-online') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🪢 ' + t.ghang + '</a>' +
             '<a href="' + (footerLang==='pl'?'/kropki-i-kreski-online':footerLang==='de'?'/punkte-und-linien-online':footerLang==='sv'?'/punkter-och-linjer-online':'/dots-and-boxes-online') + '" style="color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;">🔵 ' + t.gdots + '</a>' +

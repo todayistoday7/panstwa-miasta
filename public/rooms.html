@@ -199,7 +199,7 @@
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/shared.js?v=9"></script>
+<script src="/js/shared.js?v=10"></script>
 <script>
 // ── Translations ──────────────────────────────────────────────────
 const ROOMS_LANGS = {
@@ -425,7 +425,8 @@ function renderRooms() {
   list.innerHTML = rooms.map(function(r) {
     var isPublic    = r.isPublic;
     var isInProgress = r.inProgress === true;
-    var joinUrl     = (isPublic && !isInProgress) ? (r.gameSlug + '?join=' + r.code + '&lang=' + lang) : null;
+    var _slug       = (window._rfgDomain && r.gameSlug === '/') ? '/countries-cities-game' : r.gameSlug;
+    var joinUrl     = (isPublic && !isInProgress) ? (_slug + '?join=' + r.code + '&lang=' + lang) : null;
     var langPill    = r.lang ? '<span class="pill pill-blue">' + r.lang.toUpperCase() + '</span>' : '';
     var privPill    = isPublic ? '' : '<span class="pill pill-orange">🔒 ' + (L.private || 'Private') + '</span>';
     var card =

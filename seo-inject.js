@@ -127,8 +127,10 @@ window._seoLangUrls = ${JSON.stringify(seo.seoLangUrls)};
       // but update ?lang= to the chosen language (else the old language sticks)
       var sp = new URLSearchParams(window.location.search);
       if (sp.has('lang')) sp.set('lang', code);
+      var parts = url.split('?');
+      if (parts[1]) new URLSearchParams(parts[1]).forEach(function(v, k) { sp.set(k, v); });
       var qs = sp.toString();
-      window.location.href = url + (qs ? '?' + qs : '');
+      window.location.href = parts[0] + (qs ? '?' + qs : '');
     } else if (_origSetUiLang) {
       _origSetUiLang(code);
     }

@@ -60,6 +60,27 @@ function funnelLog(game, room, outcome, details) {
     });
   } catch (e) { /* never affect games */ }
 }
+// How far a game got: { at: round/turn being played, of: total } (null if unknown)
+function progressOf(game, room) {
+  try {
+    const s = room.state || {}, st = room.settings || {};
+    const conn = (room.players || []).filter(p => p && p.connected !== false).length || (room.players || []).length;
+    const mult = st.gameLength === 'quick' ? 1 : st.gameLength === 'marathon' ? 3 : 2;
+    switch (game) {
+      case 'pm':       return { at: Math.max(1, s.round || 0), of: st.totalRounds || 5 };
+      case 'taboo':    return { at: (s.round || 0) + 1, of: st.rounds || 0 };
+      case 'dots':     return { at: Math.max(1, s.roundsPlayed || 1), of: st.totalRounds || 1 };
+      case 'twotruth': return { at: (s.roundsPlayed || 0) + 1, of: conn };
+      case 'hangman':  return { at: (s.roundsPlayed || 0) + 1, of: conn * mult };
+      case 'drawing':  return { at: (s.step || 0) + 1, of: s.totalSteps || conn };
+      case 'whoami':   return { at: (s.turnCount || 0) + 1, of: (st.turnsEach || 2) * conn };
+      case 'memory':   return { at: (s.roundsPlayed || 0) + 1, of: mult };
+      case 'charades': return { at: Math.max(1, s.round || 1), of: Math.max(2, conn * mult) };
+    }
+  } catch (e) {}
+  return null;
+}
+
 function funnelCheckStarted(f) {
   try {
     if (f.started || !f.room || !f.room.state) return;
@@ -69,7 +90,6 @@ function funnelCheckStarted(f) {
       const st = f.room.settings || {}, extra = {};
       ['gridSize', 'totalRounds', 'boardSize', 'theme', 'gameLength'].forEach(k => { if (st[k] !== undefined) extra[k] = st[k]; });
       funnelLog(f.game, f.room, 'room_started', Object.assign({ players: (f.room.players || []).length }, extra));
-      f.room = null; // drop reference once started
     }
   } catch (e) { /* never affect games */ }
 }
@@ -88,11 +108,35 @@ function trackFunnel(game, room) {
     funnelCheckStarted(f);
   } catch (e) { /* never affect games */ }
 }
+// Started games that never reached the final screen: when the room is gone
+// (or everyone has been away for 10 min) log how far it got. Read-only, every 15 s.
+function funnelCheckProgress(f) {
+  try {
+    if (!f.started || f.done || !f.room) return;
+    let map = null;
+    try { map = require('./' + f.game).getRooms(); } catch (e) {}
+    const alive = map && map[f.room.code] === f.room;
+    const phase = f.room.state && f.room.state.phase;
+    if (alive && phase === 'final') { f.done = true; f.room = null; return; }
+    if (alive) {
+      const p = progressOf(f.game, f.room);
+      if (p) f.last = p;
+      const anyone = (f.room.players || []).some(pl => pl && pl.connected !== false);
+      if (anyone) { f.awaySince = 0; return; }
+      if (!f.awaySince) { f.awaySince = Date.now(); return; }
+      if (Date.now() - f.awaySince < (parseInt(process.env.ABANDON_MS, 10) || 10 * 60 * 1000)) return;
+    }
+    f.done = true;
+    funnelLog(f.game, f.room, 'room_abandoned', Object.assign({ players: (f.room.players || []).length }, f.last || {}));
+    f.room = null;
+  } catch (e) { /* never affect games */ }
+}
 const _funnelTimer = setInterval(() => {
   try {
     const old = Date.now() - 12 * 3600 * 1000;
     for (const [k, f] of _funnel) {
       funnelCheckStarted(f);
+      funnelCheckProgress(f);
       if (f.t < old) _funnel.delete(k);
     }
     broadcast();
