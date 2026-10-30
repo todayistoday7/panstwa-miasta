@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Kalambury Online — Charades Multiplayer Game</title>
-<meta name="description" content="Play Charades (Kalambury) online free! Act out words in teams. Fun party game for 4-40 players.">
+<meta name="description" content="Play Charades (Kalambury) online free! Act out words in teams, or take turns with 2-3 players. Fun party game for 2-40 players.">
 <meta property="og:title" content="Kalambury Online — Charades Multiplayer Game">
-<meta property="og:description" content="Play Charades online free! Act out words in teams. Fun party game for 4-40 players.">
+<meta property="og:description" content="Play Charades online free! Act out words in teams, or take turns with 2-3 players. Fun party game for 2-40 players.">
 <meta property="og:url" content="https://panstwamiastagra.com/charades">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -53,7 +53,8 @@
   /* Round indicator */
   .round-indicator { font-size:12px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:2px; text-align:center; margin-bottom:8px; }
   /* Wait message */
-  .wait-message { text-align:center; padding:32px 20px; color:var(--muted); font-weight:700; }
+  .wait-message { text-align:center; padding:24px 20px; color:var(--muted); font-weight:700; }
+  #screen-playing .wait-message { color:#ffd166; font-weight:800; }
   .wait-icon { font-size:48px; margin-bottom:12px; }
   /* Result flash */
   .result-flash { text-align:center; padding:10px; border-radius:10px; font-weight:800; font-size:14px; margin:8px 0; display:none; }
@@ -90,6 +91,18 @@
   body.ch-solo .team-col.red { border-color:var(--border); }
   #scoreboard .score-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 </style>
+<style>
+  /* Desktop lobby for the host: players on the left, settings + Start on the right.
+     Phones and other players keep the one-column layout. */
+  .ch-lobby-wrap, .ch-lobby-main, .ch-lobby-side { display: contents; }
+  @media (min-width: 900px) {
+    body.ch-host .ch-lobby-wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 20px; align-items: start; }
+    body.ch-host .ch-lobby-main, body.ch-host .ch-lobby-side { display: block; }
+    body.ch-host .ch-lobby-main .lobby-header { margin-top: 0; }
+    body.ch-host #settings-card { margin-top: 0 !important; }
+    body.ch-host .ch-lobby-main .pm-code-card { width: 100%; box-sizing: border-box; }
+  }
+</style>
 </head>
 <body>
 
@@ -117,7 +130,7 @@
       </div>
       <div class="logo-text">
         <h1 id="game-title">KALAMBURY</h1>
-        <p id="game-subtitle">Team game · 4–40 players</p>
+        <p id="game-subtitle">Party game · 2–40 players</p>
       </div>
     </div>
   </header>
@@ -162,6 +175,7 @@
 
   <!-- ══ LOBBY ══ -->
   <div id="screen-lobby" class="screen">
+    <div class="ch-lobby-wrap"><div class="ch-lobby-main">
     <div class="lobby-header">
       <div>
         <div class="room-code-display" id="room-code-display"></div>
@@ -181,6 +195,7 @@
     </div>
     <div id="nudge-container" style="text-align:center;margin-top:10px;"></div>
     <div id="player-warning" class="player-warning" style="display:none;"></div>
+    </div><div class="ch-lobby-side">
     <div class="card" id="settings-card" style="display:none;margin-top:12px;">
       <h3 id="lbl-settings">Settings</h3>
       <div style="display:flex;align-items:center;justify-content:space-between;">
@@ -200,6 +215,7 @@
       <div id="waiting-msg" style="display:none;"></div>
       <button class="btn secondary" onclick="leaveRoom()"><span id="lbl-leave-room">🚪 Leave Room</span></button>
     </div>
+    </div></div>
 
     <!-- Rules in lobby -->
     <div class="card" style="margin-top:16px;">
@@ -251,6 +267,6 @@
 </div>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/shared.js?v=10"></script>
-<script src="/js/charades-client.js?v=8"></script>
+<script src="/js/charades-client.js?v=9"></script>
 </body>
 </html>

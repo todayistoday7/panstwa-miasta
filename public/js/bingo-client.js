@@ -512,7 +512,7 @@ function applyTranslations() {
     if (el && L[key] && typeof L[key] === 'string') el.textContent = L[key];
   }
   // Page title
-  document.title = L.gameTitle + ' — panstwamiastagra.com';
+  document.title = L.gameTitle + ' — ' + (window._rfgDomain ? 'roomforgames.com' : 'panstwamiastagra.com');
 
   document.querySelectorAll('.lbl-nav-home-dup').forEach(function(el) { if (L.navHome) el.textContent = L.navHome; });
   document.querySelectorAll('.lbl-nav-all-games-dup').forEach(function(el) { if (L.navAllGames) el.textContent = L.navAllGames; });

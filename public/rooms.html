@@ -313,7 +313,7 @@ const ROOMS_LANGS = {
   },
 };
 
-var lang = (new URLSearchParams(window.location.search).get('lang') || 'pl');
+var lang = (new URLSearchParams(window.location.search).get('lang') || (window._rfgDomain ? 'en' : 'pl'));
 if (!ROOMS_LANGS[lang]) lang = 'pl';
 var L = ROOMS_LANGS[lang];
 
@@ -337,7 +337,7 @@ function setLang(code) {
 }
 
 function applyTranslations() {
-  document.title = L.pageTitle + ' — panstwamiastagra.com';
+  document.title = L.pageTitle + ' — ' + (window._rfgDomain ? 'roomforgames.com' : 'panstwamiastagra.com');
   var map = {
     'page-title':        L.pageTitle,
     'page-subtitle':     L.pageSubtitle,

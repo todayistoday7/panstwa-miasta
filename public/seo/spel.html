@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Gratis Online Multiplayer-Spel — Sällskapsspel | panstwamiastagra.com</title>
-<title style="display:none">Gry Online Za Darmo — Game Hub | panstwamiastagra.com</title>
 <meta name="description" content="De bästa gratis online multiplayer-spelen på svenska. Länder & Städer, Hänga gubbe, Förbjudna ord och mer. Spela utan registrering!">
 <meta name="description-orig" content="Darmowe gry integracyjne i zabawy integracyjne online — Państwa Miasta, Zakazane Słowa, Wisielec i więcej. Fun ice breaker games free to play with friends, family and teams. Bez rejestracji.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -131,8 +130,8 @@
 <link rel="alternate" hreflang="sv" href="https://panstwamiastagra.com/spel">
 <link rel="alternate" hreflang="x-default" href="https://panstwamiastagra.com/games">
 <link rel="canonical" href="https://panstwamiastagra.com/games">
-<meta property="og:title" content="Darmowe Gry Integracyjne Online — panstwamiastagra.com">
-<meta property="og:description" content="Darmowe gry integracyjne i zabawy online — Państwa Miasta, Zakazane Słowa, Wisielec i więcej. Fun ice breaker games free for friends, family and teams.">
+<meta property="og:title" content="Gratis Online Multiplayer-Spel — Sällskapsspel | panstwamiastagra.com">
+<meta property="og:description" content="De bästa gratis online multiplayer-spelen på svenska. Länder & Städer, Hänga gubbe, Förbjudna ord och mer. Spela utan registrering!">
 <meta property="og:url" content="https://panstwamiastagra.com/games">
 <meta property="og:type" content="website">
 <link rel="canonical" href="https://panstwamiastagra.com/spel">
@@ -226,7 +225,7 @@
       bingo:     { title: 'Företagsbingo', desc: 'Spela under tråkiga möten! Markera företagsfraser när du hör dem — den som fyller en rad först vinner. Perfekt för kontorsmöten och teamevents!', players: '2-50 spelare', tag1: 'Teambuilding', age: 'från 16 år', play: '🎮 Spela nu', coming: 'SNART' },
       drawing:   { title: 'Skissa & Gissa', desc: 'Rita ord, gissa teckningar — och se hur meddelanden blir roligt förvrängda! Inga poäng, ren kul och skratt. Perfekt för fester och teambuilding.', players: '4-10 spelare', tag1: 'Isbrytare', age: 'från 8 år', play: '🎮 Spela nu', coming: 'SNART' },
       memory:    { title: 'Memo-spel', desc: 'Klassiskt kortspel online! Vänd kort och hitta matchande par. 6 emoji-teman, 3 spelplansstorlekar. Perfekt för familjespelkvällar och vänner.', players: '2-6 spelare', tag1: 'Familj', age: 'från 4 år', play: '🎮 Spela nu', coming: 'SNART' },
-      charades:  { title: 'Charader', desc: 'Klassiska charader online! Visa ord med gester, gissa i lag. Barnläge med emoji-ledtrådar. Perfekt för fester, familjespelkvällar och teambuilding.', players: '4-40 spelare', tag1: 'Fest', age: 'från 4 år', play: '🎮 Spela nu', coming: 'SNART' },
+      charades:  { title: 'Charader', desc: 'Klassiska charader online! Visa ord med gester, gissa i lag. Barnläge med emoji-ledtrådar. Perfekt för fester, familjespelkvällar och teambuilding.', players: '2-40 spelare', tag1: 'Fest', age: 'från 4 år', play: '🎮 Spela nu', coming: 'SNART' },
       whoami:    { title: 'Vem är jag?', desc: 'Klassiskt sällskapsspel online! Lista ut din hemliga karaktär genom att ställa ja/nej-frågor. Perfekt för fester, familjekväller och teambuilding.', players: '2-16 spelare', tag1: 'Isbrytare', age: 'från 8 år', play: '🎮 Spela nu', coming: 'SNART' },
     },
   };
@@ -280,7 +279,7 @@
       card(l==='pl'?'/szkicuj-i-zgaduj':l==='de'?'/zeichnen-und-raten':l==='sv'?'/skissa-och-gissa':'/sketch-and-guess', '🎨', g.drawing ? g.drawing.title : 'Sketch & Guess', g.drawing ? g.drawing.desc : '', g.drawing ? g.drawing.players : '4-10', 'PL/EN/DE/SV', g.drawing ? g.drawing.tag1 : 'Ice breaker', false, g.drawing ? g.drawing.play : '🎮 Play now', l, g.drawing ? g.drawing.age : '8+', 'party team-event ice-breaker', true) +
       card(l==='pl'?'/kim-jestem':l==='de'?'/wer-bin-ich':l==='sv'?'/vem-ar-jag':'/who-am-i', '❓', g.whoami ? g.whoami.title : 'Who Am I?', g.whoami ? g.whoami.desc : '', g.whoami ? g.whoami.players : '2-16', 'PL/EN/DE/SV', g.whoami ? g.whoami.tag1 : 'Ice breaker', false, g.whoami ? g.whoami.play : '🎮 Play now', l, g.whoami ? g.whoami.age : '8+', 'family party classroom ice-breaker', true) +
       card(l==='pl'?'/znajdz-pary':l==='de'?'/memo-spiel-online':l==='sv'?'/memo-spel-online':'/find-pairs-online', '🧩', g.memory ? g.memory.title : 'Find Pairs', g.memory ? g.memory.desc : '', g.memory ? g.memory.players : '2-6', 'PL/EN/DE/SV', g.memory ? g.memory.tag1 : 'Family', false, g.memory ? g.memory.play : '🎮 Play now', l, g.memory ? g.memory.age : '4+', 'family kids4 classroom', true) +
-      card(l==='pl'?'/kalambury':l==='de'?'/scharade':l==='sv'?'/charader':'/charades-online', '🎬', g.charades ? g.charades.title : 'Charades', g.charades ? g.charades.desc : '', g.charades ? g.charades.players : '4-40', 'PL/EN/DE/SV', g.charades ? g.charades.tag1 : 'Party', false, g.charades ? g.charades.play : '🎮 Play now', l, g.charades ? g.charades.age : '4+', 'party family kids4 team-event ice-breaker', true);
+      card(l==='pl'?'/kalambury':l==='de'?'/scharade':l==='sv'?'/charader':'/charades-online', '🎬', g.charades ? g.charades.title : 'Charades', g.charades ? g.charades.desc : '', g.charades ? g.charades.players : '2-40', 'PL/EN/DE/SV', g.charades ? g.charades.tag1 : 'Party', false, g.charades ? g.charades.play : '🎮 Play now', l, g.charades ? g.charades.age : '4+', 'party family kids4 team-event ice-breaker', true);
   }
 
   function card(href, icon, title, desc, players, lang_tag, tag1, comingSoon, btnLabel, l, age, filterTags, noLangSuffix) {

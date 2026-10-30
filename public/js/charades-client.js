@@ -722,7 +722,7 @@ const LANGS = {
   pl: {
     name: '🇵🇱 PL',
     gameTitle: 'Kalambury',
-    gameSubtitle: 'Gra drużynowa · 4–40 graczy',
+    gameSubtitle: 'Gra imprezowa · 2–40 graczy',
     createRoom: 'Stwórz pokój', joinRoom: 'Dołącz do pokoju',
     enterName: 'Twoje imię', enterCode: 'Kod pokoju',
     startGame: '🎬 Start', leaveRoom: '🚪 Wyjdź',
@@ -760,7 +760,7 @@ const LANGS = {
   en: {
     name: '🇬🇧 EN',
     gameTitle: 'Charades',
-    gameSubtitle: 'Team game · 4–40 players',
+    gameSubtitle: 'Party game · 2–40 players',
     createRoom: 'Create room', joinRoom: 'Join room',
     enterName: 'Your name', enterCode: 'Room code',
     startGame: '🎬 Start', leaveRoom: '🚪 Leave',
@@ -798,7 +798,7 @@ const LANGS = {
   de: {
     name: '🇩🇪 DE',
     gameTitle: 'Scharade',
-    gameSubtitle: 'Teamspiel · 4–40 Spieler',
+    gameSubtitle: 'Partyspiel · 2–40 Spieler',
     createRoom: 'Raum erstellen', joinRoom: 'Beitreten',
     enterName: 'Dein Name', enterCode: 'Raumcode',
     startGame: '🎬 Start', leaveRoom: '🚪 Verlassen',
@@ -836,7 +836,7 @@ const LANGS = {
   sv: {
     name: '🇸🇪 SV',
     gameTitle: 'Charader',
-    gameSubtitle: 'Lagspel · 4–40 spelare',
+    gameSubtitle: 'Sällskapsspel · 2–40 spelare',
     createRoom: 'Skapa rum', joinRoom: 'Gå med',
     enterName: 'Ditt namn', enterCode: 'Rumskod',
     startGame: '🎬 Starta', leaveRoom: '🚪 Lämna',
@@ -1043,6 +1043,7 @@ function renderLobby(data) {
   // Settings — host only
   var settingsCard = document.getElementById('settings-card');
   if (settingsCard) settingsCard.style.display = isHost ? '' : 'none';
+  document.body.classList.toggle('ch-host', isHost);
   
   // Category pills
   if (isHost) {
@@ -1354,6 +1355,14 @@ function renderPlaying(data) {
 }
 
 // ── TURN END ──
+function turnEndT() {
+  return ({
+    pl: { next: 'Następna runda', results: '🏆 Pokaż wyniki', waitNext: '⏳ Czekamy, aż host rozpocznie następną rundę', waitResults: '⏳ Czekamy, aż host pokaże wyniki' },
+    en: { next: 'Next Round', results: '🏆 Show results', waitNext: '⏳ Waiting for the host to start the next round', waitResults: '⏳ Waiting for the host to show the results' },
+    de: { next: 'Nächste Runde', results: '🏆 Ergebnisse zeigen', waitNext: '⏳ Warten, bis der Host die nächste Runde startet', waitResults: '⏳ Warten, bis der Host die Ergebnisse zeigt' },
+    sv: { next: 'Nästa runda', results: '🏆 Visa resultat', waitNext: '⏳ Väntar på att värden startar nästa runda', waitResults: '⏳ Väntar på att värden visar resultatet' }
+  })[lang] || { next: 'Next Round', results: '🏆 Show results', waitNext: '⏳ Waiting for the host to start the next round', waitResults: '⏳ Waiting for the host to show the results' };
+}
 function renderTurnEnd(data) {
   var scoreEl = document.getElementById('scoreboard');
   if (scoreEl && data.solo) {
@@ -1383,15 +1392,19 @@ function renderTurnEnd(data) {
   
   var actorBtns = document.getElementById('actor-buttons');
   if (actorBtns) actorBtns.style.display = 'none';
+  var isLast = data.round >= data.totalRounds;
+  var TE = turnEndT();
   var waitMsg = document.getElementById('wait-message');
-  if (waitMsg) waitMsg.style.display = 'none';
+  if (waitMsg) {
+    waitMsg.textContent = isLast ? TE.waitResults : TE.waitNext;
+    waitMsg.style.display = window._amHost ? 'none' : '';
+  }
   
-  // Show Next Round button for host
+  // Host: Next Round, or Show results after the last turn
   var nextBtn = document.getElementById('next-round-btn');
   if (nextBtn) {
     nextBtn.style.display = window._amHost ? '' : 'none';
-    var nextLabel = document.getElementById('lbl-next-round');
-    if (nextLabel) nextLabel.textContent = lang === 'pl' ? 'Następna runda' : lang === 'de' ? 'Nächste Runde' : lang === 'sv' ? 'Nästa runda' : 'Next Round';
+    nextBtn.innerHTML = isLast ? TE.results : '➡️ <span id="lbl-next-round">' + TE.next + '</span>';
   }
   
   clearInterval(window._timerInterval);
@@ -1550,6 +1563,7 @@ function applyTranslations() {
   var yn2 = document.getElementById('lbl-your-name-2'); if (yn2) yn2.textContent = yourNameLabel;
   var rc = document.getElementById('lbl-room-code'); if (rc) rc.textContent = roomCodeLabel;
   // Nav labels
+  document.querySelectorAll('.lbl-leave-room-dup').forEach(function(el) { el.textContent = L.leaveRoom; });
   document.querySelectorAll('.lbl-nav-home-dup').forEach(function(el) { el.textContent = lang === 'pl' ? 'Strona główna' : lang === 'de' ? 'Startseite' : lang === 'sv' ? 'Hem' : 'Home'; });
   var allGames = document.getElementById('lbl-nav-all-games');
   if (allGames) allGames.textContent = lang === 'pl' ? 'Wszystkie gry' : lang === 'de' ? 'Alle Spiele' : lang === 'sv' ? 'Alla spel' : 'All Games';

@@ -83,6 +83,18 @@ app.use((req, res, next) => {
     if (/<html/i.test(body) && body.includes('<script') && !body.includes('<script>window._rfgDomain=true;</script>')) {
       body = body.replace(/<script/, '<script>window._rfgDomain=true;</script>\n<script');
     }
+    // /games on roomforgames.com: English title + description (PM keeps the Polish ones)
+    if (body.indexOf('<title>Gry Online Za Darmo — Game Hub | panstwamiastagra.com</title>') > -1) {
+      const enT = 'Free Online Party Games to Play with Friends | roomforgames.com';
+      const enD = 'Free party games you can play online with friends, family or colleagues - Countries &amp; Cities, Forbidden Words, Hangman, Who Am I? and more. No sign-up, works on phones.';
+      body = body.replace('<title>Gry Online Za Darmo — Game Hub | panstwamiastagra.com</title>', '<title>' + enT + '</title>')
+        .replace(/<meta name="description" content="Darmowe gry integracyjne i zabawy integracyjne online[^"]*">/, '<meta name="description" content="' + enD + '">')
+        .replace(/<meta property="og:title" content="Darmowe Gry Integracyjne Online — panstwamiastagra\.com">/, '<meta property="og:title" content="' + enT + '">')
+        .replace(/<meta property="og:description" content="Darmowe gry integracyjne i zabawy online[^"]*">/, '<meta property="og:description" content="' + enD + '">');
+    }
+    // Page titles carry the RFG name on roomforgames.com
+    body = body.replace(/<title([^>]*)>([^<]*)<\/title>/, function(m, a, t) { return '<title' + a + '>' + t.split('panstwamiastagra.com').join('roomforgames.com') + '</title>'; });
+    body = body.replace(/(<meta[^>]*(?:property="og:title"|name="twitter:title"|property="og:site_name")[^>]*content=")([^"]*)/g, function(m, a, t) { return a + t.split('panstwamiastagra.com').join('roomforgames.com'); });
     // Swap canonical + og:url so Google indexes RFG independently
     body = body.replace(/(rel="canonical"[^>]*href="https?:\/\/)panstwamiastagra\.com/g, '$1roomforgames.com');
     body = body.replace(/(property="og:url"[^>]*content="https?:\/\/)panstwamiastagra\.com/g, '$1roomforgames.com');
