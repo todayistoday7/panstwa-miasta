@@ -842,11 +842,46 @@ function statsMoveCard(db, game, since, cutoffLabel) {
   }
   return moveCard;
 }
+// Started games that never reached the final screen - where they stopped
+function statsStopCard(db, game, since, cutoffLabel) {
+  const UNIT = { pm: 'Round', taboo: 'Turn', dots: 'Round', twotruth: 'Turn', hangman: 'Round', drawing: 'Step', whoami: 'Turn', memory: 'Board', charades: 'Turn' };
+  let stopCard = '';
+  if (UNIT[game]) {
+    const stops = db.prepare(`
+      SELECT CAST(json_extract(details,'$.at') AS INTEGER) AS at, CAST(json_extract(details,'$.of') AS INTEGER) AS ofn, COUNT(*) AS n
+      FROM game_events WHERE game = ? AND date >= ? AND outcome='room_abandoned' AND json_extract(details,'$.at') IS NOT NULL
+      GROUP BY at, ofn ORDER BY n DESC, at ASC LIMIT 12
+    `).all(game, since);
+    const total = stops.reduce((a, r) => a + r.n, 0);
+    const avgPct = total ? Math.round(stops.reduce((a, r) => a + r.n * Math.min(1, r.at / Math.max(1, r.ofn)), 0) / total * 100) : null;
+    const rows = stops.map(r => `<tr><td>${UNIT[game]} ${r.at} of ${r.ofn}</td><td>${r.n}</td><td>${statsPct(r.n, total)}</td></tr>`).join('') || statsEmptyRow(3);
+    stopCard = `<div class="card" style="margin-bottom:20px">
+      <h3 style="font-size:14px;margin-bottom:6px;color:#94a3b8">Unfinished games - where they stopped (${escapeHtml(cutoffLabel)})</h3>
+      <div style="font-size:12px;color:#64748b;margin-bottom:12px">Started games that never reached the final screen.${avgPct !== null ? ' On average they got <strong style="color:#e2e8f0">' + avgPct + '%</strong> of the way.' : ''} Recorded from 29 Oct 2026 on.</div>
+      <table><tr><th>Stopped at</th><th>Games</th><th>Share</th></tr>${rows}</table></div>`;
+  }
+  return stopCard;
+}
+// Group size of finished games
+function statsGroupSizeCard(db, game, since, cutoffLabel) {
+  const rows = db.prepare(`
+    SELECT CAST(COALESCE(json_extract(details,'$.players'), json_extract(details,'$.playerCount')) AS INTEGER) AS p, COUNT(*) AS n
+    FROM game_events WHERE game = ? AND date >= ? AND outcome='game_complete'
+    GROUP BY p ORDER BY p ASC
+  `).all(game, since).filter(r => r.p != null);
+  const total = rows.reduce((a, r) => a + r.n, 0);
+  const body = rows.map(r => `<tr><td>${r.p} ${r.p === 1 ? 'player' : 'players'}</td><td>${r.n}</td><td>${statsPct(r.n, total)}</td></tr>`).join('') || statsEmptyRow(3);
+  return `<div class="card" style="margin-bottom:20px">
+      <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Group size - finished games (${escapeHtml(cutoffLabel)})</h3>
+      <table><tr><th>Players</th><th>Games</th><th>Share</th></tr>${body}</table></div>`;
+}
 // Cards added to the custom game views (Państwa Miasta, Hangman, Kim Jestem)
 function statsExtraCards(db, game, days, cutoffLabel) {
   try {
     const since = statsDayCutoff(days);
-    return statsSitesCard(statsSites(db, game, since), cutoffLabel) + statsMoveCard(db, game, since, cutoffLabel);
+    return statsSitesCard(statsSites(db, game, since), cutoffLabel)
+      + `<div class="grid2">${statsGroupSizeCard(db, game, since, cutoffLabel)}${statsStopCard(db, game, since, cutoffLabel) || '<div></div>'}</div>`
+      + statsMoveCard(db, game, since, cutoffLabel);
   } catch (e) { return ''; }
 }
 
@@ -1016,22 +1051,7 @@ function renderGeneric(db, game, days, cutoffLabel, gameOpts) {
     memory: [['boardSize', 'Board size', v => v + ' cards'], ['theme', 'Theme', v => v], ['gameLength', 'Game length', v => v]],
   };
   // Unfinished games: where did they stop?
-  const UNIT = { pm: 'Round', taboo: 'Turn', dots: 'Round', twotruth: 'Turn', hangman: 'Round', drawing: 'Step', whoami: 'Turn', memory: 'Board', charades: 'Turn' };
-  let stopCard = '';
-  if (UNIT[game]) {
-    const stops = db.prepare(`
-      SELECT CAST(json_extract(details,'$.at') AS INTEGER) AS at, CAST(json_extract(details,'$.of') AS INTEGER) AS ofn, COUNT(*) AS n
-      FROM game_events WHERE game = ? AND date >= ? AND outcome='room_abandoned' AND json_extract(details,'$.at') IS NOT NULL
-      GROUP BY at, ofn ORDER BY n DESC, at ASC LIMIT 12
-    `).all(game, since);
-    const total = stops.reduce((a, r) => a + r.n, 0);
-    const avgPct = total ? Math.round(stops.reduce((a, r) => a + r.n * Math.min(1, r.at / Math.max(1, r.ofn)), 0) / total * 100) : null;
-    const rows = stops.map(r => `<tr><td>${UNIT[game]} ${r.at} of ${r.ofn}</td><td>${r.n}</td><td>${statsPct(r.n, total)}</td></tr>`).join('') || statsEmptyRow(3);
-    stopCard = `<div class="card" style="margin-bottom:20px">
-      <h3 style="font-size:14px;margin-bottom:6px;color:#94a3b8">Unfinished games - where they stopped (${escapeHtml(cutoffLabel)})</h3>
-      <div style="font-size:12px;color:#64748b;margin-bottom:12px">Started games that never reached the final screen.${avgPct !== null ? ' On average they got <strong style="color:#e2e8f0">' + avgPct + '%</strong> of the way.' : ''} Recorded from 29 Oct 2026 on.</div>
-      <table><tr><th>Stopped at</th><th>Games</th><th>Share</th></tr>${rows}</table></div>`;
-  }
+  const stopCard = statsStopCard(db, game, since, cutoffLabel);
   const moveCard = statsMoveCard(db, game, since, cutoffLabel);
   let settingsCard = '';
   if (SETTING_LABELS[game]) {

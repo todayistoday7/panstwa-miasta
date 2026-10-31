@@ -387,7 +387,8 @@ socket.on('whoami_state', (data) => {
 function applyState(data) {
   switch (data.phase) {
     case 'lobby':        showScreen('screen-lobby');       renderLobby(data);      break;
-    case 'playing':      showScreen('screen-playing');     renderPlaying(data);    break;
+    case 'preparing':    showScreen('screen-playing');     renderPlaying(data);    renderPreparing(data); break;
+    case 'playing':      showScreen('screen-playing');     renderPlaying(data);    hidePreparing();       break;
     case 'turn_result':  showScreen('screen-turn-result'); renderTurnResult(data); break;
     case 'final':        showScreen('screen-final');       renderFinal(data);      if (window.pmMoveRender) window.pmMoveRender(data.hostId === myId); break;
   }
@@ -588,6 +589,57 @@ function renderPlaying(data) {
   // Score mini bar
   const mini = document.getElementById('wa-score-mini');
   if (mini) mini.textContent = data.players.map(p => p.name + ': ' + p.score).join(' · ');
+}
+
+// ── "Up next" pause before each turn ─────────────────────────────
+// The guesser gets a moment to get ready (walk to the middle, put the phone away…);
+// the others already see the character. The turn starts on "I'm ready".
+var PREP_T = {
+  pl: { next: 'Następny', you: 'Twoja kolej!', youSub: 'Przygotuj się - zaczynamy, gdy naciśniesz przycisk.', ready: '▶ Zaczynam!',
+        other: 'przygotowuje się…', otherSub: 'Zaczynamy, gdy naciśnie „Zaczynam!”.', host: '⏩ Zacznij turę' },
+  en: { next: 'Up next', you: 'Your turn!', youSub: 'Get ready - we start when you tap the button.', ready: "▶ I'm ready!",
+        other: 'is getting ready…', otherSub: 'We start when they tap "I\'m ready".', host: '⏩ Start the turn' },
+  de: { next: 'Als Nächstes', you: 'Du bist dran!', youSub: 'Mach dich bereit - es geht los, sobald du den Knopf drückst.', ready: '▶ Ich bin bereit!',
+        other: 'macht sich bereit…', otherSub: 'Es geht los, sobald „Ich bin bereit“ gedrückt wird.', host: '⏩ Runde starten' },
+  sv: { next: 'Nästa', you: 'Din tur!', youSub: 'Gör dig redo - vi börjar när du trycker på knappen.', ready: '▶ Jag är redo!',
+        other: 'gör sig redo…', otherSub: 'Vi börjar när hen trycker på ”Jag är redo”.', host: '⏩ Starta turen' }
+};
+function renderPreparing(data) {
+  var T = PREP_T[lang] || PREP_T.en;
+  var active = data.players[data.currentIdx];
+  var isActive = active && active.id === myId;
+  var name = active ? active.name : '';
+  var banner = document.getElementById('wa-turn-banner');
+  if (banner) banner.textContent = '⏭️ ' + T.next + ': ' + name.toUpperCase();
+  ['wa-timer-wrap', 'wa-guess-wrap', 'wa-hints', 'wa-chat-wrap', 'wa-helper-area', 'wa-mystery-hint', 'wa-mystery-card'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.style.display = 'none';
+  });
+  var box = document.getElementById('wa-prep');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'wa-prep';
+    box.className = 'wa-prep';
+    var anchor = document.getElementById('wa-cat-display') || banner;
+    anchor.parentNode.insertBefore(box, anchor.nextSibling);
+  }
+  box.style.display = '';
+  if (isActive) {
+    box.innerHTML = '<div class="wa-prep-icon">🕵️</div>' +
+      '<p class="wa-prep-title">' + T.you + '</p>' +
+      '<p class="wa-prep-sub">' + T.youSub + '</p>' +
+      '<button class="btn wa-prep-btn" onclick="whoamiReady()">' + T.ready + '</button>';
+  } else {
+    box.innerHTML = '<p class="wa-prep-title">⏳ ' + esc(name) + ' ' + T.other + '</p>' +
+      '<p class="wa-prep-sub">' + T.otherSub + '</p>' +
+      (isHost ? '<button class="btn btn-secondary wa-prep-host" onclick="whoamiReady()">' + T.host + '</button>' : '');
+  }
+}
+function hidePreparing() {
+  var box = document.getElementById('wa-prep');
+  if (box) box.style.display = 'none';
+}
+function whoamiReady() {
+  socket.emit('whoami_ready', { code: roomCode });
 }
 
 function renderCharCard(charName, wikiSlug, charCat) {

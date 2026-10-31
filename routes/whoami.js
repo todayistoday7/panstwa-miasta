@@ -1098,9 +1098,9 @@ function emitState(io, room) {
     })),
     currentIdx:    room.state.currentIdx,
     activePlayerId: activePId,
-    activeChar:    (room.state.phase === 'playing') ? null : room.state.activeChar,
-    wikiSlug:      (room.state.phase === 'playing') ? null : room.state.wikiSlug,
-    charCat:       (room.state.phase === 'playing') ? null : (room.state.charCat || null),
+    activeChar:    (room.state.phase === 'playing' || room.state.phase === 'preparing') ? null : room.state.activeChar,
+    wikiSlug:      (room.state.phase === 'playing' || room.state.phase === 'preparing') ? null : room.state.wikiSlug,
+    charCat:       (room.state.phase === 'playing' || room.state.phase === 'preparing') ? null : (room.state.charCat || null),
     questionCount: room.state.questionCount,
     chat:          room.state.chat,
     timerEnd:      room.state.timerEnd,
@@ -1114,7 +1114,7 @@ function emitState(io, room) {
   room.players.forEach(p => {
     if (!p.connected) return;
     const playerState = { ...baseState };
-    if (room.state.phase === 'playing') {
+    if (room.state.phase === 'playing' || room.state.phase === 'preparing') {
       // Active player doesn't see the character; others see it in their language
       if (p.id === activePId) {
         playerState.activeChar = null;
@@ -1150,6 +1150,15 @@ function startNextTurn(io, room) {
   room.state.charCat      = (charObj && charObj.cat) || null;
   room.state.questionCount = 0;
   room.state.chat          = [];
+  // "Up next" pause: the guesser gets ready, the others already see the character.
+  // The turn (and timer) starts when the guesser - or the host - taps Ready.
+  room.state.phase         = 'preparing';
+  room.state.timerEnd      = null;
+  if (room._turnTimer) clearTimeout(room._turnTimer);
+  emitState(io, room);
+}
+
+function beginTurn(io, room) {
   room.state.phase         = 'playing';
   room.state.timerEnd      = room.settings.timerSecs > 0
     ? Date.now() + room.settings.timerSecs * 1000 : null;
@@ -1276,6 +1285,15 @@ function register(io, socket) {
     startNextTurn(io, room);
   });
 
+  // READY — guesser (or host, if the guesser is away) starts the turn
+  socket.on('whoami_ready', ({ code }) => {
+    const room = whoamiRooms[code];
+    if (!room || room.state.phase !== 'preparing') return;
+    const active = room.players[room.state.currentIdx];
+    if (!(active && active.id === socket.id) && socket.id !== room.hostId) return;
+    beginTurn(io, room);
+  });
+
   // CHAT — question (chat mode only)
   socket.on('whoami_question', ({ code, text }) => {
     const room = whoamiRooms[code];
@@ -1373,7 +1391,7 @@ function register(io, socket) {
   // SURRENDER
   socket.on('whoami_skip', ({ code }) => {
     const room = whoamiRooms[code];
-    if (!room || room.state.phase !== 'playing') return;
+    if (!room || (room.state.phase !== 'playing' && room.state.phase !== 'preparing')) return;
     if (socket.id !== room.hostId) return; // host only
     // Log the character being abandoned BEFORE it gets overwritten below.
     logWhoamiEvent({
@@ -1392,7 +1410,7 @@ function register(io, socket) {
     room.state.charCat      = (charObj && charObj.cat) || null;
     room.state.questionCount = 0;
     room.state.chat          = [];
-    if (room.settings.timerSecs > 0) {
+    if (room.state.phase === 'playing' && room.settings.timerSecs > 0) {
       room.state.timerEnd = Date.now() + room.settings.timerSecs * 1000;
       if (room._turnTimer) clearTimeout(room._turnTimer);
       room._turnTimer = setTimeout(() => {
