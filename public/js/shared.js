@@ -528,26 +528,27 @@ function setVisibility(isPublic) {
   if (priv) priv.classList.toggle('active', !_isPublic);
   if (pub)  pub.classList.toggle('active',   _isPublic);
 
+  pmVisLabels();
   // Show explanation hint
   var hint = document.getElementById('lbl-vis-hint');
   if (hint) {
-    var lang = (new URLSearchParams(window.location.search).get('lang')) || window._forceLang || 'pl';
+    var lang = _pmPageLang();
     var hints = {
       pl: {
         priv: '🔒 Prywatny — tylko osoby z Twoim kodem mogą dołączyć.',
-        pub:  '🌐 Publiczny — każdy może zobaczyć pokój na stronie /gry i dołączyć. Świetne do poznawania nowych graczy!',
+        pub:  '🌐 Publiczny — każdy może zobaczyć pokój na liście aktywnych pokoi i dołączyć. Świetne do poznawania nowych graczy!',
       },
       en: {
         priv: '🔒 Private — only people with your code can join.',
-        pub:  '🌐 Public — anyone can see your room on the /games page and join. Great way to meet new players!',
+        pub:  '🌐 Public — anyone can see your room on the live rooms list and join. Great way to meet new players!',
       },
       de: {
         priv: '🔒 Privat — nur Personen mit deinem Code können beitreten.',
-        pub:  '🌐 Öffentlich — jeder kann deinen Raum auf der /spiele-Seite sehen. Toll um neue Spieler zu treffen!',
+        pub:  '🌐 Öffentlich — jeder kann deinen Raum in der Liste der offenen Räume sehen. Toll um neue Spieler zu treffen!',
       },
       sv: {
         priv: '🔒 Privat — bara personer med din kod kan gå med.',
-        pub:  '🌐 Offentligt — alla kan se ditt rum på /spel-sidan och gå med. Bra sätt att möta nya spelare!',
+        pub:  '🌐 Offentligt — alla kan se ditt rum i listan över aktiva rum och gå med. Bra sätt att möta nya spelare!',
       },
     };
     var t = hints[lang] || hints['pl'];
@@ -556,6 +557,18 @@ function setVisibility(isPublic) {
 
   if (typeof updateSettings === 'function') updateSettings();
 }
+
+// Visibility labels in the page language (most game pages had them in English only)
+function pmVisLabels() {
+  var t = { pl:['Widoczność pokoju','Prywatny','Publiczny'], en:['Room visibility','Private','Public'],
+            de:['Sichtbarkeit des Raums','Privat','Öffentlich'], sv:['Rummets synlighet','Privat','Offentligt'] }[_pmPageLang()];
+  if (!t) return;
+  [['lbl-room-visibility',0],['lbl-vis-private',1],['lbl-vis-public',2]].forEach(function(x) {
+    var el = document.getElementById(x[0]); if (el) el.textContent = t[x[1]];
+  });
+}
+document.addEventListener('DOMContentLoaded', function() { try { pmVisLabels(); } catch (e) {} });
+document.addEventListener('click', function(e) { if (e.target && e.target.closest && e.target.closest('.lang-btn,.lang-pill,[data-lang]')) setTimeout(function() { try { pmVisLabels(); } catch (e2) {} }, 60); });
 
 // Keep toggleVisibility as alias for backward compat (not used in new HTML)
 function toggleVisibility() { setVisibility(!_isPublic); }
@@ -2033,4 +2046,147 @@ window._buildFooterLangBtns = function() {
   }
   function start() { addCss(); refresh(); setInterval(refresh, 400); }
   try { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start(); } catch (e) {}
+})();
+
+
+// ════════════════════════════════════════════════════════════════
+// MOVE THE GROUP TO ANOTHER GAME
+// Final screen → host taps another game → a normal new room is made
+// there (new code) and everyone from the old room follows, with their
+// name filled in. Each game registers itself with pmMoveRegister().
+// Never throws: if anything is missing, the old behaviour stays.
+// ════════════════════════════════════════════════════════════════
+(function () {
+  var ROUTES = { charades: ['whoami'], whoami: ['charades'] };
+  var GAMES = {
+    charades: { icon: '🎬', name: { pl: 'Kalambury', en: 'Charades', de: 'Scharade', sv: 'Charader' },
+                path: { pl: '/kalambury', en: '/charades-online', de: '/scharade', sv: '/charader' } },
+    whoami:   { icon: '❓', name: { pl: 'Kim Jestem?', en: 'Who Am I?', de: 'Wer bin ich?', sv: 'Vem är jag?' },
+                path: { pl: '/kim-jestem', en: '/who-am-i', de: '/wer-bin-ich', sv: '/vem-ar-jag' } }
+  };
+  var T = {
+    pl: { title: 'Zagrajcie w coś innego - w tym samym gronie', note: 'Wszyscy przejdą do nowego pokoju automatycznie.', going: 'Host przenosi was do gry', soon: '{g} - host wybiera ustawienia, za chwilę przejdziecie tam wszyscy.', pick: 'Wybierz ustawienia i stwórz pokój - reszta grupy dołączy sama.', fail: 'Nie udało się przenieść grupy. Spróbuj jeszcze raz.' },
+    en: { title: 'Play something else - same group', note: 'Everyone moves to the new room automatically.', going: 'The host is taking everyone to', soon: '{g} - the host is choosing the settings, you will all move there in a moment.', pick: 'Choose the settings and create the room - the rest of the group will join by themselves.', fail: 'Could not move the group. Please try again.' },
+    de: { title: 'Noch etwas anderes spielen - in derselben Runde', note: 'Alle wechseln automatisch in den neuen Raum.', going: 'Der Host nimmt alle mit zu', soon: '{g} - der Host wählt die Einstellungen, gleich wechselt ihr alle dorthin.', pick: 'Wähle die Einstellungen und erstelle den Raum - die anderen kommen von selbst nach.', fail: 'Die Gruppe konnte nicht wechseln. Bitte versuch es noch einmal.' },
+    sv: { title: 'Spela något annat - samma gäng', note: 'Alla flyttas automatiskt till det nya rummet.', going: 'Värden tar med alla till', soon: '{g} - värden väljer inställningar, snart flyttas ni dit allihop.', pick: 'Välj inställningar och skapa rummet - resten av gänget ansluter av sig själva.', fail: 'Gruppen kunde inte flyttas. Försök igen.' }
+  };
+  var reg = null, following = false, FRESH = 3 * 60 * 1000;
+  function lg() { try { return _pmPageLang(); } catch (e) { return 'en'; } }
+  function t() { return T[lg()] || T.en; }
+  function ss(k, v) { try { if (v === undefined) { var r = sessionStorage.getItem(k); return r ? JSON.parse(r) : null; } if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
+  // read the address once, right away - some pages rewrite it (?lang=…) while loading
+  var Q0 = {}; try { var _u = new URLSearchParams(location.search); ['pmmove', 'pmauto', 'join'].forEach(function (k) { Q0[k] = _u.get(k); }); } catch (e) {}
+  function qp(k) { return Q0[k] || null; }
+  function esc2(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  // Arriving through a move: forget an old room of this game kept for "rejoin"
+  try {
+    if (qp('pmmove') || qp('pmauto')) {
+      for (var i = sessionStorage.length - 1; i >= 0; i--) { var k = sessionStorage.key(i); if (/_code$/.test(k)) sessionStorage.removeItem(k); }
+    }
+  } catch (e) {}
+
+  function overlay(text) {
+    try {
+      var o = document.createElement('div');
+      o.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(10,10,18,.92);display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;';
+      o.innerHTML = '<div style="font-size:20px;font-weight:900;color:#ffd166;line-height:1.5;max-width:420px;">' + esc2(text) + '<div style="margin-top:14px;font-size:30px;">⏳</div></div>';
+      document.body.appendChild(o);
+    } catch (e) {}
+  }
+
+  function banner(text) {
+    try {
+      var b = document.getElementById('pm-move-banner');
+      if (!b) { b = document.createElement('div'); b.id = 'pm-move-banner'; b.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;z-index:9998;background:#1c1c2a;border:2px solid #ffd166;border-radius:14px;padding:14px 16px;text-align:center;font-weight:800;font-size:15px;line-height:1.4;color:#ffd166;box-shadow:0 8px 30px rgba(0,0,0,.5);max-width:520px;margin:0 auto;'; document.body.appendChild(b); }
+      b.textContent = text;
+    } catch (e) {}
+  }
+
+  // Final screen: buttons for the host
+  window.pmMoveRender = function (isHost) {
+    try {
+      if (!reg) return;
+      var fin = document.getElementById('screen-final'); if (!fin) return;
+      var box = document.getElementById('pm-move-card');
+      var targets = ROUTES[reg.game] || [];
+      if (!isHost || following || !targets.length) { if (box) box.style.display = 'none'; return; }
+      if (!box) {
+        box = document.createElement('div'); box.id = 'pm-move-card';
+        box.style.cssText = 'margin:18px auto 6px;max-width:520px;padding:16px;border:1px solid var(--border,#333);border-radius:16px;background:var(--card,#1c1c2a);text-align:center;';
+        var row = fin.querySelector('.btn-row');
+        if (row && row.parentNode === fin) row.parentNode.insertBefore(box, row.nextSibling); else fin.appendChild(box);
+      }
+      var l = lg(), x = t();
+      box.innerHTML = '<div style="font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent2,#ffd166);margin-bottom:10px;">' + esc2(x.title) + '</div>' +
+        targets.map(function (g) { var G = GAMES[g]; return '<button type="button" class="btn" data-pm-move="' + g + '" style="width:100%;margin:0 0 8px;">' + G.icon + ' ' + esc2(G.name[l] || G.name.en) + '</button>'; }).join('') +
+        '<div style="font-size:12px;font-weight:700;color:var(--muted,#999);">' + esc2(x.note) + '</div>';
+      box.style.display = '';
+      Array.prototype.forEach.call(box.querySelectorAll('[data-pm-move]'), function (b) { b.onclick = function () { go(b.getAttribute('data-pm-move'), b); }; });
+    } catch (e) {}
+  };
+
+  function go(to, btn) {
+    try {
+      var st = reg.state(); if (!st || !st.code) return;
+      if (btn) btn.disabled = true;
+      var done = false;
+      setTimeout(function () { if (!done && btn) { btn.disabled = false; alertFail(); } }, 6000);
+      reg.socket.emit('pm_move_intent', { game: reg.game, code: st.code, to: to }, function (r) {
+        done = true;
+        if (!r || !r.ok) { if (btn) btn.disabled = false; alertFail(); return; }
+        ss('pm_move', { token: r.token, name: st.name, to: to, ts: Date.now() });
+        location.href = GAMES[to].path[lg()] + '?pmmove=1';
+      });
+    } catch (e) {}
+  }
+  function alertFail() { try { var b = document.getElementById('pm-move-card'); if (b) b.lastChild.textContent = t().fail; } catch (e) {} }
+
+  window.pmMoveRegister = function (r) {
+    try {
+      reg = r;
+      // Everyone in the old room: the host has picked a game
+      r.socket.on('pm_group_move_soon', function (d) {
+        try { var st = r.state(); if (!d || d.fromGame !== r.game || !st || d.fromCode !== st.code) return;
+          following = true; var bx = document.getElementById('pm-move-card'); if (bx) bx.style.display = 'none';
+          var G = GAMES[d.to]; if (G) banner('⏳ ' + t().soon.replace('{g}', G.name[lg()] || G.name.en)); } catch (e) {}
+      });
+      // Everyone in the old room: follow the host
+      r.socket.on('pm_group_move', function (d) {
+        try {
+          var st = r.state();
+          if (!d || d.fromGame !== r.game || !st || d.fromCode !== st.code) return; // (the old host has already left, someone else may be host here now)
+          var G = GAMES[d.to]; if (!G) return;
+          following = true;
+          ss('pm_join', { name: st.name, code: d.code, ts: Date.now() });
+          overlay('🎉 ' + t().going + ' ' + (G.name[lg()] || G.name.en) + '…');
+          setTimeout(function () { location.href = G.path[lg()] + '?join=' + encodeURIComponent(d.code) + '&pmauto=1'; }, 1200);
+        } catch (e) {}
+      });
+      setTimeout(arrive, 300);
+    } catch (e) {}
+  };
+
+  // New page after a move: host creates the room, the others join it
+  function arrive() {
+    try {
+      if (qp('pmmove')) {
+        var m = ss('pm_move'); ss('pm_move', null);
+        if (!m || !m.name || m.to !== reg.game || Date.now() - m.ts > FRESH) return;
+        var auto = reg.create(m.name);
+        if (auto === false) banner('👉 ' + t().pick);
+        var tries = 0, iv = setInterval(function () {
+          var st = reg.state();
+          if (st && st.code && st.host) { clearInterval(iv); reg.socket.emit('pm_move_ready', { token: m.token, code: st.code }); clean(); var bn = document.getElementById('pm-move-banner'); if (bn) bn.remove(); }
+          else if (++tries > 2000) clearInterval(iv);
+        }, 300);
+      } else if (qp('pmauto')) {
+        var j = ss('pm_join'); ss('pm_join', null);
+        var code = (qp('join') || '').toUpperCase();
+        if (!j || !j.name || j.code !== code || Date.now() - j.ts > FRESH) return;
+        reg.join(j.name, code); clean();
+      }
+    } catch (e) {}
+  }
+  function clean() { try { var u = new URL(location.href); u.searchParams.delete('pmmove'); u.searchParams.delete('pmauto'); history.replaceState(null, '', u.pathname + u.search); } catch (e) {} }
 })();

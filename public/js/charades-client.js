@@ -944,7 +944,7 @@ function applyState(data) {
     case 'preparing': showScreen('screen-playing'); renderPreparing(data); break;
     case 'acting':    showScreen('screen-playing'); renderPlaying(data); break;
     case 'turn_end':  showScreen('screen-playing'); renderTurnEnd(data); break;
-    case 'final':     showScreen('screen-final');   renderFinal(data);   break;
+    case 'final':     showScreen('screen-final');   renderFinal(data);   if (window.pmMoveRender) window.pmMoveRender(data.hostId === myId); break;
   }
 }
 
@@ -1617,3 +1617,12 @@ function buildLangBar() {
 // Init
 buildLangBar();
 applyTranslations();
+
+
+// Move the whole group to another game (see shared.js)
+if (window.pmMoveRegister) window.pmMoveRegister({
+  game: 'charades', socket: socket,
+  state: function () { return { code: roomCode, host: !!window._amHost, name: myName }; },
+  create: function (name) { var i = document.getElementById('create-name'); if (i) i.value = name; createRoom(); },
+  join: function (name, code) { var n = document.getElementById('join-name'), c = document.getElementById('join-code'); if (n) n.value = name; if (c) c.value = code; joinRoom(); }
+});

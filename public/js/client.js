@@ -1073,6 +1073,11 @@ function applyTranslations() {
     const el = document.getElementById(id);
     if (el && L[key]) el.textContent = L[key];
   }
+  // Lobby labels that were English-only
+  const _lx = { pl:{cat:'Kategorie',sec:'sekund'}, en:{cat:'Categories',sec:'seconds'}, de:{cat:'Kategorien',sec:'Sekunden'}, sv:{cat:'Kategorier',sec:'sekunder'} }[lang] || {cat:'Kategorie',sec:'sekund'};
+  const _catEl = document.getElementById('lbl-categories'); if (_catEl) _catEl.textContent = _lx.cat;
+  document.querySelectorAll('#settings-grace option').forEach(o => { o.textContent = o.value + ' ' + _lx.sec; });
+  if (typeof pmVisLabels === 'function') pmVisLabels();
 
   // Field hints (placeholders) in the page language
   var _ph = { pl:['Wpisz swoje imię','np. WOLF4'], en:['Enter your name','e.g. WOLF4'],

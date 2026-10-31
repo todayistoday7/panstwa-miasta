@@ -57,6 +57,19 @@ function isRFG(req) {
   return false;
 }
 
+// Staging only: remember whether the last page was opened as RFG (?rfg=1),
+// so Admin can tell PM and RFG players apart when testing on staging.
+app.use((req, res, next) => {
+  try {
+    const host = (req.hostname || '').toLowerCase();
+    if (PROD_DOMAINS.indexOf(host) === -1 && req.method === 'GET' && /text\/html/.test(req.headers.accept || '')) {
+      if (req.query && req.query.rfg === '1') res.cookie('pm_site', 'rfg', { sameSite: 'lax' });
+      else if (/(?:^|;\s*)pm_site=rfg/.test(req.headers.cookie || '')) res.clearCookie('pm_site');
+    }
+  } catch (e) {}
+  next();
+});
+
 // Middleware: swap GA tag + inject _rfgDomain flag for RFG domain
 // Uses stream-level interception to catch express.static (sendFile) responses
 app.use((req, res, next) => {

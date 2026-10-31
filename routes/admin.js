@@ -281,9 +281,12 @@ router.get('/rooms', requireAuth, (req, res) => {
       const color = phaseColors[phase] || 'blue';
       const gameNames = { pm:'Państwa-Miasta', taboo:'Forbidden Words', dots:'Dots & Boxes', hangman:'Hangman', twotruth:'2 Truths 1 Lie', memory:'Find Pairs', charades:'Charades', whoami:'Who Am I?', drawing:'Sketch & Guess' };
 
+      const _siteOf = (id) => { try { return require('./lobby').siteOf(id); } catch (e) { return null; } };
+      const siteTag = (st) => st === 'rfg' ? '<span class="site-tag site-rfg">RFG</span>' : st === 'pm' ? '<span class="site-tag site-pm">PM</span>' : '';
       const playerChips = room.players.map(p =>
-        `<span class="player-chip ${p.connected!==false?'connected':''}">${escapeHtml(p.name)}</span>`
+        `<span class="player-chip ${p.connected!==false?'connected':''}">${escapeHtml(p.name)} ${siteTag(_siteOf(p.id))}</span>`
       ).join('');
+      const roomSite = _siteOf(room.hostId || (room.players[0] || {}).id);
 
       cards += `<div class="room-card">
         <h3>
@@ -292,6 +295,7 @@ router.get('/rooms', requireAuth, (req, res) => {
           <span class="pill pill-${color}">${phase}</span>
           <span class="pill pill-blue">${room.players.length} players</span>
           ${room.isPublic ? '<span class="pill pill-green">public</span>' : '<span class="pill pill-orange">private</span>'}
+          ${roomSite ? '<span class="pill" style="background:#0f172a;color:#94a3b8">host on ' + (roomSite === 'rfg' ? 'roomforgames.com' : 'panstwamiastagra.com') + '</span>' : ''}
         </h3>
         <div class="player-list">${playerChips}</div>
       </div>`;
@@ -309,6 +313,7 @@ router.get('/rooms', requireAuth, (req, res) => {
         <button class="btn btn-sm" onclick="location.reload()" style="background:#1a1d2e;color:#94a3b8;border:1px solid #2d3152">↻ Refresh</button>
       </div>
     </div>
+    <style>.site-tag{font-size:10px;font-weight:800;border-radius:6px;padding:1px 5px;margin-left:4px;vertical-align:1px}.site-pm{background:#431407;color:#fdba74}.site-rfg{background:#042f2e;color:#5eead4}</style>
     <div id="rooms">${cards}</div>
     <script>
       // Auto-refresh every 10 seconds
@@ -789,6 +794,62 @@ function statsFinishedOfStarted(db, game, since) {
   return r ? r.n : 0;
 }
 
+// ── PM vs RFG: which site rooms and players came from (recorded from v397 on) ──
+function statsSites(db, game, since) {
+  const g = game ? ' AND game = ?' : '';
+  const args = game ? [since, game] : [since];
+  const c = db.prepare(`
+    SELECT SUM(CASE WHEN json_extract(details,'$.site')='rfg' THEN 1 ELSE 0 END) AS rfg,
+           SUM(CASE WHEN json_extract(details,'$.site')='pm'  THEN 1 ELSE 0 END) AS pm
+    FROM game_events WHERE outcome='room_created' AND date >= ?${g}`).get(...args) || {};
+  const p = db.prepare(`
+    SELECT SUM(COALESCE(json_extract(details,'$.sites.pm'),0))  AS pm,
+           SUM(COALESCE(json_extract(details,'$.sites.rfg'),0)) AS rfg,
+           SUM(CASE WHEN json_extract(details,'$.sites.pm') > 0 AND json_extract(details,'$.sites.rfg') > 0 THEN 1 ELSE 0 END) AS mixed,
+           COUNT(*) AS rooms
+    FROM game_events WHERE outcome='room_started' AND json_extract(details,'$.sites') IS NOT NULL AND date >= ?${g}`).get(...args) || {};
+  return { cPm: c.pm || 0, cRfg: c.rfg || 0, pPm: p.pm || 0, pRfg: p.rfg || 0, mixed: p.mixed || 0, rooms: p.rooms || 0 };
+}
+function statsSitesCard(st, cutoffLabel) {
+  const cell = (pm, rfg) => `<strong style="color:#fdba74">${pm}</strong> PM &nbsp;/&nbsp; <strong style="color:#5eead4">${rfg}</strong> RFG` +
+    ((pm + rfg) ? ` <span style="color:#64748b">(${statsPct(rfg, pm + rfg)} RFG)</span>` : '');
+  return `<div class="card" style="margin-bottom:20px">
+      <h3 style="font-size:14px;margin-bottom:12px;color:#94a3b8">🌍 PM vs RFG - where people came from (${escapeHtml(cutoffLabel)})</h3>
+      <div style="display:flex;gap:28px;flex-wrap:wrap;font-size:13px;color:#94a3b8">
+        <span>Rooms created: ${cell(st.cPm, st.cRfg)}</span>
+        <span>Players in started games: ${cell(st.pPm, st.pRfg)}</span>
+        <span>Mixed rooms (PM + RFG together): <strong style="color:#e2e8f0">${st.mixed}</strong>${st.rooms ? ` <span style="color:#64748b">of ${st.rooms} started</span>` : ''}</span>
+      </div>
+      <div style="font-size:11px;color:#64748b;margin-top:8px">PM = panstwamiastagra.com, RFG = roomforgames.com. Recorded since the v397 update - older rooms are not included.</div>
+    </div>`;
+}
+
+// Groups moved on from one game to another (final screen buttons)
+function statsMoveCard(db, game, since, cutoffLabel) {
+  let moveCard = '';
+  if (game === 'charades' || game === 'whoami') {
+    const NM = { charades: 'Kalambury', whoami: 'Kim Jestem?' };
+    const inRows = db.prepare(`SELECT json_extract(details,'$.from') AS g, COUNT(*) AS n, SUM(CAST(json_extract(details,'$.players') AS INTEGER)) AS p
+      FROM game_events WHERE game = ? AND date >= ? AND outcome='group_moved_in' GROUP BY g ORDER BY n DESC`).all(game, since);
+    const outRows = db.prepare(`SELECT game AS g, COUNT(*) AS n, SUM(CAST(json_extract(details,'$.players') AS INTEGER)) AS p
+      FROM game_events WHERE date >= ? AND outcome='group_moved_in' AND json_extract(details,'$.from') = ? GROUP BY g ORDER BY n DESC`).all(since, game);
+    const row = (dir, r) => `<tr><td>${dir} ${escapeHtml(NM[r.g] || r.g)}</td><td>${r.n}</td><td>${r.p || 0}</td></tr>`;
+    const body = outRows.map(r => row('➡️ to', r)).join('') + inRows.map(r => row('⬅️ from', r)).join('') || statsEmptyRow(3);
+    moveCard = `<div class="card" style="margin-bottom:20px">
+      <h3 style="font-size:14px;margin-bottom:6px;color:#94a3b8">Groups that moved to another game (${escapeHtml(cutoffLabel)})</h3>
+      <div style="font-size:12px;color:#64748b;margin-bottom:12px">Host tapped another game on the final screen and the group followed. Recorded from 30 Oct 2026 on.</div>
+      <table><tr><th>Direction</th><th>Groups</th><th>Players</th></tr>${body}</table></div>`;
+  }
+  return moveCard;
+}
+// Cards added to the custom game views (Państwa Miasta, Hangman, Kim Jestem)
+function statsExtraCards(db, game, days, cutoffLabel) {
+  try {
+    const since = statsDayCutoff(days);
+    return statsSitesCard(statsSites(db, game, since), cutoffLabel) + statsMoveCard(db, game, since, cutoffLabel);
+  } catch (e) { return ''; }
+}
+
 function renderOverview(db, days, cutoffLabel, gameOpts) {
   const since = statsDayCutoff(days);
   const since7 = new Date(Date.now() - 6 * 24 * 3600 * 1000).toISOString().slice(0, 10);
@@ -859,6 +920,7 @@ function renderOverview(db, days, cutoffLabel, gameOpts) {
       Created/started tracking began ${funnelSince ? 'on <strong>' + escapeHtml(funnelSince) + '</strong>' : '<strong>after this deploy</strong> (no data yet)'} — older periods show only finished games.
       Finished-game tracking for the 7 newer games began mid-October 2026. Bingo has no created/started tracking.
     </div>
+    ${statsSitesCard(statsSites(db, null, since), cutoffLabel)}
     <div class="card">
       <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">All games — click a name for details</h3>
       <div style="overflow-x:auto">
@@ -970,6 +1032,7 @@ function renderGeneric(db, game, days, cutoffLabel, gameOpts) {
       <div style="font-size:12px;color:#64748b;margin-bottom:12px">Started games that never reached the final screen.${avgPct !== null ? ' On average they got <strong style="color:#e2e8f0">' + avgPct + '%</strong> of the way.' : ''} Recorded from 29 Oct 2026 on.</div>
       <table><tr><th>Stopped at</th><th>Games</th><th>Share</th></tr>${rows}</table></div>`;
   }
+  const moveCard = statsMoveCard(db, game, since, cutoffLabel);
   let settingsCard = '';
   if (SETTING_LABELS[game]) {
     const parts = SETTING_LABELS[game].map(([key, label, fmt]) => {
@@ -995,6 +1058,7 @@ function renderGeneric(db, game, days, cutoffLabel, gameOpts) {
       ${statsCard('Games finished', finished, '#86efac')}
       ${statsCard('Finish rate', noFunnel ? na : statsPct(fin, started))}
     </div>
+    ${noFunnel ? '' : statsSitesCard(statsSites(db, game, since), cutoffLabel)}
     <div class="card" style="margin-bottom:20px">
       <div style="display:flex;gap:24px;flex-wrap:wrap;font-size:13px;color:#94a3b8">
         <span>Avg players per finished game: <strong style="color:#e2e8f0">${s.avgp ? s.avgp.toFixed(1) : '—'}</strong></span>
@@ -1023,7 +1087,7 @@ function renderGeneric(db, game, days, cutoffLabel, gameOpts) {
         <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Time of day (Polish time)</h3>
         <table><tr><th>When</th><th>Started</th><th>Finished</th></tr>${timeRows}</table>
       </div>
-    </div>${stopCard}${settingsCard}`;
+    </div>${stopCard}${moveCard}${settingsCard}`;
 }
 
 // ─── Who Am I: CSV export of every character's results ─────
@@ -1206,6 +1270,7 @@ router.get('/stats', requireAuth, (req, res) => {
             </div>
           </form>
         </div>
+        ${statsExtraCards(db, 'hangman', days, cutoffLabel)}
 
         <div class="grid2" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
           <div class="card" style="margin-bottom:0">
@@ -1395,6 +1460,7 @@ router.get('/stats', requireAuth, (req, res) => {
             </div>
           </form>
         </div>
+        ${statsExtraCards(db, 'pm', days, cutoffLabel)}
 
         <div class="grid2" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
           <div class="card" style="margin-bottom:0">
@@ -1566,6 +1632,7 @@ router.get('/stats', requireAuth, (req, res) => {
           </div>
         </form>
       </div>
+        ${statsExtraCards(db, 'whoami', days, cutoffLabel)}
 
       <div class="grid2" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
         <div class="card" style="margin-bottom:0">

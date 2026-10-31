@@ -132,6 +132,7 @@
   }
 
   /* Language bar */
+  .rooms-other-head{font-size:13px;font-weight:800;color:var(--muted);margin:22px 4px 10px;}
   .lang-bar{display:flex;justify-content:flex-end;gap:6px;padding:10px 16px 0;}
   .lang-btn{
     background:none;border:1px solid var(--border);color:var(--muted);
@@ -199,7 +200,7 @@
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/shared.js?v=10"></script>
+<script src="/js/shared.js?v=11"></script>
 <script>
 // ── Translations ──────────────────────────────────────────────────
 const ROOMS_LANGS = {
@@ -422,7 +423,20 @@ function renderRooms() {
     return;
   }
 
-  list.innerHTML = rooms.map(function(r) {
+  // Rooms in the page language first, the rest under a small heading
+  var _own = rooms.filter(function(r) { return !r.lang || r.lang === lang; });
+  var _other = rooms.filter(function(r) { return r.lang && r.lang !== lang; });
+  var _OT = {
+    pl: ['Pokoje w innych językach', 'Teraz nikt nie gra po polsku - pokoje w innych językach:'],
+    en: ['Rooms in other languages', 'Nobody is playing in English right now - rooms in other languages:'],
+    de: ['Räume in anderen Sprachen', 'Gerade spielt niemand auf Deutsch - Räume in anderen Sprachen:'],
+    sv: ['Rum på andra språk', 'Just nu spelar ingen på svenska - rum på andra språk:']
+  }[lang] || ['Rooms in other languages', 'Rooms in other languages:'];
+  var _divider = _other.length ? '<div class="rooms-other-head">' + (_own.length ? _OT[0] : _OT[1]) + '</div>' : '';
+  list.innerHTML = _own.map(roomCardHtml).join('') + _divider + _other.map(roomCardHtml).join('');
+}
+
+function roomCardHtml(r) {
     var isPublic    = r.isPublic;
     var isInProgress = r.inProgress === true;
     var _slug       = (window._rfgDomain && r.gameSlug === '/') ? '/countries-cities-game' : r.gameSlug;
@@ -454,7 +468,6 @@ function renderRooms() {
       card += '<span style="font-size:12px;color:var(--muted);font-weight:700;flex-shrink:0;">🔒</span>';
       return '<div class="room-card" style="cursor:default;opacity:0.6;">' + card + '</div>';
     }
-  }).join('');
 }
 
 // ── Init ───────────────────────────────────────────────────────────

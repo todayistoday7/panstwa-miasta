@@ -389,7 +389,7 @@ function applyState(data) {
     case 'lobby':        showScreen('screen-lobby');       renderLobby(data);      break;
     case 'playing':      showScreen('screen-playing');     renderPlaying(data);    break;
     case 'turn_result':  showScreen('screen-turn-result'); renderTurnResult(data); break;
-    case 'final':        showScreen('screen-final');       renderFinal(data);      break;
+    case 'final':        showScreen('screen-final');       renderFinal(data);      if (window.pmMoveRender) window.pmMoveRender(data.hostId === myId); break;
   }
 }
 
@@ -1237,3 +1237,12 @@ buildLangBar();
 setUiLang(lang);
 window.lang = lang;
 initVisibilityToggle();
+
+
+// Move the whole group to another game (see shared.js)
+if (window.pmMoveRegister) window.pmMoveRegister({
+  game: 'whoami', socket: socket,
+  state: function () { return { code: roomCode, host: !!isHost, name: myName }; },
+  create: function (name) { var i = document.getElementById('host-name'); if (i) i.value = name; var c = document.getElementById('lbl-create-room'); if (c && c.scrollIntoView) c.scrollIntoView({ block: 'start' }); return false; },
+  join: function (name, code) { var n = document.getElementById('join-name'), c = document.getElementById('join-code'); if (n) n.value = name; if (c) c.value = code; joinRoom(); }
+});

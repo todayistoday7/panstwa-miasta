@@ -29,11 +29,35 @@ const publicRooms = {};
 
 let _io = null;  // set by init()
 
+// ── Which site a player came from: 'pm' (panstwamiastagra.com) or 'rfg' (roomforgames.com) ──
+// Production: read from the domain the phone connected through.
+// Staging: pages opened with ?rfg=1 set a 'pm_site=rfg' cookie (see server.js).
+const _sockSite = new Map(); // socket.id → { s, t }
+function siteOfHandshake(socket) {
+  const h = (socket.handshake && socket.handshake.headers) || {};
+  const where = String(h['x-forwarded-host'] || h.host || '') + ' ' + String(h.origin || '');
+  if (/roomforgames\.com/i.test(where)) return 'rfg';
+  if (/panstwamiastagra\.com/i.test(where)) return 'pm';
+  return /(?:^|;\s*)pm_site=rfg/.test(String(h.cookie || '')) ? 'rfg' : 'pm';
+}
+function siteOf(socketId) { const x = _sockSite.get(socketId); return x ? x.s : null; }
+function sitesOf(room) {
+  const c = { pm: 0, rfg: 0 };
+  (room && room.players || []).forEach(p => { const s = p && siteOf(p.id); if (s) c[s]++; });
+  return c;
+}
+const _siteTimer = setInterval(() => {
+  const old = Date.now() - 12 * 3600 * 1000;
+  for (const [k, v] of _sockSite) if (v.t < old) _sockSite.delete(k);
+}, 30 * 60 * 1000);
+if (_siteTimer.unref) _siteTimer.unref();
+
 function init(io) {
   _io = io;
 
   // Hub watchers join 'hub' room to receive broadcasts
   io.on('connection', (socket) => {
+    try { _sockSite.set(socket.id, { s: siteOfHandshake(socket), t: Date.now() }); } catch (e) {}
     socket.on('hub_watch', () => {
       socket.join('hub');
       // Send current list immediately
@@ -42,8 +66,43 @@ function init(io) {
     socket.on('hub_unwatch', () => {
       socket.leave('hub');
     });
+
+    // ── Move the whole group to another game ──
+    // 1) host (still in the old room) asks → gets a one-time token
+    socket.on('pm_move_intent', (d, ack) => {
+      try {
+        d = d || {};
+        const allowed = MOVE_ROUTES[d.game] || [];
+        if (allowed.indexOf(d.to) === -1) return ack && ack({ ok: false });
+        const room = require('./' + d.game).getRooms()[String(d.code || '').toUpperCase()];
+        if (!room || room.hostId !== socket.id) return ack && ack({ ok: false });
+        const token = Math.random().toString(36).slice(2) + Date.now().toString(36);
+        const players = (room.players || []).filter(p => p && p.connected !== false).length;
+        _moves.set(token, { fromGame: d.game, fromCode: room.code, to: d.to, players, t: Date.now() });
+        socket.to(room.code).emit('pm_group_move_soon', { fromGame: d.game, fromCode: room.code, to: d.to });
+        if (ack) ack({ ok: true, token });
+      } catch (e) { if (ack) ack({ ok: false }); }
+    });
+    // 2) host's new page has created the new room → tell everyone in the old room where to go
+    socket.on('pm_move_ready', (d) => {
+      try {
+        d = d || {};
+        const m = _moves.get(d.token);
+        if (!m || Date.now() - m.t > 10 * 60 * 1000) return;
+        const room = require('./' + m.to).getRooms()[String(d.code || '').toUpperCase()];
+        if (!room || room.hostId !== socket.id) return;
+        _moves.delete(d.token);
+        io.to(m.fromCode).emit('pm_group_move', { fromGame: m.fromGame, fromCode: m.fromCode, to: m.to, code: room.code });
+        funnelLog(m.to, room, 'group_moved_in', { from: m.fromGame, players: m.players });
+      } catch (e) {}
+    });
   });
 }
+
+// Which game can send its group to which (both ways)
+const MOVE_ROUTES = { charades: ['whoami'], whoami: ['charades'] };
+const _moves = new Map(); // token → { fromGame, fromCode, to, players, t }
+setInterval(() => { const now = Date.now(); for (const [k, m] of _moves) if (now - m.t > 15 * 60 * 1000) _moves.delete(k); }, 60 * 1000).unref();
 
 // ─── Room funnel tracking (admin stats only) ─────────────
 // Logs once per room: 'room_created' (first time seen) and
@@ -89,7 +148,7 @@ function funnelCheckStarted(f) {
       f.started = true;
       const st = f.room.settings || {}, extra = {};
       ['gridSize', 'totalRounds', 'boardSize', 'theme', 'gameLength'].forEach(k => { if (st[k] !== undefined) extra[k] = st[k]; });
-      funnelLog(f.game, f.room, 'room_started', Object.assign({ players: (f.room.players || []).length }, extra));
+      funnelLog(f.game, f.room, 'room_started', Object.assign({ players: (f.room.players || []).length, sites: sitesOf(f.room) }, extra));
     }
   } catch (e) { /* never affect games */ }
 }
@@ -103,7 +162,8 @@ function trackFunnel(game, room) {
     if (!f) {
       f = { game, room, started: false, t: Date.now() };
       _funnel.set(key, f);
-      funnelLog(game, room, 'room_created', { isPublic: room.isPublic === true });
+      const hostSock = room.hostId || ((room.players || [])[0] || {}).id;
+      funnelLog(game, room, 'room_created', { isPublic: room.isPublic === true, site: siteOf(hostSock) || 'pm' });
     }
     funnelCheckStarted(f);
   } catch (e) { /* never affect games */ }
@@ -276,4 +336,4 @@ function broadcast() {
   if (_io) _io.to('hub').emit('hub_rooms', buildList());
 }
 
-module.exports = { init, announce, remove };
+module.exports = { init, announce, remove, siteOf };

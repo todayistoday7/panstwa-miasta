@@ -454,6 +454,9 @@
   function renderRooms(rooms) {
     var currentLang = (typeof lang !== 'undefined' ? lang : 'en') || 'en';
     var ll = LIVE_LABELS[currentLang] || LIVE_LABELS['en'];
+    // Rooms in the page language first
+    rooms = (rooms || []).filter(function(r) { return !r.lang || r.lang === currentLang; })
+      .concat((rooms || []).filter(function(r) { return r.lang && r.lang !== currentLang; }));
 
     var titleEl = document.getElementById('hub-live-title-text');
     if (titleEl) titleEl.textContent = ll.title;
@@ -563,7 +566,7 @@
   };
 })();
 </script>
-<script src="/js/shared.js?v=10">
+<script src="/js/shared.js?v=11">
 
   // ─── FILTER ───
 
