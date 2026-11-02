@@ -102,6 +102,15 @@ socket.on('error', ({ msg }) => {
 });
 
 socket.on('room_state', (data) => {
+  try {
+    if (window._pmJustRejoined && Date.now() - window._pmJustRejoined < 15000 && data && data.state && data.state.phase === 'playing' && typeof localAnswers !== 'undefined') {
+      window._pmJustRejoined = 0;
+      Object.keys(localAnswers).forEach(function(ci) {
+        var v = localAnswers[ci];
+        if (v != null && String(v).trim() !== '') socket.emit('submit_answer', { code: roomCode, catIndex: +ci, value: v });
+      });
+    }
+  } catch (e) {}
   roomState = data;
   const me = data.players.find(p => p.id === myId);
   if (me) isHost = me.isHost;

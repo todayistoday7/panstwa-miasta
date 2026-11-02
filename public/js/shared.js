@@ -49,7 +49,7 @@ function _clearAllGameSessions() {
 (function() {
   // Map of sessionStorage key prefixes to rejoin event names
   var GAME_REJOIN_MAP = {
-    'pm':       'group_rejoin',
+    'pm':       'rejoin',
     'dots':     'dots_rejoin',
     'hang':     'hang_rejoin',
     'taboo':    'taboo_rejoin',
@@ -75,22 +75,38 @@ function _clearAllGameSessions() {
       return;
     }
     
-    // Fire on every connect (initial + reconnects)
+    // Fire on every connect (initial + reconnects).
+    // Rejoin only the room this page is showing: the tab can still hold saved
+    // codes from other games played earlier, and those must not be rejoined here.
+    var _seenConnect = false;
     sock.on('connect', function() {
-      // Check all games for saved session
+      var again = _seenConnect; _seenConnect = true;
+      var shown = '';
+      try { shown = String((document.getElementById('room-code-display') || {}).textContent || '').replace(/[^A-Z0-9]/gi, '').toUpperCase(); } catch (e) {}
+      if (!shown) return; // fresh page: each game rejoins from its own saved session
       for (var prefix in GAME_REJOIN_MAP) {
         var code = sessionStorage.getItem(prefix + '_code');
         var name = sessionStorage.getItem(prefix + '_name');
-        if (code && name) {
+        if (code && name && String(code).toUpperCase() === shown) {
           // Small delay to let game-specific connect handler run first
           (function(evt, c, n) {
             setTimeout(function() {
               sock.emit(evt, { code: c, name: n });
+              if (again) window._pmJustRejoined = Date.now();
             }, 100);
           })(GAME_REJOIN_MAP[prefix], code, name);
           break; // Only rejoin one game per page
         }
       }
+    });
+
+    // Back button on phones (Safari/Chrome keep the old page in memory):
+    // the connection was cut while the page was away - reconnect at once.
+    window.addEventListener('pageshow', function(e) {
+      try { if (e.persisted && !sock.connected) sock.connect(); } catch (x) {}
+    });
+    document.addEventListener('visibilitychange', function() {
+      try { if (document.visibilityState === 'visible' && !sock.connected) sock.connect(); } catch (x) {}
     });
     
     // Keep-alive ping every 20 seconds to detect dead connections faster

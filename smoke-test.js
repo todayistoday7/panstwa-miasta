@@ -626,7 +626,9 @@ async function testGameplay(browser) {
   async function hostStarts(ps) {
     const btn = await ps[0].$('#lbl-start-btn:visible, #lobby-start-btn:visible, #start-btn:visible');
     if (!btn) throw new Error('Start button not visible for host');
-    await btn.click();
+    await btn.waitForElementState('enabled', { timeout: 8000 }).catch(() => {});
+    // A "player joined" toast can sit on top of the button for a while - then press it directly
+    try { await btn.click({ timeout: 5000 }); } catch (e) { await btn.evaluate(b => b.click()); }
   }
 
   const flows = [
