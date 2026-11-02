@@ -1,3 +1,4 @@
+const __rekey = require('./rekey');
 // ═══════════════════════════════════════════════════════
 // CHARADES / KALAMBURY — Server Route (Team-based)
 // ═══════════════════════════════════════════════════════
@@ -378,7 +379,7 @@ function register(io, socket) {
       // Returning player — update socket and rejoin
       if (room.hostId === existing.id) room.hostId = socket.id;
       if (room.state.actorId === existing.id) room.state.actorId = socket.id;
-      existing.id = socket.id;
+      __rekey(room, existing.id, socket.id); existing.id = socket.id;
       existing.connected = true;
       socket.join(code);
       socket.emit('charades_room_joined', { code });
@@ -598,7 +599,7 @@ function register(io, socket) {
       // Update socket ID and rejoin room
       if (room.hostId === existing.id) room.hostId = socket.id;
       if (room.state.actorId === existing.id) room.state.actorId = socket.id;
-      existing.id = socket.id;
+      __rekey(room, existing.id, socket.id); existing.id = socket.id;
       existing.connected = true;
       socket.join(code);
       socket.emit('charades_room_joined', { code });

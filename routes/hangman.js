@@ -6,6 +6,7 @@
 // Full word guess allowed — wrong = instant loss.
 // ════════════════════════════════════════════════════════
 'use strict';
+const __rekey = require('./rekey');
 
 const lobby = require('./lobby');
 const { isBotName, isHoneypot } = require('./botfilter');
@@ -162,7 +163,7 @@ function register(io, socket) {
     if (anyMatch && room.state.phase !== 'lobby') {
       if (anyMatch._disconnectTimer) { clearTimeout(anyMatch._disconnectTimer); anyMatch._disconnectTimer = null; }
       if (room.hostId === anyMatch.id) room.hostId = socket.id;
-      anyMatch.id = socket.id; anyMatch.connected = true;
+      __rekey(room, anyMatch.id, socket.id); anyMatch.id = socket.id; anyMatch.connected = true;
       socket.join(room.code);
       socket.emit('hang_room_joined', { code: room.code });
       emitHangState(io, room);
@@ -173,7 +174,7 @@ function register(io, socket) {
     const existing = room.players.find(p => p.name === (name || '').trim());
     if (existing) {
       if (room.hostId === existing.id) room.hostId = socket.id;
-      existing.id = socket.id; existing.connected = true;
+      __rekey(room, existing.id, socket.id); existing.id = socket.id; existing.connected = true;
       socket.join(code); socket.emit('hang_room_joined', { code });
       emitHangState(io, room); return;
     }
@@ -185,7 +186,7 @@ function register(io, socket) {
 
     const disconnected = room.players.find(p => p.name.toLowerCase() === (name||'').toLowerCase() && !p.connected);
     if (disconnected) {
-      disconnected.id = socket.id; disconnected.connected = true;
+      __rekey(room, disconnected.id, socket.id); disconnected.id = socket.id; disconnected.connected = true;
     } else {
       room.players.push({ id: socket.id, name: name || 'Player', connected: true });
       room.state.scores[socket.id] = 0;
@@ -365,7 +366,7 @@ function register(io, socket) {
     const existing = room.players.find(p => p.name === name);
     if (existing) {
       if (room.hostId === existing.id) room.hostId = socket.id;
-      existing.id = socket.id; existing.connected = true;
+      __rekey(room, existing.id, socket.id); existing.id = socket.id; existing.connected = true;
     } else {
       if (room.state.phase !== 'lobby') { socket.emit('hang_error', { msg: 'Room already started.' }); return; }
       room.players.push({ id: socket.id, name, connected: true });
@@ -386,7 +387,7 @@ function register(io, socket) {
     if (!existing) { socket.emit('hang_error', { msg: 'Player not found.' }); return; }
     if (existing._disconnectTimer) { clearTimeout(existing._disconnectTimer); existing._disconnectTimer = null; }
     if (room.hostId === existing.id) room.hostId = socket.id;
-    existing.id = socket.id; existing.connected = true;
+    __rekey(room, existing.id, socket.id); existing.id = socket.id; existing.connected = true;
     socket.join(code);
     socket.emit('hang_room_joined', { code });
     emitHangState(io, room);

@@ -2,6 +2,7 @@
 // DOTS AND BOXES — Game Logic
 // ════════════════════════════════════════════════════════
 'use strict';
+const __rekey = require('./rekey');
 const lobby = require('./lobby');
 const { isBotName, isHoneypot } = require('./botfilter');
 
@@ -157,7 +158,7 @@ function register(io, socket) {
       if (existing._disconnectTimer) { clearTimeout(existing._disconnectTimer); existing._disconnectTimer = null; }
       if (room.hostId === existing.id) room.hostId = socket.id;
       if (room.state.currentPlayer === existing.id) room.state.currentPlayer = socket.id;
-      existing.id = socket.id; existing.connected = true;
+      __rekey(room, existing.id, socket.id); existing.id = socket.id; existing.connected = true;
       socket.join(room.code);
       socket.emit('dots_room_joined', { code: room.code });
       lobby.announce('dots', room);
@@ -171,7 +172,7 @@ function register(io, socket) {
     if (_ret) {
       if (room.hostId === _ret.id) room.hostId = socket.id;
       if (room.state.currentPlayer === _ret.id) room.state.currentPlayer = socket.id;
-      _ret.id = socket.id; _ret.connected = true;
+      __rekey(room, _ret.id, socket.id); _ret.id = socket.id; _ret.connected = true;
       socket.join(code); socket.emit('dots_room_joined', { code });
       emitDotsState(io, room); return;
     }
@@ -320,7 +321,7 @@ function register(io, socket) {
       }
       if (room.hostId === existing.id) room.hostId = socket.id;
       if (room.state.currentPlayer === existing.id) room.state.currentPlayer = socket.id;
-      existing.id = socket.id; existing.connected = true;
+      __rekey(room, existing.id, socket.id); existing.id = socket.id; existing.connected = true;
     } else {
       if (room.state.phase !== 'lobby') {
         socket.emit('dots_error', { msg: 'Room already started.' }); return;

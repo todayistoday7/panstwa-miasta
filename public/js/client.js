@@ -111,6 +111,12 @@ socket.on('room_state', (data) => {
       });
     }
   } catch (e) {}
+  // Back in a room after a page reload: the server only sends the room state,
+  // so take the room code from it (else answers would be sent to no room)
+  if (!roomCode && data && data.code && data.players && data.players.some(p => p.id === myId)) {
+    roomCode = data.code;
+    try { const rc = document.getElementById('room-code-display'); if (rc && !rc.textContent) rc.textContent = data.code; } catch (e) {}
+  }
   roomState = data;
   const me = data.players.find(p => p.id === myId);
   if (me) isHost = me.isHost;
@@ -462,6 +468,15 @@ function renderPlayingScreen(data) {
     });
     setTimeout(() => { const f = document.querySelector('#answer-body input'); if(f) f.focus(); }, 100);
   }
+  // Back in the room after a reload / lost connection: put my saved answers back in the boxes
+  try {
+    const mine = (state.answers && state.answers[myId]) || {};
+    Object.keys(mine).forEach(ci => {
+      const inp = document.getElementById('ans-' + ci);
+      const v = mine[ci];
+      if (inp && v && !inp.value && document.activeElement !== inp) { inp.value = v; localAnswers[ci] = v; }
+    });
+  } catch (e) {}
   if (state.stopCalledBy) {
     document.getElementById('stop-btn').style.display = 'none';
     const banner = document.getElementById('stop-banner');
@@ -690,6 +705,14 @@ function renderScoringScreen(data) {
     document.getElementById('scoring-next-btn').innerHTML =
       '<button class="btn" onclick="nextRound()">' + btnLabel + '</button>';
     document.getElementById('scoring-waiting').style.display = 'none';
+  } else if (allReady && !isHost) {
+    var _hp = players.find(function(p) { return p.isHost; });
+    var _hn = _hp ? _hp.name : 'host';
+    var _wt = { pl: 'Wszyscy gotowi - czekamy, aż ' + _hn + ' zacznie następną rundę', en: 'Everyone is ready - waiting for ' + _hn + ' to start the next round', de: 'Alle sind bereit - wir warten, bis ' + _hn + ' die nächste Runde startet', sv: 'Alla är redo - vi väntar på att ' + _hn + ' startar nästa runda' };
+    var _wtf = { pl: 'Wszyscy gotowi - czekamy, aż ' + _hn + ' pokaże wyniki', en: 'Everyone is ready - waiting for ' + _hn + ' to show the results', de: 'Alle sind bereit - wir warten, bis ' + _hn + ' die Ergebnisse zeigt', sv: 'Alla är redo - vi väntar på att ' + _hn + ' visar resultaten' };
+    document.getElementById('scoring-next-btn').style.display = 'none';
+    document.getElementById('scoring-waiting').style.display = 'block';
+    document.getElementById('scoring-waiting').textContent = '✓ ' + ((isFinalRound ? _wtf : _wt)[lang] || (isFinalRound ? _wtf : _wt).en);
   } else if (myReady && !allReady) {
     document.getElementById('scoring-next-btn').style.display = 'none';
     document.getElementById('scoring-waiting').style.display = 'block';

@@ -727,6 +727,27 @@ async function testGameplay(browser) {
     }},
   ];
 
+  // Reconnect: a player taps another game by mistake and comes back with Back.
+  // Their answers and points must still count.
+  flows.push({ name: 'PM (PL) — back after leaving the page, answers kept', path: '/', n: 2, run: async (ps, code) => {
+    await hostStarts(ps);
+    await until(ps[1], 'game did not start', s => s.state.phase === 'drawing');
+    for (const p of ps) await emit(p, 'draw_letter', { code }); await sleep(600);
+    for (const p of ps) await emit(p, 'start_round', { code });
+    const s = await until(ps[1], 'round did not start', s => s.state.phase === 'playing');
+    await ps[1].fill('#ans-0', s.state.letter + 'aaa'); await sleep(500);
+    await ps[1].goto(BASE + '/zakazane-slowa', { waitUntil: 'domcontentloaded' }); await sleep(800);
+    await ps[1].goBack({ waitUntil: 'domcontentloaded' }); await sleep(3000);
+    await ps[1].fill('#ans-1', s.state.letter + 'bbb'); await sleep(800);
+    await emit(ps[0], 'call_stop', { code }); await sleep(800);
+    await emit(ps[0], 'force_scoring', { code });
+    await until(ps[0], 'answers lost after coming back', st => {
+      const g = (st.players || []).find(p => /SmokeGuest/.test(p.name));
+      const a = g && st.state.answers && st.state.answers[g.id];
+      return st.state.phase === 'scoring' && a && a[0] && a[1];
+    });
+  }});
+
   for (const f of flows) {
     let ps = [];
     try {

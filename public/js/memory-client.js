@@ -576,7 +576,22 @@ function goHome() {
 function doGoHome() { closeConfirm(); _ga('leave_room', { game:'memory', language:lang }); goHome(); }
 
 // ─── SOCKET EVENTS ───────────────────────────────────────────────
-socket.on('connect', function() { myId = socket.id; });
+socket.on('connect', function() {
+  myId = socket.id;
+  // Back after a page reload: rejoin the saved room
+  try {
+    var sc = sessionStorage.getItem('mem_code'), sn = sessionStorage.getItem('mem_name');
+    if (sc && sn && !roomCode) { myName = sn; socket.emit('mem_rejoin', { code: sc, name: sn }); }
+  } catch (e) {}
+});
+
+socket.on('mem_room_joined', function(data) {
+  if (!data || !data.code) return;
+  roomCode = data.code;
+  var rc = document.getElementById('room-code-display'); if (rc) rc.textContent = data.code;
+  if (keepAliveInterval) clearInterval(keepAliveInterval);
+  keepAliveInterval = setInterval(function() { if (roomCode) socket.emit('mem_keepalive', { code: roomCode }); }, 25000);
+});
 
 socket.on('mem_room_created', function(data) {
     window._amHost = true; // nudge: I created the room

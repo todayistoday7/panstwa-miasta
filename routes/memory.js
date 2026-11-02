@@ -2,6 +2,7 @@
 // MEMORY — Multiplayer Card-Matching Game
 // ════════════════════════════════════════════════════════
 'use strict';
+const __rekey = require('./rekey');
 const lobby = require('./lobby');
 const { isBotName } = require('./botfilter');
 
@@ -138,7 +139,7 @@ function register(io, socket) {
     if (existing) {
       if (room.hostId === existing.id) room.hostId = socket.id;
       if (room.state.currentPlayer === existing.id) room.state.currentPlayer = socket.id;
-      existing.id = socket.id;
+      __rekey(room, existing.id, socket.id); existing.id = socket.id;
       existing.connected = true;
       socket.join(room.code);
       socket.emit('mem_room_created', { code: room.code });
@@ -295,7 +296,7 @@ function register(io, socket) {
     if (existing) {
       if (room.hostId === existing.id) room.hostId = socket.id;
       if (room.state.currentPlayer === existing.id) room.state.currentPlayer = socket.id;
-      existing.id = socket.id;
+      __rekey(room, existing.id, socket.id); existing.id = socket.id;
       existing.connected = true;
     } else {
       if (room.state.phase !== 'lobby') { socket.emit('mem_error', { msg: 'Room already started.' }); return; }

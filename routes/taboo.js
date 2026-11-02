@@ -2,6 +2,7 @@
 // TABOO — Game Logic (Team Mode)
 // ════════════════════════════════════════════════════════
 'use strict';
+const __rekey = require('./rekey');
 const lobby = require('./lobby');
 const { isBotName, isHoneypot } = require('./botfilter');
 
@@ -234,7 +235,7 @@ function register(io, socket) {
     if (existing && room.state.phase !== 'lobby') {
       if (existing._disconnectTimer) { clearTimeout(existing._disconnectTimer); existing._disconnectTimer = null; }
       if (room.hostId === existing.id) room.hostId = socket.id;
-      existing.id = socket.id; existing.connected = true;
+      __rekey(room, existing.id, socket.id); existing.id = socket.id; existing.connected = true;
       socket.join(room.code);
       socket.emit('taboo_room_joined', { code: room.code });
       emitTabooState(io, room);
@@ -245,7 +246,7 @@ function register(io, socket) {
     const _ret = room.players.find(p => p.name === (name || '').trim());
     if (_ret) {
       if (room.hostId === _ret.id) room.hostId = socket.id;
-      _ret.id = socket.id; _ret.connected = true;
+      __rekey(room, _ret.id, socket.id); _ret.id = socket.id; _ret.connected = true;
       socket.join(room.code); socket.emit('taboo_room_joined', { code: room.code });
       emitTabooState(io, room); return;
     }
@@ -253,7 +254,7 @@ function register(io, socket) {
     if (room.players.length >= 12)    { socket.emit('taboo_error', { msg: 'Room is full.' }); return; }
 
     if (existing && !existing.connected) {
-      existing.id = socket.id; existing.connected = true;
+      __rekey(room, existing.id, socket.id); existing.id = socket.id; existing.connected = true;
     } else {
       if (room.players.find(p => p.name.toLowerCase() === (name||'').toLowerCase() && p.connected)) {
         socket.emit('taboo_error', { msg: 'Name already taken.' }); return;
@@ -467,7 +468,7 @@ function register(io, socket) {
     if (!existing) { socket.emit('taboo_error', { msg: 'Player not found.' }); return; }
     if (existing._disconnectTimer) { clearTimeout(existing._disconnectTimer); existing._disconnectTimer = null; }
     if (room.hostId === existing.id) room.hostId = socket.id;
-    existing.id = socket.id; existing.connected = true;
+    __rekey(room, existing.id, socket.id); existing.id = socket.id; existing.connected = true;
     socket.join(code);
     socket.emit('taboo_room_joined', { code });
     emitTabooState(io, room);

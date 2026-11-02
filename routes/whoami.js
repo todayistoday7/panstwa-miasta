@@ -1,4 +1,5 @@
 'use strict';
+const __rekey = require('./rekey');
 // ════════════════════════════════════════════════════════
 // WHO AM I — Server Route
 // ════════════════════════════════════════════════════════
@@ -1218,7 +1219,7 @@ function register(io, socket) {
       const existing = room.players.find(p => p.name.toLowerCase() === trimmed.toLowerCase() && !p.connected);
       if (existing) {
         if (room.hostId === existing.id) room.hostId = socket.id;
-        existing.id = socket.id;
+        __rekey(room, existing.id, socket.id); existing.id = socket.id;
         existing.connected = true;
         socket.join(roomCode);
         socket.emit('whoami_joined', { code: roomCode });
@@ -1231,9 +1232,9 @@ function register(io, socket) {
         const oldId = _ret.id;
         if (room.hostId === oldId) room.hostId = socket.id;
         if (room.state.currentIdx < room.players.length && room.players[room.state.currentIdx].id === oldId) {
-          room.players[room.state.currentIdx].id = socket.id;
+          __rekey(room, room.players[room.state.currentIdx].id, socket.id); room.players[room.state.currentIdx].id = socket.id;
         }
-        _ret.id = socket.id; _ret.connected = true;
+        __rekey(room, _ret.id, socket.id); _ret.id = socket.id; _ret.connected = true;
         socket.join(roomCode); socket.emit('whoami_room_joined', { code: roomCode });
         emitState(io, room); return;
       }
@@ -1261,9 +1262,9 @@ function register(io, socket) {
       // Update current player reference if this is the active player
       if (room.state.currentIdx < room.players.length &&
           room.players[room.state.currentIdx].id === oldId) {
-        room.players[room.state.currentIdx].id = socket.id;
+        __rekey(room, room.players[room.state.currentIdx].id, socket.id); room.players[room.state.currentIdx].id = socket.id;
       }
-      existing.id = socket.id;
+      __rekey(room, existing.id, socket.id); existing.id = socket.id;
       existing.connected = true;
     } else {
       if (room.state.phase !== 'lobby') { socket.emit('whoami_error', { msg: 'Room already started.' }); return; }

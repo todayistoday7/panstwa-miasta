@@ -1,4 +1,5 @@
 'use strict';
+const __rekey = require('./rekey');
 // ════════════════════════════════════════════════════════
 // CORPORATE BINGO — Server Route
 // 2-20 players, randomised 5x5 cards, any line wins
@@ -123,7 +124,7 @@ function register(io, socket) {
       const existing = room.players.find(p => p.name.toLowerCase() === trimmed.toLowerCase());
       if (existing) {
         if (existing._disconnectTimer) { clearTimeout(existing._disconnectTimer); existing._disconnectTimer = null; }
-        existing.id = socket.id;
+        __rekey(room, existing.id, socket.id); existing.id = socket.id;
         existing.connected = true;
         socket.join(code);
         socket.emit('bingo_joined', { code, isHost: socket.id === room.hostId });
@@ -135,7 +136,7 @@ function register(io, socket) {
       const _ret = room.players.find(p => p.name === (name || '').trim());
       if (_ret) {
         if (room.hostId === _ret.id) room.hostId = socket.id;
-        _ret.id = socket.id; _ret.connected = true;
+        __rekey(room, _ret.id, socket.id); _ret.id = socket.id; _ret.connected = true;
         socket.join(code); socket.emit('bingo_room_joined', { code });
         emitBingoState(io, room); return;
       }
@@ -226,7 +227,7 @@ function register(io, socket) {
       const existing = room.players.find(p => p.name === name);
       if (existing) {
         if (room.hostId === existing.id) room.hostId = socket.id;
-        existing.id = socket.id;
+        __rekey(room, existing.id, socket.id); existing.id = socket.id;
         existing.connected = true;
       } else {
         if (room.state.phase !== 'lobby') { socket.emit('bingo_error', { msg: 'Room already started.' }); return; }

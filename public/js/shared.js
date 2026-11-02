@@ -1955,6 +1955,8 @@ window._buildFooterLangBtns = function() {
         'padding:10px 16px calc(10px + env(safe-area-inset-bottom))!important;background:rgba(15,14,24,.96)!important;border-top:1px solid rgba(255,255,255,.12);' +
         'box-shadow:0 -6px 18px rgba(0,0,0,.45);display:flex!important;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center}' +
       '.pm-mbar>.btn,.pm-mbar>button{margin:0!important}' +
+      /* a bar the game has hidden stays hidden (else an old button, e.g. "Done reviewing", kept showing) */
+      '.pm-mbar[style*="display: none"],.pm-mbar[style*="display:none"]{display:none!important}' +
       '.pm-mbar[data-pm-short]::before{content:attr(data-pm-short);width:100%;text-align:center;font-size:13px;font-weight:800;color:#ffd166}' +
       'body.pm-inlobby .pm-mbar .pm-bigwait,body.pm-hasbar.pm-inlobby .pm-bigwait{display:none!important}' +
     '}';
@@ -2207,4 +2209,59 @@ window._buildFooterLangBtns = function() {
     } catch (e) {}
   }
   function clean() { try { var u = new URL(location.href); u.searchParams.delete('pmmove'); u.searchParams.delete('pmauto'); history.replaceState(null, '', u.pathname + u.search); } catch (e) {} }
+})();
+
+// ════════════════════════════════════════════════════════════════
+// LEAVE GUARD — during a game, a tap on any link (menu, logo, other
+// games, footer…) first asks "Leave the game?". An accidental tap
+// costs one tap on "Stay in the game" instead of the player's round.
+// Lobby, home and final screens are not guarded. Never throws.
+// ════════════════════════════════════════════════════════════════
+(function () {
+  var T = {
+    pl: { t: 'Wychodzisz z gry?', m: 'Gra wciąż trwa. Jeśli teraz wyjdziesz, reszta będzie grać dalej bez ciebie. Wrócisz przyciskiem „Wstecz” albo z tym samym imieniem i kodem pokoju {code}.', stay: 'Zostań w grze', leave: 'Wyjdź' },
+    en: { t: 'Leave the game?', m: 'The game is still on. If you leave now, the others will carry on without you. You can come back with the Back button, or with the same name and room code {code}.', stay: 'Stay in the game', leave: 'Leave' },
+    de: { t: 'Spiel verlassen?', m: 'Das Spiel läuft noch. Wenn du jetzt gehst, spielen die anderen ohne dich weiter. Du kommst mit „Zurück“ wieder rein oder mit demselben Namen und dem Raumcode {code}.', stay: 'Im Spiel bleiben', leave: 'Verlassen' },
+    sv: { t: 'Lämna spelet?', m: 'Spelet pågår fortfarande. Om du går nu fortsätter de andra utan dig. Du kommer tillbaka med Bakåt-knappen eller med samma namn och rumskoden {code}.', stay: 'Stanna i spelet', leave: 'Lämna' }
+  };
+  function code() { try { return String((document.getElementById('room-code-display') || {}).textContent || '').replace(/[^A-Z0-9]/gi, '').toUpperCase(); } catch (e) { return ''; } }
+  function inGame() {
+    try {
+      if (!code()) return false;
+      var s = Array.prototype.find.call(document.querySelectorAll('.screen'), function (x) { return x.id && getComputedStyle(x).display !== 'none'; });
+      return !!s && !/^screen-(home|lobby|final)$/.test(s.id);
+    } catch (e) { return false; }
+  }
+  function esc3(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function ask(go) {
+    var l = 'en'; try { l = _pmPageLang(); } catch (e) {}
+    var x = T[l] || T.en;
+    var old = document.getElementById('pm-leave-guard'); if (old) old.remove();
+    var o = document.createElement('div'); o.id = 'pm-leave-guard';
+    o.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(10,10,18,.78);display:flex;align-items:center;justify-content:center;padding:20px;';
+    o.innerHTML = '<div role="dialog" aria-modal="true" style="background:#1c1c2a;border:2px solid #ffd166;border-radius:18px;padding:22px 20px 18px;max-width:380px;width:100%;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.6);">' +
+      '<div style="font-size:34px;line-height:1;margin-bottom:8px;">🚪</div>' +
+      '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:28px;letter-spacing:2px;color:#ffd166;margin-bottom:8px;">' + esc3(x.t) + '</div>' +
+      '<p style="font-size:14px;font-weight:700;line-height:1.55;color:#cbd5e1;margin:0 0 18px;">' + esc3(x.m).replace('{code}', '<b style="color:#fff;letter-spacing:1px;">' + esc3(code()) + '</b>') + '</p>' +
+      '<button type="button" data-stay style="display:block;width:100%;border:none;border-radius:12px;padding:14px;font:inherit;font-size:16px;font-weight:900;color:#fff;background:linear-gradient(135deg,#06d6a0,#059669);cursor:pointer;margin-bottom:10px;">' + esc3(x.stay) + '</button>' +
+      '<button type="button" data-leave style="display:block;width:100%;border:1px solid #3a3a52;border-radius:12px;padding:11px;font:inherit;font-size:14px;font-weight:800;color:#94a3b8;background:transparent;cursor:pointer;">' + esc3(x.leave) + '</button>' +
+      '</div>';
+    document.body.appendChild(o);
+    o.querySelector('[data-stay]').onclick = function () { o.remove(); };
+    o.addEventListener('click', function (e) { if (e.target === o) o.remove(); });
+    o.querySelector('[data-leave]').onclick = function () { o.remove(); go(); };
+  }
+  document.addEventListener('click', function (e) {
+    try {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a || a.closest('#pm-leave-guard')) return;
+      var href = a.getAttribute('href') || '';
+      if (!href || href.charAt(0) === '#' || /^(javascript|mailto|tel|sms|whatsapp):/i.test(href) || a.target === '_blank' || a.hasAttribute('download')) return;
+      if (!inGame()) return;
+      e.preventDefault(); e.stopPropagation();
+      ask(function () { location.href = a.href; });
+    } catch (x) {}
+  }, true);
+  window.pmInGame = inGame;
 })();
