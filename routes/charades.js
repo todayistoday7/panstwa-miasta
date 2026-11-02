@@ -129,14 +129,21 @@ const WORDS = {
   },
 };
 
+// Chosen categories: 'mixed' = all, otherwise one or more keys joined by commas ("animals,movies")
+function chosenCats(room) {
+  const cat = String(room.settings.category || 'mixed');
+  if (cat === 'mixed') return Object.keys(WORDS);
+  const list = cat.split(',').filter(c => WORDS[c]);
+  return list.length ? list : Object.keys(WORDS);
+}
+
 // Track used words per room to avoid repeats
 function pickWord(room) {
-  const cat = room.settings.category;
   const diff = room.settings.difficulty;
   const lang = room.settings.lang || 'en';
   
   // Get all valid categories
-  const categories = cat === 'mixed' ? Object.keys(WORDS) : [cat];
+  const categories = chosenCats(room);
   
   // Try to find an unused word
   for (let attempt = 0; attempt < 50; attempt++) {
@@ -157,12 +164,14 @@ function pickWord(room) {
     const word = pool[Math.floor(Math.random() * pool.length)];
     if (!room.state.usedWords.has(word)) {
       room.state.usedWords.add(word);
+      room.state.wordCat = chosenCat;
       return word;
     }
   }
   // Fallback: allow repeats
   const chosenCat = categories[Math.floor(Math.random() * categories.length)];
   const pool = WORDS[chosenCat][diff][lang] || WORDS[chosenCat][diff]['en'] || ['???'];
+  room.state.wordCat = chosenCat;
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
@@ -181,10 +190,9 @@ function getTeamPlayers(room, team) {
 }
 
 function getWordCount(room) {
-  const cat = room.settings.category;
   const diff = room.settings.difficulty;
   const lang = room.settings.lang || 'en';
-  const categories = cat === 'mixed' ? Object.keys(WORDS) : [cat];
+  const categories = chosenCats(room);
   let total = 0;
   const getLang = (catWords, d) => (catWords[d] && catWords[d][lang]) || (catWords[d] && catWords[d]['en']) || [];
   categories.forEach(c => {
@@ -227,6 +235,8 @@ function broadcastState(io, room) {
     passesLeft: room.state.passesLeft,
     lastWord: room.state.lastWord,
     lastResult: room.state.lastResult,
+    // category of the word being acted now (everyone sees it - helps the guessers)
+    wordCat: (room.state.phase === 'acting' && room.state.word) ? (room.state.wordCat || null) : null,
     // 2-3 players: no teams, everyone acts in turn, points for the actor
     solo: !!room.state.solo,
     scores: room.state.solo ? room.players.filter(pl => pl.connected || (room.state.indiv && room.state.indiv[pl.name]))
@@ -408,7 +418,10 @@ function register(io, socket) {
     const room = rooms[code];
     if (!room || socket.id !== room.hostId) return;
     if (settings.lang) room.settings.lang = settings.lang;
-    if (settings.category) room.settings.category = settings.category;
+    if (settings.category) {
+      const list = String(settings.category).split(',').filter(c => c === 'mixed' || WORDS[c]);
+      room.settings.category = (!list.length || list.includes('mixed')) ? 'mixed' : list.join(',');
+    }
     if (settings.difficulty) room.settings.difficulty = settings.difficulty;
     if (settings.timerSecs) room.settings.timerSecs = Math.min(90, Math.max(30, settings.timerSecs));
     if (settings.gameLength) room.settings.gameLength = settings.gameLength;

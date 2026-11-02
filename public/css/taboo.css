@@ -431,3 +431,22 @@
   #referee-view .taboo-big-btn { white-space: normal; text-align: center; line-height: 1.2; }
   .taboo-role-banner { font-size: 17px !important; letter-spacing: 2px !important; padding: 6px 12px !important; margin-bottom: 8px !important; }
 }
+
+/* ── 2-3 players: no teams ── */
+#lobby-teams.solo-list { display:flex !important; flex-direction:column; gap:8px; }
+.solo-teams-hint { font-size:12px; font-weight:700; color:var(--muted); margin-top:4px; }
+#lbl-reshuffle.solo-hide { display:none !important; }
+.solo-chips { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; }
+.solo-chip { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:20px; border:1px solid var(--border); background:var(--surface); font-size:13px; font-weight:700; color:var(--text); }
+.solo-chip small { color:var(--muted); font-size:10px; }
+.solo-chip b { color:var(--accent2); }
+.solo-chip.active { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; }
+.solo-oops-btn { width:100%; margin-top:10px; font-size:14px; padding:12px; }
+.solo-rank { display:flex; flex-direction:column; gap:8px; max-width:420px; margin:0 auto; }
+.solo-rank-row { display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:12px; border:1px solid var(--border); background:var(--surface); font-weight:800; }
+.solo-rank-row.winner { border-color:var(--accent2); }
+.solo-rank-row.me .solo-rank-name { color:var(--accent); }
+.solo-rank-pos { width:28px; text-align:center; color:var(--muted); }
+.solo-rank-name { flex:1; }
+.solo-rank-score { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--accent2); }
+.solo-together { text-align:center; color:var(--muted); font-weight:800; font-size:14px; margin-top:12px; }

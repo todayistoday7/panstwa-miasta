@@ -47,6 +47,11 @@ function makeTabooRoom(hostId, settings) {
       usedWords:          [],
       turnTimer:          null,
       turnTimeRemaining:  0,
+      solo:               false, // 2-3 players: no teams, everyone describes in turn
+      indiv:              {},    // solo points by player name
+      soloIdx:            0,
+      turnPoints:         0,
+      lastDescriberName:  '',
     }
   };
   return tabooRooms[code];
@@ -114,10 +119,34 @@ function emitTabooState(io, room) {
     scores:            room.state.scores,
     teamTotals:        room.state.teamTotals,
     turnTimeRemaining: room.state.turnTimeRemaining,
+    solo:              !!room.state.solo,
+    soloScores:        room.state.solo ? room.players
+                         .filter(pl => pl.connected !== false || (room.state.indiv && room.state.indiv[pl.name] !== undefined))
+                         .map(pl => ({ id: pl.id, name: pl.name, score: (room.state.indiv && room.state.indiv[pl.name]) || 0 })) : null,
+    groupTotal:        room.state.solo ? (room.state.groupTotal || 0) : null,
+    turnPoints:        room.state.turnPoints || 0,
+    lastDescriberName: room.state.lastDescriberName || '',
   });
 }
 
+function soloDescriber(room) {
+  const list = room.players.filter(p => p.connected !== false);
+  if (!list.length) return null;
+  const p = list[(room.state.soloIdx || 0) % list.length];
+  room.state.soloIdx = (room.state.soloIdx || 0) + 1;
+  return p.id;
+}
+
 function prepareTabooTurn(io, room) {
+  if (room.state.solo) {
+    room.state.turnDescriber = soloDescriber(room);
+    room.state.turnReferee   = null;
+    room.state.turnPoints    = 0;
+    room.state.phase         = 'preparing';
+    room.state.currentWord   = null;
+    emitTabooState(io, room);
+    return;
+  }
   const describingTeam = room.state.describerTeam;
   const opponentTeam   = opposingTeam(describingTeam);
 
@@ -151,6 +180,8 @@ function startTabooTurn(io, room) {
 function endTabooTurn(io, room) {
   if (room.state.turnTimer) { clearInterval(room.state.turnTimer); room.state.turnTimer = null; }
   room.state.roundJustPlayed = room.state.round;
+  const _d = room.players.find(p => p.id === room.state.turnDescriber);
+  room.state.lastDescriberName = _d ? _d.name : '';
   room.state.phase           = 'roundend';
   room.state.round++;
   room.state.describerTeam   = opposingTeam(room.state.describerTeam);
@@ -263,8 +294,9 @@ function register(io, socket) {
   socket.on('taboo_start', ({ code }) => {
     const room = getTabooRoom(code);
     if (!room || socket.id !== room.hostId) return;
-    if (room.players.filter(p => p.connected).length < 4) {
-      socket.emit('taboo_error', { msg: 'Need at least 4 players (2 per team).' }); return;
+    const _n = room.players.filter(p => p.connected).length;
+    if (_n < 2) {
+      socket.emit('taboo_error', { msg: 'Need at least 2 players.' }); return;
     }
     if (room._lobbyTimer) { clearTimeout(room._lobbyTimer); room._lobbyTimer = null; }
     room.state.round              = 0;
@@ -275,6 +307,11 @@ function register(io, socket) {
     room.state.redDescriberIndex  = 0;
     room.state.blueDescriberIndex = 0;
     room.state.describerTeam      = 'red';
+    room.state.solo               = _n <= 3;
+    room.state.indiv              = {};
+    room.state.groupTotal         = 0;
+    room.state.soloIdx            = 0;
+    room.state.turnPoints         = 0;
     assignTeams(room);
     lobby.remove(room.code);
     prepareTabooTurn(io, room);
@@ -295,10 +332,21 @@ function register(io, socket) {
     if (socket.id !== room.state.turnDescriber) return;
     const team = room.state.describerTeam;
     const rIdx = room.state.round;
+    const word = room.state.currentWord ? room.state.currentWord.word : '';
+    if (room.state.solo) {
+      const me = room.players.find(p => p.id === socket.id);
+      const nm = me ? me.name : '?';
+      room.state.indiv[nm] = (room.state.indiv[nm] || 0) + 1;
+      room.state.groupTotal = (room.state.groupTotal || 0) + 1;
+      room.state.turnPoints = (room.state.turnPoints || 0) + 1;
+      io.to(room.code).emit('taboo_score_event', { type: 'correct', word, name: nm });
+      room.state.currentWord = null;
+      emitTabooState(io, room);
+      return;
+    }
     if (!room.state.scores[rIdx]) room.state.scores[rIdx] = { red: 0, blue: 0 };
     room.state.scores[rIdx][team]++;
     room.state.teamTotals[team]++;
-    const word = room.state.currentWord ? room.state.currentWord.word : '';
     io.to(room.code).emit('taboo_score_event', { type: 'correct', word, team });
     room.state.currentWord = null;
     emitTabooState(io, room);
@@ -318,6 +366,19 @@ function register(io, socket) {
   socket.on('taboo_penalty', ({ code }) => {
     const room = getTabooRoom(code);
     if (!room || room.state.phase !== 'playing') return;
+    if (room.state.solo) {
+      // No referee with 2-3 players: the describer owns up ("Oops")
+      if (socket.id !== room.state.turnDescriber) return;
+      const me = room.players.find(p => p.id === socket.id);
+      const nm = me ? me.name : '?';
+      const had = room.state.indiv[nm] || 0;
+      room.state.indiv[nm] = Math.max(0, had - 1);
+      room.state.turnPoints = (room.state.turnPoints || 0) - (had > 0 ? 1 : 0);
+      io.to(room.code).emit('taboo_score_event', { type: 'penalty', word: '', name: nm });
+      room.state.currentWord = null;
+      emitTabooState(io, room);
+      return;
+    }
     if (socket.id !== room.state.turnReferee) return;
     const penaltyTeam = opposingTeam(room.state.describerTeam);
     const rIdx        = room.state.round;
@@ -354,7 +415,7 @@ function register(io, socket) {
     if (room.state.round >= room.settings.rounds) {
       if (room.state.turnTimer) clearInterval(room.state.turnTimer);
       // Stats: count finished game (never breaks the game; skips if already finished)
-      if (room.state.phase !== 'final') { try { require('../db/stats').logGameEvent({ game: 'taboo', roomCode: room.code, lang: (room.settings && room.settings.lang) || room.lang || null, outcome: 'game_complete', details: { players: (room.players || []).length } }); } catch (e) {} }
+      if (room.state.phase !== 'final') { try { require('../db/stats').logGameEvent({ game: 'taboo', roomCode: room.code, lang: (room.settings && room.settings.lang) || room.lang || null, outcome: 'game_complete', details: { players: (room.players || []).length, solo: !!room.state.solo } }); } catch (e) {} }
       room.state.phase = 'final';
       emitTabooState(io, room);
       lobby.remove(room.code);

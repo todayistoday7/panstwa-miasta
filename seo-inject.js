@@ -157,6 +157,10 @@ window._seoLangUrls = ${JSON.stringify(seo.seoLangUrls)};
     // Centered wrapper so the SEO text lines up with the game column (was stuck to the left edge)
     html += '\n<div class="seo-bottom" style="max-width:780px;margin:0 auto;padding:0 16px;box-sizing:border-box;">\n' + seo.bottomContent + '\n</div>\n';
   }
+  // PM home: latest posts from the Polish blog
+  if (gameName === 'pm' && langCode === 'pl') {
+    try { html += '\n' + require('./blog-strip').stripForLang('pl') + '\n'; } catch (e) {}
+  }
   
   return html;
 }

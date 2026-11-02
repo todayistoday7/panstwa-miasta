@@ -100,7 +100,7 @@ function init(io) {
 }
 
 // Which game can send its group to which (both ways)
-const MOVE_ROUTES = { charades: ['whoami'], whoami: ['charades'] };
+const MOVE_ROUTES = { charades: ['whoami', 'taboo'], whoami: ['charades', 'taboo'], taboo: ['charades', 'whoami'] };
 const _moves = new Map(); // token → { fromGame, fromCode, to, players, t }
 setInterval(() => { const now = Date.now(); for (const [k, m] of _moves) if (now - m.t > 15 * 60 * 1000) _moves.delete(k); }, 60 * 1000).unref();
 

@@ -960,7 +960,7 @@ function renderOverview(db, days, cutoffLabel, gameOpts) {
       <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">All games — click a name for details</h3>
       <div style="overflow-x:auto">
       <table>
-        <tr><th>Game</th><th>Rooms created</th><th>Started</th><th>Games finished</th><th>Finish rate</th><th>Last 7 days</th><th>Avg players</th><th>Last finished</th></tr>
+        <tr><th>Game</th><th>Rooms created</th><th>Rooms started</th><th>Games finished</th><th>Finish rate</th><th>Last 7 days</th><th>Avg players</th><th>Last finished</th></tr>
         ${tableRows}
       </table>
       </div>
@@ -968,7 +968,7 @@ function renderOverview(db, days, cutoffLabel, gameOpts) {
     <div class="grid2">
       <div class="card">
         <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Last 14 days — all games</h3>
-        <table><tr><th>Date</th><th>Created</th><th>Started</th><th>Finished</th></tr>${dayRows}</table>
+        <table><tr><th>Date</th><th>Rooms created</th><th>Rooms started</th><th>Games finished</th></tr>${dayRows}</table>
       </div>
       <div class="card">
         <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Finished games by language (${escapeHtml(cutoffLabel)})</h3>
@@ -1083,7 +1083,7 @@ function renderGeneric(db, game, days, cutoffLabel, gameOpts) {
       <div style="display:flex;gap:24px;flex-wrap:wrap;font-size:13px;color:#94a3b8">
         <span>Avg players per finished game: <strong style="color:#e2e8f0">${s.avgp ? s.avgp.toFixed(1) : '—'}</strong></span>
         <span>Games per room (rematches): <strong style="color:#e2e8f0">${s.finRooms ? (finished / s.finRooms).toFixed(1) : '—'}</strong></span>
-        <span>Started of created: <strong style="color:#e2e8f0">${noFunnel ? 'n/a' : statsPct(started, created)}</strong></span>
+        <span>Rooms started of created: <strong style="color:#e2e8f0">${noFunnel ? 'n/a' : statsPct(started, created)}</strong></span>
         <span>Public rooms: <strong style="color:#e2e8f0">${pub && pub.n ? statsPct(pub.pub || 0, pub.n) : '—'}</strong></span>
       </div>
       <div style="font-size:11px;color:#64748b;margin-top:8px">Created/started tracking since ${funnelSince ? escapeHtml(funnelSince) : 'this deploy'}. Finished games are counted when the final screen is reached — groups that just close the tab are not counted.</div>
@@ -1091,7 +1091,7 @@ function renderGeneric(db, game, days, cutoffLabel, gameOpts) {
     <div class="grid2">
       <div class="card">
         <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Last 14 days</h3>
-        <table><tr><th>Date</th><th>Created</th><th>Started</th><th>Finished</th></tr>${dayRows}</table>
+        <table><tr><th>Date</th><th>Rooms created</th><th>Rooms started</th><th>Games finished</th></tr>${dayRows}</table>
       </div>
       <div class="card">
         <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">By language (${escapeHtml(cutoffLabel)})</h3>
@@ -1105,7 +1105,8 @@ function renderGeneric(db, game, days, cutoffLabel, gameOpts) {
       </div>
       <div class="card">
         <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Time of day (Polish time)</h3>
-        <table><tr><th>When</th><th>Started</th><th>Finished</th></tr>${timeRows}</table>
+        <table><tr><th>When</th><th>Rooms started</th><th>Games finished</th></tr>${timeRows}</table>
+        <div style="font-size:11px;color:#64748b;margin-top:8px">One room can finish several games (Play again), so games finished can be higher than rooms started.</div>
       </div>
     </div>${stopCard}${moveCard}${settingsCard}`;
 }

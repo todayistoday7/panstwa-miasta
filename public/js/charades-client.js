@@ -1047,10 +1047,9 @@ function renderLobby(data) {
   
   // Category pills
   if (isHost) {
-    renderPills('cat-pills', [
-      {key:'mixed',label:L.catMixed},{key:'animals',label:L.catAnimals},{key:'actions',label:L.catActions},
-      {key:'professions',label:L.catProfessions},{key:'movies',label:L.catMovies},{key:'food',label:L.catFood},{key:'sports',label:L.catSports},
-    ], data.settings.category, function(v) { socket.emit('charades_update_settings', {code:roomCode,settings:{category:v}}); });
+    renderCatPills(data.settings.category);
+    var _ch = document.getElementById('cat-hint');
+    if (_ch) _ch.textContent = chCatHint();
     
     renderPills('diff-pills', [
       {key:'kids',label:L.diffKids},{key:'family',label:L.diffFamily},{key:'adults',label:L.diffAdults},
@@ -1114,6 +1113,49 @@ function renderLobby(data) {
   }
 }
 
+// ── Categories: several can be picked; 'mixed' = all ──
+var CH_CATS = ['animals','actions','professions','movies','food','sports'];
+function chCatLabel(k) {
+  return ({mixed:L.catMixed, animals:L.catAnimals, actions:L.catActions, professions:L.catProfessions, movies:L.catMovies, food:L.catFood, sports:L.catSports})[k] || k;
+}
+function chCatList(setting) {
+  var c = String(setting || 'mixed');
+  if (c === 'mixed') return [];
+  return c.split(',').filter(function(x) { return CH_CATS.indexOf(x) >= 0; });
+}
+function chChosenLabel(setting) {
+  var list = chCatList(setting);
+  if (!list.length || list.length === CH_CATS.length) return chCatLabel('mixed');
+  return list.map(chCatLabel).join(' + ');
+}
+function renderCatPills(setting) {
+  var el = document.getElementById('cat-pills');
+  if (!el) return;
+  var list = chCatList(setting);
+  var items = ['mixed'].concat(CH_CATS);
+  el.innerHTML = items.map(function(k) {
+    var on = k === 'mixed' ? !list.length : list.indexOf(k) >= 0;
+    return '<button class="lang-pill' + (on ? ' active' : '') + '" data-cat="' + k + '">' + chCatLabel(k) + '</button>';
+  }).join('');
+  el.querySelectorAll('.lang-pill').forEach(function(btn) {
+    btn.onclick = function() {
+      var k = btn.getAttribute('data-cat'), cur = chCatList(setting), next;
+      if (k === 'mixed') next = [];
+      else {
+        next = cur.indexOf(k) >= 0 ? cur.filter(function(x) { return x !== k; }) : cur.concat([k]);
+        if (next.length === CH_CATS.length) next = [];
+      }
+      socket.emit('charades_update_settings', {code:roomCode, settings:{category: next.length ? next.join(',') : 'mixed'}});
+    };
+  });
+}
+function chCatHint() {
+  return ({pl:'Możesz wybrać kilka kategorii', en:'You can pick more than one', de:'Du kannst mehrere wählen', sv:'Du kan välja flera'})[lang] || 'You can pick more than one';
+}
+function chCatWord() {
+  return ({pl:'Kategoria', en:'Category', de:'Kategorie', sv:'Kategori'})[lang] || 'Category';
+}
+
 function renderPills(containerId, items, active, onClick) {
   var el = document.getElementById(containerId);
   if (!el) return;
@@ -1153,9 +1195,7 @@ function renderPreparing(data) {
   // Round + category
   var roundEl = document.getElementById('round-indicator');
   if (roundEl) {
-    var catLabels = {mixed:L.catMixed, animals:L.catAnimals, actions:L.catActions, professions:L.catProfessions, movies:L.catMovies, food:L.catFood, sports:L.catSports};
-    var catLabel = catLabels[data.settings.category] || data.settings.category;
-    roundEl.textContent = L.round + ' ' + data.round + ' ' + L.of + ' ' + data.totalRounds + '  ·  ' + catLabel;
+    roundEl.textContent = L.round + ' ' + data.round + ' ' + L.of + ' ' + data.totalRounds + '  ·  ' + chChosenLabel(data.settings.category);
   }
   
   // Hide playing elements
@@ -1231,10 +1271,12 @@ function renderPlaying(data) {
   // Round + category
   var roundEl = document.getElementById('round-indicator');
   if (roundEl) {
-    var catLabels = {mixed:L.catMixed, animals:L.catAnimals, actions:L.catActions, professions:L.catProfessions, movies:L.catMovies, food:L.catFood, sports:L.catSports};
-    var catLabel = catLabels[data.settings.category] || data.settings.category;
-    roundEl.textContent = L.round + ' ' + data.round + ' ' + L.of + ' ' + data.totalRounds + '  ·  ' + catLabel;
+    roundEl.textContent = L.round + ' ' + data.round + ' ' + L.of + ' ' + data.totalRounds;
   }
+  var wordCatHtml = data.wordCat
+    ? '<div class="ch-wordcat"><span class="ch-wordcat-lbl">' + chCatWord() + '</span><span class="ch-wordcat-val">' + chCatLabel(data.wordCat) + '</span></div>'
+    : '';
+  var actingTxt = String(L.teamIsActing || '').replace(/[:\s]+$/, '');
   
   // Banner
   var banner = document.getElementById('turn-banner');
@@ -1244,7 +1286,7 @@ function renderPlaying(data) {
       banner.className = 'turn-banner actor-banner';
     } else {
       var teamLabel = data.actorTeam === 'red' ? L.teamRed : L.teamBlue;
-      banner.textContent = data.actorName + (data.solo ? ' ' : ' (' + teamLabel + ') ') + L.teamIsActing;
+      banner.textContent = data.actorName + (data.solo ? ' ' : ' (' + teamLabel + ') ') + actingTxt;
       banner.className = 'turn-banner';
     }
   }
@@ -1263,6 +1305,7 @@ function renderPlaying(data) {
       var emoji = EMOJI_HINTS[data.word] || '';
       var emojiHtml = emoji ? '<div class="word-emoji">' + emoji + '</div>' : '';
       wordCard.innerHTML =
+        (data.wordCat ? '<div class="word-label">' + chCatLabel(data.wordCat) + '</div>' : '') +
         emojiHtml +
         '<div class="word-text">' + esc(data.word || '') + '</div>';
     }
@@ -1282,9 +1325,8 @@ function renderPlaying(data) {
         // YOUR TEAM — you need to GUESS!
         waitMsg.innerHTML =
           '<div style="background:rgba(6,214,160,0.15);border:2px solid var(--green);border-radius:14px;padding:16px;text-align:center;margin-bottom:12px;">' +
-            '<div style="font-size:36px;margin-bottom:6px;">🗣️</div>' +
             '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:24px;letter-spacing:2px;color:var(--green);">' + L.guessNow + '</div>' +
-            '<p style="font-size:14px;color:var(--muted);font-weight:700;margin:8px 0 0;">' + esc(data.actorName) + ' ' + L.teamIsActing + '</p>' +
+            wordCatHtml +
           '</div>' +
           '<p style="font-size:13px;color:var(--muted);font-weight:700;text-align:center;">💡 ' + L.wordsGuessed + ' ' + data.wordsThisTurn + '</p>';
       } else {
@@ -1293,7 +1335,7 @@ function renderPlaying(data) {
           '<div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;margin-bottom:12px;">' +
             '<div style="font-size:36px;margin-bottom:6px;">👀</div>' +
             '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:20px;letter-spacing:2px;color:var(--muted);">' + L.watchOther + '</div>' +
-            '<p style="font-size:13px;color:var(--muted);font-weight:600;margin:8px 0 0;">' + esc(data.actorName) + ' (' + (data.actorTeam === 'red' ? L.teamRed : L.teamBlue) + ') ' + L.teamIsActing + '</p>' +
+            wordCatHtml +
           '</div>' +
           '<p style="font-size:13px;color:var(--muted);font-weight:700;text-align:center;">💡 ' + L.wordsGuessed + ' ' + data.wordsThisTurn + '</p>';
       }

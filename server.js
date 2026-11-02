@@ -148,6 +148,7 @@ app.get('/', function(req, res, next) {
   if (isRFG(req)) {
     const fs = require('fs');
     let html = fs.readFileSync(path.join(__dirname, 'public/home.html'), 'utf-8');
+    try { html = html.replace('<!-- ══════════ SEO CONTENT ══════════ -->', require('./blog-strip').stripAllLangs('en') + '\n<!-- ══════════ SEO CONTENT ══════════ -->'); } catch (e) {}
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     return res.send(html);
   }

@@ -685,6 +685,11 @@
       }).join('');
     }
 
+    // Blog strip: show the posts in the page language
+    document.querySelectorAll('.pm-blog-strip[data-blog-lang]').forEach(function(s) {
+      s.style.display = s.getAttribute('data-blog-lang') === lang ? '' : 'none';
+    });
+
     // Update language bar active state
     document.querySelectorAll('.rfg-lang-btn').forEach(function(btn) {
       btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);

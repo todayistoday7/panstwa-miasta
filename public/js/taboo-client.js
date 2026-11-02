@@ -24,7 +24,7 @@ const LANGS_TABOO = {
   pl: {
     name: '🇵🇱 PL',
     gameTitle: 'ZAKAZANE SŁOWA',
-    subtitle: 'Drużynowa gra imprezowa · min. 4 graczy',
+    subtitle: 'Gra imprezowa · 2-12 graczy',
     createRoom: 'Stwórz pokój', joinRoom: 'Dołącz do pokoju',
     yourName: 'Twoje imię', joinName: 'Twoje imię', roomCode: 'Kod pokoju',
     createBtn: 'Stwórz pokój', joinBtn: 'Dołącz',
@@ -41,7 +41,7 @@ const LANGS_TABOO = {
     navAllGames: 'Wszystkie gry',
     minPlayers: '⚠️ Potrzebujesz minimum 4 graczy (2 na drużynę)',
     playersJoined: function(n) { return n + ' graczy dołączyło'; },
-    rule1: 'Minimum 4 graczy — losowy podział na 2 drużyny',
+    rule1: 'Od 4 graczy losowy podział na 2 drużyny. Przy 2-3 graczach każdy gra na siebie',
     rule2: 'Opisujący z Drużyny A — jego drużyna zgaduje',
     rule3: 'Sędzia z Drużyny B — łapie zakazane słowa',
     nudge: '👋 Szturchnij', nudgeSent: '✓ Wysłano!',
@@ -69,7 +69,8 @@ const LANGS_TABOO = {
     penaltyLabel: function(team) { return '⚠️ +1 dla ' + team; },
     skipLabel: '⏭ Pominięto', timeUp: 'Czas minął!', nextRound: 'Następna runda →',
     waitingNext: 'Czekam na hosta...',
-    hostBadge: 'HOST', youBadge: 'TY ·',
+    hostBadge: 'HOST', youBadge: 'TY ·', roundLabel: 'Runda',
+    rejoinTip: 'Jeśli przypadkowo wyjdziesz, wróć z tym samym imieniem i kodem pokoju.',
     thisRound: 'ta runda', total: 'łącznie',
     winner: function(team) { return '🏆 ' + team + ' wygrywa!'; },
     draw: 'Remis! 🤝',
@@ -77,7 +78,7 @@ const LANGS_TABOO = {
   en: {
     name: '🇬🇧 EN',
     gameTitle: 'FORBIDDEN WORDS',
-    subtitle: 'Team party game · min. 4 players',
+    subtitle: 'Party game · 2-12 players',
     rejoinTip: 'If you accidentally leave, rejoin with the same name and room code.',
     createRoom: 'Create Room', joinRoom: 'Join Room',
     yourName: 'Your name', joinName: 'Your name', roomCode: 'Room code',
@@ -95,7 +96,7 @@ const LANGS_TABOO = {
     navAllGames: 'All Games',
     minPlayers: '⚠️ You need at least 4 players (2 per team)',
     playersJoined: function(n) { return n + ' players joined'; },
-    rule1: 'Minimum 4 players — randomly split into 2 teams',
+    rule1: 'From 4 players: random split into 2 teams. With 2-3 players everyone plays for themselves',
     rule2: 'Describer from Team A — their own team guesses',
     rule3: 'Referee from Team B — catches forbidden words',
     nudge: '👋 Nudge', nudgeSent: '✓ Sent!',
@@ -123,7 +124,7 @@ const LANGS_TABOO = {
     penaltyLabel: function(team) { return '⚠️ +1 for ' + team; },
     skipLabel: '⏭ Skipped', timeUp: "Time's up!", nextRound: 'Next Turn →',
     waitingNext: 'Waiting for host...',
-    hostBadge: 'HOST', youBadge: 'YOU',
+    hostBadge: 'HOST', youBadge: 'YOU', roundLabel: 'Round',
     thisRound: 'this turn', total: 'total',
     winner: function(team) { return '🏆 ' + team + ' wins!'; },
     draw: "It's a draw! 🤝",
@@ -131,7 +132,7 @@ const LANGS_TABOO = {
   de: {
     name: '🇩🇪 DE',
     gameTitle: 'VERBOTENE WÖRTER',
-    subtitle: 'Teamspiel für Parties · mind. 4 Spieler',
+    subtitle: 'Partyspiel · 2-12 Spieler',
     rejoinTip: 'Falls du den Raum verlässt, tritt mit demselben Namen und Code wieder bei.',
     createRoom: 'Raum erstellen', joinRoom: 'Raum beitreten',
     yourName: 'Dein Name', joinName: 'Dein Name',
@@ -148,7 +149,7 @@ const LANGS_TABOO = {
     navAllGames: 'Alle Spiele',
     minPlayers: '⚠️ Du brauchst mindestens 4 Spieler (2 pro Team)',
     playersJoined: function(n) { return n + ' Spieler beigetreten'; },
-    rule1: 'Mindestens 4 Spieler — zufällig in 2 Teams aufgeteilt',
+    rule1: 'Ab 4 Spielern: zufällig in 2 Teams. Bei 2-3 Spielern spielt jeder für sich',
     rule2: 'Beschreiber aus Team A — sein eigenes Team rät',
     rule3: 'Schiedsrichter aus Team B — achtet auf verbotene Wörter',
     nudge: '👋 Anstupsen', nudgeSent: '✓ Gesendet!',
@@ -175,7 +176,7 @@ const LANGS_TABOO = {
     penaltyLabel: function(team) { return '⚠️ +1 für ' + team; },
     skipLabel: '⏭ Übersprungen', timeUp: 'Zeit abgelaufen!', nextRound: 'Nächste Runde →',
     waitingNext: 'Warte auf den Host...',
-    hostBadge: 'HOST', youBadge: 'DU',
+    hostBadge: 'HOST', youBadge: 'DU', roundLabel: 'Runde',
     thisRound: 'diese Runde', total: 'gesamt',
     winner: function(team) { return '🏆 ' + team + ' gewinnt!'; },
     draw: 'Unentschieden! 🤝',
@@ -185,7 +186,7 @@ const LANGS_TABOO = {
   sv: {
     name: '🇸🇪 SV',
     gameTitle: 'FÖRBJUDNA ORD',
-    subtitle: 'Lagspel för fester · min. 4 spelare',
+    subtitle: 'Partyspel · 2-12 spelare',
     teamsTitle: 'Lag', settings: 'Inställningar', roundsTitle: 'Rundor', timerTitle: 'Tid per runda', langTitle: 'Språk',
     startBtn: '🎮 Starta spelet', leaveRoom: '🚪 Lämna rummet',
     shareCode: 'Dela den här koden med dina vänner', copyCode: 'Kopiera kod',
@@ -198,7 +199,7 @@ const LANGS_TABOO = {
     navAllGames: 'Alla spel',
     minPlayers: '⚠️ Du behöver minst 4 spelare (2 per lag)',
     playersJoined: function(n) { return n + ' spelare gick med'; },
-    rule1: 'Minst 4 spelare — slumpmässigt uppdelade i 2 lag',
+    rule1: 'Från 4 spelare: slumpvis uppdelning i 2 lag. Med 2-3 spelare spelar alla för sig själva',
     rule2: 'Beskrivaren från Lag A — deras eget lag gissar',
     rule3: 'Domaren från Lag B — fångar förbjudna ord',
     nudge: '👋 Puffa', nudgeSent: '✓ Skickat!',
@@ -225,7 +226,7 @@ const LANGS_TABOO = {
     penaltyLabel: function(team) { return '⚠️ +1 för ' + team; },
     skipLabel: '⏭ Hoppade över', timeUp: 'Tiden är ute!', nextRound: 'Nästa runda →',
     waitingNext: 'Väntar på värden...',
-    hostBadge: 'VÄRD', youBadge: 'DU',
+    hostBadge: 'VÄRD', youBadge: 'DU', roundLabel: 'Runda',
     thisRound: 'denna runda', total: 'totalt',
     winner: function(team) { return '🏆 ' + team + ' vinner!'; },
     draw: 'Oavgjort! 🤝',
@@ -288,8 +289,68 @@ socket.on('taboo_room_joined', ({
 
 socket.on('taboo_error',       ({ msg })             => { showError(msg); });
 socket.on('taboo_state',       (data)                => { roomState = data; applyState(data); });
-socket.on('taboo_score_event', ({ type, word, team }) => { addScoreTicker(type, word, team); });
+socket.on('taboo_score_event', ({ type, word, team, name }) => { addScoreTicker(type, word, team, name); });
 socket.on('taboo_timer_tick',  ({ remaining })        => { updateTimerDisplay(remaining); });
+
+
+// ─── 2-3 PLAYERS: no teams, everyone describes in turn ──────────
+var TABOO_SOLO_T = {
+  pl: { players: 'Gracze', need2: '⚠️ Potrzeba min. 2 graczy', note: 'bez drużyn - każdy opisuje po kolei',
+        teamsFrom4: 'Od 4 graczy gracie w drużynach', next: 'Następny',
+        you: '🎤 Opisujesz - reszta zgaduje', other: function(n){ return '🤔 Zgaduj! ' + n + ' opisuje'; },
+        oops: '🙊 Ups, padło zakazane słowo (-1)', pointFor: '✅ +1', oopsLabel: function(n){ return '🙊 ' + n + ': zakazane słowo, -1'; },
+        turnPts: function(n, p){ return n + ': ' + p; }, together: 'Razem odgadnięte hasła:',
+        winner: function(n){ return '🏆 Wygrywa ' + n + '!'; }, draw: 'Remis! 🤝',
+        steps: ['Gracie bez drużyn - każdy na siebie. Po kolei każdy jest opisującym, a przed każdą turą widać, kto jest następny.', 'Opisujący widzi na swoim telefonie hasło i pod nim kilka zakazanych słów. Ma czas (30, 60 lub 90 sekund - ustawia host), żeby inni zgadli jak najwięcej haseł.', 'Opisuj samymi słowami. Nie wolno mówić hasła ani jego części, zakazanych słów, pokazywać rękami ani podpowiadać „brzmi jak…”.', 'Pozostali zgadują na głos. Gdy ktoś trafi, opisujący klika ✅ i od razu dostaje następne hasło. Za trudne? Klika „Pomiń” - bez kary.', 'Wymsknęło się zakazane słowo? Opisujący uczciwie klika 🙊 - traci 1 punkt, a hasło przepada.', 'Każde odgadnięte hasło to 1 punkt dla opisującego. Po ostatniej turze wygrywa ten, kto ma najwięcej punktów.'] },
+  en: { players: 'Players', need2: '⚠️ Need at least 2 players', note: 'no teams - everyone describes in turn',
+        teamsFrom4: 'With 4 or more you play in teams', next: 'Up next',
+        you: '🎤 You describe - the others guess', other: function(n){ return '🤔 Guess! ' + n + ' is describing'; },
+        oops: '🙊 Oops, I said a forbidden word (-1)', pointFor: '✅ +1', oopsLabel: function(n){ return '🙊 ' + n + ': forbidden word, -1'; },
+        turnPts: function(n, p){ return n + ': ' + p; }, together: 'Words guessed together:',
+        winner: function(n){ return '🏆 ' + n + ' wins!'; }, draw: "It's a draw! 🤝",
+        steps: ['No teams - everyone plays for themselves. You take turns being the describer, and before each turn you can see who is next.', 'The describer sees the word on their phone, with a few forbidden words under it. They have 30, 60 or 90 seconds (the host sets it) to get the others to guess as many words as possible.', 'Use words only. You can\'t say the word or any part of it, the forbidden words, act it out with your hands or give "sounds like…" hints.', 'The others guess out loud. When someone gets it, the describer taps ✅ and gets the next word straight away. Too hard? Tap Skip - no penalty.', 'Let a forbidden word slip? The describer honestly taps 🙊 - they lose 1 point and the word is gone.', 'Each word guessed is 1 point for the describer. After the last turn, the player with the most points wins.'] },
+  de: { players: 'Spieler', need2: '⚠️ Mindestens 2 Spieler nötig', note: 'ohne Teams - alle beschreiben der Reihe nach',
+        teamsFrom4: 'Ab 4 Spielern spielt ihr in Teams', next: 'Als Nächstes',
+        you: '🎤 Du beschreibst - die anderen raten', other: function(n){ return '🤔 Rate! ' + n + ' beschreibt'; },
+        oops: '🙊 Ups, verbotenes Wort gesagt (-1)', pointFor: '✅ +1', oopsLabel: function(n){ return '🙊 ' + n + ': verbotenes Wort, -1'; },
+        turnPts: function(n, p){ return n + ': ' + p; }, together: 'Zusammen erratene Begriffe:',
+        winner: function(n){ return '🏆 ' + n + ' gewinnt!'; }, draw: 'Unentschieden! 🤝',
+        steps: ['Ohne Teams - jeder spielt für sich. Ihr beschreibt der Reihe nach, und vor jeder Runde seht ihr, wer als Nächstes dran ist.', 'Wer beschreibt, sieht auf dem Handy den Begriff und darunter ein paar verbotene Wörter. Es gibt 30, 60 oder 90 Sekunden (stellt der Host ein), damit die anderen so viele Begriffe wie möglich erraten.', 'Nur mit Worten beschreiben. Nicht erlaubt: den Begriff oder einen Teil davon sagen, die verbotenen Wörter, mit den Händen zeigen oder „klingt wie…“-Tipps.', 'Die anderen raten laut. Wenn jemand richtig liegt, tippt der Beschreibende ✅ und bekommt sofort den nächsten Begriff. Zu schwer? Überspringen - ohne Strafe.', 'Ein verbotenes Wort ist rausgerutscht? Der Beschreibende tippt ehrlich auf 🙊 - 1 Punkt weg, und der Begriff ist weg.', 'Jeder erratene Begriff ist 1 Punkt für den Beschreibenden. Nach der letzten Runde gewinnt, wer die meisten Punkte hat.'] },
+  sv: { players: 'Spelare', need2: '⚠️ Minst 2 spelare behövs', note: 'utan lag - alla beskriver i tur och ordning',
+        teamsFrom4: 'Med 4 eller fler spelar ni i lag', next: 'Nästa',
+        you: '🎤 Du beskriver - de andra gissar', other: function(n){ return '🤔 Gissa! ' + n + ' beskriver'; },
+        oops: '🙊 Oj, jag sa ett förbjudet ord (-1)', pointFor: '✅ +1', oopsLabel: function(n){ return '🙊 ' + n + ': förbjudet ord, -1'; },
+        turnPts: function(n, p){ return n + ': ' + p; }, together: 'Gissade ord tillsammans:',
+        winner: function(n){ return '🏆 ' + n + ' vinner!'; }, draw: 'Oavgjort! 🤝',
+        steps: ['Inga lag - alla spelar för sig själva. Ni turas om att beskriva, och före varje tur ser ni vem som är näst på tur.', 'Den som beskriver ser ordet i sin telefon, med några förbjudna ord under. Det finns 30, 60 eller 90 sekunder (värden bestämmer) för att få de andra att gissa så många ord som möjligt.', 'Beskriv bara med ord. Du får inte säga ordet eller en del av det, de förbjudna orden, visa med händerna eller ge ”låter som…”-ledtrådar.', 'De andra gissar högt. När någon gissar rätt trycker den som beskriver på ✅ och får nästa ord direkt. För svårt? Tryck Hoppa över - inget straff.', 'Slank ett förbjudet ord ur dig? Den som beskriver trycker ärligt på 🙊 - 1 poäng försvinner och ordet är borta.', 'Varje gissat ord ger 1 poäng till den som beskriver. Efter sista turen vinner den med flest poäng.'] },
+};
+function soloT() { return TABOO_SOLO_T[lang] || TABOO_SOLO_T.en; }
+function youB() { return String(L.youBadge || '').replace(/[\s·]+$/, ''); }
+function soloChipsHtml(data, activeId) {
+  return '<div class="solo-chips">' + (data.soloScores || []).map(function(s) {
+    return '<span class="solo-chip' + (s.id === activeId ? ' active' : '') + '">' + esc(s.name) +
+      (s.id === myId ? ' <small>(' + youB() + ')</small>' : '') + ' <b>' + s.score + '</b></span>';
+  }).join('') + '</div>';
+}
+function soloRankHtml(data, winnerMark) {
+  var list = (data.soloScores || []).slice().sort(function(a, b) { return b.score - a.score; });
+  var top = list.length ? list[0].score : 0;
+  return '<div class="solo-rank">' + list.map(function(s, i) {
+    var win = winnerMark && s.score === top && top > 0;
+    return '<div class="solo-rank-row' + (win ? ' winner' : '') + (s.id === myId ? ' me' : '') + '">' +
+      '<span class="solo-rank-pos">' + (win ? '🏆' : (i + 1) + '.') + '</span>' +
+      '<span class="solo-rank-name">' + esc(s.name) + (s.id === myId ? ' (' + youB() + ')' : '') + '</span>' +
+      '<span class="solo-rank-score">' + s.score + '</span></div>';
+  }).join('') + '</div>' +
+  '<div class="solo-together">' + soloT().together + ' <b>' + (data.groupTotal || 0) + '</b></div>';
+}
+function soloOops() { socket.emit('taboo_penalty', { code: roomCode }); }
+function setLobbyRules(solo) {
+  for (var i = 1; i <= 6; i++) {
+    var el = document.getElementById('lbl-lobby-rule-' + i);
+    if (el) el.textContent = solo ? soloT().steps[i - 1] : (L['rule' + i] || el.textContent);
+  }
+}
 
 // ─── STATE HANDLER ───────────────────────────────────────────────
 function applyState(data) {
@@ -298,7 +359,7 @@ function applyState(data) {
     case 'preparing':showScreen('screen-playing');  renderPreparing(data); break;
     case 'playing':  showScreen('screen-playing');  renderPlaying(data);  if(!window._gaGameStarted){_ga('game_started',{game:'taboo',language:lang});window._gaGameStarted=true;} break;
     case 'roundend': showScreen('screen-roundend'); renderRoundEnd(data); break;
-    case 'final':    showScreen('screen-final');    renderFinal(data);    _ga('game_completed',{game:'taboo',language:lang}); window._gaGameStarted=false; break;
+    case 'final':    showScreen('screen-final');    renderFinal(data);    _ga('game_completed',{game:'taboo',language:lang}); window._gaGameStarted=false; if (window.pmMoveRender) window.pmMoveRender(data.hostId === myId); break;
   }
 }
 
@@ -322,7 +383,23 @@ function renderLobby(data) {
 
   // Bug 1: was targeting 'lobby-players', now correctly targets 'lobby-teams'
   const teamsEl = document.getElementById('lobby-teams');
-  if (teamsEl) {
+  const soloLobby = playerCount <= 3;
+  const _tt = document.getElementById('lbl-teams-title');
+  if (_tt) _tt.textContent = soloLobby ? soloT().players + ' (' + playerCount + ')' : L.teamsTitle;
+  const _rs = document.getElementById('lbl-reshuffle');
+  if (_rs) _rs.classList.toggle('solo-hide', soloLobby);
+  setLobbyRules(soloLobby);
+  if (teamsEl) teamsEl.classList.toggle('solo-list', soloLobby);
+  if (teamsEl && soloLobby) {
+    teamsEl.innerHTML = connected.map(function(p, i) {
+      return '<div class="team-player' + (p.id === myId ? ' me' : '') + '" style="display:flex;align-items:center;gap:8px;">' +
+        '<div class="avatar av-' + (i % 8) + '">' + esc(p.name).charAt(0).toUpperCase() + '</div>' +
+        '<span>' + esc(p.name) +
+        (p.id === myId  ? ' <span class="you-badge">' + L.youBadge + '</span>' : '') +
+        (p.id === hostId ? ' <span class="host-badge">' + L.hostBadge + '</span>' : '') +
+        '</span></div>';
+    }).join('') + '<div class="solo-teams-hint">' + soloT().teamsFrom4 + '</div>';
+  } else if (teamsEl) {
     teamsEl.innerHTML = '';
     ['red', 'blue'].forEach(team => {
       const tc = TEAM_COLORS[team];
@@ -359,9 +436,16 @@ function renderLobby(data) {
   // Player count — always visible so host knows who joined
   const warn = document.getElementById('player-warning');
   if (warn) {
-    if (playerCount < 4) {
+    warn.style.background = ''; warn.style.borderColor = ''; warn.style.color = '';
+    if (playerCount < 2) {
       warn.style.display = 'block';
-      warn.textContent = L.minPlayers + ' (' + L.playersJoined(playerCount) + ')';
+      warn.textContent = soloT().need2 + ' (' + L.playersJoined(playerCount) + ')';
+    } else if (playerCount <= 3) {
+      warn.style.display = 'block';
+      warn.style.background = 'rgba(6,214,160,0.1)';
+      warn.style.borderColor = 'var(--green)';
+      warn.style.color = 'var(--green)';
+      warn.textContent = '✓ ' + L.playersJoined(playerCount) + ' · ' + soloT().note;
     } else {
       warn.style.display = 'block';
       warn.style.background = 'rgba(6,214,160,0.1)';
@@ -454,7 +538,13 @@ function renderPreparing(data) {
 
   // Show Up Next banner
   const banner = document.getElementById('role-banner');
-  if (banner) {
+  if (banner && data.solo) {
+    banner.style.borderLeft = '4px solid var(--accent)';
+    banner.innerHTML = '<div style="text-align:center;padding:16px 0;">' +
+      '<div style="font-size:14px;color:var(--muted);margin-bottom:4px;">⏭️ ' + soloT().next + '</div>' +
+      '<div style="font-size:24px;font-weight:800;color:var(--text);">' + esc(describerName) + '</div>' +
+      '</div>';
+  } else if (banner) {
     banner.style.borderLeft = '4px solid var(--accent)';
     banner.innerHTML = '<div style="text-align:center;padding:16px 0;">' +
       '<div style="font-size:14px;color:var(--muted);margin-bottom:4px;">⏭️ ' + (lang === 'pl' ? 'Następny' : lang === 'de' ? 'Als Nächstes' : lang === 'sv' ? 'Nästa' : 'Up Next') + '</div>' +
@@ -465,7 +555,9 @@ function renderPreparing(data) {
 
   // Show scores
   const liveEl = document.getElementById('live-scores');
-  if (liveEl) {
+  if (liveEl && data.solo) {
+    liveEl.innerHTML = soloChipsHtml(data, turnDescriber);
+  } else if (liveEl) {
     liveEl.innerHTML =
       '<span style="color:' + TEAM_COLORS.red.bg + '">' + TEAM_COLORS.red.emoji + ' ' + (teamTotals.red || 0) + '</span>' +
       '<span style="color:var(--muted);padding:0 8px">vs</span>' +
@@ -474,6 +566,7 @@ function renderPreparing(data) {
 
   // Describer sees Ready button, others see waiting message
   const teammatesEl = document.getElementById('my-teammates');
+  if (teammatesEl) teammatesEl.style.display = '';
   if (teammatesEl) {
     if (isDescriber) {
       teammatesEl.innerHTML = '<div style="text-align:center;padding:20px 0;">' +
@@ -508,7 +601,7 @@ function renderPlaying(data) {
   }
 
   const isDescriber  = myId === turnDescriber;
-  const isReferee    = !isDescriber && myId === turnReferee;
+  const isReferee    = !isDescriber && !data.solo && myId === turnReferee;
   const isGuesser    = !isDescriber && !isReferee;
 
   const myTeam       = (teams && teams.red  && teams.red.includes(myId))  ? 'red'  :
@@ -524,8 +617,12 @@ function renderPlaying(data) {
 
   // Bug 2 fix: crystal-clear role banners
   const banner = document.getElementById('role-banner');
-  banner.style.borderLeft = '4px solid ' + myTeamColor;
-  if (isDescriber) {
+  banner.style.borderLeft = '4px solid ' + (data.solo ? 'var(--accent)' : myTeamColor);
+  const _oops = document.getElementById('solo-oops');
+  if (_oops) { _oops.style.display = (data.solo && isDescriber) ? '' : 'none'; _oops.textContent = soloT().oops; }
+  if (data.solo) {
+    banner.innerHTML = isDescriber ? soloT().you : soloT().other(esc(describerName));
+  } else if (isDescriber) {
     banner.innerHTML = L.roleDescriber(myTeamLabel);
   } else if (isReferee) {
     banner.innerHTML = L.roleReferee(describerTeamLabel);
@@ -539,7 +636,11 @@ function renderPlaying(data) {
 
   // Bug 2 fix: show "your teammates" strip below banner
   const teammatesEl = document.getElementById('my-teammates');
-  if (teammatesEl && myTeam && teams) {
+  if (teammatesEl && data.solo) {
+    teammatesEl.innerHTML = '';
+    teammatesEl.style.display = 'none';
+  } else if (teammatesEl && myTeam && teams) {
+    teammatesEl.style.display = '';
     const mates = (teams[myTeam] || [])
       .map(id => players.find(p => p.id === id))
       .filter(Boolean)
@@ -555,7 +656,7 @@ function renderPlaying(data) {
   document.getElementById('guesser-view').style.display   = isGuesser   ? 'block' : 'none';
 
   // Bug 4 fix: referee view ALWAYS shown to referee, not just when word exists
-  document.getElementById('referee-view').style.display = isReferee ? 'block' : 'none';
+  document.getElementById('referee-view').style.display = (isReferee && !data.solo) ? 'block' : 'none';
 
   if (!currentWord && isDescriber) pickNextWord();
 
@@ -589,7 +690,9 @@ function renderPlaying(data) {
 
   // Live scores for everyone
   const liveEl = document.getElementById('live-scores');
-  if (liveEl) {
+  if (liveEl && data.solo) {
+    liveEl.innerHTML = soloChipsHtml(data, turnDescriber);
+  } else if (liveEl) {
     const rs = (scores && scores[round]) || { red: 0, blue: 0 };
     liveEl.innerHTML =
       '<span style="color:' + TEAM_COLORS.red.bg  + '">' + TEAM_COLORS.red.emoji  + ' ' + (rs.red  || 0) +
@@ -605,9 +708,18 @@ function clearScoreTicker() {
   if (ticker) ticker.innerHTML = '';
 }
 
-function addScoreTicker(type, word, team) {
+function addScoreTicker(type, word, team, name) {
   const ticker = document.getElementById('score-ticker');
   if (!ticker) return;
+  if (name) {
+    const d = document.createElement('div');
+    d.className = 'score-event ' + type;
+    d.textContent = type === 'correct' ? soloT().pointFor + ' ' + name + (word ? ' — ' + word : '')
+                  : type === 'penalty' ? soloT().oopsLabel(name) : L.skipLabel + (word ? ' — ' + word : '');
+    ticker.insertBefore(d, ticker.firstChild);
+    if (ticker.children.length > 6) ticker.removeChild(ticker.lastChild);
+    return;
+  }
   const tc  = team ? TEAM_COLORS[team] : null;
   const div = document.createElement('div');
   div.className = 'score-event ' + type;
@@ -636,6 +748,10 @@ function renderRoundEnd(data) {
   const isHost = myId === hostId;
 
   document.getElementById('lbl-round-over').textContent = L.roundOver;
+  if (data.solo) {
+    document.getElementById('round-result').textContent = soloT().turnPts(data.lastDescriberName || '', ((data.turnPoints || 0) >= 0 ? '+' : '') + (data.turnPoints || 0));
+    document.getElementById('round-leaderboard').innerHTML = soloRankHtml(data, false);
+  } else {
 
   // Bug 3 fix: use roundJustPlayed (set before round counter increments)
   const roundScore = (scores && roundJustPlayed >= 0 && scores[roundJustPlayed])
@@ -658,6 +774,7 @@ function renderRoundEnd(data) {
         '</div>'
       ).join('') +
     '</div>';
+  }
 
   const btn     = document.getElementById('next-round-btn');
   const waiting = document.getElementById('roundend-waiting');
@@ -676,6 +793,16 @@ function renderRoundEnd(data) {
 function renderFinal(data) {
   const { teamTotals, players, teams } = data;
   _lastTeamTotals = teamTotals;
+  window._lastSolo = data.solo ? data : null;
+  if (data.solo) {
+    var list = (data.soloScores || []).slice().sort(function(a, b) { return b.score - a.score; });
+    var top = list.length ? list[0].score : 0;
+    var winners = list.filter(function(s) { return s.score === top; });
+    var head = (winners.length === 1 && top > 0)
+      ? '<div class="winner-team">' + soloT().winner(esc(winners[0].name)) + '</div>'
+      : '<div class="winner-team">' + soloT().draw + '</div>';
+    document.getElementById('final-leaderboard').innerHTML = head + soloRankHtml(data, true);
+  }
   const red = teamTotals.red || 0, blue = teamTotals.blue || 0;
 
   const winnerHtml = red > blue
@@ -692,7 +819,7 @@ function renderFinal(data) {
       }).join('') + '</div>';
   }
 
-  document.getElementById('final-leaderboard').innerHTML = winnerHtml +
+  if (!data.solo) document.getElementById('final-leaderboard').innerHTML = winnerHtml +
     '<div class="team-scores-display">' +
       ['red','blue'].map(t =>
         '<div class="team-score-block' + ((t==='red'&&red>=blue)||(t==='blue'&&blue>=red) ? ' winner' : '') +
@@ -781,6 +908,16 @@ function shareResults() {
   var url = 'https://panstwamiastagra.com' + (langUrls[lang] || '/forbidden-words');
   var redScore = _lastTeamTotals ? (_lastTeamTotals.red || 0) : 0;
   var blueScore = _lastTeamTotals ? (_lastTeamTotals.blue || 0) : 0;
+  if (window._lastSolo) {
+    var _sl = (window._lastSolo.soloScores || []).slice().sort(function(a, b) { return b.score - a.score; })
+      .map(function(s) { return s.name + ' ' + s.score; }).join(' · ');
+    var _tt = { pl: 'Zakazane Słowa 🎭', de: 'Verbotene Wörter 🎭', sv: 'Förbjudna Ord 🎭', en: 'Forbidden Words 🎭' }[lang] || 'Forbidden Words 🎭';
+    var _pf = { pl: 'Zagraj za darmo: ', de: 'Kostenlos spielen: ', sv: 'Spela gratis: ', en: 'Play for free: ' }[lang] || 'Play for free: ';
+    var _txt = _tt + '\n' + _sl + '\n\n' + _pf + url;
+    if (navigator.share) { navigator.share({ title: L.gameTitle || 'Forbidden Words', text: _txt }).catch(function() {}); }
+    else { navigator.clipboard.writeText(_txt).then(function() { showToast('📋 Copied!'); }).catch(function() {}); }
+    return;
+  }
   var text = (lang === 'pl'
     ? 'Zakazane Słowa 🎭\n🔴 ' + redScore + ' : ' + blueScore + ' 🔵\n\nZagraj za darmo: '
     : lang === 'de'
@@ -937,6 +1074,14 @@ function showToast(msg) {
   clearTimeout(t._timeout);
   t._timeout = setTimeout(() => t.style.display = 'none', 3000);
 }
+
+// ─── MOVE THE GROUP (final screen → Charades / Who Am I) ─────────
+if (window.pmMoveRegister) window.pmMoveRegister({
+  game: 'taboo', socket: socket,
+  state: function () { return { code: roomCode, host: !!window._amHost, name: myName }; },
+  create: function (name) { var i = document.getElementById('host-name'); if (i) i.value = name; createRoom(); },
+  join: function (name, code) { var n = document.getElementById('join-name'), c = document.getElementById('join-code'); if (n) n.value = name; if (c) c.value = code; joinRoom(); }
+});
 
 // ─── INIT ────────────────────────────────────────────────────────
 buildLangBar();

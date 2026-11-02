@@ -51,6 +51,9 @@
   .score-value { font-family:'Bebas Neue',sans-serif; font-size:36px; letter-spacing:2px; color:var(--text); }
   .score-vs { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:2px; color:var(--muted); }
   /* Round indicator */
+  .ch-wordcat { margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.08); }
+  .ch-wordcat-lbl { display:block; font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+  .ch-wordcat-val { display:block; font-size:clamp(22px,5vw,30px); font-weight:900; color:var(--text); line-height:1.2; }
   .round-indicator { font-size:12px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:2px; text-align:center; margin-bottom:8px; }
   /* Wait message */
   .wait-message { text-align:center; padding:24px 20px; color:var(--muted); font-weight:700; }
@@ -203,6 +206,7 @@
         <span id="word-count-info" style="display:none;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;"></span>
       </div>
       <div id="cat-pills" class="pills"></div>
+      <div id="cat-hint" style="font-size:11px;font-weight:700;color:var(--muted);margin-top:6px;"></div>
       <label class="field-label" style="margin-top:12px;" id="lbl-difficulty">Difficulty</label>
       <div id="diff-pills" class="pills"></div>
       <label class="field-label" style="margin-top:12px;" id="lbl-game-length">Game length</label>
@@ -266,7 +270,7 @@
   <div id="other-games-strip"></div>
 </div>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/shared.js?v=11"></script>
-<script src="/js/charades-client.js?v=10"></script>
+<script src="/js/shared.js?v=12"></script>
+<script src="/js/charades-client.js?v=11"></script>
 </body>
 </html>

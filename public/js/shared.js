@@ -2057,12 +2057,14 @@ window._buildFooterLangBtns = function() {
 // Never throws: if anything is missing, the old behaviour stays.
 // ════════════════════════════════════════════════════════════════
 (function () {
-  var ROUTES = { charades: ['whoami'], whoami: ['charades'] };
+  var ROUTES = { charades: ['whoami', 'taboo'], whoami: ['charades', 'taboo'], taboo: ['charades', 'whoami'] };
   var GAMES = {
     charades: { icon: '🎬', name: { pl: 'Kalambury', en: 'Charades', de: 'Scharade', sv: 'Charader' },
                 path: { pl: '/kalambury', en: '/charades-online', de: '/scharade', sv: '/charader' } },
     whoami:   { icon: '❓', name: { pl: 'Kim Jestem?', en: 'Who Am I?', de: 'Wer bin ich?', sv: 'Vem är jag?' },
-                path: { pl: '/kim-jestem', en: '/who-am-i', de: '/wer-bin-ich', sv: '/vem-ar-jag' } }
+                path: { pl: '/kim-jestem', en: '/who-am-i', de: '/wer-bin-ich', sv: '/vem-ar-jag' } },
+    taboo:    { icon: '🎭', name: { pl: 'Zakazane Słowa', en: 'Forbidden Words', de: 'Verbotene Wörter', sv: 'Förbjudna ord' },
+                path: { pl: '/zakazane-slowa', en: '/forbidden-words', de: '/verbotene-woerter', sv: '/forbjudna-ord' } }
   };
   var T = {
     pl: { title: 'Zagrajcie w coś innego - w tym samym gronie', note: 'Wszyscy przejdą do nowego pokoju automatycznie.', going: 'Host przenosi was do gry', soon: '{g} - host wybiera ustawienia, za chwilę przejdziecie tam wszyscy.', pick: 'Wybierz ustawienia i stwórz pokój - reszta grupy dołączy sama.', fail: 'Nie udało się przenieść grupy. Spróbuj jeszcze raz.' },

@@ -3,6 +3,7 @@
  * Run: node smoke-test.js
  * Run against staging: node smoke-test.js https://magnificent-reverence-production.up.railway.app
  * Show browser: node smoke-test.js --watch
+ * Gameplay only: node smoke-test.js <url> --gameplay
  * Requires: npm install playwright && npx playwright install chromium
  */
 
@@ -558,6 +559,188 @@ async function testTabuLobby(browser) {
   }
 }
 
+
+// ─── 14. Gameplay — start each game and play one turn ─────────────
+// Two (Forbidden Words: two and four) players start a real game and make one move.
+// Checks that the move reaches the other phone. English pages (PM: Polish home).
+async function testGameplay(browser) {
+  section('Gameplay — one turn per game');
+  const PT = 12000;
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  // Latest state as each phone sees it (roomState, or the last "*_state" message)
+  const ST = p => p.evaluate(() => {
+    if (typeof roomState !== 'undefined' && roomState) return JSON.parse(JSON.stringify(roomState));
+    return window.__smokeState || null;
+  });
+  const me = p => p.evaluate(() => socket.id);
+  const emit = (p, ev, data) => p.evaluate(([e, d]) => socket.emit(e, d), [ev, data]);
+  async function until(p, label, pred) {
+    const end = Date.now() + PT; let s = null;
+    while (Date.now() < end) {
+      s = await ST(p).catch(() => null);
+      try { if (s && pred(s)) return s; } catch (e) {}
+      await sleep(250);
+    }
+    throw new Error(label + ' (phase: ' + (s && (s.phase || (s.state && s.state.phase))) + ')');
+  }
+  async function untilEvent(p, label, ev) {
+    const end = Date.now() + PT;
+    while (Date.now() < end) {
+      if (await p.evaluate(e => !!(window.__smokeEvents || {})[e], ev).catch(() => false)) return;
+      await sleep(250);
+    }
+    throw new Error(label);
+  }
+  // Find the phone whose socket id matches
+  async function who(ps, id) { for (const p of ps) if ((await me(p)) === id) return p; throw new Error('player ' + id + ' not found'); }
+
+  async function room(path, n, nameField, pre) {
+    const ps = [];
+    for (let i = 0; i < n; i++) {
+      const ctx = await browser.newContext(); const p = await ctx.newPage();
+      p.setDefaultTimeout(TIMEOUT); p._errs = [];
+      p.on('pageerror', e => p._errs.push(e.message));
+      ps.push(p);
+    }
+    await ps[0].goto(BASE + path, { waitUntil: 'domcontentloaded' });
+    await ps[0].fill(nameField || '#host-name', 'SmokeHost');
+    if (pre) await pre(ps[0]);
+    await ps[0].click('#lbl-create-btn');
+    await ps[0].waitForSelector('#room-code-display');
+    await ps[0].waitForFunction(() => /[A-Z0-9]{4}/.test(document.getElementById('room-code-display').textContent));
+    const code = (await ps[0].textContent('#room-code-display')).replace(/[^A-Z0-9]/g, '');
+    for (let i = 1; i < n; i++) {
+      await ps[i].goto(BASE + path + '?join=' + code, { waitUntil: 'domcontentloaded' });
+      await ps[i].fill('#join-name', 'SmokeGuest' + i);
+      await ps[i].click('#lbl-join-btn');
+      await sleep(600);
+    }
+    for (const p of ps) await p.evaluate(() => socket.onAny((ev, d) => {
+      window.__smokeEvents = window.__smokeEvents || {}; window.__smokeEvents[ev] = true;
+      if (/_state$/.test(ev) && d && typeof d === 'object') window.__smokeState = d;
+    }));
+    await sleep(800);
+    return { ps, code };
+  }
+  async function hostStarts(ps) {
+    const btn = await ps[0].$('#lbl-start-btn:visible, #lobby-start-btn:visible, #start-btn:visible');
+    if (!btn) throw new Error('Start button not visible for host');
+    await btn.click();
+  }
+
+  const flows = [
+    { name: 'PM (PL)', path: '/', n: 2, run: async (ps, code) => {
+      await hostStarts(ps);
+      await until(ps[1], 'game did not start', s => s.state.phase === 'drawing');
+      await emit(ps[0], 'draw_letter', { code }); await sleep(600);
+      await emit(ps[0], 'start_round', { code });
+      await until(ps[1], 'round did not start', s => s.state.phase === 'playing');
+      await emit(ps[0], 'submit_answer', { code, catIndex: 0, value: 'Smoke' });
+      await emit(ps[1], 'call_stop', { code });
+      await untilEvent(ps[0], 'STOP did not reach host', 'stop_called');
+      await emit(ps[0], 'force_scoring', { code });
+      await until(ps[1], 'scores did not show', s => s.state.phase !== 'stopped' && s.state.phase !== 'playing');
+    }},
+    { name: 'Dots EN', path: '/dots-and-boxes-online', n: 2, run: async (ps, code) => {
+      await hostStarts(ps);
+      const s = await until(ps[1], 'game did not start', s => s.phase === 'playing' && s.currentPlayer);
+      const mover = await who(ps, s.currentPlayer);
+      await emit(mover, 'dots_move', { code, type: 'h', row: 0, col: 0 });
+      const other = ps.find(p => p !== mover);
+      await until(other, 'line did not reach the other phone', s => s.grid.hLines[0][0]);
+    }},
+    { name: 'Hangman EN', path: '/hangman-online', n: 2, run: async (ps, code) => {
+      await hostStarts(ps);
+      const s = await until(ps[1], 'game did not start', s => s.phase !== 'lobby' && s.pickerId);
+      const picker = await who(ps, s.pickerId); const guesser = ps.find(p => p !== picker);
+      await emit(picker, 'hang_set_word', { code, word: 'APPLE', hint: '', source: 'custom' });
+      await until(guesser, 'word did not reach the guesser', s => s.wordLength === 5);
+      await emit(guesser, 'hang_guess_letter', { code, letter: 'A' });
+      await until(picker, 'guess did not reach the picker', s => (s.guessedLetters || []).includes('A'));
+    }},
+    { name: '2T1L EN (3)', path: '/two-truths-one-lie', n: 3, run: async (ps, code) => {
+      await hostStarts(ps);
+      const s = await until(ps[1], 'game did not start', s => s.phase !== 'lobby' && s.activeId);
+      const teller = await who(ps, s.activeId); const voters = ps.filter(p => p !== teller);
+      await emit(teller, 'tt_submit', { code, statements: ['Smoke one', 'Smoke two', 'Smoke three'], lieIndex: 1 });
+      await until(voters[0], 'statements did not reach the voters', s => s.statements && s.statements.length === 3);
+      for (const v of voters) await emit(v, 'tt_vote', { code, voteIndex: 1 });
+      await until(teller, 'votes did not lead to the reveal', s => s.phase === 'reveal');
+    }},
+    { name: 'Sketch EN (3)', path: '/sketch-and-guess', n: 3, run: async (ps, code) => {
+      await hostStarts(ps);
+      await until(ps[1], 'game did not start', s => s.phase !== 'lobby');
+      for (const p of ps) await emit(p, 'drawing_submit', { code, content: 'smoke cat' });
+      await until(ps[0], 'game did not move to the next step', s => s.step >= 1 || s.phase === 'reveal');
+    }},
+    { name: 'Bingo EN', path: '/corporate-bingo', n: 2, run: async (ps, code) => {
+      await hostStarts(ps);
+      await until(ps[1], 'game did not start', s => s.phase === 'playing');
+      await emit(ps[1], 'bingo_mark', { code, index: 0 });
+      await until(ps[0], 'mark did not reach the host', s => s.players.some(pl => pl.markedCount > 0 || (pl.marked && pl.marked.some(Boolean))));
+    }},
+    { name: 'Find Pairs EN', path: '/find-pairs-online', n: 2, run: async (ps, code) => {
+      await hostStarts(ps);
+      const s = await until(ps[1], 'game did not start', s => s.phase === 'playing' && s.currentPlayer);
+      const flipper = await who(ps, s.currentPlayer); const other = ps.find(p => p !== flipper);
+      await emit(flipper, 'mem_flip', { code, cardIndex: 0 });
+      await until(other, 'flip did not reach the other phone', s => (s.flippedCards || []).length > 0 || (s.board || []).some(c => c && (c.flipped || c.matched)));
+    }},
+    { name: 'Charades EN', path: '/charades-online', n: 2, nameField: '#create-name', run: async (ps, code) => {
+      await hostStarts(ps);
+      const s = await until(ps[1], 'game did not start', s => s.phase === 'preparing' && s.actorId);
+      const actor = await who(ps, s.actorId); const other = ps.find(p => p !== actor);
+      await emit(actor, 'charades_ready', { code });
+      await until(other, 'turn did not start', s => s.phase === 'acting' || s.phase === 'playing');
+      await emit(actor, 'charades_correct', { code });
+      await until(other, 'point did not count', s => (s.scores || []).some(x => x.score > 0) || (s.teams && (s.teams.red.score + s.teams.blue.score) > 0));
+    }},
+    { name: 'Who Am I EN', path: '/who-am-i', n: 2, pre: p => p.click('[data-cat="mixed"]').catch(() => {}), run: async (ps, code) => {
+      await hostStarts(ps);
+      const s = await until(ps[1], 'game did not start', s => s.phase === 'preparing');
+      const guesser = await who(ps, s.players[s.currentIdx].id); const other = ps.find(p => p !== guesser);
+      await emit(guesser, 'whoami_ready', { code });
+      await until(other, 'turn did not start', s => s.phase === 'playing' && s.activeChar);
+      await emit(guesser, 'whoami_voice_correct', { code });
+      await until(other, 'guess did not count', s => s.phase === 'turn_result' && s.players.some(pl => pl.score > 0));
+    }},
+    { name: 'Forbidden EN (4)', path: '/forbidden-words', n: 4, run: async (ps, code) => {
+      await hostStarts(ps);
+      const s = await until(ps[1], 'game did not start', s => s.phase === 'preparing' || s.phase === 'playing');
+      const desc = await who(ps, s.turnDescriber); const other = ps.find(p => p !== desc);
+      if (s.phase === 'preparing') await emit(desc, 'taboo_ready', { code });
+      await until(other, 'turn did not start', s => s.phase === 'playing');
+      await emit(desc, 'taboo_got_it', { code });
+      await until(other, 'point did not count', s => s.teamTotals && (s.teamTotals.red + s.teamTotals.blue) > 0);
+    }},
+    { name: 'Forbidden EN (2, no teams)', path: '/forbidden-words', n: 2, run: async (ps, code) => {
+      await hostStarts(ps);
+      const s = await until(ps[1], 'game did not start', s => s.phase === 'preparing' && s.solo);
+      const desc = await who(ps, s.turnDescriber); const other = ps.find(p => p !== desc);
+      await emit(desc, 'taboo_ready', { code });
+      await until(other, 'turn did not start', s => s.phase === 'playing');
+      await emit(desc, 'taboo_got_it', { code });
+      await until(other, 'point did not count', s => s.soloScores && s.soloScores.some(x => x.score > 0));
+    }},
+  ];
+
+  for (const f of flows) {
+    let ps = [];
+    try {
+      await check(`${f.name} — start and play one turn`, async () => {
+        const r = await room(f.path, f.n, f.nameField, f.pre);
+        ps = r.ps;
+        await f.run(ps, r.code);
+        const errs = ps.flatMap(p => p._errs);
+        if (errs.length) throw new Error('JS error: ' + errs[0]);
+      });
+    } finally {
+      for (const p of ps) await p.context().close().catch(() => {});
+    }
+  }
+}
+
 // ─── 14. How-to-play pills work ───────────────────────────────────
 async function testHowToPlayPills(browser) {
   section('How-to-play index — pills navigate');
@@ -589,6 +772,8 @@ async function testHowToPlayPills(browser) {
   const start   = Date.now();
 
   try {
+    // Quick run of the gameplay part only: node smoke-test.js <url> --gameplay
+    if (process.argv.includes('--gameplay')) { await testGameplay(browser); } else {
     await testPageAvailability();
     await testLegacyRedirects();
     await testNoJsErrors(browser);
@@ -606,6 +791,8 @@ async function testHowToPlayPills(browser) {
     await testHowToPlayPills(browser);
     await testGameLobbies(browser);
     await testTabuLobby(browser);
+    await testGameplay(browser);
+    }
   } finally {
     await browser.close();
   }
