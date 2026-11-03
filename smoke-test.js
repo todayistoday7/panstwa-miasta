@@ -610,25 +610,37 @@ async function testGameplay(browser) {
     await ps[0].waitForSelector('#room-code-display');
     await ps[0].waitForFunction(() => /[A-Z0-9]{4}/.test(document.getElementById('room-code-display').textContent));
     const code = (await ps[0].textContent('#room-code-display')).replace(/[^A-Z0-9]/g, '');
-    for (let i = 1; i < n; i++) {
-      await ps[i].goto(BASE + path + '?join=' + code, { waitUntil: 'domcontentloaded' });
-      await ps[i].fill('#join-name', 'SmokeGuest' + i);
-      await ps[i].click('#lbl-join-btn');
-      await sleep(600);
-    }
-    for (const p of ps) await p.evaluate(() => socket.onAny((ev, d) => {
+    // listen to every message BEFORE joining, so the first room state is not missed
+    const hook = p => p.evaluate(() => { if (window.__smokeHooked) return; window.__smokeHooked = true; socket.onAny((ev, d) => {
       window.__smokeEvents = window.__smokeEvents || {}; window.__smokeEvents[ev] = true;
       if (/_state$/.test(ev) && d && typeof d === 'object') window.__smokeState = d;
-    }));
+    }); });
+    await hook(ps[0]);
+    for (let i = 1; i < n; i++) {
+      await ps[i].goto(BASE + path + '?join=' + code, { waitUntil: 'domcontentloaded' });
+      await ps[i].waitForFunction(() => typeof socket !== 'undefined');
+      await hook(ps[i]);
+      await ps[i].fill('#join-name', 'SmokeGuest' + i);
+      await ps[i].click('#lbl-join-btn');
+      // wait until this guest is really in the room (slow servers / CI)
+      await ps[i].waitForFunction(() => /[A-Z0-9]{4}/.test((document.getElementById('room-code-display') || {}).textContent || ''), null, { timeout: TIMEOUT }).catch(() => {});
+      await sleep(600);
+    }
     await sleep(800);
     return { ps, code };
   }
   async function hostStarts(ps) {
-    const btn = await ps[0].$('#lbl-start-btn:visible, #lobby-start-btn:visible, #start-btn:visible');
-    if (!btn) throw new Error('Start button not visible for host');
-    await btn.waitForElementState('enabled', { timeout: 8000 }).catch(() => {});
-    // A "player joined" toast can sit on top of the button for a while - then press it directly
-    try { await btn.click({ timeout: 5000 }); } catch (e) { await btn.evaluate(b => b.click()); }
+    const phaseOf = async p => { const s = await ST(p).catch(() => null); return s && (s.phase || (s.state && s.state.phase)); };
+    // On a slow server the click can come before the server knows about the other player - then press again (max 3x)
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const btn = await ps[0].$('#lbl-start-btn:visible, #lobby-start-btn:visible, #start-btn:visible');
+      if (!btn) { if (attempt) return; throw new Error('Start button not visible for host'); }
+      await btn.waitForElementState('enabled', { timeout: 8000 }).catch(() => {});
+      // A "player joined" toast can sit on top of the button for a while - then press it directly
+      try { await btn.click({ timeout: 5000 }); } catch (e) { await btn.evaluate(b => b.click()).catch(() => {}); }
+      const end = Date.now() + 4000;
+      while (Date.now() < end) { const ph = await phaseOf(ps[1]); if (ph && ph !== 'lobby') return; await sleep(250); }
+    }
   }
 
   const flows = [

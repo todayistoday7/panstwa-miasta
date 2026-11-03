@@ -235,6 +235,7 @@ function applyRoomState(data) {
         showScreen('screen-home');
       } else {
         showScreen('screen-final'); renderFinalScreen(data); _ga('game_completed', { game:'panstwa_miasta', language:lang }); window._gaGameStarted=false; clearSession();
+        if (window.pmMoveRender) window.pmMoveRender(isHost);
       }
       break;
   }
@@ -1156,6 +1157,7 @@ function applyTranslations() {
   if (poText) poText.textContent = po.text;
   if (poBtn) poBtn.textContent = po.btn;
   if (poHref) poHref.href = po.url;
+  if (window.pmPrintBox) window.pmPrintBox('pm', lang);
   // Keep the hub link in sync with the current language
   const hubLink = document.getElementById('lbl-other-games');
   // Update SEO rules link to correct language
@@ -1297,6 +1299,14 @@ function clearSession() {
   try { localStorage.removeItem('pm_session'); } catch(e) {}
   try { sessionStorage.removeItem('pm_code'); sessionStorage.removeItem('pm_name'); } catch(e) {}
 }
+
+// ─── MOVE THE GROUP to Kalambury / Kim Jestem / Zakazane Słowa (and back) ───
+if (window.pmMoveRegister) window.pmMoveRegister({
+  game: 'pm', socket: socket,
+  state: function () { return { code: roomCode, host: !!isHost, name: myName }; },
+  create: function (name) { var i = document.getElementById('host-name'); if (i) i.value = name; createRoom(); },
+  join: function (name, code) { var n = document.getElementById('join-name'), c = document.getElementById('join-code'); if (n) n.value = name; if (c) c.value = code; joinRoom(); }
+});
 
 // ─── INIT ───────────────────────────────────────────────
 buildLangBar();

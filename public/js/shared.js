@@ -2075,15 +2075,23 @@ window._buildFooterLangBtns = function() {
 // Never throws: if anything is missing, the old behaviour stays.
 // ════════════════════════════════════════════════════════════════
 (function () {
-  var ROUTES = { charades: ['whoami', 'taboo'], whoami: ['charades', 'taboo'], taboo: ['charades', 'whoami'] };
+  var ROUTES = { pm: ['charades', 'whoami', 'taboo'], charades: ['whoami', 'taboo', 'pm'], whoami: ['charades', 'taboo', 'pm'], taboo: ['charades', 'whoami', 'pm'] };
   var GAMES = {
     charades: { icon: '🎬', name: { pl: 'Kalambury', en: 'Charades', de: 'Scharade', sv: 'Charader' },
                 path: { pl: '/kalambury', en: '/charades-online', de: '/scharade', sv: '/charader' } },
     whoami:   { icon: '❓', name: { pl: 'Kim Jestem?', en: 'Who Am I?', de: 'Wer bin ich?', sv: 'Vem är jag?' },
                 path: { pl: '/kim-jestem', en: '/who-am-i', de: '/wer-bin-ich', sv: '/vem-ar-jag' } },
     taboo:    { icon: '🎭', name: { pl: 'Zakazane Słowa', en: 'Forbidden Words', de: 'Verbotene Wörter', sv: 'Förbjudna ord' },
-                path: { pl: '/zakazane-slowa', en: '/forbidden-words', de: '/verbotene-woerter', sv: '/forbjudna-ord' } }
+                path: { pl: '/zakazane-slowa', en: '/forbidden-words', de: '/verbotene-woerter', sv: '/forbjudna-ord' } },
+    pm:       { icon: '🌍', name: { pl: 'Państwa-Miasta', en: 'Countries & Cities', de: 'Stadt Land Fluss', sv: 'Länder & Städer' },
+                path: { pl: '/', en: '/countries-cities-game', de: '/stadt-land-fluss-online', sv: '/laender-och-staeder' } }
   };
+  // address of a game in a language (on roomforgames.com "/" is the games hub, so PM in Polish has its own address there)
+  function gUrl(g, l, q) {
+    var p = GAMES[g].path[l] || GAMES[g].path.en;
+    if (g === 'pm' && l === 'pl' && window._rfgDomain) p = '/countries-cities-game?lang=pl';
+    return p + (p.indexOf('?') > -1 ? '&' : '?') + q;
+  }
   var T = {
     pl: { title: 'Zagrajcie w coś innego - w tym samym gronie', note: 'Wszyscy przejdą do nowego pokoju automatycznie.', going: 'Host przenosi was do gry', soon: '{g} - host wybiera ustawienia, za chwilę przejdziecie tam wszyscy.', pick: 'Wybierz ustawienia i stwórz pokój - reszta grupy dołączy sama.', fail: 'Nie udało się przenieść grupy. Spróbuj jeszcze raz.' },
     en: { title: 'Play something else - same group', note: 'Everyone moves to the new room automatically.', going: 'The host is taking everyone to', soon: '{g} - the host is choosing the settings, you will all move there in a moment.', pick: 'Choose the settings and create the room - the rest of the group will join by themselves.', fail: 'Could not move the group. Please try again.' },
@@ -2142,6 +2150,8 @@ window._buildFooterLangBtns = function() {
     } catch (e) {}
   };
   function vt() { return VT[lg()] || VT.en; }
+  // one game = one small tile (3 in a row fit a phone)
+  var TILE = 'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:78px;padding:10px 4px;border-radius:12px;font:inherit;font-size:13px;font-weight:900;line-height:1.2;cursor:pointer;text-align:center;word-break:break-word;';
   window.pmMoveRender = function (isHost) {
     try {
       if (!reg) return;
@@ -2161,11 +2171,13 @@ window._buildFooterLangBtns = function() {
       var head = '<div style="font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:#06d6a0;margin-bottom:10px;">' + esc2(x.title) + '</div>';
       if (isHost) {
         box.innerHTML = head +
+          '<div style="display:grid;grid-template-columns:repeat(' + targets.length + ',1fr);gap:8px;margin-bottom:10px;">' +
           targets.map(function (g) {
             var G = GAMES[g], c = votes.counts[g] || 0;
-            return '<button type="button" class="btn" data-pm-move="' + g + '" style="width:100%;margin:0 0 8px;background:linear-gradient(135deg,#06d6a0,#059669);color:#fff;box-shadow:none;flex-direction:column;">' + G.icon + ' ' + esc2(G.name[l] || G.name.en) +
-              (c ? '<span style="display:block;font-size:12px;font-weight:800;opacity:.9;text-transform:none;letter-spacing:0;margin-top:2px;">👍 ' + esc2(v.n(c)) + '</span>' : '') + '</button>';
-          }).join('') +
+            return '<button type="button" data-pm-move="' + g + '" style="' + TILE + 'background:linear-gradient(135deg,#06d6a0,#059669);color:#fff;border:2px solid #06d6a0;">' +
+              '<span style="font-size:24px;line-height:1;">' + G.icon + '</span><span>' + esc2(G.name[l] || G.name.en) + '</span>' +
+              (c ? '<span style="font-size:11px;font-weight:800;opacity:.95;">👍 ' + esc2(v.n(c)) + '</span>' : '') + '</button>';
+          }).join('') + '</div>' +
           '<div style="font-size:12px;font-weight:700;color:var(--muted,#999);">' + esc2(x.note) + '</div>';
         // the host already gets "play something else" - the extra game list would only repeat it
         var og = document.getElementById('other-games-strip'); if (og) og.style.display = 'none';
@@ -2174,12 +2186,12 @@ window._buildFooterLangBtns = function() {
         var mine = votes.by[st.name] || '';
         box.innerHTML = head +
           '<p style="font-size:13px;font-weight:700;color:var(--text,#eee);margin:0 0 10px;line-height:1.5;">' + esc2(v.ask) + '</p>' +
-          '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">' +
+          '<div style="display:grid;grid-template-columns:repeat(' + targets.length + ',1fr);gap:8px;">' +
           targets.map(function (g) {
             var G = GAMES[g], on = mine === g;
-            return '<button type="button" data-pm-vote="' + g + '" style="flex:1 1 140px;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;font-weight:900;cursor:pointer;' +
+            return '<button type="button" data-pm-vote="' + g + '" style="' + TILE +
               (on ? 'background:#06d6a0;color:#0b0b14;border:2px solid #06d6a0;' : 'background:transparent;color:#06d6a0;border:2px solid rgba(6,214,160,.6);') + '">' +
-              '👍 ' + G.icon + ' ' + esc2(G.name[l] || G.name.en) + '</button>';
+              '<span style="font-size:24px;line-height:1;">' + G.icon + '</span><span>' + esc2(G.name[l] || G.name.en) + '</span><span style="font-size:13px;">' + (on ? '✓' : '👍') + '</span></button>';
           }).join('') + '</div>' +
           (mine ? '<div style="font-size:12px;font-weight:800;color:#06d6a0;margin-top:8px;">' + esc2(v.voted) + '</div>' : '');
         Array.prototype.forEach.call(box.querySelectorAll('[data-pm-vote]'), function (b) {
@@ -2200,7 +2212,7 @@ window._buildFooterLangBtns = function() {
         done = true;
         if (!r || !r.ok) { if (btn) btn.disabled = false; alertFail(); return; }
         ss('pm_move', { token: r.token, name: st.name, to: to, ts: Date.now() });
-        location.href = GAMES[to].path[lg()] + '?pmmove=1';
+        location.href = gUrl(to, lg(), 'pmmove=1');
       });
     } catch (e) {}
   }
@@ -2231,7 +2243,7 @@ window._buildFooterLangBtns = function() {
           following = true;
           ss('pm_join', { name: st.name, code: d.code, ts: Date.now() });
           overlay('🎉 ' + t().going + ' ' + (G.name[lg()] || G.name.en) + '…');
-          setTimeout(function () { location.href = G.path[lg()] + '?join=' + encodeURIComponent(d.code) + '&pmauto=1'; }, 1200);
+          setTimeout(function () { location.href = gUrl(d.to, lg(), 'join=' + encodeURIComponent(d.code) + '&pmauto=1'); }, 1200);
         } catch (e) {}
       });
       setTimeout(arrive, 300);
@@ -2428,4 +2440,66 @@ window._buildFooterLangBtns = function() {
   } catch (e) {}
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { hook(); }); else hook();
   setInterval(tick, 400);
+})();
+
+
+// ════════════════════════════════════════════════════════════════
+// PRINT BOX — "printable version" box right under "join a room"
+// (Państwa-Miasta, Kropki i Kreski, Korporacyjne Bingo). A picture of
+// the real sheet + one clear button. Never throws.
+// ════════════════════════════════════════════════════════════════
+(function () {
+  var F = {
+    pm:    { pl: 'panstwa-miasta-karta-do-druku', en: 'countries-cities-print-and-play', de: 'stadt-land-fluss-druckvorlage', sv: 'stad-land-utskrift' },
+    dots:  { pl: 'kropki-i-kreski-do-druku', en: 'dots-and-boxes-print-and-play', de: 'kaesekastchen-druckvorlage', sv: 'punkter-och-linjer-utskrift' },
+    bingo: { pl: 'korporacyjne-bingo-karty-do-druku', en: 'corporate-bingo-printable-cards', de: 'unternehmens-bingo-druckvorlage', sv: 'foretagsbingo-utskrift' }
+  };
+  var TITLE = { pl: 'Wersja do druku', en: 'Printable version', de: 'Zum Ausdrucken', sv: 'Utskriftsversion' };
+  var T = {
+    pm: {
+      pl: ['Bez telefonów? Wydrukuj kartę i grajcie długopisem - w domu, na lekcji, w podróży.', 'Pobierz kartę do druku'],
+      en: ['No phones? Print the sheet and play with a pen - at home, in class or on a trip.', 'Download the printable sheet'],
+      de: ['Ohne Handys? Druck die Vorlage aus und spielt mit dem Stift - zu Hause, im Unterricht oder unterwegs.', 'Druckvorlage herunterladen'],
+      sv: ['Inga mobiler? Skriv ut arket och spela med penna - hemma, i klassrummet eller på resan.', 'Ladda ner utskriftsmall'] },
+    dots: {
+      pl: ['4 plansze na jednej kartce. Wystarczy długopis i druga osoba.', 'Pobierz kartę do druku'],
+      en: ['4 boards on one sheet. All you need is a pen and someone to play with.', 'Download the printable sheet'],
+      de: ['4 Spielfelder auf einem Blatt. Du brauchst nur einen Stift und jemanden zum Spielen.', 'Druckvorlage herunterladen'],
+      sv: ['4 spelplaner på ett ark. Allt du behöver är en penna och någon att spela med.', 'Ladda ner utskriftsmall'] },
+    bingo: {
+      pl: ['Spotkanie na żywo? Wydrukuj karty - każda inna, z numerem. Jedna kartka na osobę.', 'Pobierz karty do druku'],
+      en: ['In-person meeting? Print the cards - each one different and numbered. One sheet per person.', 'Download printable cards'],
+      de: ['Meeting vor Ort? Druck die Karten aus - jede anders und nummeriert. Ein Blatt pro Person.', 'Karten zum Ausdrucken'],
+      sv: ['Fysiskt möte? Skriv ut korten - alla olika och numrerade. Ett ark per person.', 'Ladda ner utskriftskort'] }
+  };
+  function esc(x) { return String(x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function css() {
+    if (document.getElementById('pm-print-css')) return;
+    var st = document.createElement('style'); st.id = 'pm-print-css';
+    st.textContent = '.pm-print-box{display:flex;gap:14px;align-items:center;max-width:640px;margin:16px auto;padding:14px 16px;border:2px solid #06d6a0;border-radius:16px;background:rgba(6,214,160,.08);text-decoration:none;color:inherit;}' +
+      '.pm-print-box img{width:84px;height:auto;flex:none;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.4);background:#fff;transform:rotate(-3deg);}' +
+      '.pm-print-box .t{font-family:"Bebas Neue",sans-serif;font-size:20px;letter-spacing:1.5px;color:#06d6a0;line-height:1.1;}' +
+      '.pm-print-box .x{font-size:13px;font-weight:700;color:var(--muted,#cbd5e1);line-height:1.45;margin:3px 0 9px;}' +
+      '.pm-print-box .b{display:inline-block;background:#06d6a0;color:#0b0b14;font-weight:900;font-size:14px;padding:9px 14px;border-radius:10px;}' +
+      '.pm-print-box:hover .b{filter:brightness(1.08);}';
+    document.head.appendChild(st);
+  }
+  window.pmPrintBox = function (game, lang) {
+    try {
+      var l = ['pl', 'en', 'de', 'sv'].indexOf(lang) > -1 ? lang : (function () { try { return _pmPageLang(); } catch (e) { return 'en'; } })();
+      if (!F[game]) return;
+      var file = F[game][l], tx = T[game][l];
+      var box = document.getElementById('pm-print-box');
+      if (!box) {
+        var join = document.getElementById('join-name'); if (!join) return;
+        var anchor = join.closest('.home-grid') || join.closest('.card'); if (!anchor || !anchor.parentNode) return;
+        css();
+        box = document.createElement('a'); box.id = 'pm-print-box'; box.className = 'pm-print-box'; box.target = '_blank';
+        anchor.parentNode.insertBefore(box, anchor.nextSibling);
+      }
+      box.href = '/downloads/' + file + '.html';
+      box.innerHTML = '<img src="/downloads/thumbs/' + file + '.webp" alt="" loading="lazy">' +
+        '<div style="flex:1;min-width:0"><div class="t">🖨️ ' + esc(TITLE[l]) + '</div><div class="x">' + esc(tx[0]) + '</div><span class="b">📄 ' + esc(tx[1]) + '</span></div>';
+    } catch (e) {}
+  };
 })();

@@ -69,7 +69,7 @@
       "name": "Jak grać w Państwa-Miasta online?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Host tworzy pokój i otrzymuje 5-literowy kod. Udostępnia go znajomym. Host losuje literę, wszyscy jednocześnie wpisują słowa na tę literę w kategoriach (Państwo, Miasto, Zwierzę itp.). Kto pierwszy skończy — woła STOP. Odpowiedzi są porównywane i punktowane: unikalna odpowiedź = 10 pkt, powtórzona = 5 pkt, brak = 0 pkt."
+        "text": "Host tworzy pokój i otrzymuje 5-literowy kod. Udostępnia go znajomym. Host losuje literę, wszyscy jednocześnie wpisują słowa na tę literę w kategoriach (Państwo, Miasto, Zwierzę itp.). Kto pierwszy skończy — woła STOP. Odpowiedzi są porównywane i punktowane: tylko ty masz słowo w kategorii = 15 pkt, unikalna odpowiedź = 10 pkt, powtórzona = 5 pkt, brak = 0 pkt."
       }
     },
     {
@@ -161,7 +161,8 @@
     <div class="rules-h2">Punktacja</div>
     <table class="score-table">
       <tr><th>Sytuacja</th><th>Punkty</th></tr>
-      <tr><td>Odpowiedź unikalna (tylko Ty)</td><td><strong style="color:var(--green)">10 pkt</strong></td></tr>
+      <tr><td>Tylko ty masz słowo w tej kategorii (inni nic nie wpisali)</td><td><strong style="color:var(--green)">15 pkt</strong></td></tr>
+      <tr><td>Odpowiedź unikalna (nikt inny nie ma takiej samej)</td><td><strong style="color:var(--green)">10 pkt</strong></td></tr>
       <tr><td>Odpowiedź powtórzona</td><td><strong style="color:var(--accent2)">5 pkt</strong></td></tr>
       <tr><td>Brak odpowiedzi</td><td><strong style="color:var(--red)">0 pkt</strong></td></tr>
     </table>
@@ -176,7 +177,7 @@
     <p class="rules-p">Drużynowa gra imprezowa. Opisujesz słowa swojej drużynie — bez używania zakazanych wyrażeń. Drużyna przeciwna pilnuje zasad.</p>
     <div class="rules-h2">Role</div>
     <ul class="rules-ul">
-      <li><strong>Opisujący</strong> — widzi słowo i zakazaną listę. Opisuje słowami, gestem, kontekstem</li>
+      <li><strong>Opisujący</strong> — widzi słowo i zakazaną listę. Opisuje innymi słowami - bez gestów</li>
       <li><strong>Zgadujący</strong> — reszta drużyny próbuje odgadnąć słowo</li>
       <li><strong>Sędzia</strong> — gracz z drużyny przeciwnej łapie na zakazanych słowach</li>
     </ul>
@@ -197,7 +198,7 @@
       <li><strong>Słownik wpisuje słowo</strong> — tylko on je widzi. Może dodać podpowiedź kategorii</li>
       <li><strong>Zgadujący klikają litery</strong> — trafiona litera pojawia się w słowie</li>
       <li><strong>7 błędów = koniec</strong> — Słownik wygrywa rundę</li>
-      <li><strong>Zgadnij całe słowo</strong> — w każdej chwili. Błąd = natychmiastowa przegrana!</li>
+      <li><strong>Zgadnij całe słowo</strong> — w każdej chwili. Błąd = runda przegrana dla wszystkich, punkt dostaje Słownik.</li>
     </ul>
     <div class="rules-h2">Punktacja</div>
     <ul class="rules-ul">

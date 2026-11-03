@@ -62,5 +62,13 @@
   document.title = document.title.replace('panstwamiastagra.com', 'roomforgames.com');
 })();
 </script>
+<script>
+(function(){
+  function send(ev, x){ try { var d = JSON.stringify(Object.assign({ s: 'dots-and-boxes-print-and-play', e: ev }, x || {})); if (navigator.sendBeacon && navigator.sendBeacon('/api/print-log', d)) return; fetch('/api/print-log', { method: 'POST', body: d, keepalive: true }).catch(function(){}); } catch (e) {} }
+  send('open');
+  var last = 0;
+  window.addEventListener('beforeprint', function(){ var t = Date.now(); if (t - last < 5000) return; last = t; send('print', (null)); });
+})();
+</script>
 </body>
 </html>

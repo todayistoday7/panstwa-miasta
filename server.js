@@ -637,6 +637,28 @@ function saveBugReports(reports) {
   } catch(e) {}
 }
 
+// ─── Printable sheets: count "opened" and "print pressed" (anonymous, nothing about the person is stored) ───
+const _printSheets = (() => { try { return require('fs').readdirSync(path.join(__dirname, 'public/downloads')).filter(f => /\.html$/.test(f)).map(f => f.slice(0, -5)); } catch (e) { return []; } })();
+const _printRate = new Map(); // ip → [times], memory only, never saved
+setInterval(() => { const now = Date.now(); for (const [k, v] of _printRate) if (!v.some(t => now - t < 3600000)) _printRate.delete(k); }, 600000).unref();
+app.post('/api/print-log', express.text({ type: '*/*', limit: '1kb' }), (req, res) => {
+  try {
+    const ip = req.ip || 'unknown', now = Date.now();
+    const times = (_printRate.get(ip) || []).filter(t => now - t < 3600000);
+    if (times.length < 60) {
+      times.push(now); _printRate.set(ip, times);
+      const d = JSON.parse(typeof req.body === 'string' ? req.body : '{}');
+      if (_printSheets.indexOf(d.s) > -1 && (d.e === 'open' || d.e === 'print')) {
+        require('./db/stats').logPrintEvent({ sheet: d.s, event: d.e,
+          cards: Math.max(0, Math.min(500, parseInt(d.c, 10) || 0)) || null,
+          paper: d.p === 'letter' ? 'letter' : (d.p === 'a4' ? 'a4' : null),
+          site: isRFG(req) ? 'rfg' : 'pm' });
+      }
+    }
+  } catch (e) {}
+  res.status(204).end();
+});
+
 app.post('/api/bug-report', express.json(), (req, res) => {
   const ip = req.ip || 'unknown';
   const now = Date.now();

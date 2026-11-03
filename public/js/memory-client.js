@@ -362,14 +362,17 @@ function renderLobby(data) {
 
   // Settings visibility — show to everyone, but controls are read-only for non-host
   var settingsCard = document.getElementById('lobby-settings-card');
-  if (settingsCard) settingsCard.style.display = 'block';
-
-  // Theme and size buttons — disable for non-host
-  document.querySelectorAll('.mem-theme-btn, .mem-size-btn').forEach(function(btn) {
-    btn.style.pointerEvents = isHost ? 'auto' : 'none';
-    if (!isHost) btn.style.opacity = btn.classList.contains('active') ? '1' : '0.5';
-    else btn.style.opacity = '1';
-  });
+  if (settingsCard) { settingsCard.style.display = 'block'; settingsCard.classList.toggle('mem-ro', !isHost); }
+  // Guests: the whole card greyed out + who chooses
+  var roHint = document.getElementById('mem-ro-hint');
+  if (!roHint && settingsCard) {
+    roHint = document.createElement('p'); roHint.id = 'mem-ro-hint';
+    var h3 = settingsCard.querySelector('h3'); if (h3) h3.parentNode.insertBefore(roHint, h3.nextSibling); else settingsCard.insertBefore(roHint, settingsCard.firstChild);
+  }
+  if (roHint) {
+    roHint.textContent = ({pl:'Ustawienia wybiera host', en:'The host chooses the settings', de:'Die Einstellungen wählt der Host', sv:'Värden väljer inställningarna'})[lang] || 'The host chooses the settings';
+    roHint.style.display = isHost ? 'none' : '';
+  }
 
   // Max players dropdown
   var maxSel = document.getElementById('settings-maxplayers');
@@ -432,12 +435,14 @@ function buildThemeGrid() {
 }
 
 function setTheme(theme, btn) {
+  if (roomState && roomState.hostId && roomState.hostId !== myId) return; // only the host changes settings
   document.querySelectorAll('.mem-theme-btn').forEach(function(b) { b.classList.remove('active'); });
   if (btn) btn.classList.add('active');
   if (roomCode) socket.emit('mem_update_settings', { code: roomCode, settings: { theme: theme } });
 }
 
 function setSize(size, btn) {
+  if (roomState && roomState.hostId && roomState.hostId !== myId) return; // only the host changes settings
   document.querySelectorAll('.mem-size-btn').forEach(function(b) { b.classList.remove('active'); });
   if (btn) btn.classList.add('active');
   if (roomCode) socket.emit('mem_update_settings', { code: roomCode, settings: { boardSize: size } });
@@ -483,6 +488,45 @@ function renderGame(state) {
       '</div>' +
     '</div>';
   }).join('');
+}
+
+// ─── BETWEEN BOARDS ──────────────────────────────────────────────
+var MEM_BT = {
+  pl: { done: function(a,b){return 'Plansza '+a+'/'+b+' skończona';}, next: '▶ Następna plansza', wait: function(h){return 'Czekamy, aż '+h+' uruchomi następną planszę';} },
+  en: { done: function(a,b){return 'Board '+a+'/'+b+' done';}, next: '▶ Next board', wait: function(h){return 'Waiting for '+h+' to start the next board';} },
+  de: { done: function(a,b){return 'Brett '+a+'/'+b+' geschafft';}, next: '▶ Nächstes Brett', wait: function(h){return 'Wir warten, bis '+h+' das nächste Brett startet';} },
+  sv: { done: function(a,b){return 'Bräda '+a+'/'+b+' klar';}, next: '▶ Nästa bräda', wait: function(h){return 'Vi väntar på att '+h+' startar nästa bräda';} }
+};
+function nextBoard() { if (roomCode) socket.emit('mem_next_board', { code: roomCode }); }
+function renderBetween(state) {
+  var box = document.getElementById('mem-between');
+  var hideIds = ['board', 'turn-bar', 'round-indicator'];
+  var info = document.querySelector('.mem-game-info');
+  if (!state) {
+    if (box) box.style.display = 'none';
+    hideIds.forEach(function(id){ var e = document.getElementById(id); if (e && id !== 'round-indicator') e.style.display = ''; });
+    if (info) info.style.display = '';
+    return;
+  }
+  var t = MEM_BT[lang] || MEM_BT.en;
+  var board = document.getElementById('board');
+  if (!box && board) { box = document.createElement('div'); box.id = 'mem-between'; board.parentNode.insertBefore(box, board); }
+  if (!box) return;
+  hideIds.forEach(function(id){ var e = document.getElementById(id); if (e) e.style.display = 'none'; });
+  if (info) info.style.display = 'none';
+  var sorted = state.players.slice().sort(function(a, b) { return b.score - a.score; });
+  var host = state.players.find(function(p){ return p.id === state.hostId; });
+  var esc = function(x){ return String(x == null ? '' : x).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+  box.innerHTML =
+    '<div class="mem-between-title">' + esc(t.done(state.roundsPlayed, state.totalRounds)) + '</div>' +
+    '<div class="mem-between-list">' + sorted.map(function(p, i) {
+      return '<div class="mem-between-row"><span class="mem-between-dot" style="background:' + esc(p.color) + '"></span>' +
+        '<span class="mem-between-name">' + (i === 0 && p.score > 0 ? '👑 ' : '') + esc(p.name) + '</span><span class="mem-between-score">🃏 ' + p.score + '</span></div>';
+    }).join('') + '</div>' +
+    (state.hostId === myId
+      ? '<button class="btn" onclick="nextBoard()" style="width:100%;max-width:400px;margin-top:16px;font-size:17px;padding:15px 24px;">' + esc(t.next) + '</button>'
+      : '<p class="mem-between-wait">⏳ ' + esc(t.wait(host ? host.name : 'host')) + '</p>');
+  box.style.display = '';
 }
 
 // ─── FINAL RENDERING ─────────────────────────────────────────────
@@ -551,6 +595,7 @@ function flipCard(index) {
 }
 
 function setMemLength(key) {
+  if (roomState && roomState.hostId && roomState.hostId !== myId) return; // only the host changes settings
   if (!roomCode) return;
   socket.emit('mem_update_settings', { code: roomCode, settings: { gameLength: key } });
 }
@@ -618,6 +663,7 @@ socket.on('mem_state', function(state) {
     renderLobby(state);
     showScreen('screen-lobby');
   } else if (state.phase === 'playing') {
+    renderBetween(null);
     renderGame(state);
     showScreen('screen-playing');
     // Show round indicator if multi-round
@@ -629,12 +675,10 @@ socket.on('mem_state', function(state) {
       roundLabel.style.display = 'none';
     }
   } else if (state.phase === 'round_end') {
-    // Brief transition between boards — show message on playing screen
-    var roundLabel = document.getElementById('round-indicator');
-    if (roundLabel) {
-      roundLabel.textContent = L.nextBoard || 'Next board...';
-      roundLabel.style.display = 'block';
-    }
+    // Between boards: scores so far; the host starts the next board
+    renderGame(state);
+    renderBetween(state);
+    showScreen('screen-playing');
   } else if (state.phase === 'final') {
     renderFinal(state);
     showScreen('screen-final');

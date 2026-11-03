@@ -239,18 +239,9 @@ function register(io, socket) {
             });
             emitMemState(io, room);
           } else {
-            // More rounds — show round summary briefly, then start next board
+            // More rounds — show the scores; the host starts the next board when everyone is ready
             room.state.phase = 'round_end';
             emitMemState(io, room);
-            setTimeout(() => {
-              room.state.board = makeBoard(room.settings.theme, room.settings.boardSize);
-              room.state.totalPairs = Math.floor(room.settings.boardSize / 2);
-              room.state.foundPairs = 0;
-              room.state.flippedCards = [];
-              room.state.phase = 'playing';
-              room.state.currentPlayer = room.players.filter(p => p.connected)[0]?.id || room.players[0].id;
-              emitMemState(io, room);
-            }, 3000);
           }
         }
         // Player gets another turn — don't change currentPlayer
@@ -270,6 +261,19 @@ function register(io, socket) {
       // First card flipped — just show it
       emitMemState(io, room);
     }
+  });
+
+  // Host: start the next board (only between boards)
+  socket.on('mem_next_board', ({ code }) => {
+    const room = getMemRoom(code);
+    if (!room || socket.id !== room.hostId || room.state.phase !== 'round_end') return;
+    room.state.board = makeBoard(room.settings.theme, room.settings.boardSize);
+    room.state.totalPairs = Math.floor(room.settings.boardSize / 2);
+    room.state.foundPairs = 0;
+    room.state.flippedCards = [];
+    room.state.phase = 'playing';
+    room.state.currentPlayer = room.players.filter(p => p.connected)[0]?.id || room.players[0].id;
+    emitMemState(io, room);
   });
 
   socket.on('mem_play_again', ({ code }) => {

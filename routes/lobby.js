@@ -122,7 +122,7 @@ function init(io) {
 }
 
 // Which game can send its group to which (both ways)
-const MOVE_ROUTES = { charades: ['whoami', 'taboo'], whoami: ['charades', 'taboo'], taboo: ['charades', 'whoami'] };
+const MOVE_ROUTES = { pm: ['charades', 'whoami', 'taboo'], charades: ['whoami', 'taboo', 'pm'], whoami: ['charades', 'taboo', 'pm'], taboo: ['charades', 'whoami', 'pm'] };
 const _moves = new Map(); // token → { fromGame, fromCode, to, players, t }
 const _votes = new Map(); // 'game:CODE' → { t, by: { name: toGame } }
 setInterval(() => { const now = Date.now(); for (const [k, v] of _votes) if (now - v.t > 60 * 60 * 1000) _votes.delete(k); }, 5 * 60 * 1000).unref();

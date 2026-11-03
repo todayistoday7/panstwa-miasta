@@ -1025,6 +1025,7 @@ function applyTranslations() {
   if (doText) doText.textContent = L.offlineText;
   if (doBtn) doBtn.textContent = L.offlineBtn;
   if (doHref) doHref.href = L.offlineUrl;
+  if (window.pmPrintBox) window.pmPrintBox('dots', lang);
 }
 
 // ─── SVG HELPER ──────────────────────────────────────────────────

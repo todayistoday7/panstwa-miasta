@@ -517,6 +517,8 @@ function applyTranslations() {
 
   document.querySelectorAll('.lbl-nav-home-dup').forEach(function(el) { if (L.navHome) el.textContent = L.navHome; });
   document.querySelectorAll('.lbl-nav-all-games-dup').forEach(function(el) { if (L.navAllGames) el.textContent = L.navAllGames; });
+  // Printable cards box (under "join a room")
+  if (window.pmPrintBox) window.pmPrintBox('bingo', lang);
 }
 
 // ── Helpers ──────────────────────────────────────────────

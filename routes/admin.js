@@ -885,6 +885,32 @@ function statsExtraCards(db, game, days, cutoffLabel) {
   } catch (e) { return ''; }
 }
 
+// Printable sheets: opened / print pressed (anonymous counts from /api/print-log)
+const PRINT_SHEETS = {
+  'panstwa-miasta-karta-do-druku': 'Państwa-Miasta · PL', 'countries-cities-print-and-play': 'Państwa-Miasta · EN', 'stadt-land-fluss-druckvorlage': 'Państwa-Miasta · DE', 'stad-land-utskrift': 'Państwa-Miasta · SV',
+  'kropki-i-kreski-do-druku': 'Kropki i Kreski · PL', 'dots-and-boxes-print-and-play': 'Kropki i Kreski · EN', 'kaesekastchen-druckvorlage': 'Kropki i Kreski · DE', 'punkter-och-linjer-utskrift': 'Kropki i Kreski · SV',
+  'korporacyjne-bingo-karty-do-druku': 'Bingo · PL', 'corporate-bingo-printable-cards': 'Bingo · EN', 'unternehmens-bingo-druckvorlage': 'Bingo · DE', 'foretagsbingo-utskrift': 'Bingo · SV'
+};
+function statsPrintCard(db, since, cutoffLabel) {
+  try {
+    const rows = db.prepare(`
+      SELECT sheet,
+        SUM(CASE WHEN event='open'  THEN 1 ELSE 0 END) AS opened,
+        SUM(CASE WHEN event='print' THEN 1 ELSE 0 END) AS printed,
+        SUM(CASE WHEN event='print' THEN COALESCE(cards,0) ELSE 0 END) AS cards,
+        SUM(CASE WHEN event='print' AND site='rfg' THEN 1 ELSE 0 END) AS rfg,
+        MAX(CASE WHEN event='print' THEN date END) AS last
+      FROM print_events WHERE date >= ? GROUP BY sheet ORDER BY printed DESC, opened DESC
+    `).all(since);
+    const body = rows.map(r => `<tr><td>${escapeHtml(PRINT_SHEETS[r.sheet] || r.sheet)}</td><td>${r.opened}</td><td><span class="pill pill-green">${r.printed}</span></td><td>${/bingo/.test(r.sheet) ? r.cards : '<span style="color:#64748b">—</span>'}</td><td>${r.rfg}</td><td style="color:#64748b;font-size:12px">${escapeHtml(r.last || '—')}</td></tr>`).join('') || statsEmptyRow(6);
+    return `<div class="card">
+      <h3 style="font-size:14px;margin-bottom:6px;color:#94a3b8">🖨️ Do druku - printable sheets (${escapeHtml(cutoffLabel)})</h3>
+      <p style="font-size:12px;color:#64748b;margin-bottom:12px;line-height:1.5"><em>Opened</em> = the sheet page was opened. <em>Print pressed</em> = Print button or Ctrl+P (also counts "save as PDF" and a print that was cancelled - a website can't see the printer). <em>Bingo cards</em> = cards made in those prints. Anonymous: nothing about the person is stored.</p>
+      <div style="overflow-x:auto"><table><tr><th>Sheet</th><th>Opened</th><th>Print pressed</th><th>Bingo cards</th><th>of which on RFG</th><th>Last print</th></tr>${body}</table></div>
+    </div>`;
+  } catch (e) { return ''; }
+}
+
 function renderOverview(db, days, cutoffLabel, gameOpts) {
   const since = statsDayCutoff(days);
   const since7 = new Date(Date.now() - 6 * 24 * 3600 * 1000).toISOString().slice(0, 10);
@@ -965,6 +991,7 @@ function renderOverview(db, days, cutoffLabel, gameOpts) {
       </table>
       </div>
     </div>
+    ${statsPrintCard(db, since, cutoffLabel)}
     <div class="grid2">
       <div class="card">
         <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">Last 14 days — all games</h3>

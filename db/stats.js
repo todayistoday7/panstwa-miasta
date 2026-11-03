@@ -70,6 +70,18 @@ function getDb() {
       status       TEXT NOT NULL DEFAULT 'lobby'
     );
     CREATE INDEX IF NOT EXISTS idx_rh_game ON room_history(game, created_ts DESC);
+
+    CREATE TABLE IF NOT EXISTS print_events (
+      id      INTEGER PRIMARY KEY AUTOINCREMENT,
+      ts      INTEGER NOT NULL,
+      date    TEXT NOT NULL,
+      sheet   TEXT NOT NULL,
+      event   TEXT NOT NULL,
+      cards   INTEGER,
+      paper   TEXT,
+      site    TEXT
+    );
+    CREATE INDEX IF NOT EXISTS idx_print_date ON print_events(date, sheet);
   `);
   return db;
 }
@@ -160,8 +172,23 @@ function logRoomEnded({ roomCode, playerCount, status }) {
   }
 }
 
+/**
+ * Printable sheets: someone opened a sheet ('open') or pressed print / Ctrl+P ('print').
+ * Anonymous - no IP, no cookie, nothing about the person. Never throws.
+ */
+let printStmt = null;
+function logPrintEvent({ sheet, event, cards, paper, site }) {
+  try {
+    const conn = getDb();
+    if (!printStmt) printStmt = conn.prepare(`INSERT INTO print_events (ts, date, sheet, event, cards, paper, site) VALUES (@ts, @date, @sheet, @event, @cards, @paper, @site)`);
+    const now = new Date();
+    printStmt.run({ ts: now.getTime(), date: now.toISOString().slice(0, 10), sheet, event, cards: cards || null, paper: paper || null, site: site || null });
+  } catch (err) { console.error('[stats] print event log failed:', err.message); }
+}
+
 module.exports = {
   getDb,
+  logPrintEvent,
   logGameEvent,
   logWhoamiEvent,
   logRoomCreated,
