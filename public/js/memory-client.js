@@ -239,7 +239,22 @@ const THEME_META = {
   travel:  { preview: '✈️🚀🏰', labelKey: 'themeTravel' },
   sports:  { preview: '⚽🏀🎾', labelKey: 'themeSports' },
   flags:   { preview: '🇵🇱🇬🇧🇩🇪', labelKey: 'themeFlags' },
+  // seasonal: shown only between the dates (MM-DD, may cross New Year); ?season=1 shows it any time (testing)
+  winter:  { preview: '❄️⛄🎄', labelKey: 'themeWinter', season: ['11-20', '01-20'] },
 };
+var MEM_SEASON_T = {
+  pl: { themeWinter: 'Zima i Święta', badge: '🎄 do 20 stycznia' },
+  en: { themeWinter: 'Winter & Christmas', badge: '🎄 until 20 Jan' },
+  de: { themeWinter: 'Winter & Weihnachten', badge: '🎄 bis 20. Jan.' },
+  sv: { themeWinter: 'Vinter & jul', badge: '🎄 till 20 jan' }
+};
+function memInSeason(t) {
+  if (!t.season) return true;
+  try { if (/[?&]season=1\b/.test(location.search)) return true; } catch (e) {}
+  var d = new Date(), md = ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+  var a = t.season[0], b = t.season[1];
+  return a <= b ? (md >= a && md <= b) : (md >= a || md <= b);
+}
 
 // ─── HOME DEMO ANIMATION ─────────────────────────────────────────
 function runDemoAnimation() {
@@ -425,13 +440,18 @@ function buildThemeGrid() {
   var grid = document.getElementById('theme-grid');
   if (!grid) return;
   var currentTheme = roomState ? roomState.settings.theme : 'animals';
-  grid.innerHTML = Object.entries(THEME_META).map(function(entry) {
+  var ST = MEM_SEASON_T[lang] || MEM_SEASON_T.en;
+  var entries = Object.entries(THEME_META).filter(function(e) { return memInSeason(e[1]) || e[0] === currentTheme; });
+  // seasonal theme first, as a wide tile
+  entries.sort(function(a, b) { return (b[1].season ? 1 : 0) - (a[1].season ? 1 : 0); });
+  grid.innerHTML = entries.map(function(entry) {
     var key = entry[0], t = entry[1];
-    var label = L[t.labelKey] || key;
-    return '<button class="mem-theme-btn ' + (key === currentTheme ? 'active' : '') + '" data-theme="' + key + '" onclick="setTheme(\'' + key + '\',this)">' +
-      '<span class="tp">' + t.preview + '</span>' + label +
+    var label = L[t.labelKey] || ST[t.labelKey] || key;
+    return '<button class="mem-theme-btn ' + (t.season ? 'mem-theme-season ' : '') + (key === currentTheme ? 'active' : '') + '" data-theme="' + key + '" onclick="setTheme(\'' + key + '\',this)">' +
+      '<span class="tp">' + t.preview + '</span>' + label + (t.season ? '<span class="mem-season-badge">' + ST.badge + '</span>' : '') +
     '</button>';
   }).join('');
+  grid.classList.toggle('has-season', entries.some(function(e) { return !!e[1].season; }));
 }
 
 function setTheme(theme, btn) {
@@ -455,7 +475,7 @@ function renderGame(state) {
   turnBar.innerHTML = state.players.map(function(p) {
     return '<div class="mem-player-pill ' + (p.id === state.currentPlayer ? 'active' : '') + '" ' +
       'style="border-color:' + (p.id === state.currentPlayer ? p.color : 'var(--border)') + ';">' +
-      p.name + (p.id === myId ? ' (you)' : '') +
+      p.name + (p.id === myId ? ' (' + ({pl:'ty', en:'you', de:'du', sv:'du'}[lang] || 'you') + ')' : '') +
       '<span class="pill-score">' + p.score + '</span>' +
     '</div>';
   }).join('');

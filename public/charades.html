@@ -106,6 +106,7 @@
     body.ch-cols .ch-lobby-main .pm-code-card { width: 100%; box-sizing: border-box; }
   }
   /* other players: settings visible but greyed out, not clickable */
+  #cat-pills .lang-pill.ch-season:not(.active) { border-color: #06d6a0; color: #06d6a0; }
   #settings-card.ch-ro .lang-pill { pointer-events: none; cursor: default; }
   #settings-card.ch-ro .lang-pill:not(.active) { opacity: .4; }
   /* "waiting for host" on its own line, Leave button under it (it was a tall box next to the text) */
@@ -278,6 +279,6 @@
 </div>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/shared.js?v=18"></script>
-<script src="/js/charades-client.js?v=12"></script>
+<script src="/js/charades-client.js?v=13"></script>
 </body>
 </html>

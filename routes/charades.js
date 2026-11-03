@@ -128,14 +128,36 @@ const WORDS = {
       sv: ['Polo','Cricket','Curling','Triathlon','Bobsled','Skeleton','Skidskytte','Femkamp','Kendo','Capoeira','Fäktning','Polo','Vattenpolo','Konstsim','Konståkning','Curling','Kulstötning','Diskuskast','Spjutkast','Höjdhopp','Längdhopp','Häcklöpning','Triathlon','Tiokamp','Femkamp','Bob','Rodel','Cricket','Rugby','Lacrosse','Squash','Handboll','Bordtennis','Dart','Biljard','Motocross','Formel 1','Segling','Kajakpaddling','Windsurfing'],
     },
   },
+  // Seasonal (shown only in season by the client; never part of 'mixed')
+  winter: {
+    kids: {
+      pl: ["Bałwan", "Choinka", "Prezent", "Mikołaj", "Renifer", "Jazda na sankach", "Lepienie bałwana", "Łyżwy", "Narty", "Rękawiczki", "Szalik", "Czapka z pomponem", "Pierniczek", "Bombka", "Aniołek", "Elf", "Sopel lodu", "Gorące kakao", "Jest mi zimno", "Pakowanie prezentów", "Otwieranie prezentów", "Dzwoneczek", "Płatek śniegu", "Kominek", "Sanie Mikołaja"],
+      en: ["Snowman", "Christmas tree", "Present", "Santa", "Reindeer", "Sledding", "Building a snowman", "Ice skates", "Skis", "Gloves", "Scarf", "Bobble hat", "Gingerbread man", "Bauble", "Angel", "Elf", "Icicle", "Hot chocolate", "I'm cold", "Wrapping presents", "Opening presents", "Jingle bell", "Snowflake", "Fireplace", "Santa's sleigh"],
+      de: ["Schneemann", "Weihnachtsbaum", "Geschenk", "Weihnachtsmann", "Rentier", "Schlittenfahren", "Schneemann bauen", "Schlittschuhe", "Ski", "Handschuhe", "Schal", "Bommelmütze", "Lebkuchenmann", "Christbaumkugel", "Engel", "Wichtel", "Eiszapfen", "Heiße Schokolade", "Mir ist kalt", "Geschenke einpacken", "Geschenke auspacken", "Glöckchen", "Schneeflocke", "Kamin", "Schlitten des Weihnachtsmanns"],
+      sv: ["Snögubbe", "Julgran", "Julklapp", "Jultomte", "Ren", "Åka pulka", "Bygga snögubbe", "Skridskor", "Skidor", "Vantar", "Halsduk", "Toppluva", "Pepparkaksgubbe", "Julgranskula", "Ängel", "Tomtenisse", "Istapp", "Varm choklad", "Jag fryser", "Slå in julklappar", "Öppna julklappar", "Bjällra", "Snöflinga", "Öppen spis", "Tomtens släde"],
+    },
+    family: {
+      pl: ["Dzielenie się opłatkiem", "Karp w wannie", "Lepienie pierogów", "Pierwsza gwiazdka", "Kolędnicy", "Śpiewanie kolęd", "Szopka", "Kalendarz adwentowy", "Jarmark świąteczny", "Kulig", "Bitwa na śnieżki", "Aniołek na śniegu", "Jemioła", "List do Mikołaja", "Pieczenie pierników", "Odśnieżanie", "Skrobanie szyby", "Fajerwerki", "Ubieranie choinki", "Wieszanie lampek", "Skarpeta na prezenty", "Wieniec adwentowy", "Lodowisko", "Zamieć śnieżna", "Mikołaj w kominie", "Trzej Królowie", "Dodatkowe nakrycie", "Ścinanie choinki", "Szukanie prezentów pod choinką", "Toast o północy"],
+      en: ["Pulling a Christmas cracker", "Carving the turkey", "Leaving cookies for Santa", "Carol singers", "Singing carols", "Nativity play", "Advent calendar", "Christmas market", "Sleigh ride", "Snowball fight", "Snow angel", "Mistletoe", "Letter to Santa", "Baking gingerbread", "Shovelling snow", "Scraping the windscreen", "Fireworks", "Decorating the tree", "Hanging lights", "Christmas stocking", "Advent wreath", "Ice rink", "Blizzard", "Santa down the chimney", "Three Wise Men", "Chopping down a Christmas tree", "Looking for presents under the tree", "Midnight toast", "Christmas pudding", "Rudolph's red nose"],
+      de: ["Nikolausstiefel putzen", "Adventskranz anzünden", "Plätzchen backen", "Sternsinger", "Weihnachtslieder singen", "Krippe", "Adventskalender", "Weihnachtsmarkt", "Pferdeschlittenfahrt", "Schneeballschlacht", "Schneeengel", "Mistelzweig", "Wunschzettel schreiben", "Rudolph mit der roten Nase", "Schnee schippen", "Scheibe kratzen", "Feuerwerk", "Baum schmücken", "Lichterkette aufhängen", "Weihnachtsstrumpf", "Eisbahn", "Schneesturm", "Weihnachtsmann im Kamin", "Heilige Drei Könige", "Weihnachtsbaum fällen", "Geschenke unter dem Baum suchen", "Anstoßen um Mitternacht", "Bleigießen", "Christkind", "Krampus"],
+      sv: ["Luciatåg", "Kalle Anka klockan tre", "Julbord", "Stjärngossar", "Sjunga julsånger", "Julkrubba", "Adventskalender", "Julmarknad", "Slädfärd", "Snöbollskrig", "Snöängel", "Mistel", "Önskelista till tomten", "Baka pepparkakor", "Skotta snö", "Skrapa bilrutan", "Fyrverkerier", "Klä granen", "Hänga upp ljusslinga", "Julstrumpa", "Adventsljusstake", "Skridskobana", "Snöstorm", "Tomten i skorstenen", "De tre vise männen", "Hugga julgran", "Leta efter julklappar", "Skåla vid midnatt", "Dansa kring granen", "Risgrynsgröt med mandel"],
+    },
+    adults: {
+      pl: ["Sianko pod obrusem", "Łuska karpia w portfelu", "Świąteczne zakupy w tłumie", "Nietrafiony prezent", "Przejedzenie po Wigilii", "Drzemka po obiedzie", "Morsowanie", "Postanowienia noworoczne", "Odliczanie do północy", "Grzaniec", "Poślizg na lodzie", "Choinka gubi igły", "Kłótnia o ostatni pieróg", "Świąteczny sweter", "Pasterka", "Plątanina lampek", "Korek w drodze do rodziny", "Pytania cioci przy stole", "Udawanie zachwytu prezentem", "Zmywanie po Wigilii", "Zakupy w ostatniej chwili", "Bal sylwestrowy", "Wyciąg narciarski", "Ferie w górach", "Szukanie parkingu przed świętami"],
+      en: ["Christmas shopping crowds", "Unwanted present", "Too full after Christmas dinner", "Nap after dinner", "Cold-water swim", "New Year's resolutions", "Countdown to midnight", "Mulled wine", "Slipping on ice", "Tree dropping needles", "Fight over the last mince pie", "Christmas jumper", "Midnight mass", "Tangled fairy lights", "Traffic jam to see the family", "Awkward questions from relatives", "Pretending to love a present", "Washing up after dinner", "Last-minute shopping", "New Year's Eve party", "Ski lift", "Ski holiday", "Hunting for a parking space", "Boxing Day sales", "Re-gifting a present"],
+      de: ["Gedränge beim Weihnachtseinkauf", "Falsches Geschenk", "Zu viel gegessen an Heiligabend", "Nickerchen nach dem Essen", "Eisbaden", "Neujahrsvorsätze", "Countdown bis Mitternacht", "Glühwein", "Ausrutschen auf Glatteis", "Der Baum nadelt", "Streit um das letzte Plätzchen", "Weihnachtspullover", "Christmette", "Verknotete Lichterkette", "Stau auf dem Weg zur Familie", "Peinliche Fragen der Verwandten", "Freude über ein Geschenk vortäuschen", "Abwasch nach dem Festessen", "Last-Minute-Einkauf", "Silvesterparty", "Skilift", "Skiurlaub", "Parkplatzsuche vor Weihnachten", "Dinner for One", "Geschenke umtauschen"],
+      sv: ["Julhandel i trängsel", "Fel julklapp", "Proppmätt efter julbordet", "Tupplur efter maten", "Vinterbad", "Nyårslöften", "Nedräkning till midnatt", "Glögg", "Halka på isen", "Granen barrar", "Bråk om sista pepparkakan", "Jultröja", "Julotta", "Trasslig ljusslinga", "Bilkö till släkten", "Pinsamma frågor från släkten", "Låtsas bli glad för julklappen", "Diska efter julmaten", "Sista minuten-shopping", "Nyårsfest", "Skidlift", "Fjällsemester", "Leta parkering före jul", "Mellandagsrea", "Kasta ut granen på tjugondag Knut"],
+    },
+  },
 };
 
+const SEASONAL_CATS = ['winter']; // 'Losowe' (mixed) never includes these
 // Chosen categories: 'mixed' = all, otherwise one or more keys joined by commas ("animals,movies")
 function chosenCats(room) {
   const cat = String(room.settings.category || 'mixed');
-  if (cat === 'mixed') return Object.keys(WORDS);
+  if (cat === 'mixed') return Object.keys(WORDS).filter(k => SEASONAL_CATS.indexOf(k) === -1);
   const list = cat.split(',').filter(c => WORDS[c]);
-  return list.length ? list : Object.keys(WORDS);
+  return list.length ? list : Object.keys(WORDS).filter(k => SEASONAL_CATS.indexOf(k) === -1);
 }
 
 // Track used words per room to avoid repeats

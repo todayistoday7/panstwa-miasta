@@ -1116,27 +1116,39 @@ function renderLobby(data) {
 
 // ── Categories: several can be picked; 'mixed' = all ──
 var CH_CATS = ['animals','actions','professions','movies','food','sports'];
+// Seasonal categories: shown only between the dates (MM-DD, may cross New Year), never part of "Losowe". ?season=1 shows them any time (testing)
+var CH_SEASON = { winter: ['11-20', '01-20'] };
+var CH_SEASON_T = { pl: '🎄 Zima i Święta', en: '🎄 Winter & Christmas', de: '🎄 Winter & Weihnachten', sv: '🎄 Vinter & jul' };
+function chInSeason(k) {
+  var s = CH_SEASON[k]; if (!s) return false;
+  try { if (/[?&]season=1\b/.test(location.search)) return true; } catch (e) {}
+  var d = new Date(), md = ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+  return s[0] <= s[1] ? (md >= s[0] && md <= s[1]) : (md >= s[0] || md <= s[1]);
+}
 function chCatLabel(k) {
+  if (CH_SEASON[k]) return CH_SEASON_T[lang] || CH_SEASON_T.en;
   return ({mixed:L.catMixed, animals:L.catAnimals, actions:L.catActions, professions:L.catProfessions, movies:L.catMovies, food:L.catFood, sports:L.catSports})[k] || k;
 }
 function chCatList(setting) {
   var c = String(setting || 'mixed');
   if (c === 'mixed') return [];
-  return c.split(',').filter(function(x) { return CH_CATS.indexOf(x) >= 0; });
+  return c.split(',').filter(function(x) { return CH_CATS.indexOf(x) >= 0 || CH_SEASON[x]; });
 }
+function chAllStd(list) { return list.length === CH_CATS.length && list.every(function(x) { return CH_CATS.indexOf(x) >= 0; }); }
 function chChosenLabel(setting) {
   var list = chCatList(setting);
-  if (!list.length || list.length === CH_CATS.length) return chCatLabel('mixed');
+  if (!list.length || chAllStd(list)) return chCatLabel('mixed');
   return list.map(chCatLabel).join(' + ');
 }
 function renderCatPills(setting) {
   var el = document.getElementById('cat-pills');
   if (!el) return;
   var list = chCatList(setting);
-  var items = ['mixed'].concat(CH_CATS);
+  var seasonal = Object.keys(CH_SEASON).filter(function(k) { return chInSeason(k) || list.indexOf(k) >= 0; });
+  var items = ['mixed'].concat(CH_CATS, seasonal);
   el.innerHTML = items.map(function(k) {
     var on = k === 'mixed' ? !list.length : list.indexOf(k) >= 0;
-    return '<button class="lang-pill' + (on ? ' active' : '') + '" data-cat="' + k + '">' + chCatLabel(k) + '</button>';
+    return '<button class="lang-pill' + (on ? ' active' : '') + (CH_SEASON[k] ? ' ch-season' : '') + '" data-cat="' + k + '">' + chCatLabel(k) + '</button>';
   }).join('');
   el.querySelectorAll('.lang-pill').forEach(function(btn) {
     btn.onclick = function() {
@@ -1144,7 +1156,7 @@ function renderCatPills(setting) {
       if (k === 'mixed') next = [];
       else {
         next = cur.indexOf(k) >= 0 ? cur.filter(function(x) { return x !== k; }) : cur.concat([k]);
-        if (next.length === CH_CATS.length) next = [];
+        if (chAllStd(next)) next = [];
       }
       socket.emit('charades_update_settings', {code:roomCode, settings:{category: next.length ? next.join(',') : 'mixed'}});
     };
