@@ -2462,10 +2462,10 @@ window._buildFooterLangBtns = function() {
       de: ['Ohne Handys? Druck die Vorlage aus und spielt mit dem Stift - zu Hause, im Unterricht oder unterwegs.', 'Druckvorlage herunterladen'],
       sv: ['Inga mobiler? Skriv ut arket och spela med penna - hemma, i klassrummet eller på resan.', 'Ladda ner utskriftsmall'] },
     dots: {
-      pl: ['4 plansze na jednej kartce. Wystarczy długopis i druga osoba.', 'Pobierz kartę do druku'],
-      en: ['4 boards on one sheet. All you need is a pen and someone to play with.', 'Download the printable sheet'],
-      de: ['4 Spielfelder auf einem Blatt. Du brauchst nur einen Stift und jemanden zum Spielen.', 'Druckvorlage herunterladen'],
-      sv: ['4 spelplaner på ett ark. Allt du behöver är en penna och någon att spela med.', 'Ladda ner utskriftsmall'] },
+      pl: ['4 plansze na kartce, rozmiar od 3×3 do 6×6. Wystarczy długopis i druga osoba.', 'Pobierz kartę do druku'],
+      en: ['4 boards on one sheet, sizes 3×3 to 6×6. All you need is a pen and someone to play with.', 'Download the printable sheet'],
+      de: ['4 Spielfelder auf einem Blatt, Größen 3×3 bis 6×6. Du brauchst nur einen Stift und jemanden zum Spielen.', 'Druckvorlage herunterladen'],
+      sv: ['4 spelplaner på ett ark, storlek 3×3 till 6×6. Allt du behöver är en penna och någon att spela med.', 'Ladda ner utskriftsmall'] },
     bingo: {
       pl: ['Spotkanie na żywo? Wydrukuj karty - każda inna, z numerem. Jedna kartka na osobę.', 'Pobierz karty do druku'],
       en: ['In-person meeting? Print the cards - each one different and numbered. One sheet per person.', 'Download printable cards'],
@@ -2481,7 +2481,10 @@ window._buildFooterLangBtns = function() {
       '.pm-print-box .t{font-family:"Bebas Neue",sans-serif;font-size:20px;letter-spacing:1.5px;color:#06d6a0;line-height:1.1;}' +
       '.pm-print-box .x{font-size:13px;font-weight:700;color:var(--muted,#cbd5e1);line-height:1.45;margin:3px 0 9px;}' +
       '.pm-print-box .b{display:inline-block;background:#06d6a0;color:#0b0b14;font-weight:900;font-size:14px;padding:9px 14px;border-radius:10px;}' +
-      '.pm-print-box:hover .b{filter:brightness(1.08);}';
+      '.pm-print-box:hover .b{filter:brightness(1.08);}' +
+      // desktop, under the two-card row (Państwa-Miasta, Kropki i Kreski): full width, everything in one row
+      '@media (min-width:700px){.pm-print-box.wide{max-width:none;margin:16px 0;padding:16px 22px;gap:22px}.pm-print-box.wide img{width:auto;height:110px}' +
+      '.pm-print-box.wide>div{display:flex;align-items:center;gap:22px}.pm-print-box.wide>div>.t{flex:none}.pm-print-box.wide>div>.x{flex:1;margin:0}.pm-print-box.wide>div>.b{flex:none}}';
     document.head.appendChild(st);
   }
   window.pmPrintBox = function (game, lang) {
@@ -2494,7 +2497,7 @@ window._buildFooterLangBtns = function() {
         var join = document.getElementById('join-name'); if (!join) return;
         var anchor = join.closest('.home-grid') || join.closest('.card'); if (!anchor || !anchor.parentNode) return;
         css();
-        box = document.createElement('a'); box.id = 'pm-print-box'; box.className = 'pm-print-box'; box.target = '_blank';
+        box = document.createElement('a'); box.id = 'pm-print-box'; box.className = 'pm-print-box' + (anchor.classList.contains('home-grid') ? ' wide' : ''); box.target = '_blank';
         anchor.parentNode.insertBefore(box, anchor.nextSibling);
       }
       box.href = '/downloads/' + file + '.html';

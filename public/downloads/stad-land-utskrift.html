@@ -56,6 +56,11 @@
 <div class="foot"><span>Spela online gratis, utan registrering: <span class="dom">panstwamiastagra.com</span></span><span>© <span class="dom">panstwamiastagra.com</span></span></div>
 </div>
 <script>
+// phones: shrink the sheet to the screen width (printing is not affected)
+(function(){ function fit(){ try { var z = Math.min(1, (Math.min(window.innerWidth, screen.width || 9999) - 16) / (297 * 3.7795)); document.querySelectorAll('.sheet').forEach(function(s){ s.style.zoom = z < 1 ? z.toFixed(3) : ''; }); } catch (e) {} }
+  fit(); window.addEventListener('resize', fit); window.addEventListener('beforeprint', function(){ document.querySelectorAll('.sheet').forEach(function(s){ s.style.zoom = ''; }); }); window.addEventListener('afterprint', fit); })();
+</script>
+<script>
 (function(){
   var rfg = window._rfgDomain || /roomforgames\.com$/i.test(location.hostname);
   if (!rfg) return;

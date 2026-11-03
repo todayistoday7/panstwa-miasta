@@ -651,7 +651,7 @@ app.post('/api/print-log', express.text({ type: '*/*', limit: '1kb' }), (req, re
       if (_printSheets.indexOf(d.s) > -1 && (d.e === 'open' || d.e === 'print')) {
         require('./db/stats').logPrintEvent({ sheet: d.s, event: d.e,
           cards: Math.max(0, Math.min(500, parseInt(d.c, 10) || 0)) || null,
-          paper: d.p === 'letter' ? 'letter' : (d.p === 'a4' ? 'a4' : null),
+          paper: ['a4', 'letter', 'mix', '3', '4', '5', '6'].indexOf(d.p) > -1 ? d.p : null, // paper size (bingo) or board size (Kropki i Kreski)
           site: isRFG(req) ? 'rfg' : 'pm' });
       }
     }
