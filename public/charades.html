@@ -99,12 +99,19 @@
      Phones and other players keep the one-column layout. */
   .ch-lobby-wrap, .ch-lobby-main, .ch-lobby-side { display: contents; }
   @media (min-width: 900px) {
-    body.ch-host .ch-lobby-wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 20px; align-items: start; }
-    body.ch-host .ch-lobby-main, body.ch-host .ch-lobby-side { display: block; }
-    body.ch-host .ch-lobby-main .lobby-header { margin-top: 0; }
-    body.ch-host #settings-card { margin-top: 0 !important; }
-    body.ch-host .ch-lobby-main .pm-code-card { width: 100%; box-sizing: border-box; }
+    body.ch-cols .ch-lobby-wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 20px; align-items: start; }
+    body.ch-cols .ch-lobby-main, body.ch-cols .ch-lobby-side { display: block; }
+    body.ch-cols .ch-lobby-main .lobby-header { margin-top: 0; }
+    body.ch-cols #settings-card { margin-top: 0 !important; }
+    body.ch-cols .ch-lobby-main .pm-code-card { width: 100%; box-sizing: border-box; }
   }
+  /* other players: settings visible but greyed out, not clickable */
+  #settings-card.ch-ro .lang-pill { pointer-events: none; cursor: default; }
+  #settings-card.ch-ro .lang-pill:not(.active) { opacity: .4; }
+  /* "waiting for host" on its own line, Leave button under it (it was a tall box next to the text) */
+  .ch-lobby-side .btn-row { flex-wrap: wrap; align-items: center; justify-content: center; }
+  .ch-lobby-side #waiting-msg { flex: 1 1 100%; }
+  .ch-lobby-side .btn-row > .btn { align-self: center; height: auto; }
 </style>
 </head>
 <body>
@@ -262,15 +269,15 @@
     <div class="final-scores" id="final-scores"></div>
     <div class="btn-row" style="margin-top:16px;">
       <button class="btn" id="play-again-btn" onclick="playAgain()" style="display:none;"><span id="lbl-play-again">🔄 Play again</span></button>
-      <button class="btn secondary" onclick="goHome(); window.location.href=gamesHubUrl();" id="lbl-go-home">🏠 Home</button>
     </div>
+    <div style="text-align:center;"><a class="pm-all-games" href="/games" onclick="try{goHome()}catch(e){}; location.href=gamesHubUrl(); return false;">🏠 Wszystkie gry</a></div>
     <div id="reaction-container" style="max-width:500px;margin:0 auto;"></div>
   </div>
 
   <div id="other-games-strip"></div>
 </div>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/shared.js?v=14"></script>
-<script src="/js/charades-client.js?v=11"></script>
+<script src="/js/shared.js?v=16"></script>
+<script src="/js/charades-client.js?v=12"></script>
 </body>
 </html>

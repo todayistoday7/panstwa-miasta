@@ -193,6 +193,11 @@ function endTabooTurn(io, room) {
 function register(io, socket) {
 
   socket.on('taboo_create', ({ name, settings }) => {
+    // "Play again" with the group: only the host of the old room can do it
+    if (settings && settings.keepGroup) {
+      const _old = Object.values(tabooRooms).find(r => r.players.some(p => p.id === socket.id));
+      if (_old && _old.hostId !== socket.id) return;
+    }
     const room = makeTabooRoom(socket.id, settings || {});
     if (isBotName(name)) { socket.emit('taboo_error', { msg: 'Invalid name.' }); return; }
     room.players.push({ id: socket.id, name: name || 'Host', connected: true });

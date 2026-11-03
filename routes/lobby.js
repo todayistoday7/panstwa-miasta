@@ -83,6 +83,28 @@ function init(io) {
         if (ack) ack({ ok: true, token });
       } catch (e) { if (ack) ack({ ok: false }); }
     });
+    // 0) players vote which game they'd like next (the host sees the counts; nobody is moved by a vote)
+    socket.on('pm_move_vote', (d) => {
+      try {
+        d = d || {};
+        const allowed = MOVE_ROUTES[d.game] || [];
+        const room = require('./' + d.game).getRooms()[String(d.code || '').toUpperCase()];
+        if (!room) return;
+        const me = (room.players || []).find(p => p.id === socket.id);
+        if (!me) return;
+        const key = d.game + ':' + room.code;
+        let v = _votes.get(key);
+        if (!v || d.reset) { v = { t: Date.now(), by: {} }; _votes.set(key, v); }
+        if (d.reset) { if (room.hostId !== socket.id) return; }
+        else {
+          if (allowed.indexOf(d.to) === -1) return;
+          if (v.by[me.name] === d.to) delete v.by[me.name]; else v.by[me.name] = d.to; // tap again = take the vote back
+          v.t = Date.now();
+        }
+        const counts = {}; Object.keys(v.by).forEach(n => { counts[v.by[n]] = (counts[v.by[n]] || 0) + 1; });
+        io.to(room.code).emit('pm_move_votes', { fromGame: d.game, fromCode: room.code, counts, by: v.by });
+      } catch (e) {}
+    });
     // 2) host's new page has created the new room → tell everyone in the old room where to go
     socket.on('pm_move_ready', (d) => {
       try {
@@ -102,6 +124,8 @@ function init(io) {
 // Which game can send its group to which (both ways)
 const MOVE_ROUTES = { charades: ['whoami', 'taboo'], whoami: ['charades', 'taboo'], taboo: ['charades', 'whoami'] };
 const _moves = new Map(); // token → { fromGame, fromCode, to, players, t }
+const _votes = new Map(); // 'game:CODE' → { t, by: { name: toGame } }
+setInterval(() => { const now = Date.now(); for (const [k, v] of _votes) if (now - v.t > 60 * 60 * 1000) _votes.delete(k); }, 5 * 60 * 1000).unref();
 setInterval(() => { const now = Date.now(); for (const [k, m] of _moves) if (now - m.t > 15 * 60 * 1000) _moves.delete(k); }, 60 * 1000).unref();
 
 // ─── Room funnel tracking (admin stats only) ─────────────

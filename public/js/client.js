@@ -1037,10 +1037,13 @@ function doGoHome() {
 
 function playAgainGroup() {
   // Reset scores and start new game with same players in same room
+  // Same settings as the game that just ended (the host can still change them in the lobby)
+  var _s = (roomState && roomState.settings) || {};
   socket.emit('create_room', { name: myName, settings: {
-    totalRounds: 5,
-    categories: L.cats,
-    lang: lang,
+    totalRounds: _s.totalRounds || 5,
+    gracePeriod: _s.gracePeriod,
+    categories: (_s.categories && _s.categories.length) ? _s.categories : L.cats,
+    lang: _s.lang || lang,
     isPublic: getIsPublic(),
     keepGroup: true,
   }});
@@ -1197,28 +1200,28 @@ function applyTranslations() {
   const discoverData = {
     pl: [
       { href:'/kim-jestem', name:'Kim Jestem?', players:'2-16 graczy' },
-      { href:'/zakazane-slowa', name:'Zakazane Słowa', players:'4-12 graczy' },
+      { href:'/zakazane-slowa', name:'Zakazane Słowa', players:'2-12 graczy' },
       { href:'/wisielec', name:'Wisielec', players:'2-10 graczy' },
       { href:'/szkicuj-i-zgaduj', name:'Szkicuj i Zgaduj', players:'3-10 graczy' },
       { href:'/znajdz-pary', name:'Znajdź Pary', players:'2-6 graczy' },
     ],
     en: [
       { href:'/who-am-i', name:'Who Am I?', players:'2-16 players' },
-      { href:'/forbidden-words', name:'Forbidden Words', players:'4-12 players' },
+      { href:'/forbidden-words', name:'Forbidden Words', players:'2-12 players' },
       { href:'/hangman-online', name:'Hangman', players:'2-10 players' },
       { href:'/sketch-and-guess', name:'Sketch & Guess', players:'3-10 players' },
       { href:'/find-pairs-online', name:'Find Pairs', players:'2-6 players' },
     ],
     de: [
       { href:'/wer-bin-ich', name:'Wer bin ich?', players:'2-16 Spieler' },
-      { href:'/verbotene-woerter', name:'Verbotene Wörter', players:'4-12 Spieler' },
+      { href:'/verbotene-woerter', name:'Verbotene Wörter', players:'2-12 Spieler' },
       { href:'/galgenmaennchen-online', name:'Galgenmännchen', players:'2-10 Spieler' },
       { href:'/zeichnen-und-raten', name:'Zeichnen & Raten', players:'3-10 Spieler' },
       { href:'/memo-spiel-online', name:'Memo-Spiel', players:'2-6 Spieler' },
     ],
     sv: [
       { href:'/vem-ar-jag', name:'Vem är jag?', players:'2-16 spelare' },
-      { href:'/forbjudna-ord', name:'Förbjudna ord', players:'4-12 spelare' },
+      { href:'/forbjudna-ord', name:'Förbjudna ord', players:'2-12 spelare' },
       { href:'/hanga-gubbe-online', name:'Hänga gubbe', players:'2-10 spelare' },
       { href:'/skissa-och-gissa', name:'Skissa & Gissa', players:'3-10 spelare' },
       { href:'/memo-spel-online', name:'Memo-spel', players:'2-6 spelare' },

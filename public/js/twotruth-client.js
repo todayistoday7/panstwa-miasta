@@ -679,7 +679,7 @@ function renderFinal(data) {
       '</div>';
   });
 
-  document.getElementById('lbl-go-home').textContent = L.goHome;
+  // (leave button replaced by the small "All games" link)
 
   if (typeof renderOtherGames === 'function') renderOtherGames('twotruth');
 

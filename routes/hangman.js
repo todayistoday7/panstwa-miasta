@@ -352,11 +352,18 @@ function register(io, socket) {
   socket.on('hang_play_again', ({ code }) => {
     const room = getHangRoom(code);
     if (!room || socket.id !== room.hostId) return;
+    // Back to the lobby (not straight into a new game): the host can change the settings first
     room.state.roundsPlayed = 0;
     room.state.pickerIndex  = 0;
     room.state.scores       = {};
     room.players.forEach(p => room.state.scores[p.id] = 0);
-    startNextRound(io, room);
+    room.state.phase        = 'lobby';
+    room.state.word         = null;
+    room.state.hint         = null;
+    room.state.guessedLetters = [];
+    room.state.wrongCount   = 0;
+    room.state.roundWinner  = null;
+    emitHangState(io, room);
   });
 
   socket.on('hang_rejoin', ({ code, name }) => {

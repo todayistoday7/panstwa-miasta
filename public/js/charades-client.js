@@ -1040,16 +1040,17 @@ function renderLobby(data) {
     }
   }
   
-  // Settings — host only
+  // Settings — everyone sees them, only the host can change them (others: greyed out)
   var settingsCard = document.getElementById('settings-card');
-  if (settingsCard) settingsCard.style.display = isHost ? '' : 'none';
+  if (settingsCard) { settingsCard.style.display = ''; settingsCard.classList.toggle('ch-ro', !isHost); }
   document.body.classList.toggle('ch-host', isHost);
+  document.body.classList.add('ch-cols');
   
   // Category pills
-  if (isHost) {
+  {
     renderCatPills(data.settings.category);
     var _ch = document.getElementById('cat-hint');
-    if (_ch) _ch.textContent = chCatHint();
+    if (_ch) _ch.textContent = isHost ? chCatHint() : ({pl:'Ustawienia wybiera host', en:'The host chooses the settings', de:'Die Einstellungen wählt der Host', sv:'Värden väljer inställningarna'}[lang] || 'The host chooses the settings');
     
     renderPills('diff-pills', [
       {key:'kids',label:L.diffKids},{key:'family',label:L.diffFamily},{key:'adults',label:L.diffAdults},

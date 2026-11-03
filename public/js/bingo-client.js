@@ -178,6 +178,7 @@ const LANGS_BINGO = {
 
 // ── State ────────────────────────────────────────────────
 const socket  = io({ transports: ['websocket', 'polling'] });
+window._gameSocket = socket; // shared helpers (reconnect, leave box, final screen)
 let lang      = (window._forceLang && ['pl','en','de','sv'].includes(window._forceLang))
                ? window._forceLang
                : (new URLSearchParams(window.location.search).get('lang') || 'pl');

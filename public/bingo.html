@@ -566,9 +566,7 @@
     <button class="btn btn-green" id="play-again-btn" onclick="playAgain()" style="display:none;width:100%;max-width:300px;">
       <span id="lbl-play-again">🔄 Zagraj jeszcze raz</span>
     </button>
-    <button class="btn btn-secondary" onclick="leaveRoom(); window.location.href=gamesHubUrl();">
-      <span id="lbl-leave-room-final">🏠 Home</span>
-    </button>
+    <div class="pm-final-links"><a class="pm-all-games" href="/games" onclick="try{leaveRoom()}catch(e){}; location.href=gamesHubUrl(); return false;">🏠 Wszystkie gry</a></div>
 
   <div id="other-games-strip"></div>
   </div>
@@ -576,7 +574,7 @@
 </div><!-- /container -->
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/shared.js?v=14"></script>
-<script src="/js/bingo-client.js?v=8"></script>
+<script src="/js/shared.js?v=16"></script>
+<script src="/js/bingo-client.js?v=9"></script>
 </body>
 </html>

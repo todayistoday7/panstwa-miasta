@@ -276,13 +276,12 @@ function register(io, socket) {
     const room = getMemRoom(code);
     if (!room || socket.id !== room.hostId) return;
 
-    room.state.board = makeBoard(room.settings.theme, room.settings.boardSize);
-    room.state.totalPairs = Math.floor(room.settings.boardSize / 2);
+    // Back to the lobby (not straight into a new game): the host can change the settings first
+    room.state.board = [];
     room.state.foundPairs = 0;
     room.state.flippedCards = [];
     room.state.roundsPlayed = 0;
-    room.state.phase = 'playing';
-    room.state.currentPlayer = room.players[0].id;
+    room.state.phase = 'lobby';
     room.players.forEach(p => p.score = 0);
 
     emitMemState(io, room);

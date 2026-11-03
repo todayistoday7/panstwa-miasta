@@ -253,6 +253,11 @@ function endGame(io, room) {
 function register(io, socket) {
 
   socket.on('create_room', ({ name, settings }) => {
+    // "Play again" with the group: only the host of the old room can do it
+    if (settings && settings.keepGroup) {
+      const _old = Object.values(rooms).find(r => r.players.some(p => p.id === socket.id));
+      if (_old && _old.hostId !== socket.id) return;
+    }
     const trimmedName = (name || '').trim();
     if (!trimmedName) { socket.emit('error', { msg: 'Please enter your name before creating a room.' }); return; }
     if (isBotName(trimmedName)) { socket.emit('error', { msg: 'Invalid name.' }); return; }

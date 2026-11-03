@@ -2124,25 +2124,69 @@ window._buildFooterLangBtns = function() {
   }
 
   // Final screen: buttons for the host
+  var VT = {
+    pl: { ask: 'Host może przenieść całą grupę do innej gry. Na co macie ochotę?', voted: '✓ Twój głos widzi host',
+          n: function (k) { var m10 = k % 10, m100 = k % 100; return k === 1 ? '1 chętna osoba' : (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) ? k + ' chętne osoby' : k + ' chętnych osób'; } },
+    en: { ask: 'The host can move the whole group to another game. What would you like to play?', voted: '✓ The host can see your vote', n: function (k) { return k + (k === 1 ? ' wants this' : ' want this'); } },
+    de: { ask: 'Der Host kann die ganze Gruppe in ein anderes Spiel mitnehmen. Worauf habt ihr Lust?', voted: '✓ Der Host sieht deine Stimme', n: function (k) { return k + (k === 1 ? ' möchte das' : ' möchten das'); } },
+    sv: { ask: 'Värden kan flytta hela gänget till ett annat spel. Vad vill ni spela?', voted: '✓ Värden ser din röst', n: function (k) { return k + ' vill det'; } }
+  };
+  var votes = { counts: {}, by: {} }, lastHost = false;
+  // a new final screen (after each game): start with no votes
+  window._pmMoveNewFinal = function () {
+    try {
+      votes = { counts: {}, by: {} };
+      var st = reg && reg.state();
+      if (lastHost && st && st.code) reg.socket.emit('pm_move_vote', { game: reg.game, code: st.code, reset: true });
+      if (reg) window.pmMoveRender(lastHost);
+    } catch (e) {}
+  };
+  function vt() { return VT[lg()] || VT.en; }
   window.pmMoveRender = function (isHost) {
     try {
       if (!reg) return;
+      lastHost = !!isHost;
       var fin = document.getElementById('screen-final'); if (!fin) return;
       var box = document.getElementById('pm-move-card');
       var targets = ROUTES[reg.game] || [];
-      if (!isHost || following || !targets.length) { if (box) box.style.display = 'none'; return; }
+      if (following || !targets.length) { if (box) box.style.display = 'none'; return; }
+      var st = reg.state() || {};
       if (!box) {
         box = document.createElement('div'); box.id = 'pm-move-card';
-        box.style.cssText = 'margin:18px auto 6px;max-width:520px;padding:16px;border:1px solid var(--border,#333);border-radius:16px;background:var(--card,#1c1c2a);text-align:center;';
+        box.style.cssText = 'margin:18px auto 6px;max-width:520px;padding:16px;border:2px solid rgba(6,214,160,.55);border-radius:16px;background:rgba(6,214,160,.07);text-align:center;';
         var row = fin.querySelector('.btn-row');
         if (row && row.parentNode === fin) row.parentNode.insertBefore(box, row.nextSibling); else fin.appendChild(box);
       }
-      var l = lg(), x = t();
-      box.innerHTML = '<div style="font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent2,#ffd166);margin-bottom:10px;">' + esc2(x.title) + '</div>' +
-        targets.map(function (g) { var G = GAMES[g]; return '<button type="button" class="btn" data-pm-move="' + g + '" style="width:100%;margin:0 0 8px;">' + G.icon + ' ' + esc2(G.name[l] || G.name.en) + '</button>'; }).join('') +
-        '<div style="font-size:12px;font-weight:700;color:var(--muted,#999);">' + esc2(x.note) + '</div>';
+      var l = lg(), x = t(), v = vt();
+      var head = '<div style="font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:#06d6a0;margin-bottom:10px;">' + esc2(x.title) + '</div>';
+      if (isHost) {
+        box.innerHTML = head +
+          targets.map(function (g) {
+            var G = GAMES[g], c = votes.counts[g] || 0;
+            return '<button type="button" class="btn" data-pm-move="' + g + '" style="width:100%;margin:0 0 8px;background:linear-gradient(135deg,#06d6a0,#059669);color:#fff;box-shadow:none;flex-direction:column;">' + G.icon + ' ' + esc2(G.name[l] || G.name.en) +
+              (c ? '<span style="display:block;font-size:12px;font-weight:800;opacity:.9;text-transform:none;letter-spacing:0;margin-top:2px;">👍 ' + esc2(v.n(c)) + '</span>' : '') + '</button>';
+          }).join('') +
+          '<div style="font-size:12px;font-weight:700;color:var(--muted,#999);">' + esc2(x.note) + '</div>';
+        // the host already gets "play something else" - the extra game list would only repeat it
+        var og = document.getElementById('other-games-strip'); if (og) og.style.display = 'none';
+        Array.prototype.forEach.call(box.querySelectorAll('[data-pm-move]'), function (b) { b.onclick = function () { go(b.getAttribute('data-pm-move'), b); }; });
+      } else {
+        var mine = votes.by[st.name] || '';
+        box.innerHTML = head +
+          '<p style="font-size:13px;font-weight:700;color:var(--text,#eee);margin:0 0 10px;line-height:1.5;">' + esc2(v.ask) + '</p>' +
+          '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">' +
+          targets.map(function (g) {
+            var G = GAMES[g], on = mine === g;
+            return '<button type="button" data-pm-vote="' + g + '" style="flex:1 1 140px;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;font-weight:900;cursor:pointer;' +
+              (on ? 'background:#06d6a0;color:#0b0b14;border:2px solid #06d6a0;' : 'background:transparent;color:#06d6a0;border:2px solid rgba(6,214,160,.6);') + '">' +
+              '👍 ' + G.icon + ' ' + esc2(G.name[l] || G.name.en) + '</button>';
+          }).join('') + '</div>' +
+          (mine ? '<div style="font-size:12px;font-weight:800;color:#06d6a0;margin-top:8px;">' + esc2(v.voted) + '</div>' : '');
+        Array.prototype.forEach.call(box.querySelectorAll('[data-pm-vote]'), function (b) {
+          b.onclick = function () { try { reg.socket.emit('pm_move_vote', { game: reg.game, code: st.code, to: b.getAttribute('data-pm-vote') }); } catch (e) {} };
+        });
+      }
       box.style.display = '';
-      Array.prototype.forEach.call(box.querySelectorAll('[data-pm-move]'), function (b) { b.onclick = function () { go(b.getAttribute('data-pm-move'), b); }; });
     } catch (e) {}
   };
 
@@ -2165,6 +2209,13 @@ window._buildFooterLangBtns = function() {
   window.pmMoveRegister = function (r) {
     try {
       reg = r;
+      // Votes for the next game changed: redraw the card
+      r.socket.on('pm_move_votes', function (d) {
+        try { var st = r.state(); if (!d || d.fromGame !== r.game || !st || d.fromCode !== st.code) return;
+          votes = { counts: d.counts || {}, by: d.by || {} };
+          var fin = document.getElementById('screen-final');
+          if (fin && getComputedStyle(fin).display !== 'none') window.pmMoveRender(lastHost); } catch (e) {}
+      });
       // Everyone in the old room: the host has picked a game
       r.socket.on('pm_group_move_soon', function (d) {
         try { var st = r.state(); if (!d || d.fromGame !== r.game || !st || d.fromCode !== st.code) return;
@@ -2264,4 +2315,117 @@ window._buildFooterLangBtns = function() {
     } catch (x) {}
   }, true);
   window.pmInGame = inGame;
+})();
+
+
+// ─── Final screen: small "All games" link (text in the page language) ───
+(function () {
+  var TXT = { pl: '🏠 Wszystkie gry', en: '🏠 All games', de: '🏠 Alle Spiele', sv: '🏠 Alla spel' };
+  function fill() {
+    try {
+      var l = _pmPageLang();
+      Array.prototype.forEach.call(document.querySelectorAll('.pm-all-games'), function (a) {
+        a.textContent = TXT[l] || TXT.en;
+        try { a.setAttribute('href', gamesHubUrl(l)); } catch (e) {}
+      });
+    } catch (e) {}
+  }
+  try {
+    var st = document.createElement('style');
+    st.textContent = '.pm-all-games,.pm-final-links a{display:inline-block;margin:6px 10px;font-size:14px;font-weight:800;color:var(--muted,#9a9ab0);text-decoration:none;border-bottom:1px dashed rgba(154,154,176,.5);padding-bottom:1px}' +
+      '.pm-all-games:hover,.pm-final-links a:hover{color:var(--accent,#ff6b35);border-color:var(--accent,#ff6b35)}' +
+      '.pm-final-links{text-align:center;margin-top:8px}';
+    document.head.appendChild(st);
+  } catch (e) {}
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fill); else fill();
+  document.addEventListener('click', function (e) { if (e.target && e.target.closest && e.target.closest('.lang-btn,.lang-pill,[data-lang]')) setTimeout(fill, 50); }, true);
+  window.pmFillAllGames = fill;
+})();
+
+// ════════════════════════════════════════════════════════════════
+// FINAL SCREEN — one "Play again" button, the same in every game:
+// host: "🔄 Zagraj jeszcze raz / ta sama grupa · ustawienia zmienisz przed startem"
+// others: "Czekamy, aż {host} zacznie kolejną grę"
+// After "Play again" the host gets a hint in the lobby. Never throws.
+// ════════════════════════════════════════════════════════════════
+(function () {
+  var T = {
+    pl: { main: '🔄 Zagraj jeszcze raz', sub: 'ta sama grupa · ustawienia zmienisz przed startem', wait: 'Czekamy, aż {h} zacznie kolejną grę', hint: '💡 Chcecie łatwiej albo trudniej? Zmień ustawienia i naciśnij Start.' },
+    en: { main: '🔄 Play again', sub: 'same group · change the settings before you start', wait: 'Waiting for {h} to start the next game', hint: '💡 Want it easier or harder? Change the settings and press Start.' },
+    de: { main: '🔄 Nochmal spielen', sub: 'gleiche Gruppe · Einstellungen vor dem Start änderbar', wait: 'Wir warten, bis {h} das nächste Spiel startet', hint: '💡 Lieber leichter oder schwerer? Ändere die Einstellungen und drücke Start.' },
+    sv: { main: '🔄 Spela igen', sub: 'samma grupp · ändra inställningarna innan ni startar', wait: 'Vi väntar på att {h} startar nästa spel', hint: '💡 Vill ni ha det lättare eller svårare? Ändra inställningarna och tryck Start.' }
+  };
+  function tx() { var l = 'en'; try { l = _pmPageLang(); } catch (e) {} return T[l] || T.en; }
+  function esc4(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  var last = null, sock = null;
+  function hook() {
+    sock = window._gameSocket;
+    if (!sock) return setTimeout(hook, 300);
+    try { sock.onAny(function (ev, d) { if (d && typeof d === 'object' && Array.isArray(d.players)) last = d; }); } catch (e) {}
+  }
+  function hostInfo() {
+    if (!last || !sock) return null;
+    var me = sock.id, pl = last.players || [];
+    var h = pl.find(function (p) { return p && (p.id === last.hostId || p.isHost); });
+    var hid = last.hostId || (h && h.id);
+    if (!hid) return null;
+    return { isHost: hid === me, name: h ? h.name : '' };
+  }
+  function vis(el) { return !!el && getComputedStyle(el).display !== 'none'; }
+  var wasFinal = false, wasLobbyAfterAgain = false, pressedAgain = false;
+  function tick() {
+    try {
+      var fin = document.getElementById('screen-final'), lob = document.getElementById('screen-lobby');
+      var onFinal = vis(fin), onLobby = vis(lob);
+      if (onFinal && !wasFinal && window._pmMoveNewFinal) window._pmMoveNewFinal();
+      if (onFinal) {
+        var btn = fin.querySelector('button[onclick*="playAgain"],button[onclick*="rematch"]');
+        var hi = hostInfo(), x = tx();
+        if (btn && hi) {
+          var w = document.getElementById('pm-pa-wait');
+          if (hi.isHost) {
+            if (btn.style.getPropertyValue('display') === 'none' && btn.getAttribute('data-pm-hid')) btn.style.removeProperty('display');
+            if (btn.style.display === 'none') btn.style.display = '';
+            btn.removeAttribute('data-pm-hid'); btn.disabled = false; btn.style.opacity = '1';
+            var want = '<span class="pm-pa-main">' + esc4(x.main) + '</span><span class="pm-pa-sub">' + esc4(x.sub) + '</span>';
+            if (btn.innerHTML !== want) btn.innerHTML = want;
+            btn.classList.add('pm-pa-btn');
+            if (!btn._pmHooked) { btn._pmHooked = true; btn.addEventListener('click', function () { pressedAgain = true; }, true); }
+            if (w) w.remove();
+          } else {
+            btn.style.setProperty('display', 'none', 'important'); btn.setAttribute('data-pm-hid', '1');
+            var txt = x.wait.replace('{h}', hi.name || 'host');
+            if (!w) { w = document.createElement('p'); w.id = 'pm-pa-wait'; btn.parentNode.insertBefore(w, btn.nextSibling); }
+            if (w.textContent !== '⏳ ' + txt) w.textContent = '⏳ ' + txt;
+          }
+        }
+      }
+      // back in the lobby after "Play again": a hint for the host
+      var hint = document.getElementById('pm-again-hint');
+      if (onLobby && (wasFinal || wasLobbyAfterAgain) && pressedAgain) {
+        wasLobbyAfterAgain = true;
+        var hi2 = hostInfo();
+        if (hi2 && hi2.isHost && !hint) {
+          hint = document.createElement('div'); hint.id = 'pm-again-hint';
+          hint.textContent = tx().hint;
+          lob.insertBefore(hint, lob.firstChild);
+        }
+      } else if (!onLobby) {
+        if (hint) hint.remove();
+        if (!onFinal) { wasLobbyAfterAgain = false; if (!wasFinal) pressedAgain = false; }
+      }
+      wasFinal = onFinal;
+    } catch (e) {}
+  }
+  try {
+    var st = document.createElement('style');
+    st.textContent = '.pm-pa-btn{display:inline-flex!important;flex-direction:column;align-items:center;gap:2px;line-height:1.2}' +
+      '.pm-pa-btn[data-pm-hid]{display:none!important}' +
+      '.pm-pa-sub{font-size:11px;font-weight:700;opacity:.85;text-transform:none;letter-spacing:0}' +
+      '#pm-pa-wait{text-align:center;font-size:14px;font-weight:800;color:var(--muted,#9a9ab0);margin:10px auto;max-width:420px}' +
+      '#pm-again-hint{margin:0 auto 12px;max-width:780px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,209,102,.4);background:rgba(255,209,102,.08);color:#ffd166;font-size:13px;font-weight:800;text-align:center}';
+    document.head.appendChild(st);
+  } catch (e) {}
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { hook(); }); else hook();
+  setInterval(tick, 400);
 })();

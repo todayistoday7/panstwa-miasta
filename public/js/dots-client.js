@@ -874,7 +874,7 @@ function renderFinal(data) {
     rematchBtn.title = myId === hostId ? '' : (L.waitingForHost || 'Waiting for host...');
     rematchBtn.textContent = L.rematch;
   }
-  document.getElementById('lbl-new-game').textContent = L.newGame;
+  // (leave button replaced by the small "All games" link)
 
   if (typeof renderOtherGames === 'function') renderOtherGames('dots');
 

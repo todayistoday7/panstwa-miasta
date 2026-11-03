@@ -433,7 +433,7 @@
 }
 
 /* ── 2-3 players: no teams ── */
-#lobby-teams.solo-list { display:flex !important; flex-direction:column; gap:8px; }
+#lobby-teams.solo-list { display:flex !important; flex-direction:row; flex-wrap:wrap; gap:8px; }
 .solo-teams-hint { font-size:12px; font-weight:700; color:var(--muted); margin-top:4px; }
 #lbl-reshuffle.solo-hide { display:none !important; }
 .solo-chips { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; }
@@ -450,3 +450,12 @@
 .solo-rank-name { flex:1; }
 .solo-rank-score { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--accent2); }
 .solo-together { text-align:center; color:var(--muted); font-weight:800; font-size:14px; margin-top:12px; }
+
+.solo-pchip { display:inline-flex; align-items:center; gap:6px; padding:5px 12px 5px 5px; border-radius:20px; border:1px solid var(--border); background:var(--surface); font-size:14px; font-weight:800; color:var(--text); }
+.solo-pchip.me { border-color:var(--accent); }
+.solo-pchip .avatar { width:24px; height:24px; font-size:12px; margin:0; }
+@media (min-width: 900px) {
+  .tb-lobby-cols { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; align-items:start; }
+  .tb-lobby-cols > .card, .tb-lobby-cols > .lobby-grid { margin:0 !important; }
+  .tb-lobby-cols .lobby-grid { display:block; }
+}

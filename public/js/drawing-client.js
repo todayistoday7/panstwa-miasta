@@ -230,6 +230,7 @@ let revealChainOrder = [];
 
 // ── Socket ────────────────────────────────────────────────────────
 const socket = io({ transports:['websocket','polling'] });
+window._gameSocket = socket; // shared helpers (reconnect, leave box, final screen)
 
 socket.on('connect', () => {
   myId = socket.id;
@@ -761,7 +762,7 @@ function renderFinal(data) {
   document.getElementById('lbl-game-over').textContent   = L.gameOver;
   document.getElementById('lbl-final-desc').textContent  = L.finalDesc;
   document.getElementById('lbl-play-again').textContent  = L.playAgain;
-  document.getElementById('lbl-go-home').textContent     = L.goHome;
+  // (leave button replaced by the small "All games" link)
 
   const chains = data.chains || {};
   const grid = document.getElementById('final-chains');

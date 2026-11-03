@@ -397,7 +397,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Nu
     <div id="final-chains" class="final-grid"></div>
     <div style="margin-top:24px;display:flex;flex-direction:column;align-items:center;gap:10px;">
       <button class="btn btn-green btn-full" onclick="playAgain()" id="lbl-play-again">🔄 Zagraj jeszcze raz</button>
-      <button class="btn btn-secondary btn-full" onclick="goHome(); window.location.href=gamesHubUrl();" id="lbl-go-home">🏠 Home</button>
+    <div class="pm-final-links"><a class="pm-all-games" href="/games" onclick="try{goHome()}catch(e){}; location.href=gamesHubUrl(); return false;">🏠 Wszystkie gry</a></div>
 
   <div id="reaction-container" style="max-width:500px;margin:0 auto;"></div>
   <div id="other-games-strip"></div>
@@ -420,7 +420,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Nu
 </div><!-- /outer container -->
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/shared.js?v=14"></script>
-<script src="/js/drawing-client.js?v=7"></script>
+<script src="/js/shared.js?v=16"></script>
+<script src="/js/drawing-client.js?v=9"></script>
 </body>
 </html>

@@ -296,28 +296,28 @@ socket.on('taboo_timer_tick',  ({ remaining })        => { updateTimerDisplay(re
 // ─── 2-3 PLAYERS: no teams, everyone describes in turn ──────────
 var TABOO_SOLO_T = {
   pl: { players: 'Gracze', need2: '⚠️ Potrzeba min. 2 graczy', note: 'bez drużyn - każdy opisuje po kolei',
-        teamsFrom4: 'Od 4 graczy gracie w drużynach', next: 'Następny',
+        teamsFrom4: 'Od 4 graczy gracie w drużynach', boxSolo: function(n){ return '✓ ' + n + ' graczy · każdy po kolei opisuje hasła i zbiera własne punkty. Od 4 graczy gracie w dwóch drużynach.'; }, boxTeams: function(n){ return '✓ ' + n + ' graczy · gracie w dwóch drużynach.'; }, next: 'Następny',
         you: '🎤 Opisujesz - reszta zgaduje', other: function(n){ return '🤔 Zgaduj! ' + n + ' opisuje'; },
         oops: '🙊 Ups, padło zakazane słowo (-1)', pointFor: '✅ +1', oopsLabel: function(n){ return '🙊 ' + n + ': zakazane słowo, -1'; },
         turnPts: function(n, p){ return n + ': ' + p; }, together: 'Razem odgadnięte hasła:',
         winner: function(n){ return '🏆 Wygrywa ' + n + '!'; }, draw: 'Remis! 🤝',
         steps: ['Gracie bez drużyn - każdy na siebie. Po kolei każdy jest opisującym, a przed każdą turą widać, kto jest następny.', 'Opisujący widzi na swoim telefonie hasło i pod nim kilka zakazanych słów. Ma czas (30, 60 lub 90 sekund - ustawia host), żeby inni zgadli jak najwięcej haseł.', 'Opisuj samymi słowami. Nie wolno mówić hasła ani jego części, zakazanych słów, pokazywać rękami ani podpowiadać „brzmi jak…”.', 'Pozostali zgadują na głos. Gdy ktoś trafi, opisujący klika ✅ i od razu dostaje następne hasło. Za trudne? Klika „Pomiń” - bez kary.', 'Wymsknęło się zakazane słowo? Opisujący uczciwie klika 🙊 - traci 1 punkt, a hasło przepada.', 'Każde odgadnięte hasło to 1 punkt dla opisującego. Po ostatniej turze wygrywa ten, kto ma najwięcej punktów.'] },
   en: { players: 'Players', need2: '⚠️ Need at least 2 players', note: 'no teams - everyone describes in turn',
-        teamsFrom4: 'With 4 or more you play in teams', next: 'Up next',
+        teamsFrom4: 'With 4 or more you play in teams', boxSolo: function(n){ return '✓ ' + n + ' players · everyone takes turns describing and collects their own points. With 4 or more you play in two teams.'; }, boxTeams: function(n){ return '✓ ' + n + ' players · you play in two teams.'; }, next: 'Up next',
         you: '🎤 You describe - the others guess', other: function(n){ return '🤔 Guess! ' + n + ' is describing'; },
         oops: '🙊 Oops, I said a forbidden word (-1)', pointFor: '✅ +1', oopsLabel: function(n){ return '🙊 ' + n + ': forbidden word, -1'; },
         turnPts: function(n, p){ return n + ': ' + p; }, together: 'Words guessed together:',
         winner: function(n){ return '🏆 ' + n + ' wins!'; }, draw: "It's a draw! 🤝",
         steps: ['No teams - everyone plays for themselves. You take turns being the describer, and before each turn you can see who is next.', 'The describer sees the word on their phone, with a few forbidden words under it. They have 30, 60 or 90 seconds (the host sets it) to get the others to guess as many words as possible.', 'Use words only. You can\'t say the word or any part of it, the forbidden words, act it out with your hands or give "sounds like…" hints.', 'The others guess out loud. When someone gets it, the describer taps ✅ and gets the next word straight away. Too hard? Tap Skip - no penalty.', 'Let a forbidden word slip? The describer honestly taps 🙊 - they lose 1 point and the word is gone.', 'Each word guessed is 1 point for the describer. After the last turn, the player with the most points wins.'] },
   de: { players: 'Spieler', need2: '⚠️ Mindestens 2 Spieler nötig', note: 'ohne Teams - alle beschreiben der Reihe nach',
-        teamsFrom4: 'Ab 4 Spielern spielt ihr in Teams', next: 'Als Nächstes',
+        teamsFrom4: 'Ab 4 Spielern spielt ihr in Teams', boxSolo: function(n){ return '✓ ' + n + ' Spieler · alle beschreiben der Reihe nach und sammeln eigene Punkte. Ab 4 Spielern spielt ihr in zwei Teams.'; }, boxTeams: function(n){ return '✓ ' + n + ' Spieler · ihr spielt in zwei Teams.'; }, next: 'Als Nächstes',
         you: '🎤 Du beschreibst - die anderen raten', other: function(n){ return '🤔 Rate! ' + n + ' beschreibt'; },
         oops: '🙊 Ups, verbotenes Wort gesagt (-1)', pointFor: '✅ +1', oopsLabel: function(n){ return '🙊 ' + n + ': verbotenes Wort, -1'; },
         turnPts: function(n, p){ return n + ': ' + p; }, together: 'Zusammen erratene Begriffe:',
         winner: function(n){ return '🏆 ' + n + ' gewinnt!'; }, draw: 'Unentschieden! 🤝',
         steps: ['Ohne Teams - jeder spielt für sich. Ihr beschreibt der Reihe nach, und vor jeder Runde seht ihr, wer als Nächstes dran ist.', 'Wer beschreibt, sieht auf dem Handy den Begriff und darunter ein paar verbotene Wörter. Es gibt 30, 60 oder 90 Sekunden (stellt der Host ein), damit die anderen so viele Begriffe wie möglich erraten.', 'Nur mit Worten beschreiben. Nicht erlaubt: den Begriff oder einen Teil davon sagen, die verbotenen Wörter, mit den Händen zeigen oder „klingt wie…“-Tipps.', 'Die anderen raten laut. Wenn jemand richtig liegt, tippt der Beschreibende ✅ und bekommt sofort den nächsten Begriff. Zu schwer? Überspringen - ohne Strafe.', 'Ein verbotenes Wort ist rausgerutscht? Der Beschreibende tippt ehrlich auf 🙊 - 1 Punkt weg, und der Begriff ist weg.', 'Jeder erratene Begriff ist 1 Punkt für den Beschreibenden. Nach der letzten Runde gewinnt, wer die meisten Punkte hat.'] },
   sv: { players: 'Spelare', need2: '⚠️ Minst 2 spelare behövs', note: 'utan lag - alla beskriver i tur och ordning',
-        teamsFrom4: 'Med 4 eller fler spelar ni i lag', next: 'Nästa',
+        teamsFrom4: 'Med 4 eller fler spelar ni i lag', boxSolo: function(n){ return '✓ ' + n + ' spelare · alla beskriver i tur och ordning och samlar egna poäng. Med 4 eller fler spelar ni i två lag.'; }, boxTeams: function(n){ return '✓ ' + n + ' spelare · ni spelar i två lag.'; }, next: 'Nästa',
         you: '🎤 Du beskriver - de andra gissar', other: function(n){ return '🤔 Gissa! ' + n + ' beskriver'; },
         oops: '🙊 Oj, jag sa ett förbjudet ord (-1)', pointFor: '✅ +1', oopsLabel: function(n){ return '🙊 ' + n + ': förbjudet ord, -1'; },
         turnPts: function(n, p){ return n + ': ' + p; }, together: 'Gissade ord tillsammans:',
@@ -392,13 +392,12 @@ function renderLobby(data) {
   if (teamsEl) teamsEl.classList.toggle('solo-list', soloLobby);
   if (teamsEl && soloLobby) {
     teamsEl.innerHTML = connected.map(function(p, i) {
-      return '<div class="team-player' + (p.id === myId ? ' me' : '') + '" style="display:flex;align-items:center;gap:8px;">' +
-        '<div class="avatar av-' + (i % 8) + '">' + esc(p.name).charAt(0).toUpperCase() + '</div>' +
-        '<span>' + esc(p.name) +
-        (p.id === myId  ? ' <span class="you-badge">' + L.youBadge + '</span>' : '') +
+      return '<span class="solo-pchip' + (p.id === myId ? ' me' : '') + '">' +
+        '<span class="avatar av-' + (i % 8) + '">' + esc(p.name).charAt(0).toUpperCase() + '</span>' + esc(p.name) +
+        (p.id === myId  ? ' <span class="you-badge">' + youB() + '</span>' : '') +
         (p.id === hostId ? ' <span class="host-badge">' + L.hostBadge + '</span>' : '') +
-        '</span></div>';
-    }).join('') + '<div class="solo-teams-hint">' + soloT().teamsFrom4 + '</div>';
+        '</span>';
+    }).join('');
   } else if (teamsEl) {
     teamsEl.innerHTML = '';
     ['red', 'blue'].forEach(team => {
@@ -445,13 +444,13 @@ function renderLobby(data) {
       warn.style.background = 'rgba(6,214,160,0.1)';
       warn.style.borderColor = 'var(--green)';
       warn.style.color = 'var(--green)';
-      warn.textContent = '✓ ' + L.playersJoined(playerCount) + ' · ' + soloT().note;
+      warn.textContent = soloT().boxSolo(playerCount);
     } else {
       warn.style.display = 'block';
       warn.style.background = 'rgba(6,214,160,0.1)';
       warn.style.borderColor = 'var(--green)';
       warn.style.color = 'var(--green)';
-      warn.textContent = '✓ ' + L.playersJoined(playerCount);
+      warn.textContent = soloT().boxTeams(playerCount);
     }
   }
 
@@ -832,8 +831,6 @@ function renderFinal(data) {
     '</div>';
 
   document.getElementById('lbl-game-over').textContent = L.gameOver;
-  document.getElementById('lbl-new-game').textContent  = L.newGame;
-  document.getElementById('lbl-share').textContent     = L.shareResults;
 
   if (typeof renderOtherGames === 'function') renderOtherGames('taboo');
 
@@ -932,8 +929,10 @@ function shareResults() {
 }
 
 function playAgainGroup() {
+  // Same settings as the game that just ended (the host can still change them in the lobby)
+  var _s = (roomState && roomState.settings) || {};
   socket.emit('taboo_create', { name: myName, settings: {
-    rounds: 5, turnTime: 60, lang, isPublic: getIsPublic(),
+    turnTime: _s.turnTime || 60, gameLength: _s.gameLength || 'standard', lang: _s.lang || lang, isPublic: getIsPublic(),
     keepGroup: true,
   }});
 }
