@@ -1,0 +1,13 @@
+# Mac system files
+.DS_Store
+**/.DS_Store
+
+# Node
+node_modules/
+
+# Local dev data
+data-local/
+*.db
+
+# Environment
+.env

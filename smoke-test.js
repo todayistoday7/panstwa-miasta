@@ -808,6 +808,12 @@ async function testHowToPlayPills(browser) {
 
   try {
     // Quick run of the gameplay part only: node smoke-test.js <url> --gameplay
+    // Word lists (no browser needed): foreign letters, repeats, forbidden word = the word
+    section('Word lists');
+    await check('Word lists - no foreign letters, repeats or self-forbidden words', async () => {
+      const r = require('./scripts/check-words')();
+      if (r.problems.length) throw new Error(r.problems.length + ' problem(s): ' + r.problems.slice(0, 6).join(' | ') + (r.problems.length > 6 ? ' …' : '') + '  (details: node scripts/check-words.js)');
+    });
     if (process.argv.includes('--gameplay')) { await testGameplay(browser); } else {
     await testPageAvailability();
     await testLegacyRedirects();
