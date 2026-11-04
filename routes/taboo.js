@@ -205,6 +205,7 @@ function register(io, socket) {
     if (settings && settings.keepGroup) {
       for (const [code, r] of Object.entries(tabooRooms)) {
         if (r.players.find(p => p.id === socket.id)) {
+          lobby.playAgain('taboo', r);
           const oldPlayers = r.players.filter(p => p.id !== socket.id);
           if (r._lobbyTimer) clearTimeout(r._lobbyTimer);
           lobby.remove(code);

@@ -554,6 +554,7 @@ function register(io, socket) {
   socket.on('charades_play_again', ({ code }) => {
     const room = rooms[code];
     if (!room || socket.id !== room.hostId) return;
+    lobby.playAgain('charades', room);
     room.state = {
       phase: 'lobby',
       scores: { red: 0, blue: 0 },

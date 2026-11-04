@@ -842,6 +842,27 @@ function statsMoveCard(db, game, since, cutoffLabel) {
   }
   return moveCard;
 }
+// "Play again" taps vs finished games, counted only from the day tracking began (v413)
+function statsAgain(db, game, since) {
+  const st = db.prepare(`SELECT MIN(date) AS d FROM game_events WHERE outcome='play_again'`).get();
+  const start = st && st.d ? st.d : null;
+  if (!start) return { start: null, again: 0, finished: 0, players: 0 };
+  const from = since > start ? since : start;
+  const g = game ? ' AND game = ?' : '';
+  const args = game ? [from, game] : [from];
+  const a = db.prepare(`SELECT COUNT(*) AS n, SUM(CAST(json_extract(details,'$.players') AS INTEGER)) AS p FROM game_events WHERE outcome='play_again' AND date >= ?` + g).get(...args);
+  const f = db.prepare(`SELECT COUNT(*) AS n FROM game_events WHERE outcome='game_complete' AND date >= ?` + g).get(...args);
+  return { start, again: a.n || 0, finished: f.n || 0, players: a.p || 0 };
+}
+function statsAgainCard(db, game, since, cutoffLabel) {
+  const r = statsAgain(db, game, since);
+  const big = r.start ? `<strong style="font-size:26px;color:#86efac">${r.again}</strong> <span style="color:#94a3b8">of ${r.finished} finished games</span> <strong style="color:#e2e8f0">(${statsPct(r.again, r.finished)})</strong>` : '<span style="color:#64748b">No data yet</span>';
+  const avg = r.again ? ` · on average ${(r.players / r.again).toFixed(1)} players` : '';
+  return `<div class="card" style="margin-bottom:20px">
+      <h3 style="font-size:14px;margin-bottom:6px;color:#94a3b8">🔄 Played again (${escapeHtml(cutoffLabel)})</h3>
+      <div style="font-size:12px;color:#64748b;margin-bottom:12px">Host tapped "Play again" on the final screen.${r.start ? ' Recorded from ' + escapeHtml(r.start) + ' on.' : ''}</div>
+      <div>${big}<span style="color:#94a3b8;font-size:13px">${avg}</span></div></div>`;
+}
 // Started games that never reached the final screen - where they stopped
 function statsStopCard(db, game, since, cutoffLabel) {
   const UNIT = { pm: 'Round', taboo: 'Turn', dots: 'Round', twotruth: 'Turn', hangman: 'Round', drawing: 'Step', whoami: 'Turn', memory: 'Board', charades: 'Turn' };
@@ -881,7 +902,7 @@ function statsExtraCards(db, game, days, cutoffLabel) {
     const since = statsDayCutoff(days);
     return statsSitesCard(statsSites(db, game, since), cutoffLabel)
       + `<div class="grid2">${statsGroupSizeCard(db, game, since, cutoffLabel)}${statsStopCard(db, game, since, cutoffLabel) || '<div></div>'}</div>`
-      + statsMoveCard(db, game, since, cutoffLabel);
+      + statsMoveCard(db, game, since, cutoffLabel) + statsAgainCard(db, game, since, cutoffLabel);
   } catch (e) { return ''; }
 }
 
@@ -944,6 +965,7 @@ function renderOverview(db, days, cutoffLabel, gameOpts) {
       <td>${noFunnel ? '<span style="color:#64748b">n/a</span>' : statsPct(fin, r.started)}</td>
       <td>${r.last7}</td>
       <td>${r.avgp ? r.avgp.toFixed(1) : '—'}</td>
+      <td>${(() => { const a = statsAgain(db, r.game, since); return a.start ? a.again + ' <span style="color:#64748b">(' + statsPct(a.again, a.finished) + ')</span>' : '—'; })()}</td>
       <td style="color:#64748b;font-size:12px">${escapeHtml(r.lastPlayed || '—')}</td>
     </tr>`;
   }).join('');
@@ -977,7 +999,7 @@ function renderOverview(db, days, cutoffLabel, gameOpts) {
     <div class="card" style="font-size:12px;color:#94a3b8;line-height:1.6">
       <strong style="color:#e2e8f0">How to read this:</strong>
       <em>Created</em> = someone opened a room. <em>Started</em> = the game left the lobby.
-      <em>Finished</em> = reached the final screen. <em>Finish rate</em> = started rooms that finished at least one game.<br>
+      <em>Finished</em> = reached the final screen. <em>Finish rate</em> = started rooms that finished at least one game. <em>Played again</em> = host tapped "Play again" (% of finished games since that tracking began).<br>
       Created/started tracking began ${funnelSince ? 'on <strong>' + escapeHtml(funnelSince) + '</strong>' : '<strong>after this deploy</strong> (no data yet)'} — older periods show only finished games.
       Finished-game tracking for the 7 newer games began mid-October 2026. Bingo has no created/started tracking.
     </div>
@@ -986,7 +1008,7 @@ function renderOverview(db, days, cutoffLabel, gameOpts) {
       <h3 style="font-size:14px;margin-bottom:14px;color:#94a3b8">All games — click a name for details</h3>
       <div style="overflow-x:auto">
       <table>
-        <tr><th>Game</th><th>Rooms created</th><th>Rooms started</th><th>Games finished</th><th>Finish rate</th><th>Last 7 days</th><th>Avg players</th><th>Last finished</th></tr>
+        <tr><th>Game</th><th>Rooms created</th><th>Rooms started</th><th>Games finished</th><th>Finish rate</th><th>Last 7 days</th><th>Avg players</th><th>Played again</th><th>Last finished</th></tr>
         ${tableRows}
       </table>
       </div>
@@ -1079,7 +1101,7 @@ function renderGeneric(db, game, days, cutoffLabel, gameOpts) {
   };
   // Unfinished games: where did they stop?
   const stopCard = statsStopCard(db, game, since, cutoffLabel);
-  const moveCard = statsMoveCard(db, game, since, cutoffLabel);
+  const moveCard = statsMoveCard(db, game, since, cutoffLabel) + statsAgainCard(db, game, since, cutoffLabel);
   let settingsCard = '';
   if (SETTING_LABELS[game]) {
     const parts = SETTING_LABELS[game].map(([key, label, fmt]) => {

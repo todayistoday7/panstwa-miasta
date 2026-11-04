@@ -211,6 +211,7 @@ function register(io, socket) {
     socket.on('bingo_restart', ({ code }) => {
       const room = bingoRooms[code];
       if (!room || socket.id !== room.hostId) return;
+      try { require('./lobby').playAgain('bingo', room); } catch (e) {}
       room.phase = 'lobby';
       room.players.forEach(p => {
         p.card   = [];

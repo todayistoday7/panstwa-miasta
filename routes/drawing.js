@@ -323,6 +323,7 @@ function register(io, socket) {
   socket.on('drawing_restart', ({ code }) => {
     const room = getRoom(code);
     if (!room || socket.id !== room.hostId) return;
+    lobby.playAgain('drawing', room);
     // Create a new room and move all players into it
     const newRoom = makeRoom(socket.id, room.settings);
     // Add all connected players to new room

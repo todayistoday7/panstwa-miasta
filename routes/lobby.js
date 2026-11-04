@@ -360,4 +360,9 @@ function broadcast() {
   if (_io) _io.to('hub').emit('hub_rooms', buildList());
 }
 
-module.exports = { init, announce, remove, siteOf };
+// "Play again" tapped by the host (admin stats only): one line per tap. Never throws.
+function playAgain(game, room) {
+  try { funnelLog(game, room, 'play_again', { players: (room.players || []).filter(p => p && p.connected !== false).length }); } catch (e) {}
+}
+
+module.exports = { init, announce, remove, siteOf, playAgain };

@@ -281,6 +281,7 @@ function register(io, socket) {
   socket.on('mem_play_again', ({ code }) => {
     const room = getMemRoom(code);
     if (!room || socket.id !== room.hostId) return;
+    lobby.playAgain('memory', room);
 
     // Back to the lobby (not straight into a new game): the host can change the settings first
     room.state.board = [];

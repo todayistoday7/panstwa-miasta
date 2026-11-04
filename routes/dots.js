@@ -300,6 +300,7 @@ function register(io, socket) {
   socket.on('dots_rematch', ({ code }) => {
     const room = getDotsRoom(code);
     if (!room || socket.id !== room.hostId) return;
+    lobby.playAgain('dots', room);
     const n = room.settings.gridSize;
     room.state.phase         = 'lobby';
     room.state.grid          = makeGrid(n);

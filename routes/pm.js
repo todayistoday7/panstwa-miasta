@@ -267,6 +267,7 @@ function register(io, socket) {
     if (settings && settings.keepGroup) {
       for (const [code, r] of Object.entries(rooms)) {
         if (r.players.find(p => p.id === socket.id)) {
+          lobby.playAgain('pm', r);
           oldPlayers = r.players.filter(p => p.connected && p.id !== socket.id);
           // Clean up old room
           if (r._lobbyTimer) clearTimeout(r._lobbyTimer);

@@ -1486,6 +1486,7 @@ function register(io, socket) {
   socket.on('whoami_rematch', ({ code }) => {
     const room = whoamiRooms[code];
     if (!room || socket.id !== room.hostId) return;
+    lobby.playAgain('whoami', room);
     room.state.phase        = 'lobby';
     room.state.currentIdx   = 0;
     room.state.turnCount    = 0;
