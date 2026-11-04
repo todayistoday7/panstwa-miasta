@@ -2506,3 +2506,39 @@ window._buildFooterLangBtns = function() {
     } catch (e) {}
   };
 })();
+
+// ── "Enter your name / room code" in all 4 languages (used by the Create / Join buttons) ──
+function pmAskMsg(kind, lang) {
+  var T = {
+    name: { pl: 'Wpisz swoje imię!', en: 'Enter your name!', de: 'Gib deinen Namen ein!', sv: 'Skriv ditt namn!' },
+    code: { pl: 'Wpisz kod pokoju!', en: 'Enter the room code!', de: 'Gib den Raumcode ein!', sv: 'Skriv rumskoden!' }
+  }[kind] || {};
+  return T[lang] || T.en || '';
+}
+
+// ── Home-screen error: show it inside the box the player just used (Create or Join), right under the button ──
+(function () {
+  function init() {
+    var err = document.getElementById('home-error');
+    var code = document.getElementById('join-code');
+    if (!err || !code || !code.closest) return;
+    var joinCard = code.closest('.card');
+    if (!joinCard) return;
+    var lastCard = joinCard; // default: shared link / automatic rejoin errors belong to Join
+    function pick(e) {
+      var c = e.target && e.target.closest && e.target.closest('.card');
+      if (c && c.querySelector('input,button')) lastCard = c;
+    }
+    document.addEventListener('pointerdown', pick, true);
+    document.addEventListener('focusin', pick, true);
+    function place() {
+      var shown = err.textContent.trim() && getComputedStyle(err).display !== 'none';
+      if (!shown) return;
+      if (err.parentNode !== lastCard) { err.style.marginTop = '12px'; lastCard.appendChild(err); }
+      var r = err.getBoundingClientRect();
+      if (r.bottom > window.innerHeight || r.top < 0) err.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    new MutationObserver(place).observe(err, { attributes: true, childList: true, characterData: true, subtree: true });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();

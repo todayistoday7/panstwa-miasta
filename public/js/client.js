@@ -966,7 +966,7 @@ function callStop()      { socket.emit('call_stop', { code: roomCode }); documen
 
 function createRoom() {
   const name = document.getElementById('host-name').value.trim();
-  if (!name) { showError('Enter your name!'); return; }
+  if (!name) { showError(pmAskMsg('name', lang)); return; }
   myName = name; isHost = true;
   const _hp = document.getElementById('hp-website');
   if (_hp && _hp.value) return;
@@ -976,8 +976,8 @@ function createRoom() {
 function joinRoom() {
   const name = document.getElementById('join-name').value.trim();
   const code = document.getElementById('join-code').value.trim().toUpperCase();
-  if (!name) { showError('Enter your name!'); return; }
-  if (!code || code.length < 3) { showError('Enter the room code!'); return; }
+  if (!name) { showError(pmAskMsg('name', lang)); return; }
+  if (!code || code.length < 3) { showError(pmAskMsg('code', lang)); return; }
   myName = name; isHost = false;
   socket.emit('join_room', { name, code });
 }

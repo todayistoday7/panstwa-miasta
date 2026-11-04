@@ -863,7 +863,7 @@ function reshuffleTeams() { socket.emit('taboo_reshuffle',   { code: roomCode })
 
 function createRoom() {
   const name = document.getElementById('host-name').value.trim();
-  if (!name) { showError(lang === 'pl' ? 'Wpisz swoje imię!' : 'Enter your name!'); return; }
+  if (!name) { showError(pmAskMsg('name', lang)); return; }
   myName = name;
   const _hp = document.getElementById('hp-website');
   if (_hp && _hp.value) return; // honeypot triggered
@@ -873,8 +873,8 @@ function createRoom() {
 function joinRoom() {
   const name = document.getElementById('join-name').value.trim();
   const code = document.getElementById('join-code').value.trim().toUpperCase();
-  if (!name) { showError(lang === 'pl' ? 'Wpisz swoje imię!' : 'Enter your name!'); return; }
-  if (!code || code.length < 3) { showError(lang === 'pl' ? 'Wpisz kod pokoju!' : 'Enter the room code!'); return; }
+  if (!name) { showError(pmAskMsg('name', lang)); return; }
+  if (!code || code.length < 3) { showError(pmAskMsg('code', lang)); return; }
   myName = name;
   socket.emit('taboo_join', { name, code });
 }

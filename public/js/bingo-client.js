@@ -400,7 +400,7 @@ function renderFinal(data) {
 // ── Actions ──────────────────────────────────────────────
 function createRoom() {
   const name = document.getElementById('host-name').value.trim();
-  if (!name) return;
+  if (!name) { showError(pmAskMsg('name', lang)); return; }
   myName = name;
   const _hp = document.getElementById('hp-website');
   if (_hp && _hp.value) return;
@@ -410,7 +410,8 @@ function createRoom() {
 function joinRoom() {
   const name = document.getElementById('join-name').value.trim();
   const code = document.getElementById('join-code').value.trim().toUpperCase();
-  if (!name || !code) return;
+  if (!name) { showError(pmAskMsg('name', lang)); return; }
+  if (!code) { showError(pmAskMsg('code', lang)); return; }
   myName = name;
   socket.emit('bingo_join', { name, code });
 }

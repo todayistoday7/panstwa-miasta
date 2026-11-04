@@ -582,7 +582,7 @@ function renderFinal(state) {
 // ─── ACTIONS ─────────────────────────────────────────────────────
 function createRoom() {
   var name = (document.getElementById('host-name').value || '').trim();
-  if (!name) { showError(lang === 'pl' ? 'Wpisz swoje imię.' : 'Please enter your name.'); return; }
+  if (!name) { showError(pmAskMsg('name', lang)); return; }
   var hp = document.getElementById('hp-website');
   if (hp && hp.value) return;
   myName = name;
@@ -593,8 +593,8 @@ function createRoom() {
 function joinRoom() {
   var name = (document.getElementById('join-name').value || '').trim();
   var code = (document.getElementById('join-code').value || '').trim().toUpperCase();
-  if (!name) { showError(lang === 'pl' ? 'Wpisz swoje imię.' : 'Please enter your name.'); return; }
-  if (!code) { showError(lang === 'pl' ? 'Wpisz kod pokoju.' : 'Please enter a room code.'); return; }
+  if (!name) { showError(pmAskMsg('name', lang)); return; }
+  if (!code) { showError(pmAskMsg('code', lang)); return; }
   myName = name;
   sessionStorage.setItem('mem_name', name);
   socket.emit('mem_join', { code: code, name: name });
