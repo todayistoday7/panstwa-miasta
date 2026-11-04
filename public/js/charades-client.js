@@ -878,6 +878,13 @@ let lang = LANGS[_urlLang] ? _urlLang : 'pl';
 let L = LANGS[lang];
 let roomCode = '', myName = '', myId = null;
 
+// ── Shared link: fill in the room code straight away (not only after the connection is ready) ──
+(function() {
+  var j = new URLSearchParams(window.location.search).get('join');
+  var el = document.getElementById('join-code');
+  if (j && el && !el.value) el.value = j.toUpperCase();
+})();
+
 // ── Socket events ──
 socket.on('connect', () => {
   myId = socket.id;
@@ -1048,21 +1055,21 @@ function renderLobby(data) {
   
   // Category pills
   {
-    renderCatPills(data.settings.category);
+    renderCatPills(chShown('category', data.settings.category));
     var _ch = document.getElementById('cat-hint');
     if (_ch) _ch.textContent = isHost ? chCatHint() : ({pl:'Ustawienia wybiera host', en:'The host chooses the settings', de:'Die Einstellungen wählt der Host', sv:'Värden väljer inställningarna'}[lang] || 'The host chooses the settings');
     
     renderPills('diff-pills', [
       {key:'kids',label:L.diffKids},{key:'family',label:L.diffFamily},{key:'adults',label:L.diffAdults},
-    ], data.settings.difficulty, function(v) { socket.emit('charades_update_settings', {code:roomCode,settings:{difficulty:v}}); });
+    ], chShown('difficulty', data.settings.difficulty), function(v) { chSendSetting('difficulty', v); });
 
     renderPills('length-pills', [
       {key:'quick',label:L.lengthQuick},{key:'standard',label:L.lengthStandard},{key:'marathon',label:L.lengthMarathon},
-    ], data.settings.gameLength, function(v) { socket.emit('charades_update_settings', {code:roomCode,settings:{gameLength:v}}); });
+    ], chShown('gameLength', data.settings.gameLength), function(v) { chSendSetting('gameLength', v); });
 
     renderPills('timer-pills', [
       {key:30,label:'30s'},{key:60,label:'60s'},{key:90,label:'90s'},
-    ], data.settings.timerSecs, function(v) { socket.emit('charades_update_settings', {code:roomCode,settings:{timerSecs:parseInt(v)}}); });
+    ], chShown('timerSecs', data.settings.timerSecs), function(v) { chSendSetting('timerSecs', parseInt(v)); });
   }
   
   // Lobby rules translation
@@ -1158,7 +1165,9 @@ function renderCatPills(setting) {
         next = cur.indexOf(k) >= 0 ? cur.filter(function(x) { return x !== k; }) : cur.concat([k]);
         if (chAllStd(next)) next = [];
       }
-      socket.emit('charades_update_settings', {code:roomCode, settings:{category: next.length ? next.join(',') : 'mixed'}});
+      var val = next.length ? next.join(',') : 'mixed';
+      chSendSetting('category', val);
+      renderCatPills(val); // light up at once - the server confirms in the background
     };
   });
 }
@@ -1169,6 +1178,23 @@ function chCatWord() {
   return ({pl:'Kategoria', en:'Category', de:'Kategorie', sv:'Kategori'})[lang] || 'Category';
 }
 
+// ── Settings respond at once ──
+// A tap shows straight away; the server confirms in the background. Until it does
+// (max 3 s), the screen keeps showing the tapped value - so quick taps add up
+// instead of the first one being undone by an older answer from the server.
+var chPending = {};
+function chSendSetting(key, value) {
+  chPending[key] = { v: value, until: Date.now() + 3000 };
+  var st = {}; st[key] = value;
+  socket.emit('charades_update_settings', { code: roomCode, settings: st });
+}
+function chShown(key, serverValue) {
+  var p = chPending[key];
+  if (!p) return serverValue;
+  if (String(p.v) === String(serverValue) || Date.now() > p.until) { delete chPending[key]; return serverValue; }
+  return p.v;
+}
+
 function renderPills(containerId, items, active, onClick) {
   var el = document.getElementById(containerId);
   if (!el) return;
@@ -1176,7 +1202,11 @@ function renderPills(containerId, items, active, onClick) {
     return '<button class="lang-pill' + (item.key === active ? ' active' : '') + '" onclick="void(0)">' + item.label + '</button>';
   }).join('');
   el.querySelectorAll('.lang-pill').forEach(function(btn, i) {
-    btn.onclick = function() { onClick(items[i].key); };
+    btn.onclick = function() {
+      el.querySelectorAll('.lang-pill').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active'); // at once, before the server answers
+      onClick(items[i].key);
+    };
   });
 }
 
@@ -1542,6 +1572,8 @@ function createRoom() {
 function joinRoom() {
   myName = document.getElementById('join-name').value.trim();
   var code = document.getElementById('join-code').value.trim().toUpperCase();
+  // Shared link: take the code from the address if the field is still empty (slow connection)
+  if (!code) { code = (new URLSearchParams(window.location.search).get('join') || '').trim().toUpperCase(); }
   if (!myName || !code) return;
   socket.emit('charades_join', { code: code, name: myName });
 }
@@ -1646,6 +1678,8 @@ function applyTranslations() {
 
 // Share
 function charadesShareRoom() {
+  // Same as all other games (shared.js): share sheet on phones, otherwise copy the link + "Link skopiowany!"
+  if (typeof shareRoom === 'function') { shareRoom('charades'); return; }
   var langUrls = { pl: '/kalambury', en: '/charades-online', de: '/scharade', sv: '/charader' };
   var path = (window._seoLangUrls && window._seoLangUrls[lang]) || langUrls[lang] || '/kalambury';
   var url = window.location.origin + path + '?join=' + roomCode;
