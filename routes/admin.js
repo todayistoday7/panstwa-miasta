@@ -827,8 +827,8 @@ function statsSitesCard(st, cutoffLabel) {
 // Groups moved on from one game to another (final screen buttons)
 function statsMoveCard(db, game, since, cutoffLabel) {
   let moveCard = '';
-  if (game === 'charades' || game === 'whoami') {
-    const NM = { charades: 'Kalambury', whoami: 'Kim Jestem?' };
+  const NM = { charades: 'Kalambury', whoami: 'Kim Jestem?', pm: 'Państwa-Miasta', taboo: 'Zakazane Słowa' };
+  if (NM[game]) {
     const inRows = db.prepare(`SELECT json_extract(details,'$.from') AS g, COUNT(*) AS n, SUM(CAST(json_extract(details,'$.players') AS INTEGER)) AS p
       FROM game_events WHERE game = ? AND date >= ? AND outcome='group_moved_in' GROUP BY g ORDER BY n DESC`).all(game, since);
     const outRows = db.prepare(`SELECT game AS g, COUNT(*) AS n, SUM(CAST(json_extract(details,'$.players') AS INTEGER)) AS p
@@ -837,7 +837,7 @@ function statsMoveCard(db, game, since, cutoffLabel) {
     const body = outRows.map(r => row('➡️ to', r)).join('') + inRows.map(r => row('⬅️ from', r)).join('') || statsEmptyRow(3);
     moveCard = `<div class="card" style="margin-bottom:20px">
       <h3 style="font-size:14px;margin-bottom:6px;color:#94a3b8">Groups that moved to another game (${escapeHtml(cutoffLabel)})</h3>
-      <div style="font-size:12px;color:#64748b;margin-bottom:12px">Host tapped another game on the final screen and the group followed. Recorded from 30 Oct 2026 on.</div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:12px">Host tapped another game on the final screen and the group followed. Recorded from 30 Oct 2026 on (Państwa-Miasta and Zakazane Słowa from 3 Nov).</div>
       <table><tr><th>Direction</th><th>Groups</th><th>Players</th></tr>${body}</table></div>`;
   }
   return moveCard;
