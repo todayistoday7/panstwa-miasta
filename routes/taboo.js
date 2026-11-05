@@ -28,6 +28,7 @@ function makeTabooRoom(hostId, settings) {
       lang:       settings.lang     || 'en',
       isPublic:   settings.isPublic || false,
       gameLength: settings.gameLength || 'standard',
+      forbiddenCount: [5, 3, 1, 0].includes(settings.forbiddenCount) ? settings.forbiddenCount : 5, // forbidden words per card (fewer = easier, for kids)
     },
     players: [],
     state: {
@@ -307,6 +308,8 @@ function register(io, socket) {
   socket.on('taboo_update_settings', ({ code, settings }) => {
     const room = getTabooRoom(code);
     if (!room || socket.id !== room.hostId) return;
+    settings = settings || {};
+    if (settings.forbiddenCount !== undefined && ![5, 3, 1, 0].includes(settings.forbiddenCount)) delete settings.forbiddenCount;
     room.settings = { ...room.settings, ...settings };
     if (settings.isPublic !== undefined) { room.isPublic = settings.isPublic; room.settings.isPublic = settings.isPublic; }
     lobby.announce('taboo', room);
@@ -359,7 +362,8 @@ function register(io, socket) {
     const room = getTabooRoom(code);
     if (!room || room.state.phase !== 'playing') return;
     if (socket.id !== room.state.turnDescriber) return;
-    room.state.currentWord = { word, forbidden };
+    const fc = [5, 3, 1, 0].includes(room.settings.forbiddenCount) ? room.settings.forbiddenCount : 5;
+    room.state.currentWord = { word, forbidden: (Array.isArray(forbidden) ? forbidden : []).slice(0, fc) }; // the most obvious ones come first
     if (!room.state.scores[room.state.round]) room.state.scores[room.state.round] = { red: 0, blue: 0 };
     emitTabooState(io, room);
   });

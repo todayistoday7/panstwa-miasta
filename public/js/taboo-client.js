@@ -485,6 +485,7 @@ function renderLobby(data) {
         '</div>';
     }).join('');
   }
+  renderForbidSetting(settings, isHost);
   // Timer pills
   var timerEl = document.getElementById('taboo-timer-pills');
   if (timerEl) {
@@ -671,7 +672,10 @@ function renderPlaying(data) {
     document.getElementById('target-word').textContent = word;
     document.getElementById('forbidden-words').innerHTML =
       forbidden.map(f => '<div class="forbidden-word">' + f + '</div>').join('');
-    document.getElementById('lbl-forbidden').textContent = L.forbidden;
+    const _lf = document.getElementById('lbl-forbidden');
+    _lf.textContent = forbidden.length ? L.forbidden : tbForbidT().none;
+    _lf.style.textTransform = forbidden.length ? '' : 'none'; _lf.style.letterSpacing = forbidden.length ? '' : 'normal';
+    const _op = document.getElementById('solo-oops'); if (_op && !forbidden.length) _op.style.display = 'none';
     document.getElementById('lbl-got-it').textContent    = L.gotIt;
     document.getElementById('lbl-skip-btn').textContent  = L.skip;
   }
@@ -684,8 +688,9 @@ function renderPlaying(data) {
     document.getElementById('lbl-penalty').textContent       = L.penalty;
     if (currentWord) {
       document.getElementById('referee-target-word').textContent = currentWord.word;
-      document.getElementById('referee-forbidden-words').innerHTML =
-        currentWord.forbidden.map(f => '<div class="forbidden-word">' + f + '</div>').join('');
+      document.getElementById('referee-forbidden-words').innerHTML = currentWord.forbidden.length
+        ? currentWord.forbidden.map(f => '<div class="forbidden-word">' + f + '</div>').join('')
+        : '<div style="color:var(--muted);font-weight:700">' + tbForbidT().none + '</div>';
     } else {
       document.getElementById('referee-target-word').textContent     = '—';
       document.getElementById('referee-forbidden-words').innerHTML   = '';
@@ -895,6 +900,33 @@ function updateSettings() {
   socket.emit('taboo_update_settings', { code: roomCode, settings: { rounds, turnTime, lang, isPublic: getIsPublic() } });
 }
 
+// How many forbidden words per card (host setting) - texts in 4 languages
+var TB_FORBID = {
+  pl: { t: 'Liczba zakazanych słów', none: 'Bez zakazanych słów - opisuj, jak chcesz',
+        o: { 5: ['Trudne', 'Bardzo trudne - dla dorosłych i nastolatków. Każde hasło ma 5 słów, których nie wolno powiedzieć.'], 3: ['Średnie', 'Średnio trudne - 3 słowa, których nie wolno powiedzieć.'],
+             1: ['Łatwe', 'Łatwe - tylko 1 słowo, którego nie wolno powiedzieć. Dobre dla dzieci.'], 0: ['Bez', 'Najłatwiejsze - nie ma zakazanych słów, opisujesz hasło, jak chcesz. Dla najmłodszych.'] } },
+  en: { t: 'Forbidden words per card', none: 'No forbidden words - describe it any way you like',
+        o: { 5: ['Hard', 'Very hard - for adults and teens. Each card has 5 words you must not say.'], 3: ['Medium', 'Medium - 3 words you must not say.'],
+             1: ['Easy', 'Easy - just 1 word you must not say. Good for kids.'], 0: ['None', 'Easiest - no forbidden words, describe it any way you like. For the youngest.'] } },
+  de: { t: 'Verbotene Wörter pro Karte', none: 'Keine verbotenen Wörter - beschreib es, wie du willst',
+        o: { 5: ['Schwer', 'Sehr schwer - für Erwachsene und Teenager. Jede Karte hat 5 Wörter, die man nicht sagen darf.'], 3: ['Mittel', 'Mittelschwer - 3 Wörter, die man nicht sagen darf.'],
+             1: ['Leicht', 'Leicht - nur 1 Wort, das man nicht sagen darf. Gut für Kinder.'], 0: ['Ohne', 'Am leichtesten - keine verbotenen Wörter, beschreib es, wie du willst. Für die Jüngsten.'] } },
+  sv: { t: 'Förbjudna ord per kort', none: 'Inga förbjudna ord - beskriv det hur du vill',
+        o: { 5: ['Svårt', 'Mycket svårt - för vuxna och tonåringar. Varje kort har 5 ord som man inte får säga.'], 3: ['Mellan', 'Mellansvårt - 3 ord som man inte får säga.'],
+             1: ['Lätt', 'Lätt - bara 1 ord som man inte får säga. Bra för barn.'], 0: ['Inga', 'Lättast - inga förbjudna ord, beskriv det hur du vill. För de minsta.'] } }
+};
+function tbForbidT() { return TB_FORBID[lang] || TB_FORBID.en; }
+function renderForbidSetting(settings, isHost) {
+  var el = document.getElementById('taboo-forbid-pills'); if (!el) return;
+  var T = tbForbidT(), cur = [5, 3, 1, 0].indexOf(settings.forbiddenCount) >= 0 ? settings.forbiddenCount : 5;
+  var tl = document.getElementById('lbl-forbid-title'); if (tl) tl.textContent = T.t;
+  el.innerHTML = [5, 3, 1, 0].map(function (k) {
+    return '<div class="lang-pill' + (k === cur ? ' active' : '') + '" style="display:flex;flex-direction:column;align-items:center;line-height:1.15;padding:8px 12px;min-width:64px;' + ((!isHost && k !== cur) ? 'opacity:0.5;' : '') + '"' +
+      (isHost ? ' onclick="updateTabooSettings({forbiddenCount:' + k + '})"' : '') + '><b style="font-size:17px">' + k + '</b><span style="font-size:11px;font-weight:800;opacity:.85">' + T.o[k][0] + '</span></div>';
+  }).join('');
+  var d = document.getElementById('taboo-forbid-desc'); if (d) d.textContent = T.o[cur][1];
+}
+
 function updateTabooSettings(s) { socket.emit('taboo_update_settings', { code: roomCode, settings: s }); }
 
 function switchTeam() { socket.emit('taboo_switch_team', { code: roomCode }); }
@@ -939,7 +971,7 @@ function playAgainGroup() {
   // Same settings as the game that just ended (the host can still change them in the lobby)
   var _s = (roomState && roomState.settings) || {};
   socket.emit('taboo_create', { name: myName, settings: {
-    turnTime: _s.turnTime || 60, gameLength: _s.gameLength || 'standard', lang: _s.lang || lang, isPublic: getIsPublic(),
+    turnTime: _s.turnTime || 60, gameLength: _s.gameLength || 'standard', lang: _s.lang || lang, isPublic: getIsPublic(), forbiddenCount: _s.forbiddenCount,
     keepGroup: true,
   }});
 }
