@@ -110,8 +110,8 @@ function turnBlock(room, curId) {
     if (!cur.connected) return { type: 'offline', name: cur.name };
     const others = room.players.filter(p => p.id !== cur.id && !p.left);
     if (others.some(p => p.connected)) return null;
-    const off = others.find(p => !p.connected);
-    return off ? { type: 'noguess', name: off.name } : null;
+    const off = others.filter(p => !p.connected).map(p => p.name);
+    return off.length ? { type: 'noguess', name: off[0], names: off } : null;
   } catch (e) { return null; }
 }
 

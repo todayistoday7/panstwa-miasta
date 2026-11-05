@@ -198,8 +198,13 @@ function pickWord(room) {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
+function inOrder(room) {
+  const o = room.state.order;
+  return (o && o.length) ? room.players.filter(p => o.includes(p.id)) : room.players.filter(p => p.connected);
+}
 function getRounds(room) {
-  const playerCount = room.players.filter(p => p.connected).length;
+  // counted from everyone who started the game - a locked phone must not shorten the game
+  const playerCount = room.state.phase === 'lobby' ? room.players.filter(p => p.connected).length : inOrder(room).length;
   const multiplier = room.settings.gameLength === 'quick' ? 1 : room.settings.gameLength === 'marathon' ? 3 : 2;
   return Math.max(2, playerCount * multiplier);
 }
@@ -287,17 +292,17 @@ function chTurnBlock(room) {
     const a = room.players.find(p => p.id === room.state.actorId);
     if (!a) return null;
     if (!a.connected) return { type: 'offline', name: a.name };
-    const pool = room.state.solo ? room.players.filter(p => p.id !== a.id) : room.players.filter(p => p.id !== a.id && p.team === a.team);
-    if (pool.some(p => p.connected)) return null;
-    const off = pool.find(p => !p.connected);
-    return { type: 'noguess', name: off ? off.name : '' };
+    const pool = room.state.solo ? inOrder(room).filter(p => p.id !== a.id) : inOrder(room).filter(p => p.id !== a.id && p.team === a.team);
+    if (!pool.length || pool.some(p => p.connected)) return null;
+    const off = pool.filter(p => !p.connected).map(p => p.name);
+    return { type: 'noguess', name: off[0] || '', names: off };
   } catch (e) { return null; }
 }
 
 function pickNextActor(room) {
   if (room.state.solo) {
     // No teams: everyone acts in turn - offline players keep their place (the host can skip them)
-    const list = room.players;
+    const list = inOrder(room);
     if (!list.length) return null;
     const actor = list[(room.state.soloIdx || 0) % list.length];
     room.state.soloIdx = (room.state.soloIdx || 0) + 1;
@@ -305,7 +310,7 @@ function pickNextActor(room) {
   }
   // Alternate between teams, cycle through players within each team
   const team = room.state.currentTeam;
-  const teamPlayers = room.players.filter(p => p.team === team); // offline players keep their place
+  const teamPlayers = inOrder(room).filter(p => p.team === team); // offline players keep their place
   if (teamPlayers.length === 0) return null;
   
   const idx = room.state.teamActorIdx[team] % teamPlayers.length;
@@ -508,6 +513,7 @@ function register(io, socket) {
     if (!solo && (redTeam.length < 2 || blueTeam.length < 2)) { socket.emit("charades_error", { message: "Need at least 2 players per team (4 total)" }); return; }
     
     room.state.solo = solo;
+    room.state.order = getConnected(room).map(p => p.id); // who plays this game (offline players keep their place)
     room.state.indiv = {};
     room.state.soloIdx = 0;
     room.state.round = 1;

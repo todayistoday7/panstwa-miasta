@@ -64,8 +64,8 @@ function turnBlockOf(room, cur) {
     if (cur.connected === false) return { type: 'offline', name: cur.name };
     const others = turnOrder(room).filter(id => id !== cur.id).map(id => room.players.find(p => p.id === id)).filter(Boolean);
     if (others.some(p => p.connected !== false)) return null;
-    const off = others.find(p => p.connected === false);
-    return off ? { type: 'noguess', name: off.name } : null;
+    const off = others.filter(p => p.connected === false).map(p => p.name);
+    return off.length ? { type: 'noguess', name: off[0], names: off } : null;
   } catch (e) { return null; }
 }
 // "Pomiń": the offline player moves to the end of the order (keeps a turn for later)
@@ -406,6 +406,16 @@ function register(io, socket) {
       const p    = room.players.find(p => p.id === socket.id);
       if (!p) continue;
       p.connected = false;
+      // Host's phone offline: everyone sees "waiting for the host"; after 1 minute someone online takes over
+      if (room.hostId === p.id) {
+        const _hid = p.id;
+        setTimeout(() => {
+          if (!p.connected && room.hostId === _hid) {
+            const nx = room.players.find(pl => pl.connected && pl.id !== _hid);
+            if (nx) { room.hostId = nx.id; emitTTState(io, room); }
+          }
+        }, 60 * 1000);
+      }
       if (p._disconnectTimer) clearTimeout(p._disconnectTimer);
       p._disconnectTimer = setTimeout(() => {
         if (!p.connected) {

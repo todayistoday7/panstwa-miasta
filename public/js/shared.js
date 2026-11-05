@@ -2561,16 +2561,24 @@ function pmAskMsg(kind, lang) {
 // ── Turn can't start: the next player is offline / nobody online to play with (Zakazane Słowa, Kalambury) ──
 // block = { type: 'offline' | 'noguess', name }. Returns HTML; the host gets "wait" / "skip" buttons.
 var PM_TB = {
-  pl: { ngT: 'Nie ma z kim grać - {n} jest offline.', ngS: 'Gra ruszy sama, gdy {n} znowu otworzy ją w przeglądarce.',
+  pl: { waitHost: 'Czekamy, aż {n} wróci.', and: ' i ', ngT: 'Nie ma z kim grać - {n} jest offline.', ngS: 'Gra ruszy sama, gdy {n} znowu otworzy ją w przeglądarce. Może wystarczy odblokować telefon.',
+        ngTp: 'Nie ma z kim grać - {n} są offline.', ngSp: 'Gra ruszy sama, gdy ktoś z nich znowu otworzy ją w przeglądarce. Może wystarczy odblokować telefon.',
+        hostOff: 'Czekamy na hosta - {n} jest offline. Może wystarczy odblokować telefon. Jeśli {n} nie wróci, za chwilę prowadzenie przejmie ktoś inny.',
         offT: 'Teraz kolej: {n} - ale jest offline.', offHost: 'Może ma zablokowany telefon.', wait: '⏳ Czekamy, aż {n} wróci', skip: '⏭️ Pomiń i grajmy dalej',
         offP: 'Czekamy, aż {n} wróci, albo host pominie tę kolejkę.' },
-  en: { ngT: 'Nobody to play with - {n} is offline.', ngS: 'The game carries on by itself when {n} opens it in the browser again.',
+  en: { waitHost: 'Waiting for {n} to come back.', and: ' and ', ngT: 'Nobody to play with - {n} is offline.', ngS: 'The game carries on by itself when {n} opens it in the browser again. Maybe they just need to unlock the phone.',
+        ngTp: 'Nobody to play with - {n} are offline.', ngSp: 'The game carries on by itself when one of them opens it in the browser again. Maybe they just need to unlock the phone.',
+        hostOff: 'Waiting for the host - {n} is offline. Maybe they just need to unlock the phone. If {n} does not come back, someone else will take over in a moment.',
         offT: 'Next up: {n} - but {n} is offline.', offHost: 'Maybe their phone is locked.', wait: '⏳ Wait for {n}', skip: '⏭️ Skip and play on',
         offP: 'Waiting for {n} to come back, or the host can skip this turn.' },
-  de: { ngT: 'Niemand zum Mitspielen - {n} ist offline.', ngS: 'Das Spiel geht von selbst weiter, sobald {n} es wieder im Browser öffnet.',
+  de: { waitHost: 'Wir warten, bis {n} zurückkommt.', and: ' und ', ngT: 'Niemand zum Mitspielen - {n} ist offline.', ngS: 'Das Spiel geht von selbst weiter, sobald {n} es wieder im Browser öffnet. Vielleicht reicht es, das Handy zu entsperren.',
+        ngTp: 'Niemand zum Mitspielen - {n} sind offline.', ngSp: 'Das Spiel geht von selbst weiter, sobald jemand von ihnen es wieder im Browser öffnet. Vielleicht reicht es, das Handy zu entsperren.',
+        hostOff: 'Wir warten auf den Host - {n} ist offline. Vielleicht reicht es, das Handy zu entsperren. Wenn {n} nicht zurückkommt, übernimmt gleich jemand anderes.',
         offT: 'Jetzt ist {n} dran - aber {n} ist offline.', offHost: 'Vielleicht ist das Handy gesperrt.', wait: '⏳ Wir warten auf {n}', skip: '⏭️ Überspringen und weiterspielen',
         offP: 'Wir warten, bis {n} zurückkommt, oder der Host überspringt diesen Zug.' },
-  sv: { ngT: 'Ingen att spela med - {n} är offline.', ngS: 'Spelet fortsätter av sig självt när {n} öppnar det i webbläsaren igen.',
+  sv: { waitHost: 'Vi väntar på att {n} kommer tillbaka.', and: ' och ', ngT: 'Ingen att spela med - {n} är offline.', ngS: 'Spelet fortsätter av sig självt när {n} öppnar det i webbläsaren igen. Det kanske räcker att låsa upp telefonen.',
+        ngTp: 'Ingen att spela med - {n} är offline.', ngSp: 'Spelet fortsätter av sig självt när någon av dem öppnar det i webbläsaren igen. Det kanske räcker att låsa upp telefonen.',
+        hostOff: 'Vi väntar på värden - {n} är offline. Det kanske räcker att låsa upp telefonen. Om {n} inte kommer tillbaka tar någon annan över om en stund.',
         offT: 'Nu är det dags för {n} - men {n} är offline.', offHost: 'Telefonen kanske är låst.', wait: '⏳ Vi väntar på {n}', skip: '⏭️ Hoppa över och spela vidare',
         offP: 'Vi väntar på att {n} kommer tillbaka, eller så hoppar värden över den här turen.' }
 };
@@ -2581,9 +2589,13 @@ function pmTurnBlockHtml(block, isHost, lang, skipFn) {
   var f = function (s) { return e(s).split('{n}').join('<b style="color:#fff">' + e(block.name || '?') + '</b>'); };
   var box = function (inner) { return '<div class="pm-turnblock" style="text-align:center;padding:16px 12px;border:2px solid #ffd166;border-radius:14px;margin:10px 0;">' + inner + '</div>'; };
   if (block.type === 'noguess') {
+    var ns = (block.names && block.names.length) ? block.names : [block.name];
+    var many = ns.length > 1;
+    var joined = many ? ns.slice(0, -1).map(e).join(', ') + T.and + e(ns[ns.length - 1]) : e(ns[0] || '?');
+    var g = function (s) { return e(s).split('{n}').join('<b style="color:#fff">' + joined + '</b>'); };
     return box('<div style="font-size:30px;line-height:1">📴</div>' +
-      '<div style="font-size:16px;font-weight:900;color:#ffd166;margin-top:8px;line-height:1.45">' + f(T.ngT) + '</div>' +
-      '<div style="font-size:13px;font-weight:700;color:#94a3b8;margin-top:6px;line-height:1.5">' + f(T.ngS) + '</div>');
+      '<div style="font-size:16px;font-weight:900;color:#ffd166;margin-top:8px;line-height:1.45">' + g(many ? T.ngTp : T.ngT) + '</div>' +
+      '<div style="font-size:13px;font-weight:700;color:#94a3b8;margin-top:6px;line-height:1.5">' + g(many ? T.ngSp : T.ngS) + '</div>');
   }
   var title = '<div style="font-size:16px;font-weight:800;color:#e2e8f0;line-height:1.45">' + f(T.offT) + '</div>';
   var btn = function (txt, primary, onclick) {
@@ -2594,7 +2606,7 @@ function pmTurnBlockHtml(block, isHost, lang, skipFn) {
     window._pmTbName = block.name; // (never put the name inside onclick)
     var waiting = window._pmTbWait === block.name;
     return box(title +
-      '<div style="font-size:13px;font-weight:700;color:#94a3b8;margin-top:4px">' + f(waiting ? T.offP : T.offHost) + '</div>' +
+      '<div style="font-size:13px;font-weight:700;color:#94a3b8;margin-top:4px">' + f(waiting ? T.waitHost : T.offHost) + '</div>' +
       (waiting ? '' : btn(f(T.wait), false, "window._pmTbWait=window._pmTbName;try{pmTurnBlockRerender()}catch(e){}")) +
       btn(e(T.skip), true, skipFn + '()'));
   }
@@ -2616,3 +2628,33 @@ function pmTurnBlockMount(block, isHost, lang, skipFn, anchorId, dimIds) {
   } catch (e) {}
 }
 function pmTurnBlockRerender() { if (window._pmTbArgs) pmTurnBlockMount.apply(null, window._pmTbArgs); }
+
+// ── The host's phone is offline: tell everyone (stays until the host is back or someone else takes over) ──
+(function () {
+  function show(data) {
+    try {
+      var bar = document.getElementById('pm-hostoff');
+      var me = (window._gameSocket && window._gameSocket.id) || null;
+      var host = data && data.hostId && (data.players || []).find(function (p) { return p.id === data.hostId; });
+      var ph = data.phase || (data.state && data.state.phase);
+      var off = host && host.connected === false && data.hostId !== me && ph !== 'final' && ph !== 'lobby';
+      if (!off) { if (bar) bar.remove(); return; }
+      var l = 'en'; try { l = _pmPageLang(); } catch (e) {}
+      var T = PM_TB[l] || PM_TB.en;
+      var nm = String(host.name).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
+      if (!bar) { bar = document.createElement('div'); bar.id = 'pm-hostoff'; document.body.appendChild(bar); }
+      bar.style.cssText = 'position:fixed;left:12px;right:12px;bottom:14px;z-index:9000;max-width:560px;margin:0 auto;background:#1c1c2a;border:2px solid #ffd166;border-radius:14px;padding:12px 14px;font-size:13px;font-weight:700;line-height:1.5;color:#cbd5e1;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.5)';
+      bar.innerHTML = '📴 ' + T.hostOff.split('{n}').join('<b style="color:#fff">' + nm + '</b>');
+    } catch (e) {}
+  }
+  function hook() {
+    var s = window._gameSocket;
+    if (!s || !s.onAny) { setTimeout(hook, 500); return; }
+    s.onAny(function (ev, data) {
+      if (!/_state$|^room_state$/.test(ev) || !data || typeof data !== 'object') return;
+      if (!data.turnBlock || data.turnBlock.type !== 'offline' || data.turnBlock.name !== window._pmTbWait) window._pmTbWait = null;
+      if ('hostId' in data) setTimeout(function () { show(data); }, 0);
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', hook); else hook();
+})();

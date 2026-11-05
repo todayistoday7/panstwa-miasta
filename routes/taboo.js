@@ -108,11 +108,12 @@ function tabooTurnBlock(room) {
     const d = room.players.find(p => p.id === room.state.turnDescriber);
     if (!d) return null;
     if (d.connected === false) return { type: 'offline', name: d.name };
-    const pool = room.state.solo ? room.players.filter(p => p.id !== d.id)
+    const o = room.state.order;
+    const pool = room.state.solo ? room.players.filter(p => p.id !== d.id && (!o || !o.length || o.includes(p.id)))
       : room.players.filter(p => p.id !== d.id && (room.state.teams[room.state.describerTeam] || []).includes(p.id));
-    if (pool.some(p => p.connected !== false)) return null;
-    const off = pool.find(p => p.connected === false);
-    return { type: 'noguess', name: off ? off.name : '' };
+    if (!pool.length || pool.some(p => p.connected !== false)) return null;
+    const off = pool.filter(p => p.connected === false).map(p => p.name);
+    return { type: 'noguess', name: off[0] || '', names: off };
   } catch (e) { return null; }
 }
 
@@ -145,7 +146,8 @@ function emitTabooState(io, room) {
 }
 
 function soloDescriber(room) {
-  const list = room.players; // offline players keep their place too
+  const o = room.state.order;
+  const list = (o && o.length) ? room.players.filter(p => o.includes(p.id)) : room.players; // offline players keep their place too
   if (!list.length) return null;
   const p = list[(room.state.soloIdx || 0) % list.length];
   room.state.soloIdx = (room.state.soloIdx || 0) + 1;
@@ -343,6 +345,7 @@ function register(io, socket) {
     room.state.blueDescriberIndex = 0;
     room.state.describerTeam      = 'red';
     room.state.solo               = _n <= 3;
+    room.state.order              = room.players.filter(p => p.connected !== false).map(p => p.id);
     room.state.indiv              = {};
     room.state.groupTotal         = 0;
     room.state.soloIdx            = 0;
@@ -480,6 +483,7 @@ function register(io, socket) {
     const existing = room.players.find(p => p.name === name);
     if (existing) {
       const oldId = existing.id;
+      __rekey(room, oldId, socket.id); // turn order, scores, teams… everything that still holds the old id
       ['red','blue'].forEach(team => {
         room.state.teams[team] = room.state.teams[team].map(id => id === oldId ? socket.id : id);
       });
@@ -526,6 +530,16 @@ function register(io, socket) {
       const p    = room.players.find(p => p.id === socket.id);
       if (!p) continue;
       p.connected = false;
+      // Host's phone offline: everyone sees "waiting for the host"; after 1 minute someone online takes over
+      if (room.hostId === p.id) {
+        const _hid = p.id;
+        setTimeout(() => {
+          if (!p.connected && room.hostId === _hid) {
+            const nx = room.players.find(pl => pl.connected && pl.id !== _hid);
+            if (nx) { room.hostId = nx.id; emitTabooState(io, room); }
+          }
+        }, 60 * 1000);
+      }
 
       // Promote next connected player to host after grace period
       if (p._disconnectTimer) clearTimeout(p._disconnectTimer);

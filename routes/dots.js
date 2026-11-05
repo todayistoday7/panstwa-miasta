@@ -126,8 +126,8 @@ function turnBlock(room, curId) {
     if (!cur.connected) return { type: 'offline', name: cur.name };
     const others = room.players.filter(p => p.id !== cur.id && !p.left);
     if (others.some(p => p.connected)) return null;
-    const off = others.find(p => !p.connected);
-    return off ? { type: 'noguess', name: off.name } : null;
+    const off = others.filter(p => !p.connected).map(p => p.name);
+    return off.length ? { type: 'noguess', name: off[0], names: off } : null;
   } catch (e) { return null; }
 }
 
@@ -234,6 +234,7 @@ function register(io, socket) {
     room.state.grid          = makeGrid(n);
     room.state.totalBoxes    = n * n;
     room.state.claimedBoxes  = 0;
+    room.players = room.players.filter(p => p.connected); // only those here at the start take turns
     room.state.currentPlayer = room.players.find(p => p.connected).id;
     
     if (!isBetweenRounds) {

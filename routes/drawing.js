@@ -383,6 +383,16 @@ function register(io, socket) {
       const p = room.players.find(pl => pl.id === socket.id);
       if (!p) continue;
       p.connected = false;
+      // Host's phone offline: everyone sees "waiting for the host"; after 1 minute someone online takes over
+      if (room.hostId === p.id) {
+        const _hid = p.id;
+        setTimeout(() => {
+          if (!p.connected && room.hostId === _hid) {
+            const nx = room.players.find(pl => pl.connected && pl.id !== _hid);
+            if (nx) { room.hostId = nx.id; emitState(io, room); }
+          }
+        }, 60 * 1000);
+      }
       if (p._disconnectTimer) clearTimeout(p._disconnectTimer);
       // Grace period: longer in lobby (host may be sharing link via another app)
       // shorter during gameplay to keep chains moving

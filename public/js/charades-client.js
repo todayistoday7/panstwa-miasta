@@ -837,7 +837,7 @@ const LANGS = {
     catMixed: '🎲 Losowe', catAnimals: '🐾 Zwierzęta', catActions: '🏃 Czynności',
     catProfessions: '👷 Zawody', catMovies: '🎬 Postacie z filmów', catFood: '🍕 Jedzenie', catSports: '⚽ Sport',
     diffKids: '🧒 Dzieci', diffFamily: '👨‍👩‍👧 Rodzina', diffAdults: '🎓 Dorośli',
-    yourTurnAct: '🎭 Twoja kolej! Pokaż:',
+    yourTurnAct: '🤫 Twoja kolej! Pokaż - bez słów:',
     teamIsActing: 'pokazuje:',
     correct: '✅ Dobrze!', pass: '⏭️ Pas', passesLeft: 'Pasy:',
     wordsGuessed: 'Odgadnięte:', timeUp: '⏰ Czas minął!',
@@ -852,7 +852,7 @@ const LANGS = {
     nextRound: '➡️ Następna runda',
     lengthQuick: '⚡ Szybka (każdy pokazuje raz)', lengthStandard: '🎮 Standardowa (każdy pokazuje 2x)', lengthMarathon: '🏆 Maraton (każdy pokazuje 3x)', gameLength: 'Długość gry',
     waitForTeam: 'Drużyna przeciwna pokazuje...',
-    guessNow: '🗣️ ZGADUJ! Krzycz odpowiedź!',
+    guessNow: '🗣️ Co to jest? Zgadujcie na głos!',
     watchOther: '👀 Obserwuj — gra drużyna przeciwna',
     yourTeamLabel: 'Twoja drużyna',
     otherTeamLabel: 'Przeciwnicy',
@@ -875,7 +875,7 @@ const LANGS = {
     catMixed: '🎲 Mixed', catAnimals: '🐾 Animals', catActions: '🏃 Actions',
     catProfessions: '👷 Jobs', catMovies: '🎬 Characters', catFood: '🍕 Food', catSports: '⚽ Sports',
     diffKids: '🧒 Kids', diffFamily: '👨‍👩‍👧 Family', diffAdults: '🎓 Adults',
-    yourTurnAct: '🎭 Your turn! Act out:',
+    yourTurnAct: '🤫 Your turn! Act it out - no words:',
     teamIsActing: 'is acting:',
     correct: '✅ Correct!', pass: '⏭️ Pass', passesLeft: 'Passes:',
     wordsGuessed: 'Guessed:', timeUp: '⏰ Time\'s up!',
@@ -890,7 +890,7 @@ const LANGS = {
     nextRound: '➡️ Next Round',
     lengthQuick: '⚡ Quick (everyone acts once)', lengthStandard: '🎮 Standard (everyone acts twice)', lengthMarathon: '🏆 Marathon (everyone acts 3x)', gameLength: 'Game length',
     waitForTeam: 'Other team is acting...',
-    guessNow: '🗣️ GUESS NOW! Shout your answer!',
+    guessNow: '🗣️ What is it? Guess out loud!',
     watchOther: '👀 Watch — the other team is playing',
     yourTeamLabel: 'Your team',
     otherTeamLabel: 'Other team',
@@ -913,7 +913,7 @@ const LANGS = {
     catMixed: '🎲 Gemischt', catAnimals: '🐾 Tiere', catActions: '🏃 Aktionen',
     catProfessions: '👷 Berufe', catMovies: '🎬 Figuren', catFood: '🍕 Essen', catSports: '⚽ Sport',
     diffKids: '🧒 Kinder', diffFamily: '👨‍👩‍👧 Familie', diffAdults: '🎓 Erwachsene',
-    yourTurnAct: '🎭 Du bist dran! Zeige:',
+    yourTurnAct: '🤫 Du bist dran! Zeig es - ohne Worte:',
     teamIsActing: 'zeigt:',
     correct: '✅ Richtig!', pass: '⏭️ Passen', passesLeft: 'Pässe:',
     wordsGuessed: 'Erraten:', timeUp: '⏰ Zeit ist um!',
@@ -928,7 +928,7 @@ const LANGS = {
     nextRound: '➡️ Nächste Runde',
     lengthQuick: '⚡ Kurz (jeder einmal)', lengthStandard: '🎮 Standard (jeder 2x)', lengthMarathon: '🏆 Marathon (jeder 3x)', gameLength: 'Spiellänge',
     waitForTeam: 'Das andere Team zeigt...',
-    guessNow: '🗣️ RATEN! Rufe deine Antwort!',
+    guessNow: '🗣️ Was ist das? Ratet laut!',
     watchOther: '👀 Zuschauen — das andere Team spielt',
     yourTeamLabel: 'Dein Team',
     otherTeamLabel: 'Gegner',
@@ -951,7 +951,7 @@ const LANGS = {
     catMixed: '🎲 Blandat', catAnimals: '🐾 Djur', catActions: '🏃 Handlingar',
     catProfessions: '👷 Yrken', catMovies: '🎬 Karaktärer', catFood: '🍕 Mat', catSports: '⚽ Sport',
     diffKids: '🧒 Barn', diffFamily: '👨‍👩‍👧 Familj', diffAdults: '🎓 Vuxna',
-    yourTurnAct: '🎭 Din tur! Visa:',
+    yourTurnAct: '🤫 Din tur! Visa - utan ord:',
     teamIsActing: 'visar:',
     correct: '✅ Rätt!', pass: '⏭️ Passa', passesLeft: 'Pass:',
     wordsGuessed: 'Gissade:', timeUp: '⏰ Tiden är slut!',
@@ -966,7 +966,7 @@ const LANGS = {
     nextRound: '➡️ Nästa runda',
     lengthQuick: '⚡ Snabb (alla visar en gång)', lengthStandard: '🎮 Standard (alla visar 2 ggr)', lengthMarathon: '🏆 Maraton (alla visar 3 ggr)', gameLength: 'Spellängd',
     waitForTeam: 'Andra laget visar...',
-    guessNow: '🗣️ GISSA NU! Ropa ditt svar!',
+    guessNow: '🗣️ Vad är det? Gissa högt!',
     watchOther: '👀 Titta — andra laget spelar',
     yourTeamLabel: 'Ditt lag',
     otherTeamLabel: 'Motståndare',
@@ -1436,6 +1436,7 @@ function renderPlaying(data) {
     if (isActor) {
       banner.textContent = L.yourTurnAct;
       banner.className = 'turn-banner actor-banner';
+      chNoWordsFlash(data);
     } else {
       var teamLabel = data.actorTeam === 'red' ? L.teamRed : L.teamBlue;
       banner.textContent = data.actorName + (data.solo ? ' ' : ' (' + teamLabel + ') ') + actingTxt;
@@ -1825,3 +1826,19 @@ if (window.pmMoveRegister) window.pmMoveRegister({
   create: function (name) { var i = document.getElementById('create-name'); if (i) i.value = name; createRoom(); },
   join: function (name, code) { var n = document.getElementById('join-name'), c = document.getElementById('join-code'); if (n) n.value = name; if (c) c.value = code; joinRoom(); }
 });
+
+// ── Start of the actor's turn: a 2-second reminder that this game is played without words ──
+function chNoWordsFlash(data) {
+  try {
+    var key = (data.round || '') + ':' + (data.timerEnd || '');
+    if (window._chFlashKey === key) return;
+    window._chFlashKey = key;
+    var T = { pl: '🤫 Nie używaj słów, tylko pokazuj', en: '🤫 No words - just act it out', de: '🤫 Keine Wörter - nur zeigen', sv: '🤫 Inga ord - bara visa' };
+    var o = document.createElement('div');
+    o.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(10,10,18,.82);pointer-events:none;transition:opacity .4s';
+    o.innerHTML = '<div style="background:#1c1c2a;border:2px solid #ffd166;border-radius:18px;padding:22px 24px;max-width:340px;text-align:center;font-size:22px;font-weight:900;color:#ffd166;line-height:1.35">' + (T[lang] || T.en) + '</div>';
+    document.body.appendChild(o);
+    setTimeout(function () { o.style.opacity = '0'; }, 1800);
+    setTimeout(function () { o.remove(); }, 2300);
+  } catch (e) {}
+}

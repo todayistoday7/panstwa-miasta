@@ -257,6 +257,16 @@ function register(io, socket) {
         const player = room.players.find(p => p.id === socket.id);
         if (!player) continue;
         player.connected = false;
+      // Host's phone offline: everyone sees "waiting for the host"; after 1 minute someone online takes over
+      if (room.hostId === player.id) {
+        const _hid = player.id;
+        setTimeout(() => {
+          if (!player.connected && room.hostId === _hid) {
+            const nx = room.players.find(pl => pl.connected && pl.id !== _hid);
+            if (nx) { room.hostId = nx.id; emitBingoState(io, room); }
+          }
+        }, 60 * 1000);
+      }
         player._disconnectTimer = setTimeout(() => {
           if (!player.connected) {
             room.players = room.players.filter(p => p.id !== socket.id);

@@ -71,8 +71,8 @@ function turnBlockOf(room, cur) {
     if (cur.connected === false) return { type: 'offline', name: cur.name };
     const others = turnOrder(room).filter(id => id !== cur.id).map(id => room.players.find(p => p.id === id)).filter(Boolean);
     if (others.some(p => p.connected !== false)) return null;
-    const off = others.find(p => p.connected === false);
-    return off ? { type: 'noguess', name: off.name } : null;
+    const off = others.filter(p => p.connected === false).map(p => p.name);
+    return off.length ? { type: 'noguess', name: off[0], names: off } : null;
   } catch (e) { return null; }
 }
 // "Pomiń": the offline player moves to the end of the order (keeps a turn for later)
