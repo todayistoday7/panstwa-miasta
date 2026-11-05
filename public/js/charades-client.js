@@ -1075,8 +1075,8 @@ function soloT() { return SOLO_T[lang] || SOLO_T.en; }
 function soloScoreboardHtml(data) {
   return (data.scores || []).map(function(s) {
     var active = s.name === data.actorName;
-    return '<div class="score-team' + (active ? ' active-team' : '') + '">' +
-      '<div class="score-label">' + esc(s.name) + (s.id === myId ? ' (' + L.youBadge + ')' : '') + '</div>' +
+    return '<div class="score-team' + (active ? ' active-team' : '') + '"' + (s.off ? ' style="opacity:.5"' : '') + '>' +
+      '<div class="score-label">' + (s.off ? '📴 ' : '') + esc(s.name) + (s.id === myId ? ' (' + L.youBadge + ')' : '') + '</div>' +
       '<div class="score-value">' + s.score + '</div></div>';
   }).join('');
 }
@@ -1313,7 +1313,10 @@ function renderPills(containerId, items, active, onClick) {
 }
 
 // ── PREPARING (Up Next) ──
+function pmTurnBlockRerender() { if (window._chLast) renderPreparing(window._chLast); }
+function charadesSkipOffline() { socket.emit('charades_skip_offline', { code: roomCode }); }
 function renderPreparing(data) {
+  window._chLast = data;
   var codeEl = document.getElementById('playing-room-code');
   if (codeEl) codeEl.textContent = '🔑 ' + roomCode;
   var isActor = data.actorId === myId;
@@ -1362,12 +1365,16 @@ function renderPreparing(data) {
   var banner = document.getElementById('turn-banner');
   if (banner) {
     banner.className = 'turn-banner actor-banner';
-    banner.textContent = '⏭️ ' + (lang === 'pl' ? 'Następny' : lang === 'de' ? 'Als Nächstes' : lang === 'sv' ? 'Nästa' : 'Up Next') + ': ' + actorName + (data.solo ? '' : ' (' + teamLabel + ')');
+    banner.textContent = '⏭️ ' + (lang === 'pl' ? 'Następny' : lang === 'de' ? 'Als Nächstes' : lang === 'sv' ? 'Nästa' : 'Up Next') + ': ' + actorName + (data.turnBlock && data.turnBlock.type === 'offline' ? ' 📴' : '') + (data.solo ? '' : ' (' + teamLabel + ')');
   }
   
   // Wait message — actor sees "Ready" button, others see "Get ready"
   var waitMsg = document.getElementById('wait-message');
-  if (waitMsg) {
+  if (waitMsg && data.turnBlock) {
+    // the actor is offline, or nobody online can guess: say so (host: wait or skip)
+    waitMsg.style.display = '';
+    waitMsg.innerHTML = pmTurnBlockHtml(data.turnBlock, data.hostId === myId, lang, 'charadesSkipOffline');
+  } else if (waitMsg) {
     waitMsg.style.display = '';
     if (isActor) {
       waitMsg.innerHTML =

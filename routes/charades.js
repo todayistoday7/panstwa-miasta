@@ -262,12 +262,13 @@ function broadcastState(io, room) {
     wordCat: (room.state.phase === 'acting' && room.state.word) ? (room.state.wordCat || null) : null,
     // 2-3 players: no teams, everyone acts in turn, points for the actor
     solo: !!room.state.solo,
-    scores: room.state.solo ? room.players.filter(pl => pl.connected || (room.state.indiv && room.state.indiv[pl.name]))
-      .map(pl => ({ name: pl.name, id: pl.id, score: (room.state.indiv && room.state.indiv[pl.name]) || 0 })) : null,
+    scores: room.state.solo ? room.players // offline players stay on the score row (greyed, 📴)
+      .map(pl => ({ name: pl.name, id: pl.id, score: (room.state.indiv && room.state.indiv[pl.name]) || 0, off: !pl.connected })) : null,
     groupTotal: room.state.solo ? Object.values(room.state.indiv || {}).reduce((a, b) => a + b, 0) : null,
     settings: room.settings,
     isPublic: room.isPublic,
     wordCount: getWordCount(room),
+    turnBlock: chTurnBlock(room),
   };
 
   // Broadcast to everyone in the room (like Forbidden Words does)
@@ -279,10 +280,24 @@ function broadcastState(io, room) {
   }
 }
 
+// Why the next turn can't start: the actor is offline, or nobody online can guess
+function chTurnBlock(room) {
+  try {
+    if (room.state.phase !== 'preparing') return null;
+    const a = room.players.find(p => p.id === room.state.actorId);
+    if (!a) return null;
+    if (!a.connected) return { type: 'offline', name: a.name };
+    const pool = room.state.solo ? room.players.filter(p => p.id !== a.id) : room.players.filter(p => p.id !== a.id && p.team === a.team);
+    if (pool.some(p => p.connected)) return null;
+    const off = pool.find(p => !p.connected);
+    return { type: 'noguess', name: off ? off.name : '' };
+  } catch (e) { return null; }
+}
+
 function pickNextActor(room) {
   if (room.state.solo) {
-    // No teams: everyone acts in turn
-    const list = getConnected(room);
+    // No teams: everyone acts in turn - offline players keep their place (the host can skip them)
+    const list = room.players;
     if (!list.length) return null;
     const actor = list[(room.state.soloIdx || 0) % list.length];
     room.state.soloIdx = (room.state.soloIdx || 0) + 1;
@@ -290,7 +305,7 @@ function pickNextActor(room) {
   }
   // Alternate between teams, cycle through players within each team
   const team = room.state.currentTeam;
-  const teamPlayers = getTeamPlayers(room, team);
+  const teamPlayers = room.players.filter(p => p.team === team); // offline players keep their place
   if (teamPlayers.length === 0) return null;
   
   const idx = room.state.teamActorIdx[team] % teamPlayers.length;
@@ -553,10 +568,20 @@ function register(io, socket) {
   });
   
   // Actor presses "I'm Ready!" to start their turn
+  // Host: "Pomiń i grajmy dalej" - the actor is offline, the next person goes (the offline one keeps their place)
+  socket.on('charades_skip_offline', ({ code }) => {
+    const room = rooms[code];
+    if (!room || socket.id !== room.hostId || room.state.phase !== 'preparing') return;
+    const b = chTurnBlock(room);
+    if (!b || b.type !== 'offline') return;
+    prepareTurn(io, room);
+  });
+
   socket.on('charades_ready', ({ code }) => {
     const room = rooms[code];
     if (!room || room.state.phase !== 'preparing') return;
     if (socket.id !== room.state.actorId) return;
+    if (chTurnBlock(room)) return; // nobody online to guess - wait
     startTurn(io, room);
   });
   

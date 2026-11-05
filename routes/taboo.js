@@ -80,10 +80,8 @@ function assignTeams(room) {
 function opposingTeam(team) { return team === 'red' ? 'blue' : 'red'; }
 
 function nextDescriber(room, team) {
-  const members = room.state.teams[team].filter(id => {
-    const p = room.players.find(pl => pl.id === id);
-    return p && p.connected !== false;
-  });
+  // everyone keeps their place in the order, also while offline (the host can skip them)
+  const members = room.state.teams[team].filter(id => room.players.some(pl => pl.id === id));
   if (!members.length) return null;
   const key = team === 'red' ? 'redDescriberIndex' : 'blueDescriberIndex';
   const idx = room.state[key] % members.length;
@@ -101,6 +99,21 @@ function pickReferee(room, teamName) {
   const idx = (room.state[key] || 0) % members.length;
   room.state[key] = (room.state[key] || 0) + 1;
   return members[idx];
+}
+
+// Why the next turn can't start: the describer is offline, or nobody online can guess
+function tabooTurnBlock(room) {
+  try {
+    if (room.state.phase !== 'preparing') return null;
+    const d = room.players.find(p => p.id === room.state.turnDescriber);
+    if (!d) return null;
+    if (d.connected === false) return { type: 'offline', name: d.name };
+    const pool = room.state.solo ? room.players.filter(p => p.id !== d.id)
+      : room.players.filter(p => p.id !== d.id && (room.state.teams[room.state.describerTeam] || []).includes(p.id));
+    if (pool.some(p => p.connected !== false)) return null;
+    const off = pool.find(p => p.connected === false);
+    return { type: 'noguess', name: off ? off.name : '' };
+  } catch (e) { return null; }
 }
 
 function emitTabooState(io, room) {
@@ -122,16 +135,17 @@ function emitTabooState(io, room) {
     turnTimeRemaining: room.state.turnTimeRemaining,
     solo:              !!room.state.solo,
     soloScores:        room.state.solo ? room.players
-                         .filter(pl => pl.connected !== false || (room.state.indiv && room.state.indiv[pl.name] !== undefined))
-                         .map(pl => ({ id: pl.id, name: pl.name, score: (room.state.indiv && room.state.indiv[pl.name]) || 0 })) : null,
+                         // offline players stay on the score row (greyed, 📴) - they keep their place and points
+                         .map(pl => ({ id: pl.id, name: pl.name, score: (room.state.indiv && room.state.indiv[pl.name]) || 0, off: pl.connected === false })) : null,
     groupTotal:        room.state.solo ? (room.state.groupTotal || 0) : null,
     turnPoints:        room.state.turnPoints || 0,
     lastDescriberName: room.state.lastDescriberName || '',
+    turnBlock:         tabooTurnBlock(room),
   });
 }
 
 function soloDescriber(room) {
-  const list = room.players.filter(p => p.connected !== false);
+  const list = room.players; // offline players keep their place too
   if (!list.length) return null;
   const p = list[(room.state.soloIdx || 0) % list.length];
   room.state.soloIdx = (room.state.soloIdx || 0) + 1;
@@ -416,7 +430,17 @@ function register(io, socket) {
     const room = getTabooRoom(code);
     if (!room || room.state.phase !== 'preparing') return;
     if (socket.id !== room.state.turnDescriber) return;
+    if (tabooTurnBlock(room)) return; // nobody online to guess - wait
     startTabooTurn(io, room);
+  });
+
+  // Host: "Pomiń i grajmy dalej" - the describer is offline, the next person goes (the offline one keeps their place for later)
+  socket.on('taboo_skip_offline', ({ code }) => {
+    const room = getTabooRoom(code);
+    if (!room || socket.id !== room.hostId || room.state.phase !== 'preparing') return;
+    const b = tabooTurnBlock(room);
+    if (!b || b.type !== 'offline') return;
+    prepareTabooTurn(io, room);
   });
 
   // Player switches their own team

@@ -328,7 +328,7 @@ function soloT() { return TABOO_SOLO_T[lang] || TABOO_SOLO_T.en; }
 function youB() { return String(L.youBadge || '').replace(/[\s·]+$/, ''); }
 function soloChipsHtml(data, activeId) {
   return '<div class="solo-chips">' + (data.soloScores || []).map(function(s) {
-    return '<span class="solo-chip' + (s.id === activeId ? ' active' : '') + '">' + esc(s.name) +
+    return '<span class="solo-chip' + (s.id === activeId ? ' active' : '') + '"' + (s.off ? ' style="opacity:.5"' : '') + '>' + (s.off ? '📴 ' : '') + esc(s.name) +
       (s.id === myId ? ' <small>(' + youB() + ')</small>' : '') + ' <b>' + s.score + '</b></span>';
   }).join('') + '</div>';
 }
@@ -523,11 +523,14 @@ function renderLobby(data) {
 
 // ─── PLAYING — Bug 2: clear role banners; Bug 4: referee always visible ──
 // ── PREPARING (Up Next) ──
+function pmTurnBlockRerender() { if (window._tbLast) renderPreparing(window._tbLast); }
+function tabooSkipOffline() { socket.emit('taboo_skip_offline', { code: roomCode }); }
 function renderPreparing(data) {
+  window._tbLast = data;
   const { players, turnDescriber, describerTeam, teams, teamTotals } = data;
   const isDescriber = myId === turnDescriber;
   const describerPlayer = players.find(p => p.id === turnDescriber);
-  const describerName = describerPlayer ? describerPlayer.name : '?';
+  const describerName = describerPlayer ? esc(describerPlayer.name) + (describerPlayer.connected === false ? ' <span style="font-size:14px;color:var(--muted)">📴 offline</span>' : '') : '?';
   const teamLabel = describerTeam === 'red' ? L.teamRed : L.teamBlue;
 
   // Hide all views
@@ -541,7 +544,7 @@ function renderPreparing(data) {
     banner.style.borderLeft = '4px solid var(--accent)';
     banner.innerHTML = '<div style="text-align:center;padding:16px 0;">' +
       '<div style="font-size:14px;color:var(--muted);margin-bottom:4px;">⏭️ ' + soloT().next + '</div>' +
-      '<div style="font-size:24px;font-weight:800;color:var(--text);">' + esc(describerName) + '</div>' +
+      '<div style="font-size:24px;font-weight:800;color:var(--text);">' + describerName + '</div>' +
       '</div>';
   } else if (banner) {
     banner.style.borderLeft = '4px solid var(--accent)';
@@ -566,7 +569,11 @@ function renderPreparing(data) {
   // Describer sees Ready button, others see waiting message
   const teammatesEl = document.getElementById('my-teammates');
   if (teammatesEl) teammatesEl.style.display = '';
-  if (teammatesEl) {
+  if (teammatesEl && data.turnBlock) {
+    // the describer is offline, or nobody online can guess: say so (host: wait or skip)
+    teammatesEl.innerHTML = pmTurnBlockHtml(data.turnBlock, data.hostId === myId, lang, 'tabooSkipOffline');
+    teammatesEl.style.borderColor = 'transparent';
+  } else if (teammatesEl) {
     if (isDescriber) {
       teammatesEl.innerHTML = '<div style="text-align:center;padding:20px 0;">' +
         '<div style="font-size:18px;font-weight:800;color:var(--accent);margin-bottom:12px;">' + (lang === 'pl' ? '🎭 Twoja kolej!' : lang === 'de' ? '🎭 Du bist dran!' : lang === 'sv' ? '🎭 Din tur!' : '🎭 Your turn!') + '</div>' +

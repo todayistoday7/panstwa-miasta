@@ -2557,3 +2557,46 @@ function pmAskMsg(kind, lang) {
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
+
+// ── Turn can't start: the next player is offline / nobody online to play with (Zakazane Słowa, Kalambury) ──
+// block = { type: 'offline' | 'noguess', name }. Returns HTML; the host gets "wait" / "skip" buttons.
+var PM_TB = {
+  pl: { ngT: 'Nie ma z kim grać - {n} jest offline.', ngS: 'Gra ruszy sama, gdy {n} znowu otworzy ją w przeglądarce.',
+        offT: 'Teraz kolej: {n} - ale jest offline.', offHost: 'Może ma zablokowany telefon.', wait: '⏳ Czekamy, aż {n} wróci', skip: '⏭️ Pomiń i grajmy dalej',
+        offP: 'Czekamy, aż {n} wróci, albo host pominie tę kolejkę.' },
+  en: { ngT: 'Nobody to play with - {n} is offline.', ngS: 'The game carries on by itself when {n} opens it in the browser again.',
+        offT: 'Next up: {n} - but {n} is offline.', offHost: 'Maybe their phone is locked.', wait: '⏳ Wait for {n}', skip: '⏭️ Skip and play on',
+        offP: 'Waiting for {n} to come back, or the host can skip this turn.' },
+  de: { ngT: 'Niemand zum Mitspielen - {n} ist offline.', ngS: 'Das Spiel geht von selbst weiter, sobald {n} es wieder im Browser öffnet.',
+        offT: 'Jetzt ist {n} dran - aber {n} ist offline.', offHost: 'Vielleicht ist das Handy gesperrt.', wait: '⏳ Wir warten auf {n}', skip: '⏭️ Überspringen und weiterspielen',
+        offP: 'Wir warten, bis {n} zurückkommt, oder der Host überspringt diesen Zug.' },
+  sv: { ngT: 'Ingen att spela med - {n} är offline.', ngS: 'Spelet fortsätter av sig självt när {n} öppnar det i webbläsaren igen.',
+        offT: 'Nu är det dags för {n} - men {n} är offline.', offHost: 'Telefonen kanske är låst.', wait: '⏳ Vi väntar på {n}', skip: '⏭️ Hoppa över och spela vidare',
+        offP: 'Vi väntar på att {n} kommer tillbaka, eller så hoppar värden över den här turen.' }
+};
+function pmTurnBlockHtml(block, isHost, lang, skipFn) {
+  if (!block) return '';
+  var T = PM_TB[lang] || PM_TB.en;
+  var e = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var f = function (s) { return e(s).split('{n}').join('<b style="color:#fff">' + e(block.name || '?') + '</b>'); };
+  var box = function (inner) { return '<div class="pm-turnblock" style="text-align:center;padding:16px 12px;border:2px solid #ffd166;border-radius:14px;margin:10px 0;">' + inner + '</div>'; };
+  if (block.type === 'noguess') {
+    return box('<div style="font-size:30px;line-height:1">📴</div>' +
+      '<div style="font-size:16px;font-weight:900;color:#ffd166;margin-top:8px;line-height:1.45">' + f(T.ngT) + '</div>' +
+      '<div style="font-size:13px;font-weight:700;color:#94a3b8;margin-top:6px;line-height:1.5">' + f(T.ngS) + '</div>');
+  }
+  var title = '<div style="font-size:16px;font-weight:800;color:#e2e8f0;line-height:1.45">' + f(T.offT) + '</div>';
+  var btn = function (txt, primary, onclick) {
+    return '<button type="button" onclick="' + onclick + '" style="display:block;width:100%;max-width:340px;margin:10px auto 0;border-radius:12px;padding:13px;font:inherit;font-size:15px;font-weight:900;cursor:pointer;' +
+      (primary ? 'border:none;color:#fff;background:linear-gradient(135deg,#06d6a0,#059669);' : 'border:1px solid #3a3a52;color:#cbd5e1;background:transparent;') + '">' + txt + '</button>';
+  };
+  if (isHost) {
+    window._pmTbName = block.name; // (never put the name inside onclick)
+    var waiting = window._pmTbWait === block.name;
+    return box(title +
+      '<div style="font-size:13px;font-weight:700;color:#94a3b8;margin-top:4px">' + f(waiting ? T.offP : T.offHost) + '</div>' +
+      (waiting ? '' : btn(f(T.wait), false, "window._pmTbWait=window._pmTbName;try{pmTurnBlockRerender()}catch(e){}")) +
+      btn(e(T.skip), true, skipFn + '()'));
+  }
+  return box(title + '<div style="font-size:13px;font-weight:700;color:#94a3b8;margin-top:6px;line-height:1.5">' + f(T.offP) + '</div>');
+}
