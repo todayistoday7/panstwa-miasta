@@ -568,6 +568,18 @@ function register(io, socket) {
     socket.emit('keep_alive_ack');
   });
 
+  // "Wyjdź": the player chose to leave - stop sending them this room (they stay listed as away, points kept)
+  socket.on('pm_leave', ({ code }) => {
+    const room = rooms[String(code || '').toUpperCase()];
+    if (!room) return;
+    socket.leave(room.code);
+    const p = room.players.find(x => x.id === socket.id);
+    if (!p) return;
+    p.connected = false;
+    if (room.hostId === socket.id) promoteNewHost(io, room);
+    emitRoomState(io, room);
+  });
+
   socket.on('rejoin', ({ code, name }) => {
     const room = rooms[code];
     if (!room) { socket.emit('error', { msg: 'Room expired.' }); return; }
@@ -598,7 +610,11 @@ function register(io, socket) {
         }, room.state.phase === 'lobby' ? 600000 : 45000); // 10min lobby, 45s game
         emitRoomState(io, room);
         const allGone = room.players.every(p => !p.connected);
-        if (allGone) { lobby.remove(code); setTimeout(() => { if (rooms[code]) delete rooms[code]; }, 30 * 60 * 1000); }
+        if (allGone) {
+          lobby.remove(code);
+          room._goneAt = Date.now();
+          setTimeout(() => { if (rooms[code] === room && room.players.every(pl => !pl.connected) && Date.now() - room._goneAt >= 30 * 60 * 1000 - 1000) delete rooms[code]; }, 30 * 60 * 1000); // only if nobody came back
+        }
         break;
       }
     }

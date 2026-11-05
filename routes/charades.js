@@ -317,10 +317,15 @@ function startTurn(io, room) {
   room.state.word = pickWord(room);
   room.state.timerEnd = Date.now() + room.settings.timerSecs * 1000;
   room.state.phase = 'acting';
+  room.state.pausedMs = null;
   
   broadcastState(io, room);
   
   // Timer
+  armActTimer(io, room, room.settings.timerSecs * 1000);
+}
+
+function armActTimer(io, room, ms) {
   clearTimeout(room.state.timer);
   room.state.timer = setTimeout(() => {
     if (room.state.phase === 'acting') {
@@ -329,7 +334,30 @@ function startTurn(io, room) {
       room.state.phase = 'turn_end';
       broadcastState(io, room);
     }
-  }, room.settings.timerSecs * 1000);
+  }, ms);
+}
+// Everyone left mid-turn: stop the clock and remember how much time was left
+function pauseActTimer(room) {
+  clearTimeout(room.state.timer); room.state.timer = null;
+  if (room.state.phase === 'acting' && room.state.timerEnd) room.state.pausedMs = Math.max(3000, room.state.timerEnd - Date.now());
+}
+// Someone came back: carry on from where the clock stopped
+function endActIfOverdue(io, room) {
+  if (room.state.phase !== 'acting' || room.state.pausedMs || !room.state.timerEnd) return false;
+  if (Date.now() < room.state.timerEnd + 1500) return false;
+  clearTimeout(room.state.timer); room.state.timer = null;
+  room.state.lastWord = room.state.word;
+  room.state.lastResult = 'timeout';
+  room.state.phase = 'turn_end';
+  broadcastState(io, room);
+  return true;
+}
+function resumeActTimer(io, room) {
+  if (endActIfOverdue(io, room)) return;
+  if (room.state.phase !== 'acting' || !room.state.pausedMs) return;
+  room.state.timerEnd = Date.now() + room.state.pausedMs;
+  armActTimer(io, room, room.state.pausedMs);
+  room.state.pausedMs = null;
 }
 
 function endRound(io, room) {
@@ -405,6 +433,7 @@ function register(io, socket) {
       existing.connected = true;
       socket.join(code);
       socket.emit('charades_room_joined', { code });
+      resumeActTimer(io, room);
       broadcastState(io, room);
       return;
     }
@@ -479,6 +508,7 @@ function register(io, socket) {
     const room = rooms[code];
     if (!room || room.state.phase !== 'acting') return;
     if (socket.id !== room.state.actorId) return;
+    if (endActIfOverdue(io, room)) return; // time is up - no points after 0
     
     const actor = room.players.find(p => p.id === room.state.actorId);
     if (!actor) return;
@@ -503,6 +533,7 @@ function register(io, socket) {
     const room = rooms[code];
     if (!room || room.state.phase !== 'acting') return;
     if (socket.id !== room.state.actorId) return;
+    if (endActIfOverdue(io, room)) return;
     if (room.state.passesLeft <= 0) return;
     
     room.state.passesLeft--;
@@ -539,7 +570,7 @@ function register(io, socket) {
       socket.leave(code);
       const connected = getConnected(room);
       if (connected.length === 0) {
-        clearTimeout(room.state.timer);
+        pauseActTimer(room);
         room._deleteTimer = setTimeout(() => {
           const still = room.players.filter(p => p.connected);
           if (still.length === 0) { try { lobby.remove(code); } catch(e) {} delete rooms[code]; }
@@ -586,7 +617,7 @@ function register(io, socket) {
         player.connected = false;
         const connected = getConnected(room);
         if (connected.length === 0) {
-          clearTimeout(room.state.timer);
+          pauseActTimer(room);
           // Grace period — keep room alive for 2 minutes in case everyone comes back
           room._deleteTimer = setTimeout(() => {
             const stillConnected = room.players.filter(p => p.connected);
@@ -626,6 +657,7 @@ function register(io, socket) {
       existing.connected = true;
       socket.join(code);
       socket.emit('charades_room_joined', { code });
+      resumeActTimer(io, room);
       broadcastState(io, room);
     } else if (room.state.phase === 'lobby') {
       const redCount = room.players.filter(p => p.team === 'red' && p.connected).length;

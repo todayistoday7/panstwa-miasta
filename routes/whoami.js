@@ -1528,13 +1528,15 @@ function register(io, socket) {
         emitState(io, room);
         const allGone = room.players.every(pl => !pl.connected);
         if (allGone) {
+          const _goneAt = room._goneAt = Date.now();
           setTimeout(() => {
-            if (whoamiRooms[code]) {
+            // only if nobody came back in the meantime
+            if (whoamiRooms[code] === room && room._goneAt === _goneAt && room.players.every(pl => !pl.connected)) {
               logRoomEnded({ roomCode: code, playerCount: 0, status: 'ended' });
               try { lobby.remove(code); } catch(e) {}
               delete whoamiRooms[code];
             }
-          }, room.state.phase === 'lobby' ? 600000 : 90000);
+          }, room.state.phase === 'lobby' ? 600000 : 30 * 60 * 1000); // everyone away: keep the room 30 min (like the other games) - long chats between turns are normal
         }
       }, room.state.phase === 'lobby' ? 600000 : 90000); // 10min lobby, 90s game
       break;

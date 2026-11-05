@@ -102,6 +102,7 @@ socket.on('error', ({ msg }) => {
 });
 
 socket.on('room_state', (data) => {
+  if (window._pmLeft) return; // left with "Wyjdź" - not in this room any more
   try {
     if (window._pmJustRejoined && Date.now() - window._pmJustRejoined < 15000 && data && data.state && data.state.phase === 'playing' && typeof localAnswers !== 'undefined') {
       window._pmJustRejoined = 0;
@@ -181,6 +182,7 @@ socket.on('stop_called', ({ playerName, gracePeriod }) => {
 
 socket.on('group_rematch', ({ code }) => {
   // Host started a rematch — auto-rejoin the new room
+  if (window._pmLeft) return; // left with "Wyjdź" - don't pull back in
   roomCode = code;
   sessionStorage.setItem('pm_code', code);
   sessionStorage.setItem('pm_name', myName);
@@ -965,6 +967,7 @@ function markReady()     { socket.emit('mark_ready', { code: roomCode }); }
 function callStop()      { socket.emit('call_stop', { code: roomCode }); document.getElementById('stop-btn').style.display='none'; }
 
 function createRoom() {
+  window._pmLeft = false;
   const name = document.getElementById('host-name').value.trim();
   if (!name) { showError(pmAskMsg('name', lang)); return; }
   myName = name; isHost = true;
@@ -974,6 +977,7 @@ function createRoom() {
 }
 
 function joinRoom() {
+  window._pmLeft = false;
   const name = document.getElementById('join-name').value.trim();
   const code = document.getElementById('join-code').value.trim().toUpperCase();
   if (!name) { showError(pmAskMsg('name', lang)); return; }
@@ -1051,6 +1055,10 @@ function playAgainGroup() {
 }
 
 function goHome() {
+  // "Wyjdź" = the player wants to leave: tell the server and stop listening to the old room
+  // (a locked phone / switched app never comes here - those players stay in the room with their points)
+  try { if (roomCode) socket.emit('pm_leave', { code: roomCode }); } catch (e) {}
+  window._pmLeft = true;
   roomCode=''; roomState=null; isHost=false; localAnswers={};
   window._timerStart = null;
   _settingsInitialized = false;

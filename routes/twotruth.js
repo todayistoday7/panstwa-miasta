@@ -382,7 +382,8 @@ function register(io, socket) {
       const allGone = room.players.every(pl => !pl.connected);
       if (allGone) {
         if (room._lobbyTimer) clearTimeout(room._lobbyTimer);
-        setTimeout(() => { if (ttRooms[code]) delete ttRooms[code]; }, 30 * 60 * 1000);
+        room._goneAt = Date.now();
+        setTimeout(() => { if (ttRooms[code] === room && room.players.every(pl => !pl.connected) && Date.now() - room._goneAt >= 30 * 60 * 1000 - 1000) delete ttRooms[code]; }, 30 * 60 * 1000); // only if nobody came back
       }
       break;
     }

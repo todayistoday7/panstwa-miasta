@@ -164,18 +164,30 @@ function startTabooTurn(io, room) {
   room.state.currentWord   = null;
   emitTabooState(io, room);
 
-  let remaining = room.settings.turnTime || 60;
-  room.state.turnTimeRemaining = remaining;
+  room.state.turnTimeRemaining = room.settings.turnTime || 60;
+  runTabooTimer(io, room);
+}
+
+// Ticks the turn clock down from room.state.turnTimeRemaining (also used to resume after a pause)
+function runTabooTimer(io, room) {
+  const code = room.code;
   if (room.state.turnTimer) clearInterval(room.state.turnTimer);
   room.state.turnTimer = setInterval(() => {
-    remaining--;
-    room.state.turnTimeRemaining = remaining;
+    room.state.turnTimeRemaining--;
+    const remaining = room.state.turnTimeRemaining;
     io.to(code).emit('taboo_timer_tick', { remaining });
     if (remaining <= 0) {
       clearInterval(room.state.turnTimer);
+      room.state.turnTimer = null;
       endTabooTurn(io, room);
     }
   }, 1000);
+}
+// Everyone left mid-turn: the clock was paused - start it again when someone comes back
+function resumeTabooTimer(io, room) {
+  if (room.state.phase !== 'playing' || room.state.turnTimer) return;
+  if (room.state.turnTimeRemaining > 0) runTabooTimer(io, room);
+  else endTabooTurn(io, room); // clock at 0 but the turn never ended - end it now
 }
 
 function endTabooTurn(io, room) {
@@ -244,6 +256,7 @@ function register(io, socket) {
       __rekey(room, existing.id, socket.id); existing.id = socket.id; existing.connected = true;
       socket.join(room.code);
       socket.emit('taboo_room_joined', { code: room.code });
+      resumeTabooTimer(io, room);
       emitTabooState(io, room);
       return;
     }
@@ -254,6 +267,7 @@ function register(io, socket) {
       if (room.hostId === _ret.id) room.hostId = socket.id;
       __rekey(room, _ret.id, socket.id); _ret.id = socket.id; _ret.connected = true;
       socket.join(room.code); socket.emit('taboo_room_joined', { code: room.code });
+      resumeTabooTimer(io, room);
       emitTabooState(io, room); return;
     }
     if (room.state.phase !== 'lobby')  { socket.emit('taboo_error', { msg: 'Game already started.' }); return; }
@@ -462,6 +476,7 @@ function register(io, socket) {
     if (room.state.phase === 'playing') {
       socket.emit('taboo_timer_tick', { remaining: room.state.turnTimeRemaining });
     }
+    resumeTabooTimer(io, room);
     lobby.announce('taboo', room);
     emitTabooState(io, room);
   });
@@ -477,6 +492,7 @@ function register(io, socket) {
     __rekey(room, existing.id, socket.id); existing.id = socket.id; existing.connected = true;
     socket.join(code);
     socket.emit('taboo_room_joined', { code });
+    resumeTabooTimer(io, room);
     emitTabooState(io, room);
   });
 
@@ -504,8 +520,9 @@ function register(io, socket) {
 
       const allGone = room.players.every(pl => !pl.connected);
       if (allGone) {
-        if (room.state.turnTimer) clearInterval(room.state.turnTimer);
-        setTimeout(() => { if (tabooRooms[code]) delete tabooRooms[code]; }, 30 * 60 * 1000);
+        if (room.state.turnTimer) { clearInterval(room.state.turnTimer); room.state.turnTimer = null; } // paused - resumes when someone returns
+        room._goneAt = Date.now();
+        setTimeout(() => { if (tabooRooms[code] === room && room.players.every(pl => !pl.connected) && Date.now() - room._goneAt >= 30 * 60 * 1000 - 1000) delete tabooRooms[code]; }, 30 * 60 * 1000); // only if nobody came back
       }
       break;
     }

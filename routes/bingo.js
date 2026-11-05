@@ -240,6 +240,18 @@ function register(io, socket) {
     });
 
     // ── Disconnect ───────────────────────────────────────
+    // "Wyjdź": the player chose to leave - stop sending them this room
+    socket.on('bingo_leave', ({ code }) => {
+      const room = bingoRooms[String(code || '').toUpperCase()];
+      if (!room) return;
+      socket.leave(room.code);
+      const player = room.players.find(p => p.id === socket.id);
+      if (!player) return;
+      player.connected = false;
+      if (room.hostId === socket.id) { const next = room.players.find(p => p.connected); if (next) room.hostId = next.id; }
+      emitBingoState(io, room);
+    });
+
     socket.on('disconnect', () => {
       for (const [code, room] of Object.entries(bingoRooms)) {
         const player = room.players.find(p => p.id === socket.id);

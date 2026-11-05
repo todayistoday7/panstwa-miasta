@@ -222,6 +222,7 @@ socket.on('bingo_joined', ({ code, isHost: h }) => {
 });
 
 socket.on('bingo_state', (data) => {
+  if (window._bingoLeft) return; // left with "Wyjdź" - not in this room any more
   roomState = data;
   switch (data.phase) {
     case 'lobby':   showScreen('screen-lobby');  renderLobby(data);  break;
@@ -399,6 +400,7 @@ function renderFinal(data) {
 
 // ── Actions ──────────────────────────────────────────────
 function createRoom() {
+  window._bingoLeft = false;
   const name = document.getElementById('host-name').value.trim();
   if (!name) { showError(pmAskMsg('name', lang)); return; }
   myName = name;
@@ -408,6 +410,7 @@ function createRoom() {
 }
 
 function joinRoom() {
+  window._bingoLeft = false;
   const name = document.getElementById('join-name').value.trim();
   const code = document.getElementById('join-code').value.trim().toUpperCase();
   if (!name) { showError(pmAskMsg('name', lang)); return; }
@@ -429,6 +432,10 @@ function playAgain() {
 }
 
 function leaveRoom() {
+  // "Wyjdź" = the player wants to leave: tell the server, forget the room (no auto-return on refresh)
+  try { if (roomCode) socket.emit('bingo_leave', { code: roomCode }); } catch (e) {}
+  try { sessionStorage.removeItem('bingo_code'); sessionStorage.removeItem('bingo_name'); } catch (e) {}
+  window._bingoLeft = true;
   roomCode = ''; roomState = null; isHost = false; myName = '';
   showScreen('screen-home');
   applyTranslations();
