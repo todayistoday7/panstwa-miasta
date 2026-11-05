@@ -58,11 +58,37 @@ function getConnected(room) {
   return room.players.filter(p => p.connected !== false);
 }
 
-function getPicker(room) {
-  const connected = getConnected(room);
-  if (!connected.length) return null;
-  return connected[room.state.pickerIndex % connected.length];
+// Turn order fixed when the game starts: offline players keep their place (the host can wait or skip them)
+function turnOrder(room) {
+  const o = (room.state.order || []).filter(id => room.players.some(p => p.id === id));
+  return o.length ? o : room.players.filter(p => p.connected !== false).map(p => p.id);
 }
+function orderLen(room) { return turnOrder(room).length; }
+// Why the current turn can't go on: that player is offline, or nobody else is online to play with
+function turnBlockOf(room, cur) {
+  try {
+    if (!cur) return null;
+    if (cur.connected === false) return { type: 'offline', name: cur.name };
+    const others = turnOrder(room).filter(id => id !== cur.id).map(id => room.players.find(p => p.id === id)).filter(Boolean);
+    if (others.some(p => p.connected !== false)) return null;
+    const off = others.find(p => p.connected === false);
+    return off ? { type: 'noguess', name: off.name } : null;
+  } catch (e) { return null; }
+}
+// "Pomiń": the offline player moves to the end of the order (keeps a turn for later)
+function skipOffline(room) {
+  const o = turnOrder(room); const len = o.length; if (!len) return;
+  const i = room.state.pickerIndex % len; const id = o[i];
+  if (i === len - 1) { room.state.pickerIndex = (room.state.pickerIndex + 1) % len; return; }
+  o.splice(i, 1); o.push(id); room.state.order = o;
+}
+
+function getPicker(room) {
+  const o = turnOrder(room);
+  if (!o.length) return null;
+  return room.players.find(p => p.id === o[room.state.pickerIndex % o.length]) || null;
+}
+function hangBlock(room) { return room.state.phase === 'picking' ? turnBlockOf(room, getPicker(room)) : null; }
 
 // What guessers see: dashes for unguessed letters, revealed for guessed
 function buildDisplay(word, guessedLetters) {
@@ -101,8 +127,9 @@ function emitHangState(io, room) {
     roundsPlayed:   room.state.roundsPlayed,
     totalRounds:    (function() {
       const m = room.settings.gameLength === 'quick' ? 1 : room.settings.gameLength === 'marathon' ? 3 : 2;
-      return getConnected(room).length * m;
+      return orderLen(room) * m;
     })(),
+    turnBlock:      hangBlock(room),
     wordLength:     room.state.word ? room.state.word.length : null,
   };
 
@@ -216,6 +243,7 @@ function register(io, socket) {
     if (room._lobbyTimer) { clearTimeout(room._lobbyTimer); room._lobbyTimer = null; }
     room.state.roundsPlayed = 0;
     room.state.pickerIndex  = 0;
+    room.state.order        = room.players.filter(p => p.connected !== false).map(p => p.id);
     room.state.scores       = {};
     room.players.forEach(p => room.state.scores[p.id] = 0);
     lobby.announce('hangman', room);
@@ -228,6 +256,7 @@ function register(io, socket) {
     if (!room || room.state.phase !== 'picking') return;
     const picker = getPicker(room);
     if (!picker || socket.id !== picker.id) return;
+    if (hangBlock(room)) return; // nobody else online to guess - wait
 
     const cleaned = (word || '').trim().toUpperCase();
     if (!cleaned || cleaned.length < 2) { socket.emit('hang_error', { msg: 'Word must be at least 2 letters.' }); return; }
@@ -323,6 +352,16 @@ function register(io, socket) {
     emitHangState(io, room);
   });
 
+  // Host: "Pomiń i grajmy dalej" - the one who should pick the word is offline
+  socket.on('hang_skip_offline', ({ code }) => {
+    const room = getHangRoom(code);
+    if (!room || socket.id !== room.hostId) return;
+    const b = hangBlock(room);
+    if (!b || b.type !== 'offline') return;
+    skipOffline(room);
+    emitHangState(io, room);
+  });
+
   // Host advances to next round
   socket.on('hang_next_round', ({ code }) => {
     const room = getHangRoom(code);
@@ -330,7 +369,7 @@ function register(io, socket) {
     if (socket.id !== room.hostId) return;
 
     room.state.roundsPlayed++;
-    const connected = getConnected(room);
+    const connected = turnOrder(room); // everyone keeps their turns, also while offline
     const multiplier = room.settings.gameLength === 'quick' ? 1 : room.settings.gameLength === 'marathon' ? 3 : 2;
     const totalRounds = connected.length * multiplier;
 

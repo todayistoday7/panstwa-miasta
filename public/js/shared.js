@@ -2600,3 +2600,19 @@ function pmTurnBlockHtml(block, isHost, lang, skipFn) {
   }
   return box(title + '<div style="font-size:13px;font-weight:700;color:#94a3b8;margin-top:6px;line-height:1.5">' + f(T.offP) + '</div>');
 }
+// Show/hide the box above a given element (Znajdź Pary, Kropki, Wisielec, Dwie Prawdy).
+// dimIds: parts of the screen that can't be used while the turn is blocked.
+function pmTurnBlockMount(block, isHost, lang, skipFn, anchorId, dimIds) {
+  try {
+    window._pmTbArgs = [block, isHost, lang, skipFn, anchorId, dimIds];
+    var el = document.getElementById('pm-tb');
+    (dimIds || []).forEach(function (id) { var d = document.getElementById(id); if (d) { d.style.opacity = block ? '.35' : ''; d.style.pointerEvents = block ? 'none' : ''; } });
+    if (!block) { if (el) el.remove(); return; }
+    var anchor = document.getElementById(anchorId);
+    if (!anchor || !anchor.parentNode) return;
+    if (!el) { el = document.createElement('div'); el.id = 'pm-tb'; }
+    if (el.nextSibling !== anchor) anchor.parentNode.insertBefore(el, anchor);
+    el.innerHTML = pmTurnBlockHtml(block, isHost, lang, skipFn);
+  } catch (e) {}
+}
+function pmTurnBlockRerender() { if (window._pmTbArgs) pmTurnBlockMount.apply(null, window._pmTbArgs); }

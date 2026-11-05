@@ -67,6 +67,7 @@ function emitDotsState(io, room) {
     roundsPlayed:  room.state.roundsPlayed || 0,
     totalRoundsAccum: room.state.totalRoundsAccum || 0,
     currentPlayer: room.state.currentPlayer,
+    turnBlock:     room.state.phase === 'playing' ? turnBlock(room, room.state.currentPlayer) : null,
     grid:          room.state.grid,
     claimedBoxes:  room.state.claimedBoxes,
     totalBoxes:    room.state.totalBoxes,
@@ -117,11 +118,25 @@ function claimLine(grid, type, row, col, playerId) {
   return completed;
 }
 
+// Why the current turn can't go on: that player is offline, or nobody else is online to play with
+function turnBlock(room, curId) {
+  try {
+    const cur = room.players.find(p => p.id === curId);
+    if (!cur) return null;
+    if (!cur.connected) return { type: 'offline', name: cur.name };
+    const others = room.players.filter(p => p.id !== cur.id && !p.left);
+    if (others.some(p => p.connected)) return null;
+    const off = others.find(p => !p.connected);
+    return off ? { type: 'noguess', name: off.name } : null;
+  } catch (e) { return null; }
+}
+
+// Next in order - offline players keep their place (the host can skip them)
 function nextPlayerIndex(room, currentId) {
-  const connected = room.players.filter(p => p.connected);
-  if (!connected.length) return null;
-  const idx = connected.findIndex(p => p.id === currentId);
-  return connected[(idx + 1) % connected.length].id;
+  const list = room.players;
+  if (!list.length) return null;
+  const idx = list.findIndex(p => p.id === currentId);
+  return list[(idx + 1) % list.length].id;
 }
 
 function promoteDotsHost(room) {
@@ -238,6 +253,7 @@ function register(io, socket) {
     const room = getDotsRoom(code);
     if (!room || room.state.phase !== 'playing') return;
     if (socket.id !== room.state.currentPlayer) return;  // not your turn
+    if (turnBlock(room, socket.id)) return;               // nobody else online - wait
 
     const completed = claimLine(room.state.grid, type, row, col, socket.id);
 
@@ -294,6 +310,16 @@ function register(io, socket) {
       room.state.currentPlayer = nextPlayerIndex(room, socket.id);
     }
 
+    emitDotsState(io, room);
+  });
+
+  // Host: "Pomiń i grajmy dalej" - the player whose turn it is is offline
+  socket.on('dots_skip_offline', ({ code }) => {
+    const room = getDotsRoom(code);
+    if (!room || socket.id !== room.hostId || room.state.phase !== 'playing') return;
+    const b = turnBlock(room, room.state.currentPlayer);
+    if (!b || b.type !== 'offline') return;
+    room.state.currentPlayer = nextPlayerIndex(room, room.state.currentPlayer);
     emitDotsState(io, room);
   });
 
@@ -356,7 +382,7 @@ function register(io, socket) {
 
       // Give disconnected player 15 seconds to reconnect before advancing their turn.
       // Store the timeout on the player object so rejoin can cancel it.
-      if (room.state.phase === 'playing' && room.state.currentPlayer === socket.id) {
+      if (false) { // (no automatic skip any more: the host sees wait / skip)
         if (p._turnTimer) clearTimeout(p._turnTimer);
         p._turnTimer = setTimeout(() => {
           // Only advance if they haven't reconnected

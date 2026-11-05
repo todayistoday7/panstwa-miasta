@@ -832,3 +832,9 @@ function _setLobbyBtns(isHost) {
     b.style.display = (isHost || b.id === 'lbl-leave-room') ? '' : 'none';
   });
 }
+
+// ── Turn can't go on: the player is offline / nobody else online (host: wait or skip) ──
+function ttSkipOffline() { socket.emit('tt_skip_offline', { code: roomCode }); }
+socket.on('tt_state', function (d) {
+  setTimeout(function () { try { pmTurnBlockMount(d && d.turnBlock, !!d && d.hostId === socket.id, lang, 'ttSkipOffline', 'writing-area', ['writing-area']); } catch (e) {} }, 0);
+});

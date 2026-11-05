@@ -51,11 +51,37 @@ function getConnected(room) {
   return room.players.filter(p => p.connected !== false);
 }
 
-function getActivePlayer(room) {
-  const connected = getConnected(room);
-  if (!connected.length) return null;
-  return connected[room.state.activeIndex % connected.length];
+// Turn order fixed when the game starts: offline players keep their place (the host can wait or skip them)
+function turnOrder(room) {
+  const o = (room.state.order || []).filter(id => room.players.some(p => p.id === id));
+  return o.length ? o : room.players.filter(p => p.connected !== false).map(p => p.id);
 }
+function orderLen(room) { return turnOrder(room).length; }
+// Why the current turn can't go on: that player is offline, or nobody else is online to play with
+function turnBlockOf(room, cur) {
+  try {
+    if (!cur) return null;
+    if (cur.connected === false) return { type: 'offline', name: cur.name };
+    const others = turnOrder(room).filter(id => id !== cur.id).map(id => room.players.find(p => p.id === id)).filter(Boolean);
+    if (others.some(p => p.connected !== false)) return null;
+    const off = others.find(p => p.connected === false);
+    return off ? { type: 'noguess', name: off.name } : null;
+  } catch (e) { return null; }
+}
+// "Pomiń": the offline player moves to the end of the order (keeps a turn for later)
+function skipOffline(room) {
+  const o = turnOrder(room); const len = o.length; if (!len) return;
+  const i = room.state.activeIndex % len; const id = o[i];
+  if (i === len - 1) { room.state.activeIndex = (room.state.activeIndex + 1) % len; return; }
+  o.splice(i, 1); o.push(id); room.state.order = o;
+}
+
+function getActivePlayer(room) {
+  const o = turnOrder(room);
+  if (!o.length) return null;
+  return room.players.find(p => p.id === o[room.state.activeIndex % o.length]) || null;
+}
+function ttBlock(room) { return room.state.phase === 'writing' ? turnBlockOf(room, getActivePlayer(room)) : null; }
 
 function emitTTState(io, room) {
   const active = getActivePlayer(room);
@@ -75,7 +101,8 @@ function emitTTState(io, room) {
     roundScores:  room.state.roundScores,
     totalScores:  room.state.totalScores,
     roundsPlayed: room.state.roundsPlayed,
-    totalRounds:  getConnected(room).length, // one round per player
+    totalRounds:  orderLen(room), // one round per player
+    turnBlock:    ttBlock(room),
   };
 
   // Broadcast base state to everyone in the room
@@ -227,6 +254,7 @@ function register(io, socket) {
     lobby.remove(room.code);
     room.state.phase        = 'writing';
     room.state.activeIndex  = 0;
+    room.state.order        = room.players.filter(p => p.connected !== false).map(p => p.id);
     room.state.roundsPlayed = 0;
     room.state.totalScores  = {};
     room.players.forEach(p => room.state.totalScores[p.id] = 0);
@@ -243,6 +271,7 @@ function register(io, socket) {
     if (!room || room.state.phase !== 'writing') return;
     const active = getActivePlayer(room);
     if (!active || socket.id !== active.id) return;
+    if (ttBlock(room)) return; // nobody else online to vote - wait
     if (!Array.isArray(statements) || statements.length !== 3) return;
     if (typeof lieIndex !== 'number' || lieIndex < 0 || lieIndex > 2) return;
     if (statements.some(s => !s || !s.trim())) return;
@@ -289,6 +318,16 @@ function register(io, socket) {
     emitTTState(io, room);
   });
 
+  // Host: "Pomiń i grajmy dalej" - the one who should write is offline (they get their turn at the end)
+  socket.on('tt_skip_offline', ({ code }) => {
+    const room = getTTRoom(code);
+    if (!room || socket.id !== room.hostId) return;
+    const b = ttBlock(room);
+    if (!b || b.type !== 'offline') return;
+    skipOffline(room);
+    emitTTState(io, room);
+  });
+
   // Host advances to next player
   socket.on('tt_next', ({ code }) => {
     const room = getTTRoom(code);
@@ -296,7 +335,7 @@ function register(io, socket) {
     if (socket.id !== room.hostId) return;
 
     room.state.roundsPlayed++;
-    const connected = getConnected(room);
+    const connected = turnOrder(room); // everyone gets their turn, also if they were offline for a while
 
     // Check if everyone has had a turn
     if (room.state.roundsPlayed >= connected.length) {

@@ -93,6 +93,7 @@ function emitMemState(io, room) {
     })),
     settings: { ...room.settings, isPublic: room.isPublic },
     currentPlayer: room.state.currentPlayer,
+    turnBlock: room.state.phase === 'playing' ? turnBlock(room, room.state.currentPlayer) : null,
     board: safeBoard,
     totalPairs: room.state.totalPairs,
     foundPairs: room.state.foundPairs,
@@ -101,11 +102,26 @@ function emitMemState(io, room) {
   });
 }
 
+// Why the current turn can't go on: that player is offline, or nobody else is online to play with
+function turnBlock(room, curId) {
+  try {
+    const cur = room.players.find(p => p.id === curId);
+    if (!cur) return null;
+    if (!cur.connected) return { type: 'offline', name: cur.name };
+    const others = room.players.filter(p => p.id !== cur.id && !p.left);
+    if (others.some(p => p.connected)) return null;
+    const off = others.find(p => !p.connected);
+    return off ? { type: 'noguess', name: off.name } : null;
+  } catch (e) { return null; }
+}
+
+// Next in order - offline players keep their place (the host can skip them); players who left with Wyjdz are skipped
 function nextPlayerIndex(room, currentId) {
-  const connected = room.players.filter(p => p.connected);
-  if (!connected.length) return null;
-  const idx = connected.findIndex(p => p.id === currentId);
-  return connected[(idx + 1) % connected.length].id;
+  const list = room.players.filter(p => !p.left || p.id === currentId);
+  if (!list.length) return null;
+  const idx = list.findIndex(p => p.id === currentId);
+  for (let k = 1; k <= list.length; k++) { const p = list[(idx + k) % list.length]; if (!p.left) return p.id; }
+  return currentId;
 }
 
 function promoteMemHost(room) {
@@ -142,7 +158,7 @@ function register(io, socket) {
       if (room.hostId === existing.id) room.hostId = socket.id;
       if (room.state.currentPlayer === existing.id) room.state.currentPlayer = socket.id;
       __rekey(room, existing.id, socket.id); existing.id = socket.id;
-      existing.connected = true;
+      existing.connected = true; existing.left = false;
       socket.join(room.code);
       socket.emit('mem_room_created', { code: room.code });
       emitMemState(io, room);
@@ -198,6 +214,7 @@ function register(io, socket) {
     const room = getMemRoom(code);
     if (!room || room.state.phase !== 'playing') return;
     if (socket.id !== room.state.currentPlayer) return;
+    if (turnBlock(room, socket.id)) return; // nobody else online - wait
 
     const card = room.state.board[cardIndex];
     if (!card || card.flipped || card.matched) return;
@@ -294,6 +311,18 @@ function register(io, socket) {
     emitMemState(io, room);
   });
 
+  // Host: "Pomiń i grajmy dalej" - the player whose turn it is is offline
+  socket.on('mem_skip_offline', ({ code }) => {
+    const room = getMemRoom(code);
+    if (!room || socket.id !== room.hostId || room.state.phase !== 'playing') return;
+    const b = turnBlock(room, room.state.currentPlayer);
+    if (!b || b.type !== 'offline') return;
+    room.state.flippedCards.forEach(idx => { if (room.state.board[idx]) room.state.board[idx].flipped = false; });
+    room.state.flippedCards = [];
+    room.state.currentPlayer = nextPlayerIndex(room, room.state.currentPlayer);
+    emitMemState(io, room);
+  });
+
   // ─── REJOIN ──────────────────────────────────────────
   socket.on('mem_rejoin', ({ code, name }) => {
     const room = memRooms[code];
@@ -303,7 +332,7 @@ function register(io, socket) {
       if (room.hostId === existing.id) room.hostId = socket.id;
       if (room.state.currentPlayer === existing.id) room.state.currentPlayer = socket.id;
       __rekey(room, existing.id, socket.id); existing.id = socket.id;
-      existing.connected = true;
+      existing.connected = true; existing.left = false;
     } else {
       if (room.state.phase !== 'lobby') { socket.emit('mem_error', { msg: 'Room already started.' }); return; }
       room.players.push({ id: socket.id, name, connected: true, score: 0 });
@@ -329,12 +358,7 @@ function register(io, socket) {
       } else {
         if (room.players.every(p => !p.connected)) { room._deleteTimer = setTimeout(() => { if (memRooms[code] && memRooms[code].players.every(p => !p.connected)) delete memRooms[code]; }, 30*60*1000); continue; }
         if (socket.id === room.hostId) promoteMemHost(room);
-        if (room.state.currentPlayer === socket.id) {
-          room.state.currentPlayer = nextPlayerIndex(room, socket.id);
-          // Clear any pending flipped cards
-          room.state.flippedCards.forEach(idx => { room.state.board[idx].flipped = false; });
-          room.state.flippedCards = [];
-        }
+        // their turn stays theirs while the phone is off - the host sees wait / skip
       }
       lobby.announce('memory', room);
       emitMemState(io, room);
@@ -348,6 +372,7 @@ function register(io, socket) {
     if (!player) return;
     socket.leave(code);
     player.connected = false;
+    player.left = true; // chose to leave - skipped in the turn order
 
     if (room.state.phase === 'lobby') {
       room.players = room.players.filter(p => p.id !== socket.id);
