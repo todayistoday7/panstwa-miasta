@@ -2282,10 +2282,10 @@ window._buildFooterLangBtns = function() {
 // ════════════════════════════════════════════════════════════════
 (function () {
   var T = {
-    pl: { t: 'Wychodzisz z gry?', m: 'Gra wciąż trwa. Jeśli teraz wyjdziesz, reszta będzie grać dalej bez ciebie. Wrócisz przyciskiem „Wstecz” albo z tym samym imieniem i kodem pokoju {code}.', stay: 'Zostań w grze', leave: 'Wyjdź' },
-    en: { t: 'Leave the game?', m: 'The game is still on. If you leave now, the others will carry on without you. You can come back with the Back button, or with the same name and room code {code}.', stay: 'Stay in the game', leave: 'Leave' },
-    de: { t: 'Spiel verlassen?', m: 'Das Spiel läuft noch. Wenn du jetzt gehst, spielen die anderen ohne dich weiter. Du kommst mit „Zurück“ wieder rein oder mit demselben Namen und dem Raumcode {code}.', stay: 'Im Spiel bleiben', leave: 'Verlassen' },
-    sv: { t: 'Lämna spelet?', m: 'Spelet pågår fortfarande. Om du går nu fortsätter de andra utan dig. Du kommer tillbaka med Bakåt-knappen eller med samma namn och rumskoden {code}.', stay: 'Stanna i spelet', leave: 'Lämna' }
+    pl: { t: 'Wychodzisz z gry?', m: 'Gra wciąż trwa. Jeśli teraz wyjdziesz, reszta będzie grać dalej bez ciebie. Możesz wrócić, wpisując to samo imię i kod pokoju {code}.', stay: 'Zostań w grze', leave: 'Wyjdź' },
+    en: { t: 'Leave the game?', m: 'The game is still on. If you leave now, the others will carry on without you. You can come back by typing the same name and room code {code}.', stay: 'Stay in the game', leave: 'Leave' },
+    de: { t: 'Spiel verlassen?', m: 'Das Spiel läuft noch. Wenn du jetzt gehst, spielen die anderen ohne dich weiter. Du kannst zurückkommen, wenn du denselben Namen und den Raumcode {code} eingibst.', stay: 'Im Spiel bleiben', leave: 'Verlassen' },
+    sv: { t: 'Lämna spelet?', m: 'Spelet pågår fortfarande. Om du går nu fortsätter de andra utan dig. Du kan komma tillbaka genom att skriva samma namn och rumskoden {code}.', stay: 'Stanna i spelet', leave: 'Lämna' }
   };
   function code() { try { return String((document.getElementById('room-code-display') || {}).textContent || '').replace(/[^A-Z0-9]/gi, '').toUpperCase(); } catch (e) { return ''; } }
   function inGame() {
@@ -2312,8 +2312,23 @@ window._buildFooterLangBtns = function() {
     document.body.appendChild(o);
     o.querySelector('[data-stay]').onclick = function () { o.remove(); };
     o.addEventListener('click', function (e) { if (e.target === o) o.remove(); });
-    o.querySelector('[data-leave]').onclick = function () { o.remove(); go(); };
+    o.querySelector('[data-leave]').onclick = function () { o.remove(); leaveForReal(); go(); };
   }
+  // "Wyjdź" in this popup = a real leave, like the Wyjdź button: tell the server and forget the room,
+  // so opening this game again does not pull the player back in
+  var LEAVE_EV = { pm: 'pm_leave', charades: 'charades_leave', mem: 'mem_leave', bingo: 'bingo_leave' };
+  function leaveForReal() {
+    try {
+      var c = code(), s = window._gameSocket || (typeof socket !== 'undefined' ? socket : null);
+      ['pm','dots','hang','taboo','tt','whoami','bingo','drawing','mem','charades'].forEach(function (p) {
+        try { if (LEAVE_EV[p] && s && String(sessionStorage.getItem(p + '_code') || '').toUpperCase() === c) s.emit(LEAVE_EV[p], { code: c }); } catch (e) {}
+      });
+      _clearAllGameSessions();
+      window._pmLeftViaGuard = true;
+    } catch (e) {}
+  }
+  // Back button after leaving: don't show the old game from the browser's memory - load the page fresh
+  window.addEventListener('pageshow', function (e) { try { if (e.persisted && window._pmLeftViaGuard) location.reload(); } catch (x) {} });
   document.addEventListener('click', function (e) {
     try {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;

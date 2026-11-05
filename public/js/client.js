@@ -104,7 +104,10 @@ socket.on('error', ({ msg }) => {
 socket.on('room_state', (data) => {
   if (window._pmLeft) return; // left with "Wyjdź" - not in this room any more
   try {
-    if (window._pmJustRejoined && Date.now() - window._pmJustRejoined < 15000 && data && data.state && data.state.phase === 'playing' && typeof localAnswers !== 'undefined') {
+    // answers typed in an earlier round must never be sent into a new round
+    if (data && data.state && window._pmAnsKey && window._pmAnsKey !== data.state.round + ':' + data.state.letter) { localAnswers = {}; }
+    if (window._pmJustRejoined && Date.now() - window._pmJustRejoined < 15000 && data && data.state && data.state.phase === 'playing' && typeof localAnswers !== 'undefined'
+        && window._pmAnsKey === data.state.round + ':' + data.state.letter) {
       window._pmJustRejoined = 0;
       Object.keys(localAnswers).forEach(function(ci) {
         var v = localAnswers[ci];
@@ -459,8 +462,10 @@ function renderPlayingScreen(data) {
   if (_rpb) { _rpb.textContent = L.roundLabel(state.round, settings.totalRounds); _rpb.style.display = 'inline-block'; }
   document.getElementById('play-letter').textContent = state.letter;
   const body = document.getElementById('answer-body');
-  if (!body.dataset.letter || body.dataset.letter !== state.letter) {
+  if (!body.dataset.letter || body.dataset.letter !== state.letter || body.dataset.round !== String(state.round)) {
     body.dataset.letter = state.letter;
+    body.dataset.round = String(state.round);
+    window._pmAnsKey = state.round + ':' + state.letter; // the round these boxes belong to
     localAnswers = {};
     body.innerHTML = '';
     settings.categories.forEach((cat, ci) => {

@@ -632,6 +632,7 @@ function register(io, socket) {
           // If current actor disconnected, end the turn
           if (socket.id === room.state.actorId && room.state.phase === 'acting') {
             clearTimeout(room.state.timer);
+            room.state.lastWord = room.state.word; // so "Hasło było:" shows the word, not "?"
             room.state.phase = 'turn_end';
             room.state.lastResult = 'timeout';
             broadcastState(io, room);
