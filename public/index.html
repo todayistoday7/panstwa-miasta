@@ -327,6 +327,10 @@
           <button class="btn" id="draw-btn" onclick="drawLetter()">🎲 <span id="lbl-draw">Draw Letter</span></button>
           <button class="btn green" id="play-btn" onclick="startRound()" style="display:none;">▶ <span id="lbl-play">Play!</span></button>
         </div>
+        <div id="reroll-wrap" style="display:none;margin-top:14px;text-align:center;">
+          <button class="btn secondary" id="reroll-btn" onclick="rerollLetter()" style="font-size:14px;padding:10px 16px;"></button>
+          <div id="reroll-hint" style="font-size:12px;color:var(--muted);font-weight:700;margin-top:6px;"></div>
+        </div>
       </div>
       <p id="drawing-waiting" class="waiting-msg" style="display:none;"></p>
     </div>
@@ -468,8 +472,8 @@
   </div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/langs.js?v=4"></script>
+<script src="/js/langs.js?v=5"></script>
 <script src="/js/shared.js?v=23"></script>
-<script src="/js/client.js?v=18"></script>
+<script src="/js/client.js?v=19"></script>
 </body>
 </html>

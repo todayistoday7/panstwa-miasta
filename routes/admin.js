@@ -1098,6 +1098,9 @@ function renderGeneric(db, game, days, cutoffLabel, gameOpts) {
   const SETTING_LABELS = {
     dots:   [['gridSize', 'Grid size', v => v + '×' + v], ['totalRounds', 'Rounds', v => v]],
     memory: [['boardSize', 'Board size', v => v + ' cards'], ['theme', 'Theme', v => v], ['gameLength', 'Game length', v => v]],
+    taboo:  [['forbiddenCount', 'Forbidden words', v => ({ 5: '5 - Hard', 3: '3 - Medium', 1: '1 - Easy', 0: '0 - None' })[v] || v],
+             ['turnTime', 'Turn time', v => v + ' s'], ['gameLength', 'Game length', v => v],
+             ['mode', 'Mode', v => v === 'solo' ? 'Solo (up to 3 players)' : 'Teams']],
   };
   // Unfinished games: where did they stop?
   const stopCard = statsStopCard(db, game, since, cutoffLabel);
@@ -1116,7 +1119,7 @@ function renderGeneric(db, game, days, cutoffLabel, gameOpts) {
         <table><tr><th>${label}</th><th>Games</th><th>Share</th></tr>${body}</table></div>`;
     });
     settingsCard = `<div class="grid2">${parts.join('')}</div>
-      <div style="font-size:11px;color:#64748b;margin:-8px 0 20px">Settings are recorded from 29 Oct 2026 on - older games are not included.</div>`;
+      <div style="font-size:11px;color:#64748b;margin:-8px 0 20px">${game === 'taboo' ? 'Game length is recorded from 29 Oct 2026, forbidden words, turn time and mode from v420 (Nov 2026)' : 'Settings are recorded from 29 Oct 2026 on'} - older games are not included.</div>`;
   }
 
   return statsHeader(gameOpts, days, game) + `

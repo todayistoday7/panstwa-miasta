@@ -5,7 +5,7 @@ window._gameSlug = 'drawing';
 const LANGS = {
   pl: {
     name:'🇵🇱 PL',
-    gameTitle:'SZKICUJ I ZGADUJ', gameSubtitle:'Gra rysunkowa · 3-10 graczy',
+    gameTitle:'SZKICUJ I ZGADUJ', gameSubtitle:'Głuchy telefon z rysunkami · 3-10 graczy',
     createRoom:'Stwórz pokój', joinRoom:'Dołącz do pokoju',
     createDisclaimer:'Stwórz publiczny lub prywatny pokój. Zaproś znajomych — otrzymasz kod pokoju do przekazania innym graczom.',
     joinDisclaimer:'Masz kod od znajomego lub z listy otwartych pokoi? Wpisz go tutaj i graj razem!',
@@ -58,7 +58,7 @@ const LANGS = {
   },
   en: {
     name:'🇬🇧 EN',
-    gameTitle:'SKETCH & GUESS', gameSubtitle:'Drawing party game · 3-10 players',
+    gameTitle:'SKETCH & GUESS', gameSubtitle:'Telephone game with drawings · 3-10 players',
     createRoom:'Create Room', joinRoom:'Join Room',
     createDisclaimer:"Create a public or private room. Invite friends — you'll get a room code to share with other players.",
     joinDisclaimer:'Have a code from a friend or from the Live Rooms page? Enter it here and join the game!',
@@ -111,7 +111,7 @@ const LANGS = {
   },
   de: {
     name:'🇩🇪 DE',
-    gameTitle:'ZEICHNEN & RATEN', gameSubtitle:'Zeichenspiel für Parties · 3-10 Spieler',
+    gameTitle:'ZEICHNEN & RATEN', gameSubtitle:'Stille Post mit Bildern · 3-10 Spieler',
     createRoom:'Raum erstellen', joinRoom:'Raum beitreten',
     createDisclaimer:'Erstelle einen öffentlichen oder privaten Raum. Lade Freunde ein — du erhältst einen Code zum Teilen.',
     joinDisclaimer:'Hast du einen Code von einem Freund oder von der Seite mit offenen Räumen? Gib ihn hier ein und spiel mit!',
@@ -164,7 +164,7 @@ const LANGS = {
   },
   sv: {
     name:'🇸🇪 SV',
-    gameTitle:'SKISSA & GISSA', gameSubtitle:'Ritspel · 3-10 spelare',
+    gameTitle:'SKISSA & GISSA', gameSubtitle:'Viskleken med teckningar · 3-10 spelare',
     createRoom:'Skapa rum', joinRoom:'Gå med i rum',
     createDisclaimer:'Skapa ett offentligt eller privat rum. Bjud in vänner — du får en rumskod att dela.',
     joinDisclaimer:'Har du en kod från en vän eller från sidan med aktiva rum? Skriv in den här och gå med i spelet!',

@@ -264,10 +264,12 @@ function register(io, socket) {
 
     // Find old room if keepGroup — bring all connected players along
     let oldPlayers = [];
+    let _carryLetters = null; // "play again": letters of the last game are not drawn again straight away
     if (settings && settings.keepGroup) {
       for (const [code, r] of Object.entries(rooms)) {
         if (r.players.find(p => p.id === socket.id)) {
           lobby.playAgain('pm', r);
+          _carryLetters = (r.state && Array.isArray(r.state.usedLetters)) ? r.state.usedLetters.slice() : [];
           oldPlayers = r.players.filter(p => p.connected && p.id !== socket.id);
           // Clean up old room
           if (r._lobbyTimer) clearTimeout(r._lobbyTimer);
@@ -281,6 +283,7 @@ function register(io, socket) {
     }
 
     const room = makeRoom(socket.id, settings || {});
+    if (_carryLetters && _carryLetters.length) room._carryLetters = _carryLetters;
     room.players.push({ id: socket.id, name: trimmedName, connected: true });
     room.state.totalScores[socket.id] = 0;
     socket.join(room.code);
@@ -396,6 +399,13 @@ function register(io, socket) {
     room.state.phase            = 'drawing';
     room.state.round            = 0;
     room.state.usedLetters      = [];
+    room.state.rerolledRound    = 0;
+    // Played again with the same group: skip the letters they just had, as long as enough letters are left
+    if (Array.isArray(room._carryLetters)) {
+      const carry = room._carryLetters.filter(l => ALPHABET.includes(l));
+      if (ALPHABET.length - carry.length >= (room.settings.totalRounds || 5)) room.state.usedLetters = carry;
+      room._carryLetters = null;
+    }
     room.state.scores           = [];
     room.state.challenged       = {};
     room.state.votes            = {};
@@ -414,6 +424,23 @@ function register(io, socket) {
     const letter = available[Math.floor(Math.random() * available.length)];
     room.state.letter = letter;
     room.state.usedLetters.push(letter);
+    io.to(room.code).emit('letter_drawn', { letter });
+  });
+
+  // "Draw another letter": the person drawing may change the letter once per round
+  socket.on('pm_reroll_letter', ({ code }) => {
+    const room = getRoom(code);
+    if (!room || room.state.phase !== 'drawing' || !room.state.letter) return;
+    const drawer = getDrawingPlayer(room);
+    if (!drawer || drawer.id !== socket.id) return;
+    if (room.state.rerolledRound === room.state.round) return;
+    const available = ALPHABET.filter(l => !room.state.usedLetters.includes(l));
+    if (!available.length) return;
+    const letter = available[Math.floor(Math.random() * available.length)];
+    room.state.rerolledRound = room.state.round;
+    room.state.letter = letter;
+    room.state.usedLetters.push(letter);
+    emitRoomState(io, room);
     io.to(room.code).emit('letter_drawn', { letter });
   });
 

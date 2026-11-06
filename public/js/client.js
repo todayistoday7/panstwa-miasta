@@ -151,6 +151,7 @@ socket.on('letter_drawn', ({ letter }) => {
     document.getElementById('drawing-waiting').style.display = 'none';
     document.getElementById('draw-btn').style.display = 'none';
     document.getElementById('play-btn').style.display = 'inline-flex';
+    pmRerollUi();
   } else {
     document.getElementById('drawing-host-controls').style.display = 'none';
     document.getElementById('drawing-waiting').style.display = 'block';
@@ -195,11 +196,9 @@ socket.on('group_rematch', ({ code }) => {
     : '🔄 Host started a new game — joining automatically!', 5000);
 });
 
-socket.on('player_disconnected', ({ name }) => {
-  var rejoinMsg = (lang === 'pl')
-    ? '⚠ ' + name + ' rozłączył się — może wrócić z tym samym imieniem i kodem'
-    : '⚠ ' + name + ' disconnected — they can rejoin with the same name and code';
-  showToast(rejoinMsg, 6000);
+socket.on('player_disconnected', () => {
+  // no pop-up any more: the offline bar shows on the letter and scoring screens (pmOffBar)
+  try { pmOffBar(); } catch (e) {}
 });
 
 socket.on('challenge_opened', ({ rIdx, playerId, catIndex, word, category, playerName, challengerName }) => {
@@ -244,6 +243,7 @@ function applyRoomState(data) {
       }
       break;
   }
+  try { pmOffBar(); } catch (e) {}
 }
 
 // ─── LOBBY ───────────────────────────────────────────────
@@ -284,7 +284,7 @@ function renderLobby(data) {
   players.forEach((p, i) => {
     el.innerHTML += '<div class="lobby-player' + (p.isHost?' host':'') + '">' +
       '<div class="avatar av-' + (i%8) + '">' + esc(esc(p.name)).charAt(0).toUpperCase() + '</div>' +
-      '<span class="pname">' + esc(p.name) + (p.id===myId?' (you)':'') + '</span>' +
+      '<span class="pname">' + esc(p.name) + (p.id===myId?' '+(L.youTag||'(you)'):'') + '</span>' +
       (p.isHost ? '<span class="host-badge">' + L.hostBadge + '</span>' : '') +
       (!p.connected ? '<span class="offline-badge">' + L.offlineBadge + '</span>' : '') +
       '</div>';
@@ -446,6 +446,7 @@ function renderDrawingScreen(data) {
       document.getElementById('draw-btn').style.display = 'none';
       document.getElementById('play-btn').style.display = 'inline-flex';
     }
+    pmRerollUi();
   } else {
     document.getElementById('drawing-host-controls').style.display = 'none';
     document.getElementById('drawing-waiting').style.display = 'block';
@@ -781,7 +782,7 @@ function renderLeaderboard(elId, data, rIdx) {
         ? Object.values(state.scores[rIdx][p.id]).reduce(function(a,b){return a+b;},0) : 0;
       el.innerHTML += '<div class="lb-row' + (rank===0?' first':'') + '">' +
         '<div class="lb-rank' + (rank===0?' gold':'') + '">' + (rank+1) + '</div>' +
-        '<div class="lb-name">' + esc(p.name) + (p.id===myId?' (you)':'') + '</div>' +
+        '<div class="lb-name">' + esc(p.name) + (p.id===myId?' '+(L.youTag||'(you)'):'') + '</div>' +
         '<div><div class="lb-pts">' + p.total + '</div><div class="lb-round-pts">+' + rp + '</div></div>' +
         '</div>';
     });
@@ -828,7 +829,7 @@ function renderFinalScreen(data) {
       var medal = rank===0?'🥇':rank===1?'🥈':rank===2?'🥉':'';
       el.innerHTML += '<div class="lb-row' + (rank===0?' first':'') + '">' +
         '<div class="lb-rank' + (rank===0?' gold':'') + '">' + (medal||rank+1) + '</div>' +
-        '<div class="lb-name">' + esc(p.name) + (p.id===myId?' (you)':'') + '</div>' +
+        '<div class="lb-name">' + esc(p.name) + (p.id===myId?' '+(L.youTag||'(you)'):'') + '</div>' +
         '<div class="lb-pts">' + p.total + '</div></div>';
     });
   }
@@ -857,7 +858,7 @@ function showChallengeModal(rIdx, playerId, catIndex, word, category, playerName
     const myVote = votes[p.id];
     const isChallenged = p.id === playerId;
     vg.innerHTML += '<div class="vote-row" id="vrow-' + p.id + '">' +
-      '<div class="player-name">' + esc(p.name) + (p.id===myId?' (you)':'') + '</div>' +
+      '<div class="player-name">' + esc(p.name) + (p.id===myId?' '+(L.youTag||'(you)'):'') + '</div>' +
       '<div class="vote-btns">' +
       '<button class="vote-btn valid' + (myVote===true?' selected':'') + '" onclick="castVote(\'' + playerId + '\',' + rIdx + ',' + catIndex + ',true)">' +
       (isChallenged ? (L.voteDefend||'✓ My word is correct') : L.voteValid) + '</button>' +
@@ -1021,6 +1022,46 @@ function drawLetter() {
 }
 
 function startRound() { socket.emit('start_round', { code: roomCode }); }
+
+// "Draw another letter": only for the person drawing, once per round
+function pmRerollUi() {
+  var w = document.getElementById('reroll-wrap'); if (!w) return;
+  var st = roomState && roomState.state;
+  var show = !!(st && st.phase === 'drawing' && st.letter && isMyDrawTurn() && st.rerolledRound !== st.round);
+  w.style.display = show ? 'block' : 'none';
+  if (show) {
+    var b = document.getElementById('reroll-btn'); b.textContent = L.rerollBtn || '🔄 Draw another letter'; b.disabled = false;
+    document.getElementById('reroll-hint').textContent = L.rerollHint || '';
+  }
+}
+function rerollLetter() {
+  var b = document.getElementById('reroll-btn'); if (b) b.disabled = true;
+  var el = document.getElementById('drawing-letter'); el.classList.add('rolling');
+  var count = 0, ALPHA = 'ABCDEFGHIJKLMNOPRSTUWZ'.split('');
+  if (rollingInterval) clearInterval(rollingInterval);
+  rollingInterval = setInterval(function() {
+    el.textContent = ALPHA[Math.floor(Math.random() * ALPHA.length)];
+    if (++count >= 12) { clearInterval(rollingInterval); el.classList.remove('rolling'); socket.emit('pm_reroll_letter', { code: roomCode }); }
+  }, 80);
+}
+
+// Offline bar: who is offline, shown only on the letter screen and on scoring
+// (never while people type answers - it would push the answer boxes down)
+function pmOffBar() {
+  document.querySelectorAll('.pm-offbar').forEach(function(x) { x.remove(); });
+  if (!roomState || !roomState.players) return;
+  var ph = roomState.state && roomState.state.phase;
+  var scr = ph === 'drawing' ? 'screen-drawing' : ph === 'scoring' ? 'screen-scoring' : null;
+  if (!scr) return;
+  var off = roomState.players.filter(function(p) { return p.connected === false && p.id !== myId; }).map(function(p) { return p.name; });
+  if (!off.length) return;
+  var names = off.length === 1 ? off[0] : off.slice(0, -1).join(', ') + ' ' + (L.andWord || 'and') + ' ' + off[off.length - 1];
+  var d = document.createElement('div');
+  d.className = 'pm-offbar';
+  d.style.cssText = 'margin:0 0 14px;background:#2a2410;border:1px solid #ffd166;color:#ffe9a8;border-radius:12px;padding:10px 14px;font-size:13px;font-weight:700;line-height:1.4;text-align:left;';
+  d.textContent = ((off.length === 1 ? L.offOne : L.offMany) || '📴 {n} offline').replace('{n}', names);
+  var sc = document.getElementById(scr); sc.insertBefore(d, sc.firstChild);
+}
 
 function confirmGoHome() {
   if (roomState && roomState.state && roomState.state.phase !== 'lobby' && roomState.state.phase !== 'final') {

@@ -172,6 +172,10 @@ function funnelCheckStarted(f) {
       f.started = true;
       const st = f.room.settings || {}, extra = {};
       ['gridSize', 'totalRounds', 'boardSize', 'theme', 'gameLength'].forEach(k => { if (st[k] !== undefined) extra[k] = st[k]; });
+      if (f.game === 'taboo') {
+        ['forbiddenCount', 'turnTime'].forEach(k => { if (st[k] !== undefined) extra[k] = st[k]; });
+        if (f.room.state.solo !== undefined) extra.mode = f.room.state.solo ? 'solo' : 'teams';
+      }
       funnelLog(f.game, f.room, 'room_started', Object.assign({ players: (f.room.players || []).length, sites: sitesOf(f.room) }, extra));
     }
   } catch (e) { /* never affect games */ }

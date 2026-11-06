@@ -20,7 +20,8 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install playwright
+        # Fixed version: a new Playwright release once broke this step (Nov 2026)
+        run: npm install playwright@1.64.0
 
       - name: Install Chromium
         run: npx playwright install chromium --with-deps
